@@ -24,7 +24,7 @@ fun main() {
 }
 
 fun userClient() {
-    val protocol = GeneratedUserProtocolManual(RpcClient())
+    val protocol = UserProtocolClientImpl(RpcClient())
     val response = protocol.createLobby(PlayerId(123), "alo")
     println(response)
 }

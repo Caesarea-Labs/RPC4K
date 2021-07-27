@@ -58,35 +58,78 @@ class Rpc4kProcessor(private val env: SymbolProcessorEnvironment) : SymbolProces
                     .superclass(apiClass.qualifiedName!!.toTypeName())
                     .apply {
                         apiClass.getDeclaredFunctions().filter { !it.isConstructor() }.toList()
-                            .forEach { generateClientMethodImplementation(it) }
+                            .forEach { generateClientMethodImplementation(it, this@createKtFile) }
                     }
                     .build()
             )
         }
     }
 
-    private fun TypeSpec.Builder.generateClientMethodImplementation(apiMethod: KSFunctionDeclaration) {
+    private val builtinSerializableTypes = listOf(
+        Byte::class,
+        Short::class,
+        Int::class,
+        Long::class,
+        Float::class,
+        Double::class,
+        Boolean::class,
+        Unit::class,
+        String::class,
+        Char::class,
+        UInt::class,
+        ULong::class,
+        UByte::class,
+        UShort::class
+    ).map { it.qualifiedName!! }.toHashSet()
+
+    private fun TypeSpec.Builder.generateClientMethodImplementation(
+        apiMethod: KSFunctionDeclaration,
+        fileSpec: FileSpec.Builder
+    ) {
         val methodName = apiMethod.simpleName.asString()
+        val parameterTypes = apiMethod.parameters.map { it.type.resolve() }
+        val returnType = apiMethod.returnType!!.resolve()
+        val returnTypeName = returnType.toTypeName()
+
+        val usingBuiltinTypes =
+            (parameterTypes + returnType).any { it.declaration.qualifiedName!!.asString() in builtinSerializableTypes }
+        if (usingBuiltinTypes) {
+            fileSpec.addImport("kotlinx.serialization.builtins", "serializer")
+        }
+
         addFunction(FunSpec.builder(methodName)
             .addModifiers(KModifier.OVERRIDE)
-            .generateClientMethodImplementationParameters(apiMethod)
+            .generateClientMethodImplementationParameters(apiMethod, parameterTypes)
             .apply {
                 val clientUtils = Rpc4KGeneratedClientUtils::class
 //                val sendMethod  = Rpc4KGeneratedClientUtils::send
-                addStatement("return %T.send(client,$methodName)", clientUtils)
+                val parameterSerializersString = apiMethod.parameters
+                    .joinToString(",\n") { parameter -> "\t\t\t${parameter.name!!.asString()} to %T.serializer()" }
+
+                val types = listOf(
+                    clientUtils.asTypeName()
+                ) + parameterTypes.map { it.toTypeName() } +
+                        listOf(returnTypeName)
+
+                addStatement(
+                    "return %T.send(\n\t\tclient,\n\t\t\"$methodName\",\n\t\tlistOf(\n$parameterSerializersString\n\t\t),\n\t\t%T.serializer()\n\t)",
+                    *types.toTypedArray()
+                )
             }
-            .returns(apiMethod.returnType!!.toTypeName())
+            .returns(returnTypeName)
             .build()
         )
     }
 
-    private fun KSTypeReference.toTypeName() = resolve().declaration.qualifiedName!!.toTypeName()
+    private fun KSType.toTypeName() = declaration.qualifiedName!!.toTypeName()
 
-    private fun FunSpec.Builder.generateClientMethodImplementationParameters(apiMethod: KSFunctionDeclaration) : FunSpec.Builder{
-        for (parameter in apiMethod.parameters) {
+    private fun FunSpec.Builder.generateClientMethodImplementationParameters(
+        apiMethod: KSFunctionDeclaration, parameterTypes: List<KSType>
+    ): FunSpec.Builder {
+        for ((ksParameter, parameterType) in apiMethod.parameters.zip(parameterTypes)) {
             addParameter(
-                name = parameter.name!!.asString(),
-                type = parameter.type.toTypeName()
+                name = ksParameter.name!!.asString(),
+                type = parameterType.toTypeName()
             )
         }
         return this
