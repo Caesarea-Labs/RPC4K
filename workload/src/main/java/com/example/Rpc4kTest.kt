@@ -10,24 +10,23 @@ data class PlayerId(val num: Long)
 @Serializable
 data class CreateLobbyResponse(val id: Long)
 
+//TODO:
+// - lists
+// - SSE
+// - server implementation
+
+
 @Api
 open class UserProtocol {
     open fun createLobby(createdBy: PlayerId, otherThing: String): CreateLobbyResponse {
         println("Handled createlobby! $createdBy")
         return CreateLobbyResponse(8)
     }
+
+    open fun killSomeone(killer: Int, )
 }
 
-fun main() {
-    userServer()
-    userClient()
-}
 
-fun userClient() {
-    val protocol = UserProtocolClientImpl(RpcClient())
-    val response = protocol.createLobby(PlayerId(123), "alo")
-    println(response)
-}
 
 fun userServer() {
     RpcServer.start(GeneratedProtocolDecoder(UserProtocol()))

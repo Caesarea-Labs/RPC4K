@@ -19,6 +19,8 @@ fun OutputStream.appendText(str: String) {
     this.write(str.toByteArray())
 }
 
+internal const val GeneratedClientImplSuffix ="ClientImpl"
+
 class Rpc4kProcessor(private val env: SymbolProcessorEnvironment) : SymbolProcessor {
     private val codeGenerator = env.codeGenerator
     private val options = env.options
@@ -46,7 +48,7 @@ class Rpc4kProcessor(private val env: SymbolProcessorEnvironment) : SymbolProces
     }
 
     private fun generateClientImplementation(apiClass: KSClassDeclaration) {
-        val generatedClassName = apiClass.simpleName.asString() + "ClientImpl"
+        val generatedClassName = apiClass.simpleName.asString() + GeneratedClientImplSuffix
         apiClass.createKtFile(apiClass.packageName.asString(), generatedClassName) {
             addType(
                 TypeSpec.classBuilder(generatedClassName)

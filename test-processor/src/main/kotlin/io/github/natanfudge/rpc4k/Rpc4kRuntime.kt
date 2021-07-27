@@ -4,6 +4,7 @@ import kotlinx.serialization.DeserializationStrategy
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.SerializationStrategy
 import kotlinx.serialization.json.Json
+import kotlin.reflect.KClass
 
 
 interface ProtocolDecoder<T> {
@@ -29,6 +30,14 @@ class RpcServer<T> private constructor(private val decoder: ProtocolDecoder<T>) 
 lateinit var testRpcServer: RpcServer<*>
 
 class RpcClient {
+    companion object {
+        fun <T : Any> jvmWithProtocol(protocolClass: KClass<T>): T {
+            return Class.forName(protocolClass.qualifiedName + GeneratedClientImplSuffix)
+                .getDeclaredConstructor(RpcClient::class.java)
+                .newInstance(RpcClient()) as T
+        }
+    }
+
     fun send(route: String, body: String): String {
         return testRpcServer.accept(route, body)
     }
