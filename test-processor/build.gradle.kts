@@ -15,7 +15,6 @@ repositories {
 val kotlin_serialization_runtime_version: String by project
 dependencies {
     testImplementation(kotlin("test"))
-    implementation("com.squareup:javapoet:1.12.1")
     implementation("com.google.devtools.ksp:symbol-processing-api:$kspVersion")
     implementation("com.squareup:kotlinpoet:1.9.0")
     testImplementation ("com.github.tschuchortdev:kotlin-compile-testing:1.4.2")

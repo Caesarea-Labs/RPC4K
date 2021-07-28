@@ -16,6 +16,12 @@ class RpcServer<T> private constructor(private val decoder: ProtocolDecoder<T>) 
         fun <T> start(decoder: ProtocolDecoder<T>): RpcServer<T> {
             return RpcServer(decoder).apply { start() }
         }
+        inline fun <reified T : Any> jvmStartWithProtocol(protocolImpl: T) : RpcServer<T> {
+            val protocolClass = T::class
+            val decoder = Class.forName(protocolClass.qualifiedName + GeneratedServerImplSuffix)
+                .getDeclaredConstructor(protocolClass.java).newInstance(protocolImpl) as ProtocolDecoder<T>
+            return start(decoder)
+        }
     }
 
     private fun start() {
@@ -31,8 +37,8 @@ lateinit var testRpcServer: RpcServer<*>
 
 class RpcClient {
     companion object {
-        fun <T : Any> jvmWithProtocol(protocolClass: KClass<T>): T {
-            return Class.forName(protocolClass.qualifiedName + GeneratedClientImplSuffix)
+        inline fun <reified T : Any> jvmWithProtocol(): T {
+            return Class.forName(T::class.qualifiedName + GeneratedClientImplSuffix)
                 .getDeclaredConstructor(RpcClient::class.java)
                 .newInstance(RpcClient()) as T
         }

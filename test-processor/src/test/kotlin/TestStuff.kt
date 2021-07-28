@@ -1,7 +1,6 @@
 import com.tschuchort.compiletesting.KotlinCompilation
 import com.tschuchort.compiletesting.SourceFile
 import com.tschuchort.compiletesting.symbolProcessorProviders
-import io.github.natanfudge.rpc4k.JavaBuilderProcessor
 import io.github.natanfudge.rpc4k.Rpc4kProcessorProvider
 import org.junit.Test
 import java.io.File
@@ -33,7 +32,6 @@ class TestStuff {
         val result = KotlinCompilation().apply {
             sources = testSources
             symbolProcessorProviders = listOf(Rpc4kProcessorProvider())
-            annotationProcessors = listOf(JavaBuilderProcessor())
             inheritClassPath = true
             messageOutputStream = System.out // see diagnostics in real time
         }.compile()

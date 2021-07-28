@@ -20,16 +20,15 @@ data class CreateLobbyResponse(val id: Long)
 open class UserProtocol {
     open fun createLobby(createdBy: PlayerId, otherThing: String): CreateLobbyResponse {
         println("Handled createlobby! $createdBy")
-        return CreateLobbyResponse(8)
+        return CreateLobbyResponse(createdBy.num + otherThing.length)
     }
 
     open fun killSomeone(killer: Int, shit: PlayerId, bar: Unit) : UInt {
-        return 123.toUInt()
+        return (killer + shit.num).toUInt()
+    }
+
+    open fun someShit(){
+
     }
 }
 
-
-
-fun userServer() {
-    RpcServer.start(GeneratedProtocolDecoder(UserProtocol()))
-}
