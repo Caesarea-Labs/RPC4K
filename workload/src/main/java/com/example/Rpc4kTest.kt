@@ -23,7 +23,9 @@ open class UserProtocol {
         return CreateLobbyResponse(8)
     }
 
-    open fun killSomeone(killer: Int, )
+    open fun killSomeone(killer: Int, shit: PlayerId, bar: Unit) : UInt {
+        return 123.toUInt()
+    }
 }
 
 

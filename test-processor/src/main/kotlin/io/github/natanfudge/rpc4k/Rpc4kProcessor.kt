@@ -8,6 +8,7 @@ import com.google.devtools.ksp.processing.*
 import com.google.devtools.ksp.symbol.*
 import com.google.devtools.ksp.validate
 import com.squareup.kotlinpoet.*
+import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy
 import java.io.OutputStream
 import java.io.OutputStreamWriter
 
@@ -20,11 +21,15 @@ fun OutputStream.appendText(str: String) {
 }
 
 internal const val GeneratedClientImplSuffix ="ClientImpl"
+internal const val GeneratedServerImplSuffix ="Decoder"
 
 class Rpc4kProcessor(private val env: SymbolProcessorEnvironment) : SymbolProcessor {
     private val codeGenerator = env.codeGenerator
-    private val options = env.options
     private var invoked = false
+
+    private val resolveCache = mutableMapOf<KSTypeReference,KSType>()
+
+    private fun KSTypeReference.resolveCached() : KSType = resolveCache.computeIfAbsent(this){resolve()}
 
     override fun process(resolver: Resolver): List<KSAnnotated> {
         env.logger.warn("Invoking processor")
@@ -40,16 +45,125 @@ class Rpc4kProcessor(private val env: SymbolProcessorEnvironment) : SymbolProces
             .toList()
 
         for (apiClass in apiClasses) {
-            generateClientImplementation(apiClass)
+            generateRpc(apiClass)
         }
 
         invoked = true
         return apiClasses
     }
 
-    private fun generateClientImplementation(apiClass: KSClassDeclaration) {
+    private fun generateRpc(apiClass: KSClassDeclaration) {
+        env.logger.warn("Generating RPC classes for: ${apiClass.qualifiedName!!.asString()}")
+
+        val usedTypes = apiClass.getActualFunctions().map {func-> func.parameters.map{it.type}  + func.returnType!!}.flatten()
+        val usingBuiltinTypes = usedTypes.any { it.resolveCached().declaration.qualifiedName!!.asString() in builtinSerializableTypes }
+
+        generateClientImplementation(usingBuiltinTypes,apiClass)
+        generateServerDecoder(usingBuiltinTypes,apiClass)
+    }
+
+    private fun generateServerDecoder(usingBuiltinTypes: Boolean, apiClass: KSClassDeclaration) {
+        val generatedClassName = apiClass.simpleName.asString() + GeneratedServerImplSuffix
+        val apiClassTypeName = apiClass.qualifiedName!!.toTypeName()
+        apiClass.createKtFile(apiClass.packageName.asString(),generatedClassName){
+            if (usingBuiltinTypes) {
+                addImport("kotlinx.serialization.builtins", "serializer")
+            }
+            addType(
+                TypeSpec.classBuilder(generatedClassName)
+                    .constructorProperty(
+                        name = "protocol",
+                        type = apiClassTypeName,
+                        KModifier.PRIVATE
+                    )
+                    .addSuperinterface(ProtocolDecoder::class.asTypeName().parameterizedBy(apiClassTypeName))
+                    .generateServerMethodImplementation( apiClass,this@createKtFile)
+                    .build()
+            )
+        }
+    }
+
+    private fun TypeSpec.Builder.generateServerMethodImplementation(
+        apiClass: KSClassDeclaration,
+        fileSpec: FileSpec.Builder
+    ) : TypeSpec.Builder{
+//        val methodName = apiMethod.simpleName.asString()
+//        val parameterTypes = apiMethod.parameters.map { it.type.resolve() }
+//        val returnType = apiMethod.returnType!!.resolve()
+//        val returnTypeName = returnType.toTypeName()
+//
+//        val usingBuiltinTypes =
+//            (parameterTypes + returnType).any { it.declaration.qualifiedName!!.asString() in builtinSerializableTypes }
+//        if (usingBuiltinTypes) {
+//            fileSpec.addImport("kotlinx.serialization.builtins", "serializer")
+//        }
+
+        addFunction(FunSpec.builder("accept")
+            .addModifiers(KModifier.OVERRIDE)
+            .addParameter(name = "route",type = String::class)
+            .addParameter(name = "args", type = List::class.parameterizedBy(String::class))
+            .returns(String::class)
+            .apply {
+                val (routesString,routeTypes) = apiClass.getActualFunctions()
+                    .map { generateServerRouteDecoder(it) }.split()
+
+                val generatedUtils = Rpc4kGeneratedServerUtils::class.asTypeName()
+
+                val types = routeTypes.flatten() + generatedUtils
+
+                addStatement("""
+                    |return when (route) {
+                    |    ${routesString.joinToString("\n    ")}
+                    |    else -> %T.invalidRoute(route)
+                    |}
+                """.trimMargin(), *types.toList().toTypedArray())
+//                val clientUtils = Rpc4KGeneratedClientUtils::class
+////                val sendMethod  = Rpc4KGeneratedClientUtils::send
+//                val parameterSerializersString = apiMethod.parameters
+//                    .joinToString(",\n") { parameter -> "\t\t\t${parameter.name!!.asString()} to %T.serializer()" }
+//
+//                val types = listOf(
+//                    clientUtils.asTypeName()
+//                ) + parameterTypes.map { it.toTypeName() } +
+//                        listOf(returnTypeName)
+//
+//                addStatement(
+//                    "return %T.send(\n\t\tclient,\n\t\t\"$methodName\",\n\t\tlistOf(\n$parameterSerializersString\n\t\t),\n\t\t%T.serializer()\n\t)",
+//                    *types.toTypedArray()
+//                )
+            }
+            .build()
+        )
+        return this
+    }
+    private fun generateServerRouteDecoder(route: KSFunctionDeclaration) : Pair<String,List<TypeName>>{
+        val methodName = route.simpleName.asString()
+        val (parametersString,parameterTypes) = route.parameters.mapIndexed  (::generateServerParameterDecoder).split()
+        val types = listOf(Rpc4kGeneratedServerUtils::class.asTypeName(), route.returnType!!.toTypeName()) + parameterTypes.flatten()
+        val formatString = """
+            |"$methodName" -> %T.encodeResponse(
+            |        %T.serializer(), protocol.$methodName(
+            |            ${parametersString.joinToString(",\n            ")}
+            |        )
+            |    )
+        """.trimMargin()
+        return formatString to types
+    }
+
+    private fun generateServerParameterDecoder( index: Int,parameter: KSValueParameter) : Pair<String,List<TypeName>>{
+        val formatString = """
+            %T.decodeParameter(%T.serializer(), args[$index])
+        """.trimIndent()
+        val types = listOf(Rpc4kGeneratedServerUtils::class.asTypeName(), parameter.type.toTypeName())
+        return formatString to types
+    }
+
+    private fun generateClientImplementation(usingBuiltinTypes: Boolean, apiClass: KSClassDeclaration) {
         val generatedClassName = apiClass.simpleName.asString() + GeneratedClientImplSuffix
         apiClass.createKtFile(apiClass.packageName.asString(), generatedClassName) {
+            if (usingBuiltinTypes) {
+                addImport("kotlinx.serialization.builtins", "serializer")
+            }
             addType(
                 TypeSpec.classBuilder(generatedClassName)
                     .constructorProperty(
@@ -59,13 +173,15 @@ class Rpc4kProcessor(private val env: SymbolProcessorEnvironment) : SymbolProces
                     )
                     .superclass(apiClass.qualifiedName!!.toTypeName())
                     .apply {
-                        apiClass.getDeclaredFunctions().filter { !it.isConstructor() }.toList()
+                        apiClass.getActualFunctions()
                             .forEach { generateClientMethodImplementation(it, this@createKtFile) }
                     }
                     .build()
             )
         }
     }
+
+    private fun KSClassDeclaration.getActualFunctions() = getDeclaredFunctions().filter { !it.isConstructor() }
 
     private val builtinSerializableTypes = listOf(
         Byte::class,
@@ -89,32 +205,37 @@ class Rpc4kProcessor(private val env: SymbolProcessorEnvironment) : SymbolProces
         fileSpec: FileSpec.Builder
     ) {
         val methodName = apiMethod.simpleName.asString()
-        val parameterTypes = apiMethod.parameters.map { it.type.resolve() }
-        val returnType = apiMethod.returnType!!.resolve()
-        val returnTypeName = returnType.toTypeName()
 
-        val usingBuiltinTypes =
-            (parameterTypes + returnType).any { it.declaration.qualifiedName!!.asString() in builtinSerializableTypes }
-        if (usingBuiltinTypes) {
-            fileSpec.addImport("kotlinx.serialization.builtins", "serializer")
-        }
+        val returnTypeName = apiMethod.returnType!!.toTypeName()
+//        val returnTypeName = returnType.toTypeName()
+
+
 
         addFunction(FunSpec.builder(methodName)
             .addModifiers(KModifier.OVERRIDE)
-            .generateClientMethodImplementationParameters(apiMethod, parameterTypes)
+            .generateClientMethodImplementationParameters(apiMethod)
             .apply {
                 val clientUtils = Rpc4KGeneratedClientUtils::class
 //                val sendMethod  = Rpc4KGeneratedClientUtils::send
                 val parameterSerializersString = apiMethod.parameters
-                    .joinToString(",\n") { parameter -> "\t\t\t${parameter.name!!.asString()} to %T.serializer()" }
+                    .joinToString(",\n\t\t\t") { parameter -> "${parameter.name!!.asString()} to %T.serializer()" }
 
                 val types = listOf(
                     clientUtils.asTypeName()
-                ) + parameterTypes.map { it.toTypeName() } +
-                        listOf(returnTypeName)
+                ) + apiMethod.parameters.map { it.type.toTypeName() } + returnTypeName
+
 
                 addStatement(
-                    "return %T.send(\n\t\tclient,\n\t\t\"$methodName\",\n\t\tlistOf(\n$parameterSerializersString\n\t\t),\n\t\t%T.serializer()\n\t)",
+                    """
+                    |return %T.send(
+                    |       client,
+                    |       "$methodName",
+                    |       listOf(
+                    |          $parameterSerializersString
+                    |       ),
+                    |       %T.serializer()
+                    |    )
+                        """.trimMargin(),
                     *types.toTypedArray()
                 )
             }
@@ -123,15 +244,13 @@ class Rpc4kProcessor(private val env: SymbolProcessorEnvironment) : SymbolProces
         )
     }
 
-    private fun KSType.toTypeName() = declaration.qualifiedName!!.toTypeName()
+    private fun KSTypeReference.toTypeName() = resolveCached().declaration.qualifiedName!!.toTypeName()
 
-    private fun FunSpec.Builder.generateClientMethodImplementationParameters(
-        apiMethod: KSFunctionDeclaration, parameterTypes: List<KSType>
-    ): FunSpec.Builder {
-        for ((ksParameter, parameterType) in apiMethod.parameters.zip(parameterTypes)) {
+    private fun FunSpec.Builder.generateClientMethodImplementationParameters(apiMethod: KSFunctionDeclaration): FunSpec.Builder {
+        for (parameter in apiMethod.parameters) {
             addParameter(
-                name = ksParameter.name!!.asString(),
-                type = parameterType.toTypeName()
+                name = parameter.name!!.asString(),
+                type = parameter.type.toTypeName()
             )
         }
         return this
@@ -171,6 +290,13 @@ class Rpc4kProcessor(private val env: SymbolProcessorEnvironment) : SymbolProces
 
         val writer = OutputStreamWriter(fileOutputStream)
         writer.use(ktFile::writeTo)
+    }
+
+    private fun <K,V> Sequence<Pair<K,V>>.split() : Pair<Sequence<K>, Sequence<V>>{
+        return map { it.first } to map { it.second }
+    }
+    private fun <K,V> List<Pair<K,V>>.split() : Pair<List<K>, List<V>>{
+        return map { it.first } to map { it.second }
     }
 
     //        println("test processing...")

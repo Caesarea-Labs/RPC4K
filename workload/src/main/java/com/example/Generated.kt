@@ -7,17 +7,17 @@ import io.github.natanfudge.rpc4k.ProtocolDecoder
 import io.github.natanfudge.rpc4k.RpcClient
 import kotlinx.serialization.builtins.serializer
 
-class GeneratedUserProtocolManual(private val client: RpcClient) : UserProtocol() {
-    override fun createLobby(createdBy: PlayerId, otherThing: String) = Rpc4KGeneratedClientUtils.send(
-        client,
-        "createLobby",
-        listOf(
-            createdBy to PlayerId.serializer(),
-            otherThing to String.serializer()
-        ),
-        CreateLobbyResponse.serializer()
-    )
-}
+//class GeneratedUserProtocolManual(private val client: RpcClient) : UserProtocol() {
+//    override fun createLobby(createdBy: PlayerId, otherThing: String) = Rpc4KGeneratedClientUtils.send(
+//        client,
+//        "createLobby",
+//        listOf(
+//            createdBy to PlayerId.serializer(),
+//            otherThing to String.serializer()
+//        ),
+//        CreateLobbyResponse.serializer()
+//    )
+//}
 
 class GeneratedProtocolDecoder(private val protocol: UserProtocol) : ProtocolDecoder<UserProtocol> {
     override fun accept(route: String, args: List<String>) = when (route) {
