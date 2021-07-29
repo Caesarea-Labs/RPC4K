@@ -1,7 +1,7 @@
 import com.tschuchort.compiletesting.KotlinCompilation
 import com.tschuchort.compiletesting.SourceFile
 import com.tschuchort.compiletesting.symbolProcessorProviders
-import io.github.natanfudge.rpc4k.Rpc4kProcessorProvider
+import io.github.natanfudge.rpc4k.impl.Rpc4kProcessorProvider
 import org.junit.Test
 import java.io.File
 import kotlin.test.assertEquals

@@ -1,37 +1,51 @@
 package com.example
 
-import io.github.natanfudge.rpc4k.Rpc4KGeneratedClientUtils
-import io.github.natanfudge.rpc4k.Rpc4kGeneratedServerUtils
-import io.github.natanfudge.rpc4k.Rpc4kGeneratedServerUtils.decodeParameter
-import io.github.natanfudge.rpc4k.ProtocolDecoder
-import io.github.natanfudge.rpc4k.RpcClient
-import kotlinx.serialization.builtins.serializer
-
-//class GeneratedUserProtocolManual(private val client: RpcClient) : UserProtocol() {
-//    override fun createLobby(createdBy: PlayerId, otherThing: String) = Rpc4KGeneratedClientUtils.send(
+//public class UserProtocolClientImpl(
+//    private val client: RpcClient
+//) : UserProtocol() {
+//    public override fun createLobby(createdBy: PlayerId, otherThing: String): CreateLobbyResponse =
+//        Rpc4KGeneratedClientUtils.send(
+//            client,
+//            "createLobby",
+//            listOf(
+//                createdBy to PlayerId.serializer(),
+//                otherThing to String.serializer()
+//            ),
+//            CreateLobbyResponse.serializer()
+//        )
+//
+////    override fun moreTypes(list: List<PlayerId>) {
+////        Rpc4KGeneratedClientUtils.send(
+////            client,
+////            "moreTypes",
+////            listOf(
+////                list to ListSerializer()
+////            ),
+////            CreateLobbyResponse.serializer()
+////        )
+////    }
+//
+//    public override fun killSomeone(
+//        killer: Int,
+//        shit: PlayerId,
+//        bar: Unit
+//    ): UInt = Rpc4KGeneratedClientUtils.send(
 //        client,
-//        "createLobby",
+//        "killSomeone",
 //        listOf(
-//            createdBy to PlayerId.serializer(),
-//            otherThing to String.serializer()
+//            killer to Int.serializer(),
+//            shit to PlayerId.serializer(),
+//            bar to Unit.serializer()
 //        ),
-//        CreateLobbyResponse.serializer()
+//        UInt.serializer()
+//    )
+//
+//    public override fun someShit(): Unit = Rpc4KGeneratedClientUtils.send(
+//        client,
+//        "someShit",
+//        listOf(
+//
+//        ),
+//        Unit.serializer()
 //    )
 //}
-
-class GeneratedProtocolDecoder(private val protocol: UserProtocol) : ProtocolDecoder<UserProtocol> {
-    override fun accept(route: String, args: List<String>) = when (route) {
-        "createLobby" -> Rpc4kGeneratedServerUtils.encodeResponse(
-            CreateLobbyResponse.serializer(), protocol.createLobby(
-                decodeParameter(PlayerId.serializer(), args[0]),
-                decodeParameter(String.serializer(), args[1]),
-            )
-        )
-        else -> Rpc4kGeneratedServerUtils.invalidRoute(route)
-    }
-
-}
-
-fun unrelatedChange() {
-    println("asdf")
-}

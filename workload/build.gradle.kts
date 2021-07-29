@@ -17,8 +17,20 @@ dependencies {
 //    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:$kotlin_serialization_runtime_version")
     ksp(project(":test-processor"))
     testImplementation(kotlin("test"))
-    testImplementation("junit:junit:4.13")
+    testImplementation("junit:junit:4.13.2")
 
+}
+sourceSets {
+    main {
+        java {
+            srcDir(project.file("build/generated/ksp/src/main/kotlin"))
+        }
+    }
+    test {
+        java {
+            srcDir(project.file("build/generated/ksp/src/test/kotlin"))
+        }
+    }
 }
 
 ksp {

@@ -12,7 +12,7 @@ pluginManagement {
         google()
     }
 }
-rootProject.name = "JustAnInterface"
+rootProject.name = "RPC4K"
 
 include(":workload")
 include(":test-processor")
