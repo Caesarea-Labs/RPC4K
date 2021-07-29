@@ -25,5 +25,6 @@ class UsageTest {
         protocol.moreTypes(listOf(), listOf(), 1 to 2, Triple(Unit, PlayerId(1), ""), mapForEntry.entries.first())
         val result = protocol.test(1 to 2)
         assertEquals(Triple(1, 2, "3") to 4.0, result)
+        protocol.nullable(null, listOf(null))
     }
 }

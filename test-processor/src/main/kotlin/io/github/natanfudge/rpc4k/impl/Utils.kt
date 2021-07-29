@@ -26,3 +26,5 @@ internal fun String.replaceRanges(ranges: List<IntRange>, replacements: List<Str
 
 internal fun String.substringOrEmpty(startIndex: Int) = if (startIndex < length) substring(startIndex) else ""
 internal fun String.substringOrUntilEnd(startIndex: Int, endIndex: Int) = substring(startIndex, min(endIndex, length))
+
+internal inline fun <T> T.applyIf(check: Boolean, apply: (T) -> T) = if (check) apply(this) else this

@@ -66,51 +66,30 @@ internal class Rpc4kProcessor(private val env: SymbolProcessorEnvironment) : Sym
         }
     }
 
+    private fun ParameterizedTypeName.specialSerializer(name: String, typeArgumentAmount: Int): FormattedString {
+        assert(typeArguments.size == typeArgumentAmount)
+
+        return "$name(%FS)".formatWith(
+            List(typeArgumentAmount) { typeArguments[it].serializerString() }.join(", ")
+        )
+    }
+
     private fun TypeName.serializerString(): FormattedString {
-        return if (this is ParameterizedTypeName) {
+        val string = if (this is ParameterizedTypeName) {
             when (this.rawType.canonicalName) {
-                List::class.qualifiedName -> {
-                    assert(typeArguments.size == 1)
-                    "ListSerializer(%FS)".formatWith(typeArguments[0].serializerString())
-                }
-                Set::class.qualifiedName -> {
-                    assert(typeArguments.size == 1)
-                    "SetSerializer(%FS)".formatWith(typeArguments[0].serializerString())
-                }
-                Map::class.qualifiedName -> {
-                    assert(typeArguments.size == 2)
-                    "MapSerializer(%FS, %FS)".formatWith(
-                        typeArguments[0].serializerString(),
-                        typeArguments[1].serializerString()
-                    )
-                }
-                Pair::class.qualifiedName -> {
-                    assert(typeArguments.size == 2)
-                    "PairSerializer(%FS, %FS)".formatWith(
-                        typeArguments[0].serializerString(),
-                        typeArguments[1].serializerString()
-                    )
-                }
-                Map.Entry::class.qualifiedName -> {
-                    assert(typeArguments.size == 2)
-                    "MapEntrySerializer(%FS, %FS)".formatWith(
-                        typeArguments[0].serializerString(),
-                        typeArguments[1].serializerString()
-                    )
-                }
-                Triple::class.qualifiedName -> {
-                    assert(typeArguments.size == 3)
-                    "TripleSerializer(%FS, %FS, %FS)".formatWith(
-                        typeArguments[0].serializerString(),
-                        typeArguments[1].serializerString(),
-                        typeArguments[2].serializerString()
-                    )
-                }
+                List::class.qualifiedName -> specialSerializer("ListSerializer", 1)
+                Set::class.qualifiedName -> specialSerializer("SetSerializer", 1)
+                Map::class.qualifiedName -> specialSerializer("MapSerializer", 2)
+                Pair::class.qualifiedName -> specialSerializer("PairSerializer", 2)
+                Map.Entry::class.qualifiedName -> specialSerializer("MapEntrySerializer", 2)
+                Triple::class.qualifiedName -> specialSerializer("TripleSerializer", 3)
                 else -> throw UnsupportedApiException("Generic types other than List, Set and Map are not supported.")
             }
         } else {
-            "%T.serializer()".formatType(this)
+            "%T.serializer()".formatType(this.copy(nullable = false))
         }
+        return if (isNullable) "%FS.nullable".formatWith(string)
+        else string
     }
 
     private fun TypeSpec.Builder.addClientMethodImplementation(apiMethod: KSFunctionDeclaration) {
@@ -177,8 +156,8 @@ internal class Rpc4kProcessor(private val env: SymbolProcessorEnvironment) : Sym
         addFunction("accept") {
             addModifiers(KModifier.OVERRIDE)
             addParameter(name = "route", type = String::class)
-            addParameter(name = "args", type = List::class.parameterizedBy(JsonElement::class))
-            returns(String::class)
+            addParameter(name = "args", type = List::class.parameterizedBy(ByteArray::class))
+            returns(ByteArray::class)
             val routesFormatString = apiClass.getActualFunctions()
                 .map { generateServerRouteDecoder(it) }.toList().join("\n")
 
@@ -221,6 +200,7 @@ internal class Rpc4kProcessor(private val env: SymbolProcessorEnvironment) : Sym
 
     private fun FileSpec.Builder.importBuiltinSerializers() {
         addImport("kotlinx.serialization.builtins", "serializer")
+        addImport("kotlinx.serialization.builtins", "nullable")
         addImport("kotlinx.serialization.builtins", "ListSerializer")
         addImport("kotlinx.serialization.builtins", "SetSerializer")
         addImport("kotlinx.serialization.builtins", "MapSerializer")

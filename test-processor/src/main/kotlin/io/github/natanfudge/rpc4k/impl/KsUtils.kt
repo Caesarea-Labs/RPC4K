@@ -14,8 +14,10 @@ internal fun KSClassDeclaration.getActualFunctions() = getDeclaredFunctions().fi
 internal fun KSTypeReference.toTypeName(): TypeName {
     val type = resolve()
     val typeName = type.declaration.qualifiedName!!.toTypeName()
-    return if (type.arguments.isNotEmpty()) typeName.parameterizedBy(type.arguments.map { it.type!!.toTypeName() })
-    else typeName
+    val parameterized =
+        if (type.arguments.isNotEmpty()) typeName.parameterizedBy(type.arguments.map { it.type!!.toTypeName() })
+        else typeName
+    return parameterized.copy(nullable = type.isMarkedNullable)
 }
 
 

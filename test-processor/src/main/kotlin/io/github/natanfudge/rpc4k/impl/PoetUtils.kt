@@ -13,8 +13,11 @@ internal data class FormattedString(val string: String, val formatArguments: Lis
     operator fun plus(other: FormattedString) =
         FormattedString(this.string + other.string, formatArguments + other.formatArguments)
 
+    internal fun formatWith(vararg formattedStrings: FormattedString): FormattedString =
+        formatWith(formattedStrings.toList())
+
     // Properly puts the format arguments in the correct position in accordance with the position of the %FS in the string
-    internal fun formatWith(vararg formattedStrings: FormattedString): FormattedString {
+    internal fun formatWith(formattedStrings: List<FormattedString>): FormattedString {
         val types = mutableListOf<TypeName>()
         var currentArgPosition = 0
         val formatStringPositions = mutableListOf<Int>()
@@ -75,7 +78,8 @@ private fun String.getStartOfLineIndex(index: Int): Int? {
 
 
 internal val String.format get() = FormattedString(this, listOf())
-internal fun String.formatWith(vararg formattedStrings: FormattedString) = format.formatWith(*formattedStrings)
+internal fun String.formatWith(vararg formattedStrings: FormattedString) = formatWith(formattedStrings.toList())
+internal fun String.formatWith(formattedStrings: List<FormattedString>) = format.formatWith(formattedStrings)
 internal fun String.formatType(args: List<TypeName>) = FormattedString(this, args)
 internal fun String.formatType(arg: TypeName) = FormattedString(this, listOf(arg))
 internal fun String.formatType(vararg arg: TypeName) = FormattedString(this, arg.toList())

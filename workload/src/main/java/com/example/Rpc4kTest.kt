@@ -2,11 +2,10 @@ package com.example
 
 import io.github.natanfudge.rpc4k.Api
 import io.github.natanfudge.rpc4k.ProtocolDecoder
-import io.github.natanfudge.rpc4k.RpcClient
-import io.github.natanfudge.rpc4k.impl.Rpc4KGeneratedClientUtils
+import io.github.natanfudge.rpc4k.SerializationFormat
 import io.github.natanfudge.rpc4k.impl.Rpc4kGeneratedServerUtils
 import kotlinx.serialization.Serializable
-import kotlinx.serialization.builtins.*
+import kotlinx.serialization.builtins.serializer
 import kotlinx.serialization.json.JsonElement
 
 @Serializable
@@ -16,11 +15,25 @@ data class PlayerId(val num: Long)
 data class CreateLobbyResponse(val id: Long)
 
 //TODO:
-// - lists
 // - SSE
-// - server implementation
 
-@Api
+class SimpleProtocol {
+    fun foo() {
+
+    }
+}
+class SimpleProtocolDecoder(private val protocol: SimpleProtocol, private val format: SerializationFormat) : ProtocolDecoder<SimpleProtocol>{
+    override fun accept(route: String, args: List<ByteArray>): ByteArray  = when(route){
+        "foo" ->  Rpc4kGeneratedServerUtils.encodeResponse(format,
+            Unit.serializer(), protocol.foo(
+            )
+        )
+        else -> error("")
+    }
+
+}
+
+//@Api
 open class UserProtocol {
     open fun createLobby(createdBy: PlayerId, otherThing: String): CreateLobbyResponse {
         println("Handled createlobby! $createdBy")
@@ -47,8 +60,12 @@ open class UserProtocol {
 
     open fun test(
         pair: Pair<Int, Long>,
-    ): Pair<Triple<Int,Int,String>,Double> {
-        return Triple(1,2,"3") to 4.0
+    ): Pair<Triple<Int, Int, String>, Double> {
+        return Triple(1, 2, "3") to 4.0
+    }
+
+    open fun nullable(mayNull: List<PlayerId>?, mayNull2: List<PlayerId?>) {
+
     }
 }
 
