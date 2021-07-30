@@ -1,9 +1,6 @@
 package io.github.natanfudge.rpc4k.impl
 
-import com.squareup.kotlinpoet.FileSpec
-import com.squareup.kotlinpoet.FunSpec
-import com.squareup.kotlinpoet.TypeName
-import com.squareup.kotlinpoet.TypeSpec
+import com.squareup.kotlinpoet.*
 
 internal data class FormattedString(val string: String, val formatArguments: List<TypeName>) {
     companion object {
@@ -98,3 +95,54 @@ internal fun FileSpec.Builder.addClass(name: String, builder: TypeSpec.Builder.(
 
 internal fun TypeSpec.Builder.addFunction(name: String, builder: FunSpec.Builder.() -> Unit) =
     addFunction(FunSpec.builder(name).apply(builder).build())
+
+class PrimaryConstructorBuilder {
+    private data class ConstructorProperty(val name: String, val type: TypeName, val modifiers: List<KModifier>)
+
+    private val properties = mutableListOf<ConstructorProperty>()
+
+    fun constructorProperty(name: String, type: TypeName, vararg modifiers: KModifier) {
+        properties.add(ConstructorProperty(name, type, modifiers.toList()))
+    }
+
+    fun internalAddToType(builder: TypeSpec.Builder) {
+        builder.primaryConstructor(
+            FunSpec.constructorBuilder()
+                .apply {
+                    for (property in properties) {
+                        addParameter(property.name, property.type)
+                    }
+                }
+                .build()
+        )
+
+        for (property in properties) {
+            builder.addProperty(
+                PropertySpec.builder(property.name, property.type)
+                    .initializer(property.name)
+                    .addModifiers(*property.modifiers.toTypedArray())
+                    .build()
+            )
+        }
+
+    }
+}
+
+fun TypeSpec.Builder.primaryConstructor(builder: PrimaryConstructorBuilder.() -> Unit) {
+    PrimaryConstructorBuilder().apply(builder).internalAddToType(this)
+}
+
+//internal fun TypeSpec.Builder.constructorProperty(
+//    name: String,
+//    type: TypeName,
+//    vararg modifiers: KModifier
+//): TypeSpec.Builder {
+//    primaryConstructor(
+//        FunSpec.constructorBuilder()
+//            .addParameter(name, type)
+//            .build()
+//    )
+//
+//    addProperty(PropertySpec.builder(name, type).initializer(name).addModifiers(*modifiers).build())
+//    return this
+//}

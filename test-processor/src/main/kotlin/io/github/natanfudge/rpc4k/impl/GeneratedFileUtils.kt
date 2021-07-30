@@ -3,7 +3,6 @@ package io.github.natanfudge.rpc4k.impl
 import io.github.natanfudge.rpc4k.MalformedRequestException
 import io.github.natanfudge.rpc4k.RpcClient
 import io.github.natanfudge.rpc4k.SerializationFormat
-import io.github.natanfudge.rpc4k.encodeAndJoin
 import kotlinx.serialization.DeserializationStrategy
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.SerializationStrategy

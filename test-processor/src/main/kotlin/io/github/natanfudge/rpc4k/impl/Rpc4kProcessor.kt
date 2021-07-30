@@ -8,9 +8,11 @@ import com.google.devtools.ksp.symbol.KSValueParameter
 import com.google.devtools.ksp.validate
 import com.squareup.kotlinpoet.*
 import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy
+import io.github.natanfudge.rpc4k.Api
 import io.github.natanfudge.rpc4k.ProtocolDecoder
 import io.github.natanfudge.rpc4k.RpcClient
-import kotlinx.serialization.json.JsonElement
+import io.github.natanfudge.rpc4k.SerializationFormat
+import io.github.natanfudge.rpc4k.impl.Rpc4kGeneratedServerUtils.encodeResponse
 import java.io.OutputStreamWriter
 import kotlin.system.measureTimeMillis
 
@@ -30,10 +32,19 @@ internal class Rpc4kProcessorProvider : SymbolProcessorProvider {
 
 internal class UnsupportedApiException(message: String) : Exception(message)
 
+fun fib(num: Int): Int {
+    if (num == 1) return 1
+    if (num == 0) return 0
+    else return fib(num - 1) + fib(num - 2)
+}
+
 internal class Rpc4kProcessor(private val env: SymbolProcessorEnvironment) : SymbolProcessor {
 
     override fun process(resolver: Resolver): List<KSAnnotated> = invokeOnce(orElse = { emptyList() }) {
-        resolver.getSymbolsWithAnnotation("io.github.natanfudge.rpc4k.Api")
+//        fib(42)
+        val symbols =  resolver.getSymbolsWithAnnotation(Api::class.qualifiedName!!).toList()
+        println("Symbols: $symbols")
+        resolver.getSymbolsWithAnnotation(Api::class.qualifiedName!!)
             .filter { it.validate() }
             .filterIsInstance<KSClassDeclaration>()
             .forEach { generateRpc(it) }
@@ -48,6 +59,8 @@ internal class Rpc4kProcessor(private val env: SymbolProcessorEnvironment) : Sym
         }
 
         env.logger.warn("Generated RPC classes for: ${apiClass.qualifiedName!!.asString()} in $time millis")
+//        env.logger.error("Asdfasdf")
+        println("Generated RPC classes for: ${apiClass.qualifiedName!!.asString()} in $time millis")
     }
 
     private fun generateClientImplementation(apiClass: KSClassDeclaration) {
@@ -55,11 +68,13 @@ internal class Rpc4kProcessor(private val env: SymbolProcessorEnvironment) : Sym
         apiClass.createKtFile(apiClass.packageName.asString(), generatedClassName) {
             importBuiltinSerializers()
             addClass(generatedClassName) {
-                constructorProperty(
-                    name = "client",
-                    type = RpcClient::class.asTypeName(),
-                    KModifier.PRIVATE
-                )
+                primaryConstructor {
+                    constructorProperty(
+                        name = "client",
+                        type = RpcClient::class.asTypeName(),
+                        KModifier.PRIVATE
+                    )
+                }
                 superclass(apiClass.qualifiedName!!.toTypeName())
                 apiClass.getActualFunctions().forEach { addClientMethodImplementation(it) }
             }
@@ -108,7 +123,7 @@ internal class Rpc4kProcessor(private val env: SymbolProcessorEnvironment) : Sym
 
             val implementation = """
                     |return %T.send(
-                    |       client,
+                    |       this.client,
                     |       "$methodName",
                     |       listOf(
                     |           %FS
@@ -137,14 +152,23 @@ internal class Rpc4kProcessor(private val env: SymbolProcessorEnvironment) : Sym
         val generatedClassName = apiClass.simpleName.asString() + GeneratedServerImplSuffix
         val apiClassTypeName = apiClass.qualifiedName!!.toTypeName()
         apiClass.createKtFile(apiClass.packageName.asString(), generatedClassName) {
+            addImport(  "io.github.natanfudge.rpc4k.impl","Rpc4kGeneratedServerUtils.encodeResponse","Rpc4kGeneratedServerUtils.decodeParameter")
+
             importBuiltinSerializers()
 
             addClass(generatedClassName) {
-                constructorProperty(
-                    name = "protocol",
-                    type = apiClassTypeName,
-                    KModifier.PRIVATE
-                )
+                primaryConstructor {
+                    constructorProperty(
+                        name = "protocol",
+                        type = apiClassTypeName,
+                        KModifier.PRIVATE
+                    )
+                    constructorProperty(
+                        name = "format",
+                        type = SerializationFormat::class.asTypeName(),
+                        KModifier.PRIVATE
+                    )
+                }
                 addSuperinterface(ProtocolDecoder::class.asTypeName().parameterizedBy(apiClassTypeName))
                 generateServerMethodImplementation(apiClass)
             }
@@ -181,7 +205,7 @@ internal class Rpc4kProcessor(private val env: SymbolProcessorEnvironment) : Sym
         val parameters = route.parameters.mapIndexed(::generateServerParameterDecoder).join(",\n")
         return """
             |"$methodName" -> %T.encodeResponse(
-            |    %FS, protocol.$methodName(
+            |    this.format, %FS, this.protocol.$methodName(
             |        %FS
             |    )
             |)
@@ -192,38 +216,20 @@ internal class Rpc4kProcessor(private val env: SymbolProcessorEnvironment) : Sym
 
     private fun generateServerParameterDecoder(index: Int, parameter: KSValueParameter): FormattedString {
         return """
-            %T.decodeParameter(%FS, args[$index])
+            %T.decodeParameter(this.format, %FS, args[$index])
         """.trimIndent()
             .formatType(Rpc4kGeneratedServerUtils::class.asTypeName())
             .formatWith(parameter.type.toTypeName().serializerString())
     }
 
     private fun FileSpec.Builder.importBuiltinSerializers() {
-        addImport("kotlinx.serialization.builtins", "serializer")
-        addImport("kotlinx.serialization.builtins", "nullable")
-        addImport("kotlinx.serialization.builtins", "ListSerializer")
-        addImport("kotlinx.serialization.builtins", "SetSerializer")
-        addImport("kotlinx.serialization.builtins", "MapSerializer")
-        addImport("kotlinx.serialization.builtins", "PairSerializer")
-        addImport("kotlinx.serialization.builtins", "MapEntrySerializer")
-        addImport("kotlinx.serialization.builtins", "TripleSerializer")
-//        addImport("kotlinx.serialization", "builtins")
+        addImport("kotlinx.serialization.builtins",
+            "serializer","nullable","ListSerializer","SetSerializer","MapSerializer","PairSerializer","MapEntrySerializer","TripleSerializer")
+
     }
 
-    private fun TypeSpec.Builder.constructorProperty(
-        name: String,
-        type: TypeName,
-        vararg modifiers: KModifier
-    ): TypeSpec.Builder {
-        primaryConstructor(
-            FunSpec.constructorBuilder()
-                .addParameter(name, type)
-                .build()
-        )
 
-        addProperty(PropertySpec.builder(name, type).initializer(name).addModifiers(*modifiers).build())
-        return this
-    }
+
 
     private fun KSClassDeclaration.createKtFile(
         packageName: String,

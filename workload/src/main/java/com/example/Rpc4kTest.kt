@@ -6,7 +6,6 @@ import io.github.natanfudge.rpc4k.SerializationFormat
 import io.github.natanfudge.rpc4k.impl.Rpc4kGeneratedServerUtils
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.builtins.serializer
-import kotlinx.serialization.json.JsonElement
 
 @Serializable
 data class PlayerId(val num: Long)
@@ -22,9 +21,12 @@ class SimpleProtocol {
 
     }
 }
-class SimpleProtocolDecoder(private val protocol: SimpleProtocol, private val format: SerializationFormat) : ProtocolDecoder<SimpleProtocol>{
-    override fun accept(route: String, args: List<ByteArray>): ByteArray  = when(route){
-        "foo" ->  Rpc4kGeneratedServerUtils.encodeResponse(format,
+
+class SimpleProtocolDecoder(private val protocol: SimpleProtocol, private val format: SerializationFormat) :
+    ProtocolDecoder<SimpleProtocol> {
+    override fun accept(route: String, args: List<ByteArray>): ByteArray = when (route) {
+        "foo" -> Rpc4kGeneratedServerUtils.encodeResponse(
+            format,
             Unit.serializer(), protocol.foo(
             )
         )
@@ -33,7 +35,7 @@ class SimpleProtocolDecoder(private val protocol: SimpleProtocol, private val fo
 
 }
 
-//@Api
+@Api
 open class UserProtocol {
     open fun createLobby(createdBy: PlayerId, otherThing: String): CreateLobbyResponse {
         println("Handled createlobby! $createdBy")
@@ -44,8 +46,14 @@ open class UserProtocol {
         return (killer + shit.num).toUInt()
     }
 
-    open fun someShit(x: Int) {
-
+    open fun someShit(x: Int, y: Int): String {
+        println("asdf")
+        println("asdf")
+        println("asdf")
+        println("asdf")
+        println("asdf")
+        println("asdf")
+        return "asdf"
     }
 
     open fun moreTypes(
