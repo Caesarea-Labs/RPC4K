@@ -121,6 +121,7 @@ internal class Rpc4kProcessor(private val env: SymbolProcessorEnvironment) : Sym
                 .map { "${it.name!!.asString()} to %FS".format.formatWith(it.type.toTypeName().serializerString()) }
                 .join(",\n")
 
+            //TODO: sendFlow when relevant
             val implementation = """
                     |return %T.send(
                     |       this.client,
@@ -181,7 +182,7 @@ internal class Rpc4kProcessor(private val env: SymbolProcessorEnvironment) : Sym
             addModifiers(KModifier.OVERRIDE)
             addParameter(name = "route", type = String::class)
             addParameter(name = "args", type = List::class.parameterizedBy(ByteArray::class))
-            returns(ByteArray::class)
+            returns(Any::class)
             val routesFormatString = apiClass.getActualFunctions()
                 .map { generateServerRouteDecoder(it) }.toList().join("\n")
 
@@ -203,6 +204,7 @@ internal class Rpc4kProcessor(private val env: SymbolProcessorEnvironment) : Sym
     private fun generateServerRouteDecoder(route: KSFunctionDeclaration): FormattedString {
         val methodName = route.simpleName.asString()
         val parameters = route.parameters.mapIndexed(::generateServerParameterDecoder).join(",\n")
+        //TODO: encodeFlowResponse when relevant
         return """
             |"$methodName" -> %T.encodeResponse(
             |    this.format, %FS, this.protocol.$methodName(
