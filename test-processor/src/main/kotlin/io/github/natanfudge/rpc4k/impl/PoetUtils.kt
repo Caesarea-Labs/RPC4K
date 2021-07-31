@@ -1,6 +1,7 @@
 package io.github.natanfudge.rpc4k.impl
 
 import com.squareup.kotlinpoet.*
+import kotlin.reflect.KClass
 
 internal data class FormattedString(val string: String, val formatArguments: List<TypeName>) {
     companion object {
@@ -130,6 +131,11 @@ class PrimaryConstructorBuilder {
 
 fun TypeSpec.Builder.primaryConstructor(builder: PrimaryConstructorBuilder.() -> Unit) {
     PrimaryConstructorBuilder().apply(builder).internalAddToType(this)
+}
+
+fun FileSpec.Builder.importClass(clazz: KClass<*>)  {
+    val name = clazz.qualifiedName!!
+    addImport(name.substringBeforeLast("."), name.substringAfterLast("."))
 }
 
 //internal fun TypeSpec.Builder.constructorProperty(

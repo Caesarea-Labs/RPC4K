@@ -10,6 +10,7 @@ import io.github.natanfudge.rpc4k.ProtocolDecoder
 import io.github.natanfudge.rpc4k.RpcClient
 import io.github.natanfudge.rpc4k.SerializationFormat
 import kotlinx.coroutines.flow.Flow
+import kotlinx.serialization.KSerializer
 import java.io.OutputStreamWriter
 import kotlin.system.measureTimeMillis
 
@@ -60,6 +61,9 @@ internal class Rpc4kProcessor(private val env: SymbolProcessorEnvironment) : Sym
         val generatedClassName = apiClass.simpleName.asString() + GeneratedClientImplSuffix
         apiClass.createKtFile(apiClass.packageName.asString(), generatedClassName) {
             importBuiltinSerializers()
+            addImport(Rpc4KGeneratedClientUtils::class,"send")
+            addImport(Rpc4KGeneratedClientUtils::class,"sendFlow")
+
             addClass(generatedClassName) {
                 primaryConstructor {
                     constructorProperty(
@@ -96,14 +100,12 @@ internal class Rpc4kProcessor(private val env: SymbolProcessorEnvironment) : Sym
                     |return %T.${if (returnType.isFlow()) "sendFlow" else "send"}(
                     |       this.client,
                     |       "$methodName",
-                    |       listOf(
-                    |           %FS
-                    |       ),
+                    |       %FS,
                     |       %FS
                     |    )
                         """.trimMargin()
                 .formatType(Rpc4KGeneratedClientUtils::class.asTypeName())
-                .formatWith(parameterSerializers, returnType.returnTypeSerializer())
+                .formatWith(returnType.returnTypeSerializer(), parameterSerializers)
 
             addStatement(implementation)
         }
@@ -130,11 +132,16 @@ internal class Rpc4kProcessor(private val env: SymbolProcessorEnvironment) : Sym
         val generatedClassName = apiClass.simpleName.asString() + GeneratedServerImplSuffix
         val apiClassTypeName = apiClass.qualifiedName!!.toTypeName()
         apiClass.createKtFile(apiClass.packageName.asString(), generatedClassName) {
-            addImport(
-                "io.github.natanfudge.rpc4k.impl",
-                "Rpc4kGeneratedServerUtils.encodeResponse",
-                "Rpc4kGeneratedServerUtils.decodeParameter"
-            )
+//            addImport(
+//                "io.github.natanfudge.rpc4k.impl",
+//                "Rpc4kGeneratedServerUtils.encodeResponse",
+////                "Rpc4kGeneratedServerUtils"
+//            )
+            importClass(Rpc4kGeneratedServerUtils::class)
+            importClass(KSerializer::class)
+            importClass(Flow::class)
+
+//            addImport()
 
             importBuiltinSerializers()
 
@@ -166,7 +173,16 @@ internal class Rpc4kProcessor(private val env: SymbolProcessorEnvironment) : Sym
             val routesFormatString = apiClass.getActualFunctions()
                 .map { generateServerRouteDecoder(it) }.toList().join("\n")
 
+            // p and r are shorthand methods
             val finalFormatString = """
+        fun <T> p(serializer: KSerializer<T>, index: Int) =
+            Rpc4kGeneratedServerUtils.decodeParameter(format, serializer, args[index])
+
+        fun <T> r(serializer: KSerializer<T>, value: T) =
+            Rpc4kGeneratedServerUtils.encodeResponse(format, serializer, value)
+
+        fun <T> r(serializer: KSerializer<T>, value: Flow<T>) =
+            Rpc4kGeneratedServerUtils.encodeFlowResponse(format, serializer, value)
                     |return when (route) {
                     |    %FS
                     |    else -> %T.invalidRoute(route)
@@ -187,8 +203,7 @@ internal class Rpc4kProcessor(private val env: SymbolProcessorEnvironment) : Sym
         //TODO: encodeFlowResponse when relevant
         val returnType = route.returnType!!
         return """
-            |"$methodName" -> %T.${if(returnType.isFlow()) "encodeFlowResponse" else "encodeResponse"}(
-            |    this.format, %FS, this.protocol.$methodName(
+            |"$methodName" -> r(%FS, protocol.$methodName(
             |        %FS
             |    )
             |)
@@ -199,7 +214,7 @@ internal class Rpc4kProcessor(private val env: SymbolProcessorEnvironment) : Sym
 
     private fun generateServerParameterDecoder(index: Int, parameter: KSValueParameter): FormattedString {
         return """
-            %T.decodeParameter(this.format, %FS, args[$index])
+            p(%FS, $index)
         """.trimIndent()
             .formatType(Rpc4kGeneratedServerUtils::class.asTypeName())
             .formatWith(parameter.type.toTypeName().serializerString())

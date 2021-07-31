@@ -4,8 +4,10 @@ import com.example.CreateLobbyResponse
 import com.example.PlayerId
 import com.example.SimpleProtocol
 import com.example.UserProtocol
+import io.github.natanfudge.rpc4k.InMemoryHttpClient
 import io.github.natanfudge.rpc4k.RpcClient
 import io.github.natanfudge.rpc4k.RpcServer
+import io.github.natanfudge.rpc4k.InMemoryHttpServer
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
@@ -18,8 +20,8 @@ import kotlin.test.assertEquals
 class UsageTest {
     @Test
     fun testUsage() {
-        RpcServer.jvmStartWithProtocol(UserProtocol())
-        val protocol = RpcClient.jvmWithProtocol<UserProtocol>()
+        RpcServer.jvmStartWithProtocol(UserProtocol(), http = InMemoryHttpServer)
+        val protocol = RpcClient.jvmWithProtocol<UserProtocol>(http = InMemoryHttpClient)
         val response = protocol.createLobby(PlayerId(123), "alo")
         assertEquals(CreateLobbyResponse(126), response)
         val response2 = protocol.killSomeone(111, PlayerId(5), Unit)
@@ -40,8 +42,8 @@ class UsageTest {
 
     @Test
     fun testManual() {
-        RpcServer.jvmStartWithProtocol(SimpleProtocol())
-        val protocol = RpcClient.jvmWithProtocol<SimpleProtocol>()
+        RpcServer.jvmStartWithProtocol(SimpleProtocol(),http = InMemoryHttpServer)
+        val protocol = RpcClient.jvmWithProtocol<SimpleProtocol>(http = InMemoryHttpClient)
         val response = protocol.bar(2)
         assertEquals(3, response)
         val response2 = protocol.foo(4)

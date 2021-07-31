@@ -8,6 +8,7 @@ import io.github.natanfudge.rpc4k.impl.Rpc4KGeneratedClientUtils
 import io.github.natanfudge.rpc4k.impl.Rpc4kGeneratedServerUtils
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
+import kotlinx.serialization.KSerializer
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.builtins.serializer
 
@@ -17,32 +18,42 @@ data class PlayerId(val num: Long)
 @Serializable
 data class CreateLobbyResponse(val id: Long)
 
-//TODO:
-// - SSE
-
 open class SimpleProtocol {
     open fun foo(thing: Int): Flow<Int> {
         return flowOf(1 + thing, 2, 3)
     }
+
     open fun bar(thing: Int): Int {
-        return   thing + 1
+        return thing + 1
     }
 }
 
 class SimpleProtocolDecoder(private val protocol: SimpleProtocol, private val format: SerializationFormat) :
     ProtocolDecoder<SimpleProtocol> {
-    override fun accept(route: String, args: List<ByteArray>): Any = when (route) {
-        "bar" -> Rpc4kGeneratedServerUtils.encodeResponse(
-            this.format, Int.serializer(), this.protocol.bar(
-                Rpc4kGeneratedServerUtils.decodeParameter(this.format, Int.serializer(), args[0]),
+    override fun accept(route: String, args: List<ByteArray>): Any {
+        fun <T> p(serializer: KSerializer<T>, index: Int) =
+            Rpc4kGeneratedServerUtils.decodeParameter(format, serializer, args[index])
+
+        fun <T> r(serializer: KSerializer<T>, value: T) =
+            Rpc4kGeneratedServerUtils.encodeResponse(format, serializer, value)
+
+        fun <T> r(serializer: KSerializer<T>, value: Flow<T>) =
+            Rpc4kGeneratedServerUtils.encodeFlowResponse(format, serializer, value)
+
+        return when (route) {
+            "bar" -> r(
+                Int.serializer(),
+                this.protocol.bar(
+                    p(Int.serializer(), 0)
+                )
             )
-        )
-        "foo" -> Rpc4kGeneratedServerUtils.encodeFlowResponse(
-            this.format, Int.serializer(), this.protocol.foo(
-                Rpc4kGeneratedServerUtils.decodeParameter(this.format, Int.serializer(), args[0]),
+            "foo" -> r(
+                Int.serializer(), this.protocol.foo(
+                    p(Int.serializer(), 0),
+                )
             )
-        )
-        else -> error("")
+            else -> error("")
+        }
     }
 
 }
@@ -50,27 +61,22 @@ class SimpleProtocolDecoder(private val protocol: SimpleProtocol, private val fo
 public class SimpleProtocolClientImpl(
     private val client: RpcClient
 ) : SimpleProtocol() {
-    public override fun bar(thing: Int): Int  =
+    public override fun bar(thing: Int): Int =
         Rpc4KGeneratedClientUtils.send(
             this.client,
             "bar",
-            listOf(
-                thing to Int.serializer(),
-            ),
-            Int.serializer()
+            Int.serializer(),
+            thing to Int.serializer(),
         )
 
-    public override fun foo(thing: Int): Flow<Int>  =
+    public override fun foo(thing: Int): Flow<Int> =
         Rpc4KGeneratedClientUtils.sendFlow(
             this.client,
             "foo",
-            listOf(
-                thing to Int.serializer(),
-            ),
-            Int.serializer()
+            Int.serializer(),
+            thing to Int.serializer(),
         )
 }
-
 
 
 @Api
@@ -114,7 +120,7 @@ open class UserProtocol {
 
     }
 
-    open fun flowTest(thing: Int) : Flow<List<PlayerId>?>{
+    open fun flowTest(thing: Int): Flow<List<PlayerId>?> {
         return flowOf(listOf(PlayerId(thing.toLong())))
     }
 }

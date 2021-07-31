@@ -14,8 +14,9 @@ import kotlinx.serialization.SerializationStrategy
 object Rpc4kGeneratedServerUtils {
     fun <T> encodeResponse(format: SerializationFormat, serializer: SerializationStrategy<T>, response: T) =
         format.encode(serializer, response)
+
     fun <T> encodeFlowResponse(format: SerializationFormat, serializer: SerializationStrategy<T>, response: Flow<T>) =
-        response.map {  format.encode(serializer, it) }
+        response.map { format.encode(serializer, it) }
 
     fun <T> decodeParameter(format: SerializationFormat, serializer: DeserializationStrategy<T>, raw: ByteArray) =
         format.decode(serializer, raw)
@@ -28,10 +29,10 @@ object Rpc4KGeneratedClientUtils {
     fun <T> send(
         client: RpcClient,
         route: String,
-        parameters: List<Pair<Any?, KSerializer<out Any?>>>,
-        returnType: KSerializer<T>
+        returnType: KSerializer<T>,
+        vararg parameters: Pair<Any?, KSerializer<out Any?>>,
     ): T {
-        val body = encodeBody(parameters, client)
+        val body = encodeBody(parameters.toList(), client)
         val response = client.http.request(route, body)
         return client.format.decode(returnType, response)
     }
@@ -39,10 +40,10 @@ object Rpc4KGeneratedClientUtils {
     fun <T> sendFlow(
         client: RpcClient,
         route: String,
-        parameters: List<Pair<Any?, KSerializer<out Any?>>>,
-        returnType: KSerializer<T>
+        returnType: KSerializer<T>,
+        vararg parameters: Pair<Any?, KSerializer<out Any?>>,
     ): Flow<T> {
-        val body = encodeBody(parameters, client)
+        val body = encodeBody(parameters.toList(), client)
         val response = client.http.flowRequest(route, body)
         return response.map { client.format.decode(returnType, it) }
     }
