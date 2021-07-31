@@ -11,8 +11,6 @@ interface HttpClient {
     fun flowRequest(route: String, body: ByteArray): Flow<ByteArray>
 }
 
-
-
 class RpcClient(val format: SerializationFormat, val http: HttpClient) {
     companion object {
         inline fun <reified T : Any> jvmWithProtocol(format: SerializationFormat = JsonFormat, http: HttpClient): T {
