@@ -71,6 +71,8 @@ public class SimpleProtocolClientImpl(
         )
 }
 
+
+
 @Api
 open class UserProtocol {
     open fun createLobby(createdBy: PlayerId, otherThing: String): CreateLobbyResponse {
@@ -110,6 +112,10 @@ open class UserProtocol {
 
     open fun nullable(mayNull: List<PlayerId>?, mayNull2: List<PlayerId?>) {
 
+    }
+
+    open fun flowTest(thing: Int) : Flow<List<PlayerId>?>{
+        return flowOf(listOf(PlayerId(thing.toLong())))
     }
 }
 

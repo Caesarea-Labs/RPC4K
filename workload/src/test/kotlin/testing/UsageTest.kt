@@ -34,6 +34,8 @@ class UsageTest {
         println("fioi")
         println("fioi")
         protocol.someShit(1, 2)
+        val result2 = protocol.flowTest(2)
+        assertFlowEquals(flowOf(listOf(PlayerId(2))), result2)
     }
 
     @Test
@@ -46,7 +48,7 @@ class UsageTest {
         assertFlowEquals(flowOf(5, 2, 3), response2)
     }
 
-    fun <T> assertFlowEquals(flow1: Flow<T>, flow2 : Flow<T>){
+    fun <T> assertFlowEquals(flow1: Flow<T>, flow2: Flow<T>) {
         GlobalScope.launch {
             assertContentEquals(flow1.toList(), flow2.toList())
         }
