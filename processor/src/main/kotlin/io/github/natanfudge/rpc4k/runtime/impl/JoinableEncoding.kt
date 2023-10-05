@@ -1,6 +1,93 @@
 package io.github.natanfudge.rpc4k.runtime.impl
 
+@JvmInline
+value class CallParameters private constructor(private val bytes: ByteArray) {
+    companion object {
+        fun of(vararg args: ByteArray): CallParameters {
+            for (arg in args) {
+                //TODO: test requirement
+                require(arg.size.fitsIn3Bytes()) {
+                    "Length of argument of RPC call must fit in 3 bytes, but argument is extremely large (over 16 MB - ${arg.size})"
+                }
+            }
+            //  +3 bytes for length marker before every argument
+            val resultArray = ByteArray(args.sumOf { it.size + 3 })
+            var pos = 0
+            for (arg in args) {
+                // Write the length of each arg (3 bytes), then the arg itself.
+                val length = args.size.toUInt()
+                length.write3BytesTo(resultArray, pos)
+                pos += 3
+                arg.copyInto(resultArray, destinationOffset = pos)
+                pos += arg.size
+            }
 
+            return CallParameters(resultArray)
+        }
+    }
+
+    fun get() : List<ByteArray> {
+        val args = mutableListOf()
+        var pos = 0
+        while (pos < bytes.size) {
+
+        }
+    }
+
+    //TODO: test this well with many random numbers, i'm not sure if the unsignedness works well
+
+
+    fun combine(x: ByteArray, y: ByteArray, z: ByteArray): ByteArray {
+        val xLength = x.size.toByteArray()
+        val yLength = y.size.toByteArray()
+        val zLength = z.size.toByteArray()
+
+        return xLength + x + yLength + y + zLength + z
+    }
+
+    fun separate(combined: ByteArray): Triple<ByteArray, ByteArray, ByteArray> {
+        var position = 0
+
+        val xLength = combined.copyOfRange(position, position + 4).toInt()
+        position += 4
+        val x = combined.copyOfRange(position, position + xLength)
+        position += xLength
+
+        val yLength = combined.copyOfRange(position, position + 4).toInt()
+        position += 4
+        val y = combined.copyOfRange(position, position + yLength)
+        position += yLength
+
+        val zLength = combined.copyOfRange(position, position + 4).toInt()
+        val z = combined.copyOfRange(position + 4, position + 4 + zLength)
+
+        return Triple(x, y, z)
+    }
+}
+
+private fun UInt.Companion.read3BytesFrom(array: ByteArray, pos: Int): UInt {
+    return array[pos] + (array[pos + 1] shl 8) + (array[pos + 2])
+}
+
+/**
+ * Writes the 3 least significant bytes of this UInt to [array] at the specified [pos].
+ */
+private fun UInt.write3BytesTo(array: ByteArray, pos: Int) {
+    array[pos] = getByte(0)
+    array[pos + 1] = getByte(1)
+    array[pos + 2] = getByte(2)
+}
+
+/**
+ * Returns the [significance]th least significant byte of this
+ */
+private fun UInt.getByte(significance: Int): Byte {
+    return ((this shr (significance * 8)) and 0xFFu).toByte()
+}
+
+private fun Int.fitsIn3Bytes() = this <= 16_777_215
+
+/////////////////////////////////////// OLD ////////////////////////////
 internal fun List<ByteArray>.encodeAndJoin(): ByteArray = map { it.encodeToJoinable() }.joinJoinable(JoinByte)
 internal fun ByteArray.splitJoinedAndDecode(): List<ByteArray> = splitJoinable().map { it.decodeJoinable() }
 
