@@ -10,6 +10,7 @@ dependencies {
     implementation(project(":processor"))
     "ksp"(project(":processor"))
     testImplementation(kotlin("test"))
+    testImplementation(Testing.Strikt.core)
 }
 sourceSets {
     main {

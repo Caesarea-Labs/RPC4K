@@ -1,9 +1,18 @@
 package io.github.natanfudge.rpc4k.runtime.impl
 
+import java.io.InputStream
+
+/**
+ * TODO: find a place for this comment
+ * The best way is to use each format's native list construct to encode parameters.
+ *  The main benefit is better debugging. Existing tools will be able to read the resulting JSON/Protobuf lists.
+ *  Regarding performance, with json we don't really care, and with protobuf it should actually be slightly more performant to use their implementation.
+ */
+@Deprecated("xd")
 @JvmInline
 value class CallParameters private constructor(private val bytes: ByteArray) {
     companion object {
-        fun of(vararg args: ByteArray): CallParameters {
+        fun of(args: List<ByteArray>): CallParameters {
             for (arg in args) {
                 //TODO: test requirement
                 require(arg.size.fitsIn3Bytes()) {
@@ -15,7 +24,7 @@ value class CallParameters private constructor(private val bytes: ByteArray) {
             var pos = 0
             for (arg in args) {
                 // Write the length of each arg (3 bytes), then the arg itself.
-                val length = args.size.toUInt()
+                val length = arg.size
                 length.write3BytesTo(resultArray, pos)
                 pos += 3
                 arg.copyInto(resultArray, destinationOffset = pos)
@@ -26,53 +35,29 @@ value class CallParameters private constructor(private val bytes: ByteArray) {
         }
     }
 
-    fun get() : List<ByteArray> {
-        val args = mutableListOf()
+    fun get(): List<ByteArray> {
+        val args = mutableListOf<ByteArray>()
         var pos = 0
         while (pos < bytes.size) {
-
+            // Read the length of each arg (3 bytes), then the arg itself.
+            val length = Int.read3BytesFrom(bytes, pos)
+            pos += 3
+            args.add(bytes.copyOfRange(pos, pos + length))
+            pos += length
         }
-    }
-
-    //TODO: test this well with many random numbers, i'm not sure if the unsignedness works well
-
-
-    fun combine(x: ByteArray, y: ByteArray, z: ByteArray): ByteArray {
-        val xLength = x.size.toByteArray()
-        val yLength = y.size.toByteArray()
-        val zLength = z.size.toByteArray()
-
-        return xLength + x + yLength + y + zLength + z
-    }
-
-    fun separate(combined: ByteArray): Triple<ByteArray, ByteArray, ByteArray> {
-        var position = 0
-
-        val xLength = combined.copyOfRange(position, position + 4).toInt()
-        position += 4
-        val x = combined.copyOfRange(position, position + xLength)
-        position += xLength
-
-        val yLength = combined.copyOfRange(position, position + 4).toInt()
-        position += 4
-        val y = combined.copyOfRange(position, position + yLength)
-        position += yLength
-
-        val zLength = combined.copyOfRange(position, position + 4).toInt()
-        val z = combined.copyOfRange(position + 4, position + 4 + zLength)
-
-        return Triple(x, y, z)
+        require(bytes.size == pos)
+        return args
     }
 }
 
-private fun UInt.Companion.read3BytesFrom(array: ByteArray, pos: Int): UInt {
-    return array[pos] + (array[pos + 1] shl 8) + (array[pos + 2])
+private fun Int.Companion.read3BytesFrom(array: ByteArray, pos: Int): Int {
+    return array[pos].withSignificance(0) + array[pos + 1].withSignificance(1) + array[pos + 2].withSignificance(2)
 }
-
+//TODO: test this well with many random numbers, i'm not sure if the unsignedness works well
 /**
  * Writes the 3 least significant bytes of this UInt to [array] at the specified [pos].
  */
-private fun UInt.write3BytesTo(array: ByteArray, pos: Int) {
+private fun Int.write3BytesTo(array: ByteArray, pos: Int) {
     array[pos] = getByte(0)
     array[pos + 1] = getByte(1)
     array[pos + 2] = getByte(2)
@@ -81,8 +66,13 @@ private fun UInt.write3BytesTo(array: ByteArray, pos: Int) {
 /**
  * Returns the [significance]th least significant byte of this
  */
-private fun UInt.getByte(significance: Int): Byte {
-    return ((this shr (significance * 8)) and 0xFFu).toByte()
+private fun Int.getByte(significance: Int): Byte {
+    return ((this shr (significance * 8)) and 0xFF).toByte()
+}
+
+private fun Byte.withSignificance(significance: Int): Int {
+    // Important: treat this byte as an unsigned byte because we are encoding sizes here
+    return (this.toUByte().toInt() shl (significance * 8))
 }
 
 private fun Int.fitsIn3Bytes() = this <= 16_777_215

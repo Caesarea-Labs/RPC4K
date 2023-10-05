@@ -1,100 +1,73 @@
 package io.github.natanfudge.rpc4k
-import io.github.natanfudge.rpc4k.runtime.impl.encodeAndJoin
-import io.github.natanfudge.rpc4k.runtime.impl.splitJoinedAndDecode
-import java.nio.charset.Charset
+
+import io.github.natanfudge.rpc4k.runtime.impl.CallParameters
+import strikt.api.expectThat
+import strikt.api.expectThrows
+import strikt.assertions.containsExactly
+import strikt.assertions.isEqualTo
+import kotlin.random.Random
 import kotlin.test.Test
-import kotlin.test.assertContentEquals
-import kotlin.test.assertEquals
 
 class EncodingTest {
 
-
-    private fun assertByteArrayListEquals(list1: List<ByteArray>, list2: List<ByteArray>) {
-        assertEquals(list1.size, list2.size)
-        list1.zip(list2).forEach { (array1, array2) -> assertContentEquals(array1, array2) }
+    private fun generateRandomByteArrays(minArrays: Int = 1, maxArrays: Int, maxArraySize: Int) = List(Random.nextInt(minArrays, maxArrays)) {
+        //TODO: see if putting higher number lags tests
+        Random.nextBytes(Random.nextInt(0, maxArraySize))
     }
 
     @Test
-    fun `Empty List is combined and split properly`() {
-        assertByteArrayListEquals(listOf(), listOf<ByteArray>().encodeAndJoin().splitJoinedAndDecode())
-    }
-
-
-    @Test
-    fun `Single empty element is combined and split properly`() {
-        val arrays = listOf(byteArrayOf())
-        val encoded = arrays.encodeAndJoin()
-        val decoded = encoded.splitJoinedAndDecode()
-        assertByteArrayListEquals(arrays, decoded)
-    }
-
-    @Test
-    fun `Various cases are combined and split properly`() {
-        val testData = listOf(
-            listOf(byteArrayOf(0x00)),
-            listOf(byteArrayOf(0x01)),
-            listOf(byteArrayOf(0x02)),
-            listOf(byteArrayOf(0x00, 0x01)),
-            listOf(byteArrayOf(0x00, 0x02)),
-            listOf(byteArrayOf(0x02, 0x00)),
-            listOf(byteArrayOf(0x02, 0x01)),
-            listOf(byteArrayOf(), byteArrayOf()),
-            listOf(byteArrayOf(0x00), byteArrayOf()),
-            listOf(byteArrayOf(), byteArrayOf(0x01)),
-            listOf(byteArrayOf(0x02), byteArrayOf()),
-            listOf(byteArrayOf(), byteArrayOf(0x03)),
-            listOf(byteArrayOf(0x01, 0x02), byteArrayOf(0x03)),
-            listOf(byteArrayOf(0x01, 0x00), byteArrayOf(0x03)),
-            listOf(byteArrayOf(0x01, 0x00), byteArrayOf()),
-            listOf(byteArrayOf(0x01, 0x03), byteArrayOf()),
-        )
-        for (arrays in testData) {
-            val encoded = arrays.encodeAndJoin()
-            val decoded = encoded.splitJoinedAndDecode()
-            assertByteArrayListEquals(arrays, decoded)
+    fun `Random arrays are combined and split properly in many different cases`() {
+        repeat(10) {
+            val arrays = generateRandomByteArrays(maxArrays = 100, maxArraySize = 10_000)
+            val combined = CallParameters.of(arrays)
+            val back = combined.get()
+            arrays.expectEquals(back)
         }
     }
 
     @Test
-    fun `Simple Strings are combined and split properly`() {
-        val strings = listOf(
-            "a"
-        )
-        val asByteArray = strings.map { it.toByteArray() }
-        val joined = asByteArray.encodeAndJoin()
-        val split = joined.splitJoinedAndDecode()
-        assertByteArrayListEquals(asByteArray, split)
-        val backToString = split.map { it.toString(Charset.defaultCharset()) }
-        assertContentEquals(strings, backToString)
+    fun `Random arrays are combined and split properly`() {
+        val arrays = generateRandomByteArrays(minArrays = 2, maxArrays = 3, maxArraySize = 1000)
+        val combined = CallParameters.of(arrays)
+        val back = combined.get()
+        arrays.expectEquals(back)
     }
 
     @Test
-    fun `Strings are combined and split properly`() {
-        val strings = listOf(
-            """
-                        val array = byteArrayOf(0x00, 0x01, 0x00, 0x03, 0x01, 0x04, 0x00)
-                        val encoded = array.encodeToJoinable()
-                        assertEquals(12, encoded.size)
-                        val decoded = encoded.decodeJoinable()
-                        assertContentEquals(array, decoded)
-            """,
-            """
-                Of(0x00, 0x01, 0x00, 0x03, 0x01, 0x04, 0x00)
-        val encoded = array.encodeToJoinable()
-        assertEquals(12, encoded.size)
-            """,
-            "ntEqual",
-            "",
-            """codeJoinable()
-        assertContentEquals(array, decoded)
+    fun `Simple arrays are combined and split properly`() {
+        val arrays = listOf(byteArrayOf(0), byteArrayOf(1))
+
+        val combined = CallParameters.of(arrays)
+        val back = combined.get()
+        arrays.expectEquals(back)
     }
 
     @Test
-    fun `Strings are combined and """
-        )
-        val joined = strings.map { it.toByteArray() }.encodeAndJoin()
-        val split = joined.splitJoinedAndDecode()
-        val backToString = split.map { it.toString(Charset.defaultCharset()) }
-        assertContentEquals(strings, backToString)
+    fun `Very large arrays are combined and split properly`() {
+        val array1 = ByteArray(16_777_215)
+        val array2 = ByteArray(16_477_215)
+
+        array1[16_777_214] = 8
+        array1[16_777_212] = 3
+
+        array2[16_377_214] = 8
+        array2[16_177_212] = 3
+
+        val arrays = listOf(array1, array2)
+
+        val combined = CallParameters.of(arrays)
+        val back = combined.get()
+        arrays.expectEquals(back)
     }
+
+    @Test
+    fun `Too large arrays are not allowed`() {
+        val arrays = listOf(ByteArray(18_777_215))
+        expectThrows<IllegalArgumentException> {
+            CallParameters.of(arrays)
+        }
+    }
+
+    private fun List<ByteArray>.expectEquals(other: List<ByteArray>) = expectThat(map { it.toList() })
+        .isEqualTo(other.map { it.toList() })
 }

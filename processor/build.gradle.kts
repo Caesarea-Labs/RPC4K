@@ -13,6 +13,7 @@ dependencies {
 
     testImplementation(libs.kotlin.test)
     testImplementation (libs.compile.testing.ksp)
+    testImplementation(Testing.Strikt.core)
 }
 
 

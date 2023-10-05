@@ -31,6 +31,7 @@ class OkHttpRpcClient(private val logger: Logger, port: Port) :
 
     private val url = "http://localhost:${port.value}"
 
+    //TODO: this code is stupid
     override suspend fun request(route: String, body: ByteArray): ByteArray {
         return client.postBytes("$url/$route", body.toString(Charsets.UTF_8))
     }
