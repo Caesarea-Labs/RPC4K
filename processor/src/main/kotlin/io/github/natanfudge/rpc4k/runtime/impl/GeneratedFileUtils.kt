@@ -21,14 +21,14 @@ object Rpc4kGeneratedServerUtils {
         format: SerializationFormat,
         serializer: SerializationStrategy<T>,
         response: T
-    ) = format.serialize(serializer, response)
+    ) = format.encode(serializer, response)
 
     fun <T> encodeFlowResponse(
         format: SerializationFormat,
         serializer: SerializationStrategy<T>,
         response: Flow<T>
     ) =
-        response.map { format.serialize(serializer, it) }
+        response.map { format.encode(serializer, it) }
 
     fun <T> decodeParameter(
         context: DecoderContext,
@@ -37,7 +37,7 @@ object Rpc4kGeneratedServerUtils {
         index: Int
     ): T {
         require(index < args.size) { "Too many parameters" }
-        val result = context.format.deserialize(serializer, args[index])
+        val result = context.format.decode(serializer, args[index])
         context.interceptors.parameterInterceptors.forEach { it(result) }
         return result
     }
@@ -58,7 +58,7 @@ object Rpc4KGeneratedClientUtils {
     ): T {
         val body = encodeBody(parameters.toList(), client)
         val response = client.http.request(route, body)
-        return client.format.deserialize(returnType, response)
+        return client.format.decode(returnType, response)
     }
 
     suspend fun <T> sendFlow(
@@ -70,7 +70,7 @@ object Rpc4KGeneratedClientUtils {
         val body = encodeBody(parameters.toList(), client)
         val response = client.http.flowRequest(route, body)
         return response.map {
-            client.format.deserialize(returnType, it)
+            client.format.decode(returnType, it)
         }
     }
 
@@ -81,7 +81,7 @@ object Rpc4KGeneratedClientUtils {
         val body = parameters
             .map { (value, serializer) ->
                 @Suppress("UNCHECKED_CAST")
-                client.format.serialize(serializer as KSerializer<Any?>, value)
+                client.format.encode(serializer as KSerializer<Any?>, value)
             }
             .encodeAndJoin()
         return body

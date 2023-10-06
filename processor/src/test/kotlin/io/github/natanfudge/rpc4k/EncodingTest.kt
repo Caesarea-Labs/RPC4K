@@ -10,6 +10,13 @@ import kotlin.test.Test
 
 class EncodingTest {
 
+    @Test
+    fun test() {
+//        val jsons =
+        val x = '['.code
+        val z = 2
+    }
+
     private fun generateRandomByteArrays(minArrays: Int = 1, maxArrays: Int, maxArraySize: Int) = List(Random.nextInt(minArrays, maxArrays)) {
         //TODO: see if putting higher number lags tests
         Random.nextBytes(Random.nextInt(0, maxArraySize))

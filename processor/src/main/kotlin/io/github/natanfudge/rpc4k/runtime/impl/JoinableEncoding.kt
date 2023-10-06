@@ -8,7 +8,9 @@ import java.io.InputStream
  *  The main benefit is better debugging. Existing tools will be able to read the resulting JSON/Protobuf lists.
  *  Regarding performance, with json we don't really care, and with protobuf it should actually be slightly more performant to use their implementation.
  */
-@Deprecated("xd")
+
+//TODO: there's a faster way to implement this. Put all of the sizes upfront and terminate with a STOP 3-bytes (0xFFF).
+// This avoids iterating over the result when reading the combined value.
 @JvmInline
 value class CallParameters private constructor(private val bytes: ByteArray) {
     companion object {

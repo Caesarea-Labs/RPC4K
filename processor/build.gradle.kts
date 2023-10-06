@@ -8,6 +8,7 @@ dependencies {
     implementation(libs.kotlinpoet)
     implementation(libs.okhttp.sse)
     implementation(libs.ktor)
+    implementation("com.michael-bull.kotlin-result:kotlin-result:1.1.18")
     api(libs.coroutines.core)
     api(libs.serialization.json)
 
