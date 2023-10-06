@@ -3,7 +3,6 @@ import kotlinx.serialization.DeserializationStrategy
 import kotlinx.serialization.SerializationStrategy
 import kotlinx.serialization.json.Json
 
-interface Item
 
 /**
  * For example [Json] or Protobuf

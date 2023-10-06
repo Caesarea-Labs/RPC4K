@@ -3,7 +3,8 @@ package io.github.natanfudge.rpc4k.runtime.api
 import io.github.natanfudge.rpc4k.runtime.api.components.OkHttpClientTransmitter
 import io.github.natanfudge.rpc4k.runtime.api.format.JsonFormat
 import io.github.natanfudge.rpc4k.runtime.api.format.SerializationFormat
-import io.github.natanfudge.rpc4k.runtime.impl.CallParameters
+import io.github.natanfudge.rpc4k.runtime.impl.Argument
+import io.github.natanfudge.rpc4k.runtime.impl.Rpc
 import kotlinx.coroutines.runBlocking
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.Serializable
@@ -17,7 +18,7 @@ interface Transmitter {
     /**
      * Sends something across the network. If there's a response, this returns a ByteArray.
      */
-    suspend fun send(data: ByteArray): ByteArray?
+    suspend fun send(rpc: Rpc, format: SerializationFormat): ByteArray?
 }
 
 class RpcConfiguration(val transmitter: Transmitter, val format: SerializationFormat)
@@ -30,13 +31,10 @@ fun main(): Unit = runBlocking {
 
 class MyApi(config: RpcConfiguration) : GeneratedApiHandler(config) {
     suspend fun getDogs(num: Int, type: String): Dog {
-//        TODO()
-        val arg1Serialized = encode(Int.serializer(), num)
-        val arg2Serialized = encode(String.serializer(), type)
-        val combined = CallParameters.of(listOf(arg1Serialized, arg2Serialized))
-
-        val x = 2
-
+        val arg1Serialized = Argument(num, Int.serializer())
+        val arg2Serialized = Argument(type, String.serializer())
+        val combined = Rpc("getDogs", listOf(arg1Serialized, arg2Serialized))
+        val bytesString = combined.toByteArray(JsonFormat).decodeToString()
         TODO()
 
     }

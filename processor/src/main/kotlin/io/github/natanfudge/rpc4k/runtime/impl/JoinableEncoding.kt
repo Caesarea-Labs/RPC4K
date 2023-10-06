@@ -1,6 +1,7 @@
 package io.github.natanfudge.rpc4k.runtime.impl
 
-import java.io.InputStream
+import io.github.natanfudge.rpc4k.runtime.api.format.SerializationFormat
+import kotlinx.serialization.SerializationStrategy
 
 /**
  * TODO: find a place for this comment
@@ -11,45 +12,111 @@ import java.io.InputStream
 
 //TODO: there's a faster way to implement this. Put all of the sizes upfront and terminate with a STOP 3-bytes (0xFFF).
 // This avoids iterating over the result when reading the combined value.
-@JvmInline
-value class CallParameters private constructor(private val bytes: ByteArray) {
-    companion object {
-        fun of(args: List<ByteArray>): CallParameters {
-            for (arg in args) {
-                //TODO: test requirement
-                require(arg.size.fitsIn3Bytes()) {
-                    "Length of argument of RPC call must fit in 3 bytes, but argument is extremely large (over 16 MB - ${arg.size})"
-                }
-            }
-            //  +3 bytes for length marker before every argument
-            val resultArray = ByteArray(args.sumOf { it.size + 3 })
-            var pos = 0
-            for (arg in args) {
-                // Write the length of each arg (3 bytes), then the arg itself.
-                val length = arg.size
-                length.write3BytesTo(resultArray, pos)
-                pos += 3
-                arg.copyInto(resultArray, destinationOffset = pos)
-                pos += arg.size
-            }
 
-            return CallParameters(resultArray)
-        }
+
+/**
+ * Data representing a Remote Procedure Call.
+ */
+data class Rpc(private val method: String, private val arguments: List<Argument<*>>) {
+    init {
+        check(!method.contains(':')) { "Method name must not contain ':', but it did: \"$method\"" }
     }
 
-    fun get(): List<ByteArray> {
-        val args = mutableListOf<ByteArray>()
+    override fun toString(): String {
+        return "$method(${arguments.map { it.value }.joinToString()})"
+    }
+
+
+    //TODO: write fromByteArray and test
+    /**
+     * See docs/rpc_format.png
+     */
+    fun toByteArray(format: SerializationFormat): ByteArray {
+        val argBytes = arguments.map { it.encode(format) }
+        val methodBytes = method.toByteArray()
+        // + 1 for LENGTHS_END
+        val lengthsSize = (argBytes.size + 1) * 3
+        // + 1 for ':'
+        val methodNameSize = method.length + 1
+        val argsSize = argBytes.sumOf { it.size }
+        val resultArray = ByteArray(lengthsSize + methodNameSize + argsSize)
         var pos = 0
-        while (pos < bytes.size) {
-            // Read the length of each arg (3 bytes), then the arg itself.
-            val length = Int.read3BytesFrom(bytes, pos)
+        for (arg in argBytes) {
+            // Write the length of each arg (3 bytes)
+            val length = arg.size
+            length.write3BytesTo(resultArray, pos)
             pos += 3
-            args.add(bytes.copyOfRange(pos, pos + length))
-            pos += length
         }
-        require(bytes.size == pos)
-        return args
+
+        // Write LENGTHS_END
+        LENGTHS_END.write3BytesTo(resultArray, pos)
+        pos += 3
+
+        // Write method name
+        methodBytes.copyInto(resultArray, pos)
+        pos += methodBytes.size
+        // Write ':'
+        resultArray[pos] = COLON_CODE
+        pos++
+
+        for (arg in argBytes) {
+            arg.copyInto(resultArray, destinationOffset = pos)
+            pos += arg.size
+        }
+        check(resultArray.size == pos) { "Sanity check to see the array we allocated is of the exact correct size" }
+
+        return resultArray
     }
+
+
+    companion object {
+        private const val LENGTHS_END = 0xFF_FF_FF
+        private const val COLON_CODE: Byte = 58 // :
+    }
+//        fun of(method: String, args: List<ByteArray>): Rpc {
+//            for (arg in args) {
+//                val size = arg.size
+//
+//                require(size.fitsIn3Bytes() && size != LENGTHS_END) {
+//                    "Length of argument of RPC call must fit in 3 bytes, but argument is extremely large (over 16 MB - ${arg.size})"
+//                }
+//            }
+//            //  +3 bytes for length marker before every argument
+//            val resultArray = ByteArray(args.sumOf { it.size + 3 })
+//            var pos = 0
+//            for (arg in args) {
+//                // Write the length of each arg (3 bytes), then the arg itself.
+//                val length = arg.size
+//                length.write3BytesTo(resultArray, pos)
+//                pos += 3
+//                arg.copyInto(resultArray, destinationOffset = pos)
+//                pos += arg.size
+//            }
+//
+//            return Rpc(resultArray)
+//        }
+//    }
+//
+//    fun get(): List<ByteArray> {
+//        val args = mutableListOf<ByteArray>()
+//        var pos = 0
+//        while (pos < bytes.size) {
+//            // Read the length of each arg (3 bytes), then the arg itself.
+//            val length = Int.read3BytesFrom(bytes, pos)
+//            pos += 3
+//            args.add(bytes.copyOfRange(pos, pos + length))
+//            pos += length
+//        }
+//        require(bytes.size == pos)
+//        return args
+//    }
+}
+
+data class Argument<T>(val value: T, val serializer: SerializationStrategy<T>) {
+    override fun toString(): String = value.toString()
+
+    // This utility method helps avoid unsafe casts
+    fun encode(format: SerializationFormat) = format.encode(serializer, value)
 }
 
 private fun Int.Companion.read3BytesFrom(array: ByteArray, pos: Int): Int {
