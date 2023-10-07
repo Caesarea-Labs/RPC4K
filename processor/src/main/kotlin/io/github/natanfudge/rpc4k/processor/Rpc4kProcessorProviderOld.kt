@@ -18,6 +18,7 @@ internal class Rpc4kProcessorProvider : SymbolProcessorProvider {
 }
 
 internal class Rpc4kProcessor(private val env: SymbolProcessorEnvironment) : SymbolProcessor {
+    //TODO: make sure to use the kotlinpoet ksp integration and see stuff is happening incrementally
 
     override fun process(resolver: Resolver): List<KSAnnotated> {
         env.logger.info("Processing @Api")
