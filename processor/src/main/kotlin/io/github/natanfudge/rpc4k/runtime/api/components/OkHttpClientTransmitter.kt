@@ -4,6 +4,7 @@ import io.github.natanfudge.rpc4k.runtime.api.Transmitter
 import io.github.natanfudge.rpc4k.runtime.api.format.SerializationFormat
 import io.github.natanfudge.rpc4k.runtime.impl.Rpc
 import kotlinx.coroutines.suspendCancellableCoroutine
+import kotlinx.serialization.SerializationStrategy
 import okhttp3.*
 import okhttp3.HttpUrl.Companion.toHttpUrl
 import okhttp3.RequestBody.Companion.toRequestBody
@@ -12,8 +13,8 @@ import kotlin.coroutines.resume
 
 class OkHttpClientTransmitter(private val url: String, private val client: OkHttpClient = OkHttpClient()) : Transmitter {
 
-    override suspend fun send(rpc: Rpc, format: SerializationFormat): ByteArray {
-        val data = rpc.toByteArray(format)
+    override suspend fun send(rpc: Rpc, format: SerializationFormat, serializers: List<SerializationStrategy<*>>): ByteArray {
+        val data = rpc.toByteArray(format, serializers)
         val response = client.request(Request(url.toHttpUrl(), body = data.toRequestBody()))
         when (response.code) {
             200 -> return response.body.bytes()

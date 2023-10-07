@@ -1,56 +1,38 @@
 package io.github.natanfudge.rpc4k.runtime.impl
 
 import io.github.natanfudge.rpc4k.runtime.api.format.SerializationFormat
+import kotlinx.serialization.DeserializationStrategy
+import kotlinx.serialization.KSerializer
 import kotlinx.serialization.SerializationStrategy
-
-/**
- * TODO: find a place for this comment
- * The best way is to use each format's native list construct to encode parameters.
- *  The main benefit is better debugging. Existing tools will be able to read the resulting JSON/Protobuf lists.
- *  Regarding performance, with json we don't really care, and with protobuf it should actually be slightly more performant to use their implementation.
- */
-
-//TODO: there's a faster way to implement this. Put all of the sizes upfront and terminate with a STOP 3-bytes (0xFFF).
-// This avoids iterating over the result when reading the combined value.
 
 
 /**
  * Data representing a Remote Procedure Call.
  */
-data class Rpc(private val method: String, private val arguments: List<Argument<*>>) {
+data class Rpc(val method: String, val arguments: List<*>) {
     init {
         check(!method.contains(':')) { "Method name must not contain ':', but it did: \"$method\"" }
     }
 
     override fun toString(): String {
-        return "$method(${arguments.map { it.value }.joinToString()})"
+        return "$method(${arguments.joinToString()})"
     }
 
 
-    //TODO: write fromByteArray and test
     /**
      * See docs/rpc_format.png
      */
-    fun toByteArray(format: SerializationFormat): ByteArray {
-        val argBytes = arguments.map { it.encode(format) }
-        val methodBytes = method.toByteArray()
-        // + 1 for LENGTHS_END
-        val lengthsSize = (argBytes.size + 1) * 3
+    fun toByteArray(format: SerializationFormat, serializers: List<SerializationStrategy<*>>): ByteArray {
+        val argBytes = serializeArgs(arguments, format, serializers)
+        validateArgSizes(argBytes)
+
+        val methodBytes = method.toByteArray(encoding)
+        val lengthsSize = argBytes.size * 3
         // + 1 for ':'
         val methodNameSize = method.length + 1
         val argsSize = argBytes.sumOf { it.size }
         val resultArray = ByteArray(lengthsSize + methodNameSize + argsSize)
         var pos = 0
-        for (arg in argBytes) {
-            // Write the length of each arg (3 bytes)
-            val length = arg.size
-            length.write3BytesTo(resultArray, pos)
-            pos += 3
-        }
-
-        // Write LENGTHS_END
-        LENGTHS_END.write3BytesTo(resultArray, pos)
-        pos += 3
 
         // Write method name
         methodBytes.copyInto(resultArray, pos)
@@ -59,19 +41,91 @@ data class Rpc(private val method: String, private val arguments: List<Argument<
         resultArray[pos] = COLON_CODE
         pos++
 
+        // Write args
         for (arg in argBytes) {
+            // Write the length of each arg (3 bytes)
+            val length = arg.size
+            length.write3BytesTo(resultArray, pos)
+            pos += 3
+            // Write each arg (variable bytes
             arg.copyInto(resultArray, destinationOffset = pos)
             pos += arg.size
         }
+
         check(resultArray.size == pos) { "Sanity check to see the array we allocated is of the exact correct size" }
 
         return resultArray
     }
 
+    private fun validateArgSizes(argBytes: List<ByteArray>) {
+        for (arg in argBytes) {
+            val size = arg.size
+
+            require(size.fitsIn3Bytes()) {
+                "Length of argument of RPC call must fit in 3 bytes, but argument is extremely large (over 16 MB - ${arg.size})"
+            }
+        }
+    }
+
 
     companion object {
-        private const val LENGTHS_END = 0xFF_FF_FF
+        private val encoding = Charsets.UTF_8
         private const val COLON_CODE: Byte = 58 // :
+
+        /**
+         * See docs/rpc_format.png
+         */
+        fun fromByteArray(bytes: ByteArray, format: SerializationFormat, argDeserializers: List<DeserializationStrategy<*>>): Rpc {
+            val (methodName, startingPos) = readMethodName(bytes)
+            var pos = startingPos
+
+            val args = mutableListOf<ByteArray>()
+            while (pos < bytes.size) {
+                // Read the length of each arg (3 bytes), then the arg itself.
+                val length = Int.read3BytesFrom(bytes, pos)
+                pos += 3
+                args.add(bytes.copyOfRange(pos, pos + length))
+                pos += length
+            }
+            //TODO: test requirement
+            require(bytes.size == pos) {
+                "Incorrect argument lengths are specified. Total size of payload is ${bytes.size} when it should be $pos according to the payload itself."
+            }
+            //TODO: test requirement
+            require(args.size == argDeserializers.size) {
+                "Only ${args.size} arguments were provided when ${argDeserializers.size} are required."
+            }
+
+            return Rpc(methodName, deserializeArgs(args, format, argDeserializers))
+        }
+
+        /**
+         * Returns the method name and the amount of bytes that has been read
+         */
+        private fun readMethodName(array: ByteArray): Pair<String, Int> {
+            var pos = 0
+            // Reads up until COLON_CODE,
+            do {
+                val currentByte = array[pos]
+                // Happens after array[pos] so we will already skip by the color itself
+                pos++
+            } while (currentByte != COLON_CODE)
+
+            // Exclude colon itself
+            return array.copyOfRange(0, pos - 1).toString(encoding) to pos
+        }
+
+        private fun serializeArgs(args: List<*>, format: SerializationFormat, argDeserializers: List<SerializationStrategy<*>>): List<ByteArray> {
+            return args.zip(argDeserializers).map { (arg, serializer) ->
+                // We trust the correct serializers are provided
+                @Suppress("UNCHECKED_CAST")
+                format.encode(serializer as KSerializer<Any?>, arg)
+            }
+        }
+
+        private fun deserializeArgs(args: List<ByteArray>, format: SerializationFormat, argDeserializers: List<DeserializationStrategy<*>>): List<*> {
+            return args.zip(argDeserializers).map { (arg, deserializer) -> format.decode(deserializer, arg) }
+        }
     }
 //        fun of(method: String, args: List<ByteArray>): Rpc {
 //            for (arg in args) {
@@ -112,12 +166,12 @@ data class Rpc(private val method: String, private val arguments: List<Argument<
 //    }
 }
 
-data class Argument<T>(val value: T, val serializer: SerializationStrategy<T>) {
-    override fun toString(): String = value.toString()
-
-    // This utility method helps avoid unsafe casts
-    fun encode(format: SerializationFormat) = format.encode(serializer, value)
-}
+//data class Argument<T>(val value: T, val serializer: SerializationStrategy<T>) {
+//    override fun toString(): String = value.toString()
+//
+//    // This utility method helps avoid unsafe casts
+//    fun encode(format: SerializationFormat) = format.encode(serializer, value)
+//}
 
 private fun Int.Companion.read3BytesFrom(array: ByteArray, pos: Int): Int {
     return array[pos].withSignificance(0) + array[pos + 1].withSignificance(1) + array[pos + 2].withSignificance(2)
