@@ -1,4 +1,4 @@
-package io.github.natanfudge.rpc4k.processor
+package io.github.natanfudge.rpc4k.processor.old
 
 import com.google.devtools.ksp.getDeclaredFunctions
 import com.google.devtools.ksp.isConstructor

@@ -1,4 +1,4 @@
-package io.github.natanfudge.rpc4k.processor
+package io.github.natanfudge.rpc4k.processor.old
 
 import com.google.devtools.ksp.processing.SymbolProcessorEnvironment
 import com.google.devtools.ksp.symbol.KSClassDeclaration
@@ -10,7 +10,7 @@ import com.squareup.kotlinpoet.TypeSpec
 import com.squareup.kotlinpoet.asTypeName
 import io.github.natanfudge.rpc4k.runtime.impl.DecoderContext
 import io.github.natanfudge.rpc4k.runtime.impl.Rpc4kGeneratedServerUtils
-import io.github.natanfudge.rpc4k.runtime.api.server.ProtocolDecoder
+import io.github.natanfudge.rpc4k.runtime.api.old.server.ProtocolDecoder
 import kotlinx.coroutines.flow.Flow
 import kotlinx.serialization.KSerializer
 

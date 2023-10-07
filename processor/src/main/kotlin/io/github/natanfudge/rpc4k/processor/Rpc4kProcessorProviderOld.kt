@@ -7,15 +7,9 @@ import com.google.devtools.ksp.processing.SymbolProcessorEnvironment
 import com.google.devtools.ksp.processing.SymbolProcessorProvider
 import com.google.devtools.ksp.symbol.*
 import com.google.devtools.ksp.validate
+import io.github.natanfudge.rpc4k.processor.old.*
 import io.github.natanfudge.rpc4k.runtime.api.Api
 import kotlin.system.measureTimeMillis
-
-
-@PublishedApi
-internal const val GeneratedClientImplSuffix = "ClientImpl"
-
-@PublishedApi
-internal const val GeneratedServerImplSuffix = "Decoder"
 
 internal class Rpc4kProcessorProvider : SymbolProcessorProvider {
     override fun create(
@@ -25,17 +19,24 @@ internal class Rpc4kProcessorProvider : SymbolProcessorProvider {
 
 internal class Rpc4kProcessor(private val env: SymbolProcessorEnvironment) : SymbolProcessor {
 
-    override fun process(resolver: Resolver): List<KSAnnotated> =
-        invokeOnce(orElse = { emptyList() }) {
+    override fun process(resolver: Resolver): List<KSAnnotated> {
+        env.logger.info("Processing @Api")
+        val time = measureTimeMillis {
             val symbols = resolver.getSymbolsWithAnnotation(Api::class.qualifiedName!!).toList()
             println("Symbols: $symbols")
-            resolver.getSymbolsWithAnnotation(Api::class.qualifiedName!!)
-                .filter { it.validate() }
-                .filterIsInstance<KSClassDeclaration>()
-                .forEach { generateRpc(it) }
-
-            listOf()
+            for (symbol in resolver.getSymbolsWithAnnotation(Api::class.qualifiedName!!)) {
+                if (symbol.validate()) {
+                    // Api is only applicable to classes
+                    generateRpc(symbol as KSClassDeclaration)
+                }
+            }
         }
+        println("Gemerated RPC classes in ${time}ms")
+        //TODO: make sure process() only gets called once
+
+        // Nothing needs to be deferred
+        return listOf()
+    }
 
     private fun generateRpc(apiClass: KSClassDeclaration) {
         val time = measureTimeMillis {
@@ -50,7 +51,6 @@ internal class Rpc4kProcessor(private val env: SymbolProcessorEnvironment) : Sym
 
 
     private fun KSFunctionDeclaration.checkRequirements() {
-        checkRequirement(env, isOpen()) { "Api method must be open" }
         checkRequirement(env, modifiers.contains(Modifier.SUSPEND)) { "Api method must be suspend" }
         for (parameter in parameters) {
             parameter.type.checkRequirements(returnType = false)

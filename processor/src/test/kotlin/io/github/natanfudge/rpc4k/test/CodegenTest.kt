@@ -9,8 +9,8 @@ import io.github.natanfudge.rpc4k.runtime.api.SerializationFormat
 import io.github.natanfudge.rpc4k.runtime.api.components.JsonFormat
 import io.github.natanfudge.rpc4k.runtime.api.components.KtorSingleRouteRpcServer
 import io.github.natanfudge.rpc4k.runtime.api.components.OkHttpRpcClient
-import io.github.natanfudge.rpc4k.runtime.api.utils.GeneratedCodeUtils
-import io.github.natanfudge.rpc4k.runtime.api.utils.GeneratedServerHandler
+import io.github.natanfudge.rpc4k.runtime.api.old.utils.GeneratedCodeUtils
+import io.github.natanfudge.rpc4k.runtime.api.old.utils.GeneratedServerHandler
 import io.ktor.server.application.*
 import io.ktor.server.cio.*
 import io.ktor.server.engine.*

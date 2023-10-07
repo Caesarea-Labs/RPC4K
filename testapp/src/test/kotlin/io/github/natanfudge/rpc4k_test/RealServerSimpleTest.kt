@@ -1,7 +1,7 @@
 package io.github.natanfudge.rpc4k_test
 
 import com.example.SimpleProtocol
-import io.github.natanfudge.rpc4k.runtime.api.Port
+import io.github.natanfudge.rpc4k.runtime.api.old.Port
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.flow.Flow

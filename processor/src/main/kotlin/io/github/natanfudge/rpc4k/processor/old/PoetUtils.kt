@@ -1,4 +1,4 @@
-package io.github.natanfudge.rpc4k.processor
+package io.github.natanfudge.rpc4k.processor.old
 
 import com.squareup.kotlinpoet.*
 import kotlin.reflect.KClass

@@ -1,4 +1,4 @@
-package io.github.natanfudge.rpc4k.runtime.api.format
+package io.github.natanfudge.rpc4k.runtime.api.old.format
 
 import kotlinx.serialization.DeserializationStrategy
 import kotlinx.serialization.SerializationStrategy

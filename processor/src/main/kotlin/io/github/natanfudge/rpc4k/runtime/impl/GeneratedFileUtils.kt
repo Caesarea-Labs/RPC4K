@@ -2,9 +2,10 @@
 
 package io.github.natanfudge.rpc4k.runtime.impl
 
-import io.github.natanfudge.rpc4k.runtime.api.client.RpcHttpClient
-import io.github.natanfudge.rpc4k.runtime.api.format.JsonFormat
-import io.github.natanfudge.rpc4k.runtime.api.format.SerializationFormat
+import io.github.natanfudge.rpc4k.runtime.api.old.client.RpcHttpClient
+import io.github.natanfudge.rpc4k.runtime.api.old.format.JsonFormat
+import io.github.natanfudge.rpc4k.runtime.api.old.format.SerializationFormat
+import io.github.natanfudge.rpc4k.runtime.impl.old.encodeAndJoin
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import kotlinx.serialization.DeserializationStrategy

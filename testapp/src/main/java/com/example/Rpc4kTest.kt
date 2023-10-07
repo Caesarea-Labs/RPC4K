@@ -5,7 +5,7 @@ import io.github.natanfudge.rpc4k.runtime.impl.DecoderContext
 import io.github.natanfudge.rpc4k.runtime.impl.Rpc4KGeneratedClientUtils
 import io.github.natanfudge.rpc4k.runtime.impl.Rpc4kGeneratedServerUtils
 import io.github.natanfudge.rpc4k.runtime.impl.RpcClientComponents
-import io.github.natanfudge.rpc4k.runtime.api.server.ProtocolDecoder
+import io.github.natanfudge.rpc4k.runtime.api.old.server.ProtocolDecoder
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.currentCoroutineContext
 import kotlinx.coroutines.flow.Flow

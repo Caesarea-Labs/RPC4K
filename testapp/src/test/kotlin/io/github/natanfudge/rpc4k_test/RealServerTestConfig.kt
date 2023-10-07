@@ -1,10 +1,10 @@
 package io.github.natanfudge.rpc4k_test
 
-import io.github.natanfudge.rpc4k.runtime.api.Port
-import io.github.natanfudge.rpc4k.runtime.api.client.JvmProtocolFactory
-import io.github.natanfudge.rpc4k.runtime.api.client.OkHttpRpcClient
-import io.github.natanfudge.rpc4k.runtime.api.server.KtorCioServer
-import io.github.natanfudge.rpc4k.runtime.api.server.RpcServer
+import io.github.natanfudge.rpc4k.runtime.api.old.Port
+import io.github.natanfudge.rpc4k.runtime.api.old.client.JvmProtocolFactory
+import io.github.natanfudge.rpc4k.runtime.api.old.client.OkHttpRpcClient
+import io.github.natanfudge.rpc4k.runtime.api.old.server.KtorCioServer
+import io.github.natanfudge.rpc4k.runtime.api.old.server.RpcServer
 import kotlinx.coroutines.runBlocking
 import kotlin.reflect.KClass
 

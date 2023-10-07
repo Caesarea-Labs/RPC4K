@@ -3,11 +3,11 @@ package io.github.natanfudge.rpc4k_test
 import com.example.CreateLobbyResponse
 import com.example.PlayerId
 import com.example.UserProtocol
-import io.github.natanfudge.rpc4k.runtime.api.Port
-import io.github.natanfudge.rpc4k.runtime.api.client.ExpectationFailedException
-import io.github.natanfudge.rpc4k.runtime.api.client.InternalServerException
-import io.github.natanfudge.rpc4k.runtime.api.client.JvmProtocolFactory
-import io.github.natanfudge.rpc4k.runtime.api.client.OkHttpRpcClient
+import io.github.natanfudge.rpc4k.runtime.api.old.Port
+import io.github.natanfudge.rpc4k.runtime.api.old.client.ExpectationFailedException
+import io.github.natanfudge.rpc4k.runtime.api.old.client.InternalServerException
+import io.github.natanfudge.rpc4k.runtime.api.old.client.JvmProtocolFactory
+import io.github.natanfudge.rpc4k.runtime.api.old.client.OkHttpRpcClient
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.toList
 import org.junit.After

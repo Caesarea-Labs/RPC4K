@@ -1,4 +1,4 @@
-package io.github.natanfudge.rpc4k.runtime.impl
+package io.github.natanfudge.rpc4k.runtime.impl.old
 
 /**
  * The data class representing a SSE Event that will be sent to the client.

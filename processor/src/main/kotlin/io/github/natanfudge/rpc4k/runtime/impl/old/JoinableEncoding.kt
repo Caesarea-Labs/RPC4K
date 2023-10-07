@@ -1,11 +1,4 @@
-package io.github.natanfudge.rpc4k.runtime.impl
-
-import io.github.natanfudge.rpc4k.runtime.api.format.SerializationFormat
-import kotlinx.serialization.DeserializationStrategy
-import kotlinx.serialization.KSerializer
-import kotlinx.serialization.SerializationStrategy
-
-
+package io.github.natanfudge.rpc4k.runtime.impl.old
 
 
 /////////////////////////////////////// OLD ////////////////////////////

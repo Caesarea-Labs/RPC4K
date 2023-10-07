@@ -2,7 +2,7 @@ package io.github.natanfudge.rpc4k.test.util
 
 import io.github.natanfudge.rpc4k.runtime.api.Rpc
 import io.github.natanfudge.rpc4k.runtime.api.components.KtorSingleRouteRpcServer
-import io.github.natanfudge.rpc4k.runtime.api.utils.GeneratedServerHandler
+import io.github.natanfudge.rpc4k.runtime.api.old.utils.GeneratedServerHandler
 import io.ktor.server.application.*
 import io.ktor.server.cio.*
 import io.ktor.server.engine.*

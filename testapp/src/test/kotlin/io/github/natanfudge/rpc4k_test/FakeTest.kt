@@ -4,8 +4,8 @@ import com.example.CreateLobbyResponse
 import com.example.PlayerId
 import com.example.SimpleProtocol
 import com.example.UserProtocol
-import io.github.natanfudge.rpc4k.runtime.api.client.JvmProtocolFactory
-import io.github.natanfudge.rpc4k.runtime.api.server.RpcServer
+import io.github.natanfudge.rpc4k.runtime.api.old.client.JvmProtocolFactory
+import io.github.natanfudge.rpc4k.runtime.api.old.server.RpcServer
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.flow.Flow

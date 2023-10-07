@@ -1,4 +1,4 @@
-package io.github.natanfudge.rpc4k.runtime.api.utils
+package io.github.natanfudge.rpc4k.runtime.api.old.utils
 
 import io.github.natanfudge.rpc4k.runtime.api.*
 import io.github.natanfudge.rpc4k.runtime.impl.RpcServerException

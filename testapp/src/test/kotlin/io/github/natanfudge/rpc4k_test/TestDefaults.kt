@@ -1,10 +1,10 @@
 package io.github.natanfudge.rpc4k_test
 
-import io.github.natanfudge.rpc4k.runtime.api.Logger
-import io.github.natanfudge.rpc4k.runtime.api.client.RpcHttpClient
-import io.github.natanfudge.rpc4k.runtime.api.server.FlowRequestHandler
-import io.github.natanfudge.rpc4k.runtime.api.server.RequestHandler
-import io.github.natanfudge.rpc4k.runtime.api.server.RpcHttpServer
+import io.github.natanfudge.rpc4k.runtime.api.old.Logger
+import io.github.natanfudge.rpc4k.runtime.api.old.client.RpcHttpClient
+import io.github.natanfudge.rpc4k.runtime.api.old.server.FlowRequestHandler
+import io.github.natanfudge.rpc4k.runtime.api.old.server.RequestHandler
+import io.github.natanfudge.rpc4k.runtime.api.old.server.RpcHttpServer
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.runBlocking

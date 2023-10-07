@@ -1,8 +1,8 @@
 package io.github.natanfudge.rpc4k.runtime.api
-import io.github.natanfudge.rpc4k.runtime.api.client.ExpectationFailedException
-import io.github.natanfudge.rpc4k.runtime.api.client.JvmProtocolFactory
-import io.github.natanfudge.rpc4k.runtime.api.client.RpcException
-import io.github.natanfudge.rpc4k.runtime.api.server.RpcServer
+import io.github.natanfudge.rpc4k.runtime.api.old.client.ExpectationFailedException
+import io.github.natanfudge.rpc4k.runtime.api.old.client.JvmProtocolFactory
+import io.github.natanfudge.rpc4k.runtime.api.old.client.RpcException
+import io.github.natanfudge.rpc4k.runtime.api.old.server.RpcServer
 
 
 /**

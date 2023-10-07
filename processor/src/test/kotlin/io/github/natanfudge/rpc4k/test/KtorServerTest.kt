@@ -37,28 +37,7 @@ class KtorServerTest {
 
 //TODO:
 // 1. Define data structure for an API call.
-@Serializable
-data class ApiDefinition(val name: String, val methods: RpcDefinition)
 
-@Serializable
-data class RpcDefinition(val name: String, val args: List<RpcArgumentDefinition>, @Serializable(RpcTypeSerializer::class) val returnType: RpcType)
-
-@Serializable
-data class RpcArgumentDefinition(val name: String, @Serializable(RpcTypeSerializer::class) val type: RpcType)
-
-typealias RpcType = Class<@Contextual Any?>
-
-class RpcTypeSerializer : KSerializer<Class<*>> {
-    override val descriptor: SerialDescriptor = String.serializer().descriptor
-
-    override fun deserialize(decoder: Decoder): Class<*> {
-        TODO("Not yet implemented")
-    }
-
-    override fun serialize(encoder: Encoder, value: Class<*>) {
-        encoder.encodeString(value.simpleName)
-    }
-}
 
 //TODO:
 // 2. Use KSP to convert an @Api class into an APIDefinition

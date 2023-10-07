@@ -1,4 +1,4 @@
-package io.github.natanfudge.rpc4k.runtime.api
+package io.github.natanfudge.rpc4k.runtime.api.old
 
 interface Logger {
     fun debug(msg: () -> String)

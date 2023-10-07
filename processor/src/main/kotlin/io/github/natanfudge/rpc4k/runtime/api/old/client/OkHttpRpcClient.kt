@@ -1,8 +1,8 @@
-package io.github.natanfudge.rpc4k.runtime.api.client
+package io.github.natanfudge.rpc4k.runtime.api.old.client
 
-import io.github.natanfudge.rpc4k.runtime.api.Logger
-import io.github.natanfudge.rpc4k.runtime.api.Port
-import io.github.natanfudge.rpc4k.runtime.impl.Sse
+import io.github.natanfudge.rpc4k.runtime.api.old.Logger
+import io.github.natanfudge.rpc4k.runtime.api.old.Port
+import io.github.natanfudge.rpc4k.runtime.impl.old.Sse
 import io.ktor.http.*
 import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.SendChannel

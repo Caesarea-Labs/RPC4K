@@ -1,4 +1,4 @@
-package io.github.natanfudge.rpc4k.runtime.api.client
+package io.github.natanfudge.rpc4k.runtime.api.old.client
 
 sealed class RpcException : Exception {
     constructor(message: String) : super(message)
