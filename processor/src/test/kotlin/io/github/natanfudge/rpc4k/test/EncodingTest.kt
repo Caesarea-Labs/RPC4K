@@ -1,7 +1,7 @@
-package io.github.natanfudge.rpc4k
+package io.github.natanfudge.rpc4k.test
 
+import io.github.natanfudge.rpc4k.runtime.api.Rpc
 import io.github.natanfudge.rpc4k.runtime.api.format.JsonFormat
-import io.github.natanfudge.rpc4k.runtime.impl.Rpc
 import kotlinx.serialization.builtins.serializer
 import strikt.api.expectThat
 import strikt.api.expectThrows
@@ -27,7 +27,7 @@ class EncodingTest {
         val rpc = Rpc("test", listOf(2, 3))
         val serializers = listOf(Int.serializer(),Int.serializer())
         val combined = rpc.toByteArray(JsonFormat,serializers)
-        val back = Rpc.fromByteArray(combined, JsonFormat,serializers)
+        val back = Rpc.fromByteArray(combined, JsonFormat) { serializers }
         expectThat(back).isEqualTo(rpc)
     }
 
@@ -67,7 +67,7 @@ class EncodingTest {
         val serializers = rpc.arguments.map { String.serializer() }
         // We only use strings for testing
         val asArray = rpc.toByteArray(JsonFormat, serializers)
-        val back = Rpc.fromByteArray(asArray, JsonFormat, serializers)
+        val back = Rpc.fromByteArray(asArray, JsonFormat) { serializers }
         expectThat(back).isEqualTo(back)
     }
 }

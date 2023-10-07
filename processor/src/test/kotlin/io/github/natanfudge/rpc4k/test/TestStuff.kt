@@ -1,4 +1,4 @@
-package io.github.natanfudge.rpc4k
+package io.github.natanfudge.rpc4k.test
 
 import com.tschuchort.compiletesting.KotlinCompilation
 import com.tschuchort.compiletesting.SourceFile

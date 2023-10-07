@@ -1,8 +1,6 @@
 package io.github.natanfudge.rpc4k.runtime.api.components
 
-import io.github.natanfudge.rpc4k.runtime.api.Transmitter
-import io.github.natanfudge.rpc4k.runtime.api.format.SerializationFormat
-import io.github.natanfudge.rpc4k.runtime.impl.Rpc
+import io.github.natanfudge.rpc4k.runtime.api.*
 import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlinx.serialization.SerializationStrategy
 import okhttp3.*
@@ -11,20 +9,18 @@ import okhttp3.RequestBody.Companion.toRequestBody
 import okio.IOException
 import kotlin.coroutines.resume
 
-class OkHttpClientTransmitter(private val url: String, private val client: OkHttpClient = OkHttpClient()) : Transmitter {
+class OkHttpRpcClient(private val url: String, private val client: OkHttpClient = OkHttpClient()) : RespondingRpcClient {
 
     override suspend fun send(rpc: Rpc, format: SerializationFormat, serializers: List<SerializationStrategy<*>>): ByteArray {
         val data = rpc.toByteArray(format, serializers)
         val response = client.request(Request(url.toHttpUrl(), body = data.toRequestBody()))
+        fun exception(message: String): Nothing = throw RpcResponseException(message, rpc, format, this, response.body.string(), response.code)
         when (response.code) {
             200 -> return response.body.bytes()
-            400 -> throw IllegalArgumentException("Server returned 400 - request was not valid. " +
-                    "The client may not be up to date. Request: $data, Response: ${response.body.string()}"
-            )
-
-            404 -> error("404 - Could not find the server at url '$url'.")
-            500 -> error("The server crashed handling the request. Request: $data, Response: ${response.body.string()}")
-            else -> error("The server returned an unexpected status code: ${response.code}. Request: $data, Response: ${response.body.string()}")
+            400 -> exception("Request was not valid. The client may not be up to date")
+            404 -> exception("Could not find the server at url '$url'.")
+            500 -> exception("The server crashed handling the request")
+            else -> exception("The server returned an unexpected status code: ${response.code}.")
         }
     }
 }
