@@ -1,7 +1,7 @@
 package io.github.natanfudge.rpc4k.test
 
 import io.github.natanfudge.rpc4k.runtime.api.Rpc
-import io.github.natanfudge.rpc4k.runtime.api.format.JsonFormat
+import io.github.natanfudge.rpc4k.runtime.api.components.JsonFormat
 import kotlinx.serialization.builtins.serializer
 import strikt.api.expectThat
 import strikt.api.expectThrows
@@ -25,9 +25,9 @@ class EncodingTest {
     @Test
     fun `Simple rpcs are encoded and decoded properly`() {
         val rpc = Rpc("test", listOf(2, 3))
-        val serializers = listOf(Int.serializer(),Int.serializer())
-        val combined = rpc.toByteArray(JsonFormat,serializers)
-        val back = Rpc.fromByteArray(combined, JsonFormat) { serializers }
+        val serializers = listOf(Int.serializer(), Int.serializer())
+        val combined = rpc.toByteArray(JsonFormat(), serializers)
+        val back = Rpc.fromByteArray(combined, JsonFormat(), serializers)
         expectThat(back).isEqualTo(rpc)
     }
 
@@ -40,7 +40,7 @@ class EncodingTest {
     fun `Too large arrays are not allowed`() {
         val rpc = generateRandomRpc(minArrays = 2, maxArrays = 3, minArraySize = 18_777_215, maxArraySize = 18_777_216)
         expectThrows<IllegalArgumentException> {
-            rpc.toByteArray(JsonFormat, rpc.arguments.map { String.serializer() })
+            rpc.toByteArray(JsonFormat(), rpc.arguments.map { String.serializer() })
         }
     }
 
@@ -66,8 +66,8 @@ class EncodingTest {
     private fun validateRpcSerialization(rpc: Rpc) {
         val serializers = rpc.arguments.map { String.serializer() }
         // We only use strings for testing
-        val asArray = rpc.toByteArray(JsonFormat, serializers)
-        val back = Rpc.fromByteArray(asArray, JsonFormat) { serializers }
+        val asArray = rpc.toByteArray(JsonFormat(), serializers)
+        val back = Rpc.fromByteArray(asArray, JsonFormat(), serializers)
         expectThat(back).isEqualTo(back)
     }
 }

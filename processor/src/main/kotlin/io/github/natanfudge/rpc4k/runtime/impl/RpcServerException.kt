@@ -10,7 +10,7 @@ import io.github.natanfudge.rpc4k.runtime.api.RpcError
 @PublishedApi internal class RpcServerException(override val message: String) : RuntimeException()
 
 internal inline fun serverRequirement(condition: Boolean, message: () -> String) {
-    if (condition) {
+    if (!condition) {
         throw RpcServerException(message())
     }
 }

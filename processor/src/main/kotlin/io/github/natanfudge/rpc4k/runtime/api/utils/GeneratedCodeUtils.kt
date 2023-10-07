@@ -62,3 +62,6 @@ object GeneratedCodeUtils {
     }
 }
 
+interface GeneratedServerHandler {
+    suspend fun handle(request: ByteArray, method: String)
+}

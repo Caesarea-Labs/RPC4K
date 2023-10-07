@@ -15,12 +15,13 @@ dependencies {
     testImplementation(libs.kotlin.test)
     testImplementation (libs.compile.testing.ksp)
     testImplementation(Testing.Strikt.core)
+    testImplementation("ch.qos.logback:logback-classic:1.4.11")
 }
 
 
 
 tasks.test {
-    useJUnit()
+    useJUnitPlatform()
     testLogging {
         events("passed", "skipped", "failed", "standardOut", "standardError")
     }
