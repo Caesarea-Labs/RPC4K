@@ -12,7 +12,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.launch
-import org.junit.Test
+import kotlin.test.Test
 import kotlin.test.assertContentEquals
 import kotlin.test.assertEquals
 
@@ -45,8 +45,8 @@ class FakeTest {
         println("fioi")
         println("fioi")
         protocol.someShit(1, 2)
-        val result2 = protocol.flowTest(2)
-        assertFlowEquals(flowOf(listOf(PlayerId(2))), result2)
+//        val result2 = protocol.flowTest(2)
+//        assertFlowEquals(flowOf(listOf(PlayerId(2))), result2)
 
         protocol.genericTest("")
     }

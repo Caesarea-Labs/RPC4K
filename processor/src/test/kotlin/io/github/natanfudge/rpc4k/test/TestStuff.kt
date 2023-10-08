@@ -13,7 +13,7 @@ class TestStuff {
 
     @Test
     fun `test my annotation processor`() {
-        val testSources = File("../workload/src").walkBottomUp().toList()
+        val testSources = File("../testapp/src").walkBottomUp().toList()
             .filter { it.isFile }
             .map { SourceFile.fromPath(it) }
 

@@ -2,10 +2,7 @@
 
 package io.github.natanfudge.rpc4k.test
 
-import io.github.natanfudge.rpc4k.runtime.api.RespondingRpcClient
-import io.github.natanfudge.rpc4k.runtime.api.Rpc
-import io.github.natanfudge.rpc4k.runtime.api.RpcServer
-import io.github.natanfudge.rpc4k.runtime.api.SerializationFormat
+import io.github.natanfudge.rpc4k.runtime.api.*
 import io.github.natanfudge.rpc4k.runtime.api.components.JsonFormat
 import io.github.natanfudge.rpc4k.runtime.api.components.KtorSingleRouteRpcServer
 import io.github.natanfudge.rpc4k.runtime.api.components.OkHttpRpcClient
@@ -43,6 +40,7 @@ private fun startServer() = embeddedServer(CIO, 8080) {
     }
 }.start(wait = false)
 
+//@Api
 class MyApi {
     private val dogs = mutableListOf<Dog>()
     fun getDogs(num: Int, type: String): List<Dog> {
@@ -78,7 +76,7 @@ class MyApiGeneratedServer(private val api: MyApi, private val format: Serializa
 }
 
 
-class MyApiGeneratedClient(private val client: RespondingRpcClient, private val format: SerializationFormat) {
+class MyApiGeneratedClient(private val client: RpcClient, private val format: SerializationFormat) {
     suspend fun getDogs(num: Int, type: String): List<Dog> {
         return GeneratedCodeUtils.send(
             client,

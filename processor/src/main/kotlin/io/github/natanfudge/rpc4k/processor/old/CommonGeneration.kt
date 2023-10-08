@@ -5,6 +5,7 @@ import com.google.devtools.ksp.symbol.KSNode
 import com.google.devtools.ksp.symbol.KSType
 import com.google.devtools.ksp.symbol.KSTypeReference
 import com.squareup.kotlinpoet.FileSpec
+import com.squareup.kotlinpoet.ksp.toTypeName
 import kotlinx.coroutines.flow.Flow
 import kotlinx.serialization.Serializable
 
@@ -34,6 +35,7 @@ internal fun KSTypeReference.returnTypeSerializer(): FormattedString {
     return type!!.serializerString()
 }
 
+context(SymbolProcessorEnvironment)
 internal inline fun KSNode.checkRequirement(env: SymbolProcessorEnvironment, requirement: Boolean, msg: () -> String) {
     if (!requirement) env.logger.error(msg(), this)
 }

@@ -11,7 +11,12 @@ allprojects {
     }
 
     kotlin {
-        jvmToolchain(17)
+        jvmToolchain(16)
         compilerOptions.freeCompilerArgs.add("-Xcontext-receivers")
+    }
+    java {
+        toolchain {
+            languageVersion = JavaLanguageVersion.of(16)
+        }
     }
 }

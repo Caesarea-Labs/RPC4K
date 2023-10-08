@@ -84,6 +84,7 @@ public class SimpleProtocolClientImpl(
 
 @Api
 open class UserProtocol {
+
     companion object {
         fun distraction1(){}
         val distraction2 : String = ""
@@ -93,6 +94,10 @@ open class UserProtocol {
     private fun distraction4(){}
 
     class Distraction5
+
+    open suspend fun starTest( x: List<*>) {
+
+    }
 
     open suspend fun createLobby(createdBy: PlayerId, otherThing: String): CreateLobbyResponse {
         println("Handled createlobby! $createdBy")
@@ -133,14 +138,14 @@ open class UserProtocol {
 
     }
 
-    open suspend fun flowTest(thing: Int): Flow<List<PlayerId>?> {
-        return flowOf(listOf(PlayerId(thing.toLong())))
-    }
-
-    open suspend fun sharedFlowTest(thing: Int): Flow<List<PlayerId>?> {
-        val flow = flowOf(listOf(PlayerId(thing.toLong())))
-        return flow.stateIn(CoroutineScope(currentCoroutineContext()))
-    }
+//    open suspend fun flowTest(thing: Int): Flow<List<PlayerId>?> {
+//        return flowOf(listOf(PlayerId(thing.toLong())))
+//    }
+//
+//    open suspend fun sharedFlowTest(thing: Int): Flow<List<PlayerId>?> {
+//        val flow = flowOf(listOf(PlayerId(thing.toLong())))
+//        return flow.stateIn(CoroutineScope(currentCoroutineContext()))
+//    }
 
     open suspend fun genericTest(thing: String) : GenericThing<String,Int,Long> {
         return GenericThing("", 2, 3)

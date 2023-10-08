@@ -12,7 +12,7 @@ object GeneratedCodeUtils {
      * Sends a value and returns the result
      */
     suspend fun <T> send(
-        client: RespondingRpcClient,
+        client: RpcClient,
         format: SerializationFormat,
         methodName: String,
         args: List<*>,

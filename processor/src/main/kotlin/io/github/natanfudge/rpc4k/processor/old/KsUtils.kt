@@ -11,6 +11,7 @@ import com.squareup.kotlinpoet.FileSpec
 import com.squareup.kotlinpoet.ParameterizedTypeName
 import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy
 import com.squareup.kotlinpoet.TypeName
+import com.squareup.kotlinpoet.ksp.toTypeName
 import java.io.OutputStreamWriter
 import kotlin.reflect.KProperty1
 import kotlin.reflect.full.declaredMemberProperties
@@ -19,15 +20,15 @@ import kotlin.reflect.jvm.isAccessible
 internal fun KSClassDeclaration.getPublicApiFunctions() = getDeclaredFunctions()
     .filter { !it.isConstructor() && it.isPublic() }
 
-internal fun KSTypeReference.toTypeName() = resolve().toTypeName()
-internal fun KSType.toTypeName(): TypeName {
-    val typeName = declaration.qualifiedName!!.toTypeName()
-    val actualArguments = getActualArguments()
-    val parameterized =
-        if (actualArguments.isNotEmpty()) typeName.parameterizedBy(actualArguments.map { it.type!!.toTypeName() })
-        else typeName
-    return parameterized.copy(nullable = isMarkedNullable)
-}
+internal fun KSTypeReference.toTypeName(): TypeName = resolve().toTypeName()
+//internal fun KSType.toTypeName(): TypeName {
+//    val typeName = declaration.qualifiedName!!.toTypeName()
+//    val actualArguments = getActualArguments()
+//    val parameterized =
+//        if (actualArguments.isNotEmpty()) typeName.parameterizedBy(actualArguments.map { it.type!!.toTypeName() })
+//        else typeName
+//    return parameterized.copy(nullable = isMarkedNullable)
+//}
 
 private fun KSType.getActualArguments(): List<KSTypeArgument> {
     val implClass = Class.forName("com.google.devtools.ksp.symbol.impl.kotlin.KSTypeImpl")

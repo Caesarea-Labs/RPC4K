@@ -9,7 +9,7 @@ import okhttp3.RequestBody.Companion.toRequestBody
 import okio.IOException
 import kotlin.coroutines.resume
 
-class OkHttpRpcClient(private val url: String, private val client: OkHttpClient = OkHttpClient()) : RespondingRpcClient {
+class OkHttpRpcClient(private val url: String, private val client: OkHttpClient = OkHttpClient()) : RpcClient {
 
     override suspend fun send(rpc: Rpc, format: SerializationFormat, serializers: List<SerializationStrategy<*>>): ByteArray {
         val data = rpc.toByteArray(format, serializers)
