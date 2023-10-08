@@ -3,11 +3,9 @@ package io.github.natanfudge.rpc4k.processor.utils
 import com.google.devtools.ksp.symbol.KSType
 import com.squareup.kotlinpoet.MemberName
 import com.squareup.kotlinpoet.ksp.toClassName
-import com.squareup.kotlinpoet.ksp.toTypeName
 import io.github.natanfudge.rpc4k.processor.old.*
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.builtins.ListSerializer
-import kotlinx.serialization.builtins.SetSerializer
 
 internal fun KSType.isSerializable() = isBuiltinSerializableType() || isAnnotatedBySerializable()
 
@@ -43,15 +41,19 @@ private fun KSType.isBuiltinSerializableType() =
     declaration.qualifiedName?.asString() in builtinSerializableTypes
 
 data class FormattedString(val string: String, val args: List<Any>)
-private fun String.formatWith(vararg args: Any) = FormattedString(this,args.toList())
+
+private fun String.formatWith(vararg args: Any) = FormattedString(this, args.toList())
 
 fun KSType.toSerializerString() {
     val string = if (arguments.isEmpty()) {
         "%M".formatWith(MemberName(this.toClassName(), "serializer"))
     } else {
         when (this.declaration.qualifiedName) {
-            List::class.qualifiedName ->  MemberName() ListSerializer() specialSerializer("ListSerializer", 1)
-            Set::class.qualifiedName -> specialSerializer("SetSerializer", 1)
+            List::class.qualifiedName -> MemberName() ListSerializer () specialSerializer ("ListSerializer"
+                , 1)
+                Set::class.qualifiedName
+
+            -> specialSerializer("SetSerializer", 1)
             Map::class.qualifiedName -> specialSerializer("MapSerializer", 2)
             Pair::class.qualifiedName -> specialSerializer("PairSerializer", 2)
             Map.Entry::class.qualifiedName -> specialSerializer("MapEntrySerializer", 2)
@@ -60,12 +62,15 @@ fun KSType.toSerializerString() {
     }
 }
 
+
+//TODO: use my old formatstirng implementation, it seems good. just need to document it.
+
 private fun KSType.specialSerializer(
     name: String,
 ): FormattedString {
     //TODO: figure out if star arguments cause null type, for that we need to get the debugger to work.
-    val args = arguments.map { it.type.resolve().toSerializerString() }
-    "%M("
+    val args = arguments.map { it.nonNullType().resolve().toSerializerString() }
+    "%M(${args.joinToString()}"
     return "$name(%FS)".formatWith(
         List(typeArgumentAmount) { arguments[it].type!!.serializerString() }.join(", ")
     )
