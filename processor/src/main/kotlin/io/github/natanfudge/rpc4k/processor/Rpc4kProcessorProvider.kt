@@ -4,11 +4,14 @@ import com.google.devtools.ksp.processing.Resolver
 import com.google.devtools.ksp.processing.SymbolProcessor
 import com.google.devtools.ksp.processing.SymbolProcessorEnvironment
 import com.google.devtools.ksp.processing.SymbolProcessorProvider
+import com.google.devtools.ksp.symbol.ClassKind
 import com.google.devtools.ksp.symbol.KSAnnotated
 import com.google.devtools.ksp.symbol.KSClassDeclaration
 import com.google.devtools.ksp.validate
+import com.squareup.kotlinpoet.ksp.toClassName
 import com.squareup.kotlinpoet.ksp.writeTo
 import io.github.natanfudge.rpc4k.processor.utils.getClassesWithAnnotation
+import io.github.natanfudge.rpc4k.processor.utils.poet.companion
 import io.github.natanfudge.rpc4k.runtime.api.ApiClient
 import io.github.natanfudge.rpc4k.runtime.api.ApiServer
 import kotlin.system.measureTimeMillis
@@ -51,9 +54,17 @@ internal class Rpc4kProcessor(private val env: SymbolProcessorEnvironment) : Sym
     context(SymbolProcessorEnvironment)
     private fun generateRpc(apiClass: KSClassDeclaration, client: Boolean, server: Boolean) {
         val time = measureTimeMillis {
+            val className = apiClass.toClassName()
             val api = KspToApiDefinition.convert(apiClass)
-            if (client) ApiDefinitionToClientCode.convert(api).writeTo(codeGenerator, false, listOf(apiClass.containingFile!!))
-            if (server) ApiDefinitionToServerCode.convert(api).writeTo(codeGenerator, false, listOf(apiClass.containingFile!!))
+            val context = JvmContext(
+                userClassName = className,
+                userCompanionClassName = className.companion(),
+                userClassIsInterface = apiClass.classKind == ClassKind.INTERFACE
+            )
+            with(context) {
+                if (client) ApiDefinitionToClientCode.convert(api).writeTo(codeGenerator, false, listOf(apiClass.containingFile!!))
+                if (server) ApiDefinitionToServerCode.convert(api).writeTo(codeGenerator, false, listOf(apiClass.containingFile!!))
+            }
         }
 
         env.logger.warn("Generated RPC classes for: ${apiClass.qualifiedName!!.asString()} in $time millis")

@@ -11,9 +11,7 @@ object KspToApiDefinition {
     fun convert(kspClass: KSClassDeclaration): ApiDefinition {
         return ApiDefinition(
             name = kspClass.simpleName.getShortName(),
-            implementationPackageName = kspClass.packageName.asString(),
             methods = kspClass.getPublicApiFunctions().map { convertMethod(it) }.toList(),
-            isInterface = kspClass.classKind == ClassKind.INTERFACE
         )
     }
 

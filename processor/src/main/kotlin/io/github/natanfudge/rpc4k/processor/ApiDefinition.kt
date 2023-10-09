@@ -11,12 +11,8 @@ import kotlinx.serialization.descriptors.SerialDescriptor
 import kotlinx.serialization.encoding.Decoder
 import kotlinx.serialization.encoding.Encoder
 
-/**
- * @param implementationPackageName Since the generated API server needs to reference the implementation of the server, we need to know
- * where the server implementation is.
- */
 @Serializable
-data class ApiDefinition(val name: String, val implementationPackageName: String, val methods: List<RpcDefinition>, val isInterface: Boolean = false)
+data class ApiDefinition(val name: String, val methods: List<RpcDefinition>)
 
 @Serializable
 data class RpcDefinition(val name: String, val args: List<RpcArgumentDefinition>, @Serializable(RpcTypeSerializer::class) val returnType: RpcType)

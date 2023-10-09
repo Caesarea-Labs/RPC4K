@@ -14,5 +14,8 @@ internal object ApiDefinitionConverters  {
      }
 }
 
-fun ApiDefinition.toClassName() = ClassName(implementationPackageName, name)
-fun ApiDefinition.toCompanionClassName() = ClassName(implementationPackageName, name, "Companion")
+/**
+ * This is extra info that is passed when converting classes, that is intrinsic to the JVM and other languages don't know about.
+ */
+data class JvmContext(val userClassName: ClassName, val userCompanionClassName: ClassName, val userClassIsInterface: Boolean)
+

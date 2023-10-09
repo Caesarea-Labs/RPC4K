@@ -62,23 +62,24 @@ object ApiDefinitionToServerCode {
     private val handleUtilsMethod = GeneratedCodeUtils::class.methodName("withCatching")
     private val respondUtilsMethod = GeneratedCodeUtils::class.methodName("respond")
 
+    context(JvmContext)
     fun convert(apiDefinition: ApiDefinition): FileSpec {
         val className = "${apiDefinition.name}${GeneratedCodeUtils.ServerSuffix}"
         return fileSpec(GeneratedCodeUtils.Package, className) {
             // KotlinPoet doesn't handle extension methods well
             addImport("kotlinx.serialization.builtins", "serializer")
 
-            addFunction(serverConstructorExtension(apiDefinition, className))
+            addFunction(serverConstructorExtension(generatedClassName = className))
 
             addClass(className) {
                 // I know what I'm doing, Kotlin!
                 addAnnotation(AnnotationSpec.builder(Suppress::class).addMember("%S", "UNCHECKED_CAST").build())
 
-                addType(factoryCompanionObject(apiDefinition, generatedClassName = className))
+                addType(factoryCompanionObject(generatedClassName = className))
 
                 addSuperinterface(GeneratedServerImpl::class)
                 addPrimaryConstructor {
-                    addConstructorProperty(ApiPropertyName, type = apiDefinition.toClassName(), KModifier.PRIVATE)
+                    addConstructorProperty(ApiPropertyName, type = userClassName, KModifier.PRIVATE)
                     addConstructorProperty(FormatPropertyName, type = SerializationFormat::class, KModifier.PRIVATE)
                     addConstructorProperty(ServerPropertyName, type = RpcServer::class, KModifier.PRIVATE)
                 }
@@ -98,18 +99,19 @@ object ApiDefinitionToServerCode {
      *     }
      * ```
      */
-    private fun factoryCompanionObject(api: ApiDefinition, generatedClassName: String) = companionObject(GeneratedCodeUtils.FactoryName) {
-        val apiClassName = api.toClassName()
-        addSuperinterface(GeneratedServerImplFactory::class.asClassName().parameterizedBy(apiClassName))
-        addFunction("build") {
-            addModifiers(KModifier.OVERRIDE)
-            addParameter(ApiPropertyName, apiClassName)
-            addParameter(FormatPropertyName, SerializationFormat::class)
-            addParameter(ServerPropertyName, RpcServer::class)
-            returns(GeneratedServerImpl::class)
-            addStatement("return $generatedClassName($ApiPropertyName, $FormatPropertyName, $ServerPropertyName)")
+    context(JvmContext)
+    private fun factoryCompanionObject(generatedClassName: String) =
+        companionObject(GeneratedCodeUtils.FactoryName) {
+            addSuperinterface(GeneratedServerImplFactory::class.asClassName().parameterizedBy(userClassName))
+            addFunction("build") {
+                addModifiers(KModifier.OVERRIDE)
+                addParameter(ApiPropertyName, userClassName)
+                addParameter(FormatPropertyName, SerializationFormat::class)
+                addParameter(ServerPropertyName, RpcServer::class)
+                returns(GeneratedServerImpl::class)
+                addStatement("return $generatedClassName($ApiPropertyName, $FormatPropertyName, $ServerPropertyName)")
+            }
         }
-    }
 
     /**
      * Making the generated class available with an extension function makes it more resilient to name changes
@@ -119,13 +121,15 @@ object ApiDefinitionToServerCode {
      *   fun MyApi.Companion.server(api: MyApi, format: SerializationFormat, server: RpcServer) = MyApiServerImpl(api, format, server)
      *   ```
      */
-    private fun serverConstructorExtension(api: ApiDefinition, className: String) = extensionFunction(api.toCompanionClassName(), "server") {
-        addParameter(ApiPropertyName, api.toClassName())
-        addParameter(FormatPropertyName, SerializationFormat::class)
-        addParameter(ServerPropertyName, RpcServer::class)
-        returns(ClassName(GeneratedCodeUtils.Package, className))
-        addStatement("return $className($ApiPropertyName, $FormatPropertyName, $ServerPropertyName)")
-    }
+    context(JvmContext)
+    private fun serverConstructorExtension(generatedClassName: String) =
+        extensionFunction(userCompanionClassName, "server") {
+            addParameter(ApiPropertyName, userClassName)
+            addParameter(FormatPropertyName, SerializationFormat::class)
+            addParameter(ServerPropertyName, RpcServer::class)
+            returns(ClassName(GeneratedCodeUtils.Package, generatedClassName))
+            addStatement("return $generatedClassName($ApiPropertyName, $FormatPropertyName, $ServerPropertyName)")
+        }
 
     private fun handleMethod(api: ApiDefinition): FunSpec = funSpec("handle") {
         // This overrides GeneratedServerHandler

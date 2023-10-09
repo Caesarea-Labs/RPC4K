@@ -53,6 +53,7 @@ object ApiDefinitionToClientCode {
     private val sendMethod = GeneratedCodeUtils::class.methodName("send")
     private val requestMethod = GeneratedCodeUtils::class.methodName("request")
 
+    context(JvmContext)
     fun convert(apiDefinition: ApiDefinition): FileSpec {
         val className = "${apiDefinition.name}${GeneratedCodeUtils.ClientSuffix}"
         return fileSpec(GeneratedCodeUtils.Package, className) {
@@ -60,15 +61,14 @@ object ApiDefinitionToClientCode {
             addImport("kotlinx.serialization.builtins", "serializer")
 
 
-            addFunction(clientConstructorExtension(apiDefinition, className))
+            addFunction(clientConstructorExtension(className))
 
             addClass(className) {
                 addPrimaryConstructor {
                     addConstructorProperty(ClientPropertyName, type = RpcClient::class, KModifier.PRIVATE)
                     addConstructorProperty(FormatPropertyName, type = SerializationFormat::class, KModifier.PRIVATE)
                 }
-                val superClassName = apiDefinition.toClassName()
-                if (apiDefinition.isInterface) addSuperinterface(superClassName) else superclass(superClassName)
+                if (userClassIsInterface) addSuperinterface(userClassName) else superclass(userClassName)
                 for (method in apiDefinition.methods) addFunction(convertMethod(method))
             }
         }
@@ -82,12 +82,14 @@ object ApiDefinitionToClientCode {
      *   fun MyApi.Companion.client(client: RpcClient, format: SerializationFormat) = MyApiClientImpl(client,format)
      *   ```
      */
-    private fun clientConstructorExtension(api: ApiDefinition, generatedClassName: String) = extensionFunction(api.toCompanionClassName(), "client") {
-        addParameter(ClientPropertyName, RpcClient::class)
-        addParameter(FormatPropertyName, SerializationFormat::class)
-        returns(ClassName(GeneratedCodeUtils.Package, generatedClassName))
-        addStatement("return $generatedClassName($ClientPropertyName, $FormatPropertyName)")
-    }
+    context(JvmContext)
+    private fun clientConstructorExtension(generatedClassName: String) =
+        extensionFunction(userCompanionClassName, "client") {
+            addParameter(ClientPropertyName, RpcClient::class)
+            addParameter(FormatPropertyName, SerializationFormat::class)
+            returns(ClassName(GeneratedCodeUtils.Package, generatedClassName))
+            addStatement("return $generatedClassName($ClientPropertyName, $FormatPropertyName)")
+        }
     //TODO: write codegen for client factory
 
     private fun convertMethod(rpcDefinition: RpcDefinition): FunSpec = funSpec(rpcDefinition.name) {
