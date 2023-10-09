@@ -4,9 +4,14 @@ import io.github.natanfudge.rpc4k.runtime.api.*
 import kotlinx.serialization.KSerializer
 
 /**
- * These functions are used by generated code
+ * These functions are used by generated code and code that interacts with them
  */
 object GeneratedCodeUtils {
+    const val FactoryName = "Factory"
+    const val ClientSuffix = "ClientImpl"
+    const val ServerSuffix = "ServerImpl"
+    const val Package = "io.github.natanfudge.rpc4k.generated"
+
     /**
      * Sends a value and returns the result
      */
@@ -61,10 +66,3 @@ object GeneratedCodeUtils {
     }
 }
 
-interface GeneratedServerHandler {
-    suspend fun handle(request: ByteArray, method: String)
-}
-
-interface GeneratedServerHandlerFactory<Api> {
-    fun build(api: Api, format: SerializationFormat, server: RpcServer): GeneratedServerHandler
-}

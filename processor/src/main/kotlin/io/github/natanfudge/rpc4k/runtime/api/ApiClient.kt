@@ -1,4 +1,5 @@
 package io.github.natanfudge.rpc4k.runtime.api
+
 import io.github.natanfudge.rpc4k.runtime.api.old.client.ExpectationFailedException
 import io.github.natanfudge.rpc4k.runtime.api.old.client.JvmProtocolFactory
 import io.github.natanfudge.rpc4k.runtime.api.old.client.RpcException
@@ -6,12 +7,13 @@ import io.github.natanfudge.rpc4k.runtime.api.old.server.RpcServer
 
 
 /**
+ * TODO: this doc is outdated, write new docs
  * Rpc4K provides an easy method of establishing communication between clients and a server.
  *
  * Step 1: Define an interface `MyApi` (or abstract/open class) that defines actions a client may perform with a server.
  * This interface is shared between the client and the server.
  *
- * Step 2: Annotate `MyApi` with @[Api]
+ * Step 2: Annotate `MyApi` with @[ApiClient]
  *
  * Step 3: Implement `MyApi` interface on the server and provide it to the generated `MyApiDecoder`,
  * and provide the decoder to a [RpcServer]. (i.e. `RpcServer(decoder = MyApiDecoder(protocol = <implementation>)`)
@@ -36,5 +38,9 @@ import io.github.natanfudge.rpc4k.runtime.api.old.server.RpcServer
  */
 @Target(AnnotationTarget.CLASS)
 @Retention(AnnotationRetention.SOURCE)
-annotation class Api
+annotation class ApiClient
+
+@Target(AnnotationTarget.CLASS)
+@Retention(AnnotationRetention.SOURCE)
+annotation class ApiServer
 

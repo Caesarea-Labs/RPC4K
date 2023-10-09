@@ -1,4 +1,4 @@
-package io.github.natanfudge.rpc4k_test
+package io.github.natanfudge.rpc4k.test
 
 import com.example.CreateLobbyResponse
 import com.example.PlayerId
@@ -57,8 +57,6 @@ class FakeTest {
         val protocol = JvmProtocolFactory.create<SimpleProtocol>(http = InMemoryHttpClient)
         val response = protocol.bar(2)
         assertEquals(3, response)
-        val response2 = protocol.foo(4)
-        assertFlowEquals(flowOf(5, 2, 3), response2)
     }
 
     @OptIn(DelicateCoroutinesApi::class)

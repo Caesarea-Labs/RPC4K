@@ -4,15 +4,13 @@ import com.google.devtools.ksp.processing.Resolver
 import com.google.devtools.ksp.processing.SymbolProcessor
 import com.google.devtools.ksp.processing.SymbolProcessorEnvironment
 import com.google.devtools.ksp.processing.SymbolProcessorProvider
-import com.google.devtools.ksp.symbol.*
+import com.google.devtools.ksp.symbol.KSAnnotated
+import com.google.devtools.ksp.symbol.KSClassDeclaration
 import com.google.devtools.ksp.validate
 import com.squareup.kotlinpoet.ksp.writeTo
-import io.github.natanfudge.rpc4k.processor.old.applyIf
-import io.github.natanfudge.rpc4k.processor.utils.*
-import io.github.natanfudge.rpc4k.processor.utils.checkRequirement
-import io.github.natanfudge.rpc4k.processor.utils.getPublicApiFunctions
-import io.github.natanfudge.rpc4k.processor.utils.isSerializable
-import io.github.natanfudge.rpc4k.runtime.api.Api
+import io.github.natanfudge.rpc4k.processor.utils.getClassesWithAnnotation
+import io.github.natanfudge.rpc4k.runtime.api.ApiClient
+import io.github.natanfudge.rpc4k.runtime.api.ApiServer
 import kotlin.system.measureTimeMillis
 
 internal class Rpc4kProcessorProvider : SymbolProcessorProvider {
@@ -22,23 +20,26 @@ internal class Rpc4kProcessorProvider : SymbolProcessorProvider {
 }
 
 internal class Rpc4kProcessor(private val env: SymbolProcessorEnvironment) : SymbolProcessor {
-    //TODO: make sure to use the kotlinpoet ksp integration and see stuff is happening incrementally
-
     private var processed = false
 
-    override fun process(resolver: Resolver): List<KSAnnotated> {
+    override fun process(resolver: Resolver): List<KSAnnotated> = with(env) {
         if (processed) return listOf()
         processed = true
 
         env.logger.info("Processing @Api")
+        val validator = ApiClassValidator(env)
         val time = measureTimeMillis {
-            for (symbol in resolver.getSymbolsWithAnnotation(Api::class.qualifiedName!!)) {
-                if (symbol.validate()) {
-                    with(env) {
-                        // Api is only applicable to classes
-                        generateRpc(symbol as KSClassDeclaration)
-                    }
-                }
+            val apiClients = resolver.getClassesWithAnnotation(ApiClient::class)
+                .filter { it.validate() && validator.checkApiClassIsValid(it) && validator.checkClassIsSuspendOpen(it) }
+                .toHashSet()
+            // Servers don't need to be suspendOpen
+            val apiServers = resolver.getClassesWithAnnotation(ApiServer::class)
+                .filter { it.validate() && validator.checkApiClassIsValid(it)  }
+                .toHashSet()
+            val apiClasses = (apiClients + apiServers).toSet() // Get rid of duplicates
+            for (symbol in apiClasses) {
+                // We try to only call generateRpc once because KspToApiDefinition.convert() is expensive
+                generateRpc(symbol, client = symbol in apiClients, server = symbol in apiServers)
             }
         }
         env.logger.warn("Generating RPC Classes took ${time}ms")
@@ -48,32 +49,15 @@ internal class Rpc4kProcessor(private val env: SymbolProcessorEnvironment) : Sym
     }
 
     context(SymbolProcessorEnvironment)
-    private fun generateRpc(apiClass: KSClassDeclaration) {
+    private fun generateRpc(apiClass: KSClassDeclaration, client: Boolean, server: Boolean) {
         val time = measureTimeMillis {
-            apiClass.getPublicApiFunctions().forEach { checkIsSerializable(it) }
             val api = KspToApiDefinition.convert(apiClass)
-            ApiDefinitionToClientCode.convert(api).writeTo(codeGenerator, false, listOf(apiClass.containingFile!!))
-            ApiDefinitionToServerCode.convert(api).writeTo(codeGenerator, false, listOf(apiClass.containingFile!!))
+            if (client) ApiDefinitionToClientCode.convert(api).writeTo(codeGenerator, false, listOf(apiClass.containingFile!!))
+            if (server) ApiDefinitionToServerCode.convert(api).writeTo(codeGenerator, false, listOf(apiClass.containingFile!!))
         }
 
         env.logger.warn("Generated RPC classes for: ${apiClass.qualifiedName!!.asString()} in $time millis")
     }
 
-    context(SymbolProcessorEnvironment)
-    private fun checkIsSerializable(function: KSFunctionDeclaration) {
-        for (parameter in function.parameters) {
-            checkIsSerializable(parameter.type)
-        }
-        checkIsSerializable(function.nonNullReturnType())
-    }
-
-    context(SymbolProcessorEnvironment)
-    private fun checkIsSerializable(type: KSTypeReference, target: KSNode = type, typeArgument: Boolean = false) {
-        val resolved = type.resolve()
-        target.checkRequirement(env, resolved.isSerializable()) {
-            "Type used in API method '${resolved.declaration.qualifiedName!!.asString()}' must be Serializable".appendIf(typeArgument) {" (in type argument of $target)"}
-        }
-        resolved.arguments.forEach { checkIsSerializable(it.nonNullType(), target = target, typeArgument = true) }
-    }
 }
 

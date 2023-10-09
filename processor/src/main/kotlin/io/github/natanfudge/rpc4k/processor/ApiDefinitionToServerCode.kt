@@ -1,12 +1,14 @@
 package io.github.natanfudge.rpc4k.processor
 
 import com.squareup.kotlinpoet.*
+import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy
 import io.github.natanfudge.rpc4k.processor.utils.poet.*
 import io.github.natanfudge.rpc4k.processor.utils.toSerializerString
+import io.github.natanfudge.rpc4k.runtime.api.GeneratedServerImpl
+import io.github.natanfudge.rpc4k.runtime.api.GeneratedServerImplFactory
 import io.github.natanfudge.rpc4k.runtime.api.RpcServer
 import io.github.natanfudge.rpc4k.runtime.api.SerializationFormat
 import io.github.natanfudge.rpc4k.runtime.implementation.GeneratedCodeUtils
-import io.github.natanfudge.rpc4k.runtime.implementation.GeneratedServerHandler
 
 /**
  * Converts
@@ -52,7 +54,7 @@ import io.github.natanfudge.rpc4k.runtime.implementation.GeneratedServerHandler
  * Which makes running client code much easier.
  */
 object ApiDefinitionToServerCode {
-    private const val apiPropertyName = "api"
+    private const val ApiPropertyName = "api"
     private const val FormatPropertyName = "format"
     private const val ServerPropertyName = "server"
     private const val RequestParamName = "request"
@@ -61,23 +63,68 @@ object ApiDefinitionToServerCode {
     private val respondUtilsMethod = GeneratedCodeUtils::class.methodName("respond")
 
     fun convert(apiDefinition: ApiDefinition): FileSpec {
-        val className = "${apiDefinition.name}ServerImpl"
-        return fileSpec(ApiDefinitionConverters.Package, className) {
+        val className = "${apiDefinition.name}${GeneratedCodeUtils.ServerSuffix}"
+        return fileSpec(GeneratedCodeUtils.Package, className) {
             // KotlinPoet doesn't handle extension methods well
             addImport("kotlinx.serialization.builtins", "serializer")
+
+            addFunction(serverConstructorExtension(apiDefinition, className))
+
             addClass(className) {
                 // I know what I'm doing, Kotlin!
                 addAnnotation(AnnotationSpec.builder(Suppress::class).addMember("%S", "UNCHECKED_CAST").build())
 
-                addSuperinterface(GeneratedServerHandler::class)
+                addType(factoryCompanionObject(apiDefinition, generatedClassName = className))
+
+                addSuperinterface(GeneratedServerImpl::class)
                 addPrimaryConstructor {
-                    addConstructorProperty(apiPropertyName, type = ClassName(apiDefinition.implementationPackageName, apiDefinition.name), KModifier.PRIVATE)
+                    addConstructorProperty(ApiPropertyName, type = apiDefinition.toClassName(), KModifier.PRIVATE)
                     addConstructorProperty(FormatPropertyName, type = SerializationFormat::class, KModifier.PRIVATE)
                     addConstructorProperty(ServerPropertyName, type = RpcServer::class, KModifier.PRIVATE)
                 }
                 addFunction(handleMethod(apiDefinition))
             }
         }
+    }
+
+    /**
+     * We generate a factory for the generated server implementation for it to be easy to just pass a [GeneratedServerImplFactory]
+     * The generated code looks like this:
+     * ```
+     *     companion object Factory : GeneratedServerHandlerFactory<UserProtocol> {
+     *         override fun build(api: UserProtocol, format: SerializationFormat, server: RpcServer): GeneratedServerHandler {
+     *             return UserProtocolServerImpl(api, format, server)
+     *         }
+     *     }
+     * ```
+     */
+    private fun factoryCompanionObject(api: ApiDefinition, generatedClassName: String) = companionObject(GeneratedCodeUtils.FactoryName) {
+        val apiClassName = api.toClassName()
+        addSuperinterface(GeneratedServerImplFactory::class.asClassName().parameterizedBy(apiClassName))
+        addFunction("build") {
+            addModifiers(KModifier.OVERRIDE)
+            addParameter(ApiPropertyName, apiClassName)
+            addParameter(FormatPropertyName, SerializationFormat::class)
+            addParameter(ServerPropertyName, RpcServer::class)
+            returns(GeneratedServerImpl::class)
+            addStatement("return $generatedClassName($ApiPropertyName, $FormatPropertyName, $ServerPropertyName)")
+        }
+    }
+
+    /**
+     * Making the generated class available with an extension function makes it more resilient to name changes
+     *   since you will no longer need to directly reference the generated class.
+     *   Looks like:
+     *   ```
+     *   fun MyApi.Companion.server(api: MyApi, format: SerializationFormat, server: RpcServer) = MyApiServerImpl(api, format, server)
+     *   ```
+     */
+    private fun serverConstructorExtension(api: ApiDefinition, className: String) = extensionFunction(api.toCompanionClassName(), "server") {
+        addParameter(ApiPropertyName, api.toClassName())
+        addParameter(FormatPropertyName, SerializationFormat::class)
+        addParameter(ServerPropertyName, RpcServer::class)
+        returns(ClassName(GeneratedCodeUtils.Package, className))
+        addStatement("return $className($ApiPropertyName, $FormatPropertyName, $ServerPropertyName)")
     }
 
     private fun handleMethod(api: ApiDefinition): FunSpec = funSpec("handle") {
@@ -89,7 +136,7 @@ object ApiDefinitionToServerCode {
 
         addControlFlow("%M($ServerPropertyName)", handleUtilsMethod) {
             addControlFlow("when($MethodParamName)") {
-                for(method in api.methods) {
+                for (method in api.methods) {
                     addEndpointHandler(method)
                 }
             }
@@ -109,7 +156,7 @@ object ApiDefinitionToServerCode {
         )
 
         addControlFlow(respondUtilsMethod.withArgumentList(arguments)) {
-            addStatement("$apiPropertyName.${rpc.name}".formatString().withMethodArguments(endpointArguments(rpc)))
+            addStatement("$ApiPropertyName.${rpc.name}".formatString().withMethodArguments(endpointArguments(rpc)))
         }
     }
 

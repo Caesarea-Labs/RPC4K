@@ -1,4 +1,4 @@
-package io.github.natanfudge.rpc4k_test
+package io.github.natanfudge.rpc4k.test
 
 //class RealServerTestTemp {
 //    private val port = Port(8081)

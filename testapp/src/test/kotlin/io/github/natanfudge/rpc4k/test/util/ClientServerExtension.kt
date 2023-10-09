@@ -1,42 +1,56 @@
 package io.github.natanfudge.rpc4k.test.util
 
+import io.github.natanfudge.rpc4k.runtime.api.GeneratedClientImplFactory
+import io.github.natanfudge.rpc4k.runtime.api.GeneratedServerImplFactory
 import io.github.natanfudge.rpc4k.runtime.api.RpcClient
 import io.github.natanfudge.rpc4k.runtime.api.SerializationFormat
 import io.github.natanfudge.rpc4k.runtime.api.components.JsonFormat
 import io.github.natanfudge.rpc4k.runtime.api.components.OkHttpRpcClient
-import io.github.natanfudge.rpc4k.runtime.implementation.GeneratedServerHandlerFactory
+import io.github.natanfudge.rpc4k.runtime.implementation.GeneratedCodeUtils
 import okhttp3.OkHttpClient
 import org.junit.jupiter.api.extension.AfterAllCallback
 import org.junit.jupiter.api.extension.BeforeAllCallback
 import org.junit.jupiter.api.extension.Extension
 import org.junit.jupiter.api.extension.ExtensionContext
+import kotlin.reflect.full.companionObjectInstance
 
-//TODO:
-// Add .client(a,b) and .server(a,b,c) extension methods to reference the generated classes (this makes it more resilient to name changes)
-// Add .ClientFactory and .ServerFactory objects to reference the constructors of the generated classes (this makes it easier to have generic stuff)
 
 fun <API> rpcExtension(
-    api: API,
-    generatedClass: GeneratedServerHandlerFactory<API>,
+    serverHandler: API,
+    generatedClass: GeneratedServerImplFactory<API>,
+    generatedClient: GeneratedClientImplFactory<API>,
     format: SerializationFormat = JsonFormat(),
     server: ServerExtensionFactory<API> = ServerExtensionFactory.Ktor(),
     client: RpcClientFactory<API> = RpcClientFactory.OkHttp()
-): ClientServerExtension {
-    val serverExtension = server.build(api, generatedClass, format)
+): ClientServerExtension<API> {
+    val serverExtension = server.build(serverHandler, generatedClass, format)
     val url = "http://localhost:${serverExtension.port}"
-    return ClientServerExtension(server.build(api, generatedClass, format), client.build(url))
+    return ClientServerExtension(server.build(serverHandler, generatedClass, format), generatedClient.build(format, client.build(url)))
 }
 
 inline fun <reified API> rpcExtension(
-    api: API,
+    serverHandler: API,
     format: SerializationFormat = JsonFormat(),
     server: ServerExtensionFactory<API> = ServerExtensionFactory.Ktor(),
     client: RpcClientFactory<API> = RpcClientFactory.OkHttp()
-): ClientServerExtension = rpcExtension(api, apiServerFactory(), format, server, client)
+): ClientServerExtension<API> {
+    return rpcExtension(serverHandler, apiServerFactory(), apiClientFactory(), format, server, client)
+}
 
-inline fun <reified API> apiServerFactory(): GeneratedServerHandlerFactory<API> = TODO()
+@Suppress("UNCHECKED_CAST")
+inline fun <reified API> apiServerFactory(): GeneratedServerImplFactory<API> {
+    return Class.forName(GeneratedCodeUtils.Package + "." + API::class.simpleName + GeneratedCodeUtils.ServerSuffix)
+        .kotlin.companionObjectInstance as GeneratedServerImplFactory<API>
+}
 
-class ClientServerExtension(private val serverExtension: ServerExtension, private val client: RpcClient) : Extension, BeforeAllCallback,
+@Suppress("UNCHECKED_CAST")
+inline fun <reified API> apiClientFactory(): GeneratedClientImplFactory<API> {
+    return Class.forName(GeneratedCodeUtils.Package + "." + API::class.simpleName + GeneratedCodeUtils.ClientSuffix)
+        .kotlin.companionObjectInstance as GeneratedClientImplFactory<API>
+}
+
+
+class ClientServerExtension<API>(private val serverExtension: ServerExtension, val api: API) : Extension, BeforeAllCallback,
     AfterAllCallback {
     override fun beforeAll(context: ExtensionContext) {
         serverExtension.beforeAll(context)
@@ -53,10 +67,10 @@ class ClientServerExtension(private val serverExtension: ServerExtension, privat
  * often have many parameters.
  */
 interface ServerExtensionFactory<API> {
-    fun build(api: API, generatedClassFactory: GeneratedServerHandlerFactory<API>, format: SerializationFormat): ServerExtension
+    fun build(api: API, generatedClassFactory: GeneratedServerImplFactory<API>, format: SerializationFormat): ServerExtension
 
     class Ktor<Api> : ServerExtensionFactory<Api> {
-        override fun build(api: Api, generatedClassFactory: GeneratedServerHandlerFactory<Api>, format: SerializationFormat): ServerExtension {
+        override fun build(api: Api, generatedClassFactory: GeneratedServerImplFactory<Api>, format: SerializationFormat): ServerExtension {
             return KtorServerExtension { generatedClassFactory.build(api, format, it) }
         }
     }

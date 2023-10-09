@@ -12,10 +12,11 @@ import kotlin.test.assertEquals
 class DirectProcessorTest {
 
     @Test
-    fun `test my annotation processor`() {
-        val testSources = File("../testapp/src").walkBottomUp().toList()
+    fun `Symbol processor success`() {
+        val testSources = (File("../testapp/src/main").walkBottomUp() + File("../testapp/src/test").walkBottomUp())
             .filter { it.isFile }
             .map { SourceFile.fromPath(it) }
+            .toList()
 
         val result = KotlinCompilation().apply {
             sources = testSources
@@ -26,6 +27,23 @@ class DirectProcessorTest {
 
         assertEquals(KotlinCompilation.ExitCode.OK, result.exitCode)
 
+    }
+
+    @Test
+    fun `Symbol processor gives off correct errors`() {
+        val testSources = File("../testapp/src/errors").walkBottomUp()
+            .filter { it.isFile }
+            .map { SourceFile.fromPath(it) }
+            .toList()
+
+        val result = KotlinCompilation().apply {
+            sources = testSources
+            symbolProcessorProviders = listOf(Rpc4kProcessorProvider())
+            inheritClassPath = true
+            messageOutputStream = System.out // see diagnostics in real time
+        }.compile()
+
+        assertEquals(KotlinCompilation.ExitCode.COMPILATION_ERROR, result.exitCode)
     }
 
 }

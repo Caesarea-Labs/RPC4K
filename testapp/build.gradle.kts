@@ -19,16 +19,9 @@ dependencies {
     testImplementation(libs.ktor)
     testImplementation(libs.logback)
 }
+
 sourceSets {
-    main {
-        java {
-            srcDir(project.file("build/generated/ksp/src/main/kotlin"))
-        }
-    }
-    test {
-        java {
-            srcDir(project.file("build/generated/ksp/src/test/kotlin"))
-        }
+    create("errors") {
+        compileClasspath += test.get().compileClasspath
     }
 }
-

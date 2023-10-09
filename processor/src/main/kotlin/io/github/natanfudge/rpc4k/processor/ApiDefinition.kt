@@ -16,7 +16,7 @@ import kotlinx.serialization.encoding.Encoder
  * where the server implementation is.
  */
 @Serializable
-data class ApiDefinition(val name: String, val implementationPackageName: String, val methods: List<RpcDefinition>)
+data class ApiDefinition(val name: String, val implementationPackageName: String, val methods: List<RpcDefinition>, val isInterface: Boolean = false)
 
 @Serializable
 data class RpcDefinition(val name: String, val args: List<RpcArgumentDefinition>, @Serializable(RpcTypeSerializer::class) val returnType: RpcType)

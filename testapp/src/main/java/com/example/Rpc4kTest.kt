@@ -1,6 +1,7 @@
 package com.example
 
-import io.github.natanfudge.rpc4k.runtime.api.Api
+import io.github.natanfudge.rpc4k.runtime.api.ApiClient
+import io.github.natanfudge.rpc4k.runtime.api.ApiServer
 import io.github.natanfudge.rpc4k.runtime.api.old.utils.DecoderContext
 import io.github.natanfudge.rpc4k.runtime.api.old.utils.Rpc4KGeneratedClientUtils
 import io.github.natanfudge.rpc4k.runtime.api.old.utils.Rpc4kGeneratedServerUtils
@@ -18,69 +19,21 @@ data class PlayerId(val num: Long)
 @Serializable
 data class CreateLobbyResponse(val id: Long)
 
+@ApiClient
+@ApiServer
 open class SimpleProtocol {
-    open suspend fun foo(thing: Int): Flow<Int> {
-        return flowOf(1 + thing, 2, 3)
-    }
+    companion object;
+//    open suspend fun foo(thing: Int): Flow<Int> {
+//        return flowOf(1 + thing, 2, 3)
+//    }
 
     open suspend fun bar(thing: Int): Int {
         return thing + 1
     }
 }
 
-class SimpleProtocolDecoder(private val protocol: SimpleProtocol, private val context: DecoderContext) :
-    ProtocolDecoder<SimpleProtocol> {
-    override suspend fun accept(route: String, args: List<ByteArray>): Any {
-        fun <T> p(serializer: KSerializer<T>, index: Int) =
-            Rpc4kGeneratedServerUtils.decodeParameter(context, serializer, args, index)
-
-        fun <T> r(serializer: KSerializer<T>, value: T) =
-            Rpc4kGeneratedServerUtils.encodeResponse(context.format, serializer, value)
-
-        fun <T> r(serializer: KSerializer<T>, value: Flow<T>) =
-            Rpc4kGeneratedServerUtils.encodeFlowResponse(context.format, serializer, value)
-
-        return when (route) {
-            "bar" -> r(
-                Int.serializer(),
-                this.protocol.bar(
-                    p(Int.serializer(), 0)
-                )
-            )
-            "foo" -> r(
-                Int.serializer(), this.protocol.foo(
-                    p(Int.serializer(), 0),
-                )
-            )
-            else -> error("")
-        }
-    }
-
-}
-
-
-public class SimpleProtocolClientImpl(
-    private val client: RpcClientComponents
-) : SimpleProtocol() {
-    public override suspend fun bar(thing: Int): Int =
-        Rpc4KGeneratedClientUtils.send(
-            this.client,
-            "bar",
-            Int.serializer(),
-            thing to Int.serializer(),
-        )
-
-    public override suspend fun foo(thing: Int): Flow<Int> =
-        Rpc4KGeneratedClientUtils.sendFlow(
-            this.client,
-            "foo",
-            Int.serializer(),
-            thing to Int.serializer(),
-        )
-}
-
-
-@Api
+@ApiClient
+@ApiServer
 open class UserProtocol {
 
     companion object {
@@ -152,7 +105,7 @@ open class UserProtocol {
     open suspend fun errorTest() {
         throw Exception("")
     }
-    fun noArgTest() {
+    open suspend fun noArgTest() {
         println("Halo")
     }
 
@@ -160,6 +113,7 @@ open class UserProtocol {
         require(value == 2){"Value must be 2"}
     }
 }
+
 
 
 @Serializable
