@@ -1,4 +1,4 @@
-package io.github.natanfudge.rpc4k.runtime.impl
+package io.github.natanfudge.rpc4k.runtime.implementation
 
 
 

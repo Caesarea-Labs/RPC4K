@@ -1,4 +1,4 @@
-package io.github.natanfudge.rpc4k.runtime.impl.old
+package io.github.natanfudge.rpc4k.runtime.implementation.old
 
 
 /////////////////////////////////////// OLD ////////////////////////////

@@ -4,12 +4,15 @@ import com.google.devtools.ksp.symbol.*
 import com.squareup.kotlinpoet.asTypeName
 import com.squareup.kotlinpoet.ksp.toTypeName
 import io.github.natanfudge.rpc4k.processor.old.toTypeName
+import io.github.natanfudge.rpc4k.processor.utils.getPublicApiFunctions
+import io.github.natanfudge.rpc4k.processor.utils.nonNullReturnType
 
 object KspToApiDefinition {
     fun convert(kspClass: KSClassDeclaration): ApiDefinition {
         return ApiDefinition(
             name = kspClass.simpleName.getShortName(),
-            methods = kspClass.getAllFunctions().map { convertMethod(it) }.toList()
+            implementationPackageName = kspClass.packageName.asString(),
+            methods = kspClass.getPublicApiFunctions().map { convertMethod(it) }.toList()
         )
     }
 
@@ -17,7 +20,7 @@ object KspToApiDefinition {
         return RpcDefinition(
             kspMethod.simpleName.getShortName(),
             args = kspMethod.parameters.map { convertArgument(it) }.toList(),
-            returnType = convertType(kspMethod.returnType)
+            returnType = convertType(kspMethod.nonNullReturnType())
         )
     }
 
@@ -28,8 +31,7 @@ object KspToApiDefinition {
         )
     }
 
-    private fun convertType(type: KSTypeReference?): RpcType {
-        if (type == null) return Unit::class.java.asTypeName()
-        return type.resolve().toTypeName()
+    private fun convertType(type: KSTypeReference): RpcType {
+        return RpcType.Ksp(type)
     }
 }

@@ -18,7 +18,7 @@ junit = "4.13.2"
 ksp_version = "1.5.10-1.0.0-beta01"
 okhttp = "5.0.0-alpha.11"
 ktor = "2.2.4"
-
+logback = "1.4.11"
 [libraries]
 kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin" }
 symbol-processing-api = { module = "com.google.devtools.ksp:symbol-processing-api", version.ref = "ksp" }
@@ -32,3 +32,4 @@ junit = { module = "junit:junit", version.ref = "junit" }
 ktor = {module = "io.ktor:ktor-server-cio", version.ref = "ktor"}
 okhttp-sse = {module = "com.squareup.okhttp3:okhttp-sse", version.ref = "okhttp"}
 okhttp-core = {module = "com.squareup.okhttp3:okhttp", version.ref = "okhttp"}
+logback = {module = "ch.qos.logback:logback-classic", version.ref = "logback"}

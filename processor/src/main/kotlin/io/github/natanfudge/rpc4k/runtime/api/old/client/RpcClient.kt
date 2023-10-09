@@ -1,7 +1,7 @@
 package io.github.natanfudge.rpc4k.runtime.api.old.client
 
 import io.github.natanfudge.rpc4k.runtime.api.old.format.JsonFormat
-import io.github.natanfudge.rpc4k.runtime.impl.RpcClientComponents
+import io.github.natanfudge.rpc4k.runtime.api.old.utils.RpcClientComponents
 import io.github.natanfudge.rpc4k.processor.old.GeneratedClientImplSuffix
 import io.github.natanfudge.rpc4k.runtime.api.old.format.SerializationFormat
 import kotlinx.coroutines.flow.Flow

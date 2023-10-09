@@ -7,8 +7,8 @@ import com.squareup.kotlinpoet.FunSpec
 import com.squareup.kotlinpoet.KModifier
 import com.squareup.kotlinpoet.TypeSpec
 import com.squareup.kotlinpoet.asTypeName
-import io.github.natanfudge.rpc4k.runtime.impl.Rpc4KGeneratedClientUtils
-import io.github.natanfudge.rpc4k.runtime.impl.RpcClientComponents
+import io.github.natanfudge.rpc4k.runtime.api.old.utils.Rpc4KGeneratedClientUtils
+import io.github.natanfudge.rpc4k.runtime.api.old.utils.RpcClientComponents
 
 internal object ClientImplGenerator {
      fun generate(env: SymbolProcessorEnvironment, apiClass: KSClassDeclaration) {

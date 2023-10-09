@@ -3,7 +3,11 @@ package io.github.natanfudge.rpc4k.processor.old
 import com.squareup.kotlinpoet.*
 import kotlin.reflect.KClass
 
-internal data class FormattedString(val string: String, val formatArguments: List<TypeName>) {
+/**
+ * Represents a string like `"%T.serializer()"` formatted with a value like `Int`.
+ * This allows creating utility functions that return both the format [string] and the [formatArguments] for it.
+ */
+internal data class FormattedString(val string: String, val formatArguments: List<Any>) {
     companion object {
         const val FormatStringSign = "%FS"
     }
@@ -11,12 +15,17 @@ internal data class FormattedString(val string: String, val formatArguments: Lis
     operator fun plus(other: FormattedString) =
         FormattedString(this.string + other.string, formatArguments + other.formatArguments)
 
+    /**
+     * See other formatWith Overload
+     */
     internal fun formatWith(vararg formattedStrings: FormattedString): FormattedString =
         formatWith(formattedStrings.toList())
 
-    // Properly puts the format arguments in the correct position in accordance with the position of the %FS in the string
+    /**
+     *  Properly puts the format arguments in the correct position in accordance with the position of the %FS in the string
+     *  */
     internal fun formatWith(formattedStrings: List<FormattedString>): FormattedString {
-        val types = mutableListOf<TypeName>()
+        val types = mutableListOf<Any>()
         var currentArgPosition = 0
         val formatStringPositions = mutableListOf<Int>()
         for (i in string.indices) {

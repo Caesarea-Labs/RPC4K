@@ -1,8 +1,10 @@
 package io.github.natanfudge.rpc4k.test.util
 
 import io.github.natanfudge.rpc4k.runtime.api.Rpc
+import io.github.natanfudge.rpc4k.runtime.api.components.JsonFormat
 import io.github.natanfudge.rpc4k.runtime.api.components.KtorSingleRouteRpcServer
-import io.github.natanfudge.rpc4k.runtime.api.old.utils.GeneratedServerHandler
+import io.github.natanfudge.rpc4k.runtime.implementation.GeneratedServerHandler
+import io.github.natanfudge.rpc4k.runtime.implementation.GeneratedServerHandlerFactory
 import io.ktor.server.application.*
 import io.ktor.server.cio.*
 import io.ktor.server.engine.*
@@ -16,9 +18,10 @@ import org.junit.jupiter.api.extension.ExtensionContext
 import java.net.ServerSocket
 import java.net.SocketException
 
-class KtorServerExtension(private val handler: (KtorSingleRouteRpcServer) -> GeneratedServerHandler) : Extension, BeforeAllCallback,
-    AfterAllCallback {
-    val port = getAvailablePort(8080, 8200)
+class KtorServerExtension(private val handler: (KtorSingleRouteRpcServer) -> GeneratedServerHandler) : ServerExtension {
+
+
+    override val port = getAvailablePort(8080, 8200)
     private val server = embeddedServer(CIO, port) {
         routing {
             post("/") {

@@ -4,11 +4,11 @@ import com.google.devtools.ksp.processing.Resolver
 import com.google.devtools.ksp.processing.SymbolProcessor
 import com.google.devtools.ksp.processing.SymbolProcessorEnvironment
 import com.google.devtools.ksp.processing.SymbolProcessorProvider
-import com.google.devtools.ksp.symbol.KSAnnotated
-import com.google.devtools.ksp.symbol.KSClassDeclaration
-import com.google.devtools.ksp.symbol.KSFunctionDeclaration
-import com.google.devtools.ksp.symbol.KSTypeReference
+import com.google.devtools.ksp.symbol.*
 import com.google.devtools.ksp.validate
+import com.squareup.kotlinpoet.ksp.writeTo
+import io.github.natanfudge.rpc4k.processor.old.applyIf
+import io.github.natanfudge.rpc4k.processor.utils.*
 import io.github.natanfudge.rpc4k.processor.utils.checkRequirement
 import io.github.natanfudge.rpc4k.processor.utils.getPublicApiFunctions
 import io.github.natanfudge.rpc4k.processor.utils.isSerializable
@@ -51,12 +51,12 @@ internal class Rpc4kProcessor(private val env: SymbolProcessorEnvironment) : Sym
     private fun generateRpc(apiClass: KSClassDeclaration) {
         val time = measureTimeMillis {
             apiClass.getPublicApiFunctions().forEach { checkIsSerializable(it) }
-//            ClientImplGenerator.generate(env, apiClass)
-//            ServerDecoderGenerator.generate(env, apiClass)
+            val api = KspToApiDefinition.convert(apiClass)
+            ApiDefinitionToClientCode.convert(api).writeTo(codeGenerator, false, listOf(apiClass.containingFile!!))
+            ApiDefinitionToServerCode.convert(api).writeTo(codeGenerator, false, listOf(apiClass.containingFile!!))
         }
 
-
-        env.logger.info("Generated RPC classes for: ${apiClass.qualifiedName!!.asString()} in $time millis")
+        env.logger.warn("Generated RPC classes for: ${apiClass.qualifiedName!!.asString()} in $time millis")
     }
 
     context(SymbolProcessorEnvironment)
@@ -64,16 +64,16 @@ internal class Rpc4kProcessor(private val env: SymbolProcessorEnvironment) : Sym
         for (parameter in function.parameters) {
             checkIsSerializable(parameter.type)
         }
-        checkIsSerializable(function.returnType)
+        checkIsSerializable(function.nonNullReturnType())
     }
 
     context(SymbolProcessorEnvironment)
-    private fun checkIsSerializable(type: KSTypeReference?) {
-        if (type == null) return
+    private fun checkIsSerializable(type: KSTypeReference, target: KSNode = type, typeArgument: Boolean = false) {
         val resolved = type.resolve()
-        type.checkRequirement(env, resolved.isSerializable()) {
-            "Type used in API method '${resolved.declaration.qualifiedName!!.asString()}' must be Serializable"
+        target.checkRequirement(env, resolved.isSerializable()) {
+            "Type used in API method '${resolved.declaration.qualifiedName!!.asString()}' must be Serializable".appendIf(typeArgument) {" (in type argument of $target)"}
         }
+        resolved.arguments.forEach { checkIsSerializable(it.nonNullType(), target = target, typeArgument = true) }
     }
 }
 

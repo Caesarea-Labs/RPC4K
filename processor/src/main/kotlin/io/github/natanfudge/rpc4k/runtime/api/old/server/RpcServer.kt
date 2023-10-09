@@ -1,11 +1,11 @@
 package io.github.natanfudge.rpc4k.runtime.api.old.server
 
 import io.github.natanfudge.rpc4k.runtime.api.old.format.JsonFormat
-import io.github.natanfudge.rpc4k.runtime.impl.DecoderContext
-import io.github.natanfudge.rpc4k.runtime.impl.Interceptors
+import io.github.natanfudge.rpc4k.runtime.api.old.utils.DecoderContext
+import io.github.natanfudge.rpc4k.runtime.api.old.utils.Interceptors
 import io.github.natanfudge.rpc4k.processor.old.GeneratedServerImplSuffix
 import io.github.natanfudge.rpc4k.runtime.api.old.format.SerializationFormat
-import io.github.natanfudge.rpc4k.runtime.impl.old.splitJoinedAndDecode
+import io.github.natanfudge.rpc4k.runtime.implementation.old.splitJoinedAndDecode
 import kotlinx.coroutines.flow.Flow
 import kotlin.reflect.KClass
 

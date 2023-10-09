@@ -1,6 +1,6 @@
 package io.github.natanfudge.rpc4k.runtime.api
 
-import io.github.natanfudge.rpc4k.runtime.impl.*
+import io.github.natanfudge.rpc4k.runtime.implementation.*
 import kotlinx.serialization.DeserializationStrategy
 import kotlinx.serialization.SerializationStrategy
 

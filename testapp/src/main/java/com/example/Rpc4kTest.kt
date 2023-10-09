@@ -1,16 +1,13 @@
 package com.example
 
 import io.github.natanfudge.rpc4k.runtime.api.Api
-import io.github.natanfudge.rpc4k.runtime.impl.DecoderContext
-import io.github.natanfudge.rpc4k.runtime.impl.Rpc4KGeneratedClientUtils
-import io.github.natanfudge.rpc4k.runtime.impl.Rpc4kGeneratedServerUtils
-import io.github.natanfudge.rpc4k.runtime.impl.RpcClientComponents
+import io.github.natanfudge.rpc4k.runtime.api.old.utils.DecoderContext
+import io.github.natanfudge.rpc4k.runtime.api.old.utils.Rpc4KGeneratedClientUtils
+import io.github.natanfudge.rpc4k.runtime.api.old.utils.Rpc4kGeneratedServerUtils
+import io.github.natanfudge.rpc4k.runtime.api.old.utils.RpcClientComponents
 import io.github.natanfudge.rpc4k.runtime.api.old.server.ProtocolDecoder
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.currentCoroutineContext
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
-import kotlinx.coroutines.flow.stateIn
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.builtins.serializer
@@ -61,6 +58,7 @@ class SimpleProtocolDecoder(private val protocol: SimpleProtocol, private val co
 
 }
 
+
 public class SimpleProtocolClientImpl(
     private val client: RpcClientComponents
 ) : SimpleProtocol() {
@@ -95,9 +93,9 @@ open class UserProtocol {
 
     class Distraction5
 
-    open suspend fun starTest( x: List<*>) {
-
-    }
+//    open suspend fun starTest( x: List<*>) {
+//
+//    }
 
     open suspend fun createLobby(createdBy: PlayerId, otherThing: String): CreateLobbyResponse {
         println("Handled createlobby! $createdBy")
@@ -153,6 +151,9 @@ open class UserProtocol {
     
     open suspend fun errorTest() {
         throw Exception("")
+    }
+    fun noArgTest() {
+        println("Halo")
     }
 
     open suspend fun requirementFail(value: Int) {

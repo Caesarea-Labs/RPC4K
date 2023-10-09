@@ -1,7 +1,6 @@
-package io.github.natanfudge.rpc4k.runtime.impl
+package io.github.natanfudge.rpc4k.runtime.implementation
 
 import io.github.natanfudge.rpc4k.runtime.api.RpcClientException
-import io.github.natanfudge.rpc4k.runtime.api.RpcError
 
 /**
  * Used by RPC4k to signal itself to return an error value.

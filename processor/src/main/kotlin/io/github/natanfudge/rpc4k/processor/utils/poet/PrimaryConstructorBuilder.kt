@@ -1,17 +1,7 @@
-package io.github.natanfudge.rpc4k.processor.utils
+package io.github.natanfudge.rpc4k.processor.utils.poet
 
 import com.squareup.kotlinpoet.*
 import kotlin.reflect.KClass
-
-fun fileSpec(packageName: String, className: String, builder: FileSpec.Builder.() -> Unit) : FileSpec{
-    return FileSpec.builder(packageName, className).apply(builder).build()
-}
-
-internal fun FileSpec.Builder.classSpec(name: String, builder: TypeSpec.Builder.() -> Unit) = addType(
-    TypeSpec.classBuilder(name).apply(builder).build()
-)
-
-internal fun funSpec(name: String, builder: FunSpec.Builder.() -> Unit) = FunSpec.builder(name).apply(builder).build()
 
 /**
  * KotlinPoet doesn't have native support for constructor properties, but it allows generating them by merging parameters of the primary constructor
@@ -22,10 +12,10 @@ class PrimaryConstructorBuilder {
 
     private val properties = mutableListOf<ConstructorProperty>()
 
-    fun constructorProperty(name: String, type: TypeName, vararg modifiers: KModifier) {
+    fun addConstructorProperty(name: String, type: TypeName, vararg modifiers: KModifier) {
         properties.add(ConstructorProperty(name, type, modifiers.toList()))
     }
-    fun constructorProperty(name: String, type: KClass<*>, vararg modifiers: KModifier) {
+    fun addConstructorProperty(name: String, type: KClass<*>, vararg modifiers: KModifier) {
         properties.add(ConstructorProperty(name, type.asTypeName(), modifiers.toList()))
     }
 
@@ -56,6 +46,6 @@ class PrimaryConstructorBuilder {
     }
 }
 
-fun TypeSpec.Builder.primaryConstructor(builder: PrimaryConstructorBuilder.() -> Unit) {
+fun TypeSpec.Builder.addPrimaryConstructor(builder: PrimaryConstructorBuilder.() -> Unit) {
     PrimaryConstructorBuilder().apply(builder).__addToType(this)
 }

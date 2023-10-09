@@ -1,5 +1,7 @@
 package io.github.natanfudge.rpc4k.test
 
+import io.github.natanfudge.rpc4k.generated.MyApiClientImpl
+import io.github.natanfudge.rpc4k.generated.MyApiServerImpl
 import io.github.natanfudge.rpc4k.runtime.api.components.JsonFormat
 import io.github.natanfudge.rpc4k.runtime.api.components.OkHttpRpcClient
 import io.github.natanfudge.rpc4k.test.util.KtorServerExtension
@@ -15,12 +17,12 @@ class KtorServerTest {
 
         @JvmField
         @RegisterExtension
-        val ktor = KtorServerExtension { MyApiGeneratedServer(api, JsonFormat(), it) }
+        val ktor = KtorServerExtension { MyApiServerImpl(api, JsonFormat(), it) }
     }
 
     @Test
     fun `Basic RPCs work`(): Unit = runBlocking {
-        val client = MyApiGeneratedClient(OkHttpRpcClient("http://localhost:${ktor.port}"), JsonFormat())
+        val client = MyApiClientImpl(OkHttpRpcClient("http://localhost:${ktor.port}"), JsonFormat())
         val dog = Dog("asdf", "shiba", 2)
         client.putDog(dog)
         val dogs = client.getDogs(2, "shiba")

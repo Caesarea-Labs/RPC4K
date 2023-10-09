@@ -3,7 +3,7 @@ package io.github.natanfudge.rpc4k.runtime.api.old.server
 import io.github.natanfudge.rpc4k.runtime.api.old.client.UnauthorizedException
 import io.github.natanfudge.rpc4k.runtime.api.old.Logger
 import io.github.natanfudge.rpc4k.runtime.api.old.Port
-import io.github.natanfudge.rpc4k.runtime.impl.old.Sse
+import io.github.natanfudge.rpc4k.runtime.implementation.old.Sse
 import io.ktor.http.CacheControl
 import io.ktor.http.ContentType
 import io.ktor.http.HttpStatusCode

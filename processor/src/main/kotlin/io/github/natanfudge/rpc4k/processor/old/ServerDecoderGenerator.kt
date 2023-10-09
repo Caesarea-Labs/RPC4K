@@ -8,8 +8,8 @@ import com.squareup.kotlinpoet.KModifier
 import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy
 import com.squareup.kotlinpoet.TypeSpec
 import com.squareup.kotlinpoet.asTypeName
-import io.github.natanfudge.rpc4k.runtime.impl.DecoderContext
-import io.github.natanfudge.rpc4k.runtime.impl.Rpc4kGeneratedServerUtils
+import io.github.natanfudge.rpc4k.runtime.api.old.utils.DecoderContext
+import io.github.natanfudge.rpc4k.runtime.api.old.utils.Rpc4kGeneratedServerUtils
 import io.github.natanfudge.rpc4k.runtime.api.old.server.ProtocolDecoder
 import kotlinx.coroutines.flow.Flow
 import kotlinx.serialization.KSerializer

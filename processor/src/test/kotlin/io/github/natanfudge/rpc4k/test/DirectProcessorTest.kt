@@ -4,13 +4,12 @@ import com.tschuchort.compiletesting.KotlinCompilation
 import com.tschuchort.compiletesting.SourceFile
 import com.tschuchort.compiletesting.symbolProcessorProviders
 import io.github.natanfudge.rpc4k.processor.Rpc4kProcessorProvider
-import io.github.natanfudge.rpc4k.processor.old.Rpc4kProcessorProviderOld
 import java.io.File
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
 
-class TestStuff {
+class DirectProcessorTest {
 
     @Test
     fun `test my annotation processor`() {

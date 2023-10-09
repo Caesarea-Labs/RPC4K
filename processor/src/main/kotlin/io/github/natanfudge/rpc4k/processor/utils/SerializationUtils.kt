@@ -1,11 +1,16 @@
 package io.github.natanfudge.rpc4k.processor.utils
 
 import com.google.devtools.ksp.symbol.KSType
+import com.google.devtools.ksp.symbol.KSTypeArgument
 import com.squareup.kotlinpoet.MemberName
 import com.squareup.kotlinpoet.ksp.toClassName
-import io.github.natanfudge.rpc4k.processor.old.*
+import com.squareup.kotlinpoet.ksp.toTypeName
+import io.github.natanfudge.rpc4k.processor.RpcType
+import io.github.natanfudge.rpc4k.processor.utils.poet.*
+import io.github.natanfudge.rpc4k.processor.utils.poet.FormattedString
+import io.github.natanfudge.rpc4k.processor.utils.poet.formatWith
+import io.github.natanfudge.rpc4k.processor.utils.poet.withArgumentList
 import kotlinx.serialization.Serializable
-import kotlinx.serialization.builtins.ListSerializer
 
 internal fun KSType.isSerializable() = isBuiltinSerializableType() || isAnnotatedBySerializable()
 
@@ -30,6 +35,7 @@ private val builtinSerializableTypes = listOf(
     ULong::class,
     UByte::class,
     UShort::class,
+    Set::class,
     List::class,
     Pair::class,
     Triple::class,
@@ -40,55 +46,56 @@ private val builtinSerializableTypes = listOf(
 private fun KSType.isBuiltinSerializableType() =
     declaration.qualifiedName?.asString() in builtinSerializableTypes
 
-data class FormattedString(val string: String, val args: List<Any>)
+internal fun RpcType.toSerializerString() = when (this) {
+    is RpcType.Ksp -> value.resolve().toSerializerString()
+}
 
-private fun String.formatWith(vararg args: Any) = FormattedString(this, args.toList())
+private fun KSType.toSerializerString(): FormattedString {
+    val name = nonNullQualifiedName()
 
-fun KSType.toSerializerString() {
-    val string = if (arguments.isEmpty()) {
-        "%M".formatWith(MemberName(this.toClassName(), "serializer"))
-    } else {
-        when (this.declaration.qualifiedName) {
-            List::class.qualifiedName -> MemberName() ListSerializer () specialSerializer ("ListSerializer"
-                , 1)
-                Set::class.qualifiedName
-
-            -> specialSerializer("SetSerializer", 1)
-            Map::class.qualifiedName -> specialSerializer("MapSerializer", 2)
-            Pair::class.qualifiedName -> specialSerializer("PairSerializer", 2)
-            Map.Entry::class.qualifiedName -> specialSerializer("MapEntrySerializer", 2)
-            Triple::class.qualifiedName -> specialSerializer("TripleSerializer", 3)
+    return if (name in builtinSerializableTypes) {
+        if (nonNullQualifiedName() in classesWithSeparateSerializerMethod) {
+            // Serializers like MapSerializer
+            topLevelSerializerMethod()
+        } else {
+            builtinExtensionSerializerMethod()
         }
+    } else {
+        userClassSerializer()
     }
 }
-
-
-//TODO: use my old formatstirng implementation, it seems good. just need to document it.
-
-private fun KSType.specialSerializer(
-    name: String,
-): FormattedString {
-    //TODO: figure out if star arguments cause null type, for that we need to get the debugger to work.
-    val args = arguments.map { it.nonNullType().resolve().toSerializerString() }
-    "%M(${args.joinToString()}"
-    return "$name(%FS)".formatWith(
-        List(typeArgumentAmount) { arguments[it].type!!.serializerString() }.join(", ")
-    )
+/**
+ * Gets serializers like ListSerializer, SetSerializer, etc
+ */
+private fun KSType.topLevelSerializerMethod(): FormattedString {
+    // Map.Entry needs special handling to get the correct serializer
+    val name = declaration.simpleName.asString().let { if(it == "Entry") "MapEntry" else it }
+    // For example, for the name Map.Entry we get MapEntrySerializer
+    val serializerMethod = MemberName("kotlinx.serialization.builtins", "${name}Serializer")
+    return serializerMethod.withSerializerArguments(arguments)
 }
-//private fun KSType.serializerString(): FormattedString {
-//    val string = if (arguments.isNotEmpty()) {
-//        when (this.declaration.qualifiedName!!.asString()) {
-//            List::class.qualifiedName -> specialSerializer("ListSerializer", 1)
-//            Set::class.qualifiedName -> specialSerializer("SetSerializer", 1)
-//            Map::class.qualifiedName -> specialSerializer("MapSerializer", 2)
-//            Pair::class.qualifiedName -> specialSerializer("PairSerializer", 2)
-//            Map.Entry::class.qualifiedName -> specialSerializer("MapEntrySerializer", 2)
-//            Triple::class.qualifiedName -> specialSerializer("TripleSerializer", 3)
-//            else -> genericSerializerString()
-//        }
-//    } else {
-//        "%T.serializer()".formatType(this.toTypeName().copy(nullable = false))
-//    }
-//    return if (isMarkedNullable) "%FS.nullable".formatWith(string)
-//    else string
-//}
+
+private fun KSType.builtinExtensionSerializerMethod(): FormattedString {
+    return "%T.serializer()".formatWith(toTypeName())
+}
+
+/**
+ * These classes don't have a T.serializer() for some reason but instead have a separate top-level method
+ */
+private val classesWithSeparateSerializerMethod = listOf(
+    List::class, Set::class, Map::class, Pair::class, Map.Entry::class, Triple::class
+).map { it.qualifiedName }.toHashSet()
+
+
+private fun KSType.userClassSerializer() = "%T.serializer".formatWith(toClassName())
+    .withMethodSerializerArguments(arguments)
+
+private fun FormattedString.withMethodSerializerArguments(args: List<KSTypeArgument>) = withMethodArguments(
+    args.map { it.nonNullType().resolve().toSerializerString() }
+)
+
+private fun MemberName.withSerializerArguments(args: List<KSTypeArgument>) = withArgumentList(
+    args.map { it.nonNullType().resolve().toSerializerString() }
+)
+
+

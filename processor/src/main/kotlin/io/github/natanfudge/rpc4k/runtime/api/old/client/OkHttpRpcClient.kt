@@ -2,7 +2,7 @@ package io.github.natanfudge.rpc4k.runtime.api.old.client
 
 import io.github.natanfudge.rpc4k.runtime.api.old.Logger
 import io.github.natanfudge.rpc4k.runtime.api.old.Port
-import io.github.natanfudge.rpc4k.runtime.impl.old.Sse
+import io.github.natanfudge.rpc4k.runtime.implementation.old.Sse
 import io.ktor.http.*
 import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.SendChannel

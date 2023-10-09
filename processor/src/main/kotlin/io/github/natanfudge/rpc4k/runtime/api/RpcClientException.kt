@@ -1,5 +1,5 @@
 package io.github.natanfudge.rpc4k.runtime.api
-import io.github.natanfudge.rpc4k.runtime.impl.RpcServerException
+import io.github.natanfudge.rpc4k.runtime.implementation.RpcServerException
 
 
 

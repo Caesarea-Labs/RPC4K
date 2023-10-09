@@ -1,7 +1,6 @@
-package io.github.natanfudge.rpc4k.runtime.api.old.utils
+package io.github.natanfudge.rpc4k.runtime.implementation
 
 import io.github.natanfudge.rpc4k.runtime.api.*
-import io.github.natanfudge.rpc4k.runtime.impl.RpcServerException
 import kotlinx.serialization.KSerializer
 
 /**
@@ -11,7 +10,7 @@ object GeneratedCodeUtils {
     /**
      * Sends a value and returns the result
      */
-    suspend fun <T> send(
+    suspend fun <T> request(
         client: RpcClient,
         format: SerializationFormat,
         methodName: String,
@@ -27,7 +26,7 @@ object GeneratedCodeUtils {
     /**
      * Sends a value, not caring about the result
      */
-    suspend fun send(client: RpcClient, format: SerializationFormat, methodName: String, args: List<*>, argSerializers: List<KSerializer<*>>) {
+    suspend fun send(client: RpcClient, format: SerializationFormat, methodName: String, args: List<Any?>, argSerializers: List<KSerializer<*>>) {
         val rpc = Rpc(methodName, args)
         client.send(rpc, format, argSerializers)
     }
@@ -35,7 +34,7 @@ object GeneratedCodeUtils {
     /**
      * Catches rpc exceptions and sends the correct error back to the client
      */
-    suspend inline fun handle(server: RpcServer, handler: () -> Unit) {
+    suspend inline fun withCatching(server: RpcServer, handler: () -> Unit) {
         try {
             handler()
         } catch (e: RpcServerException) {
@@ -54,7 +53,7 @@ object GeneratedCodeUtils {
         request: ByteArray,
         argDeserializers: List<KSerializer<*>>,
         resultSerializer: KSerializer<T>,
-        respondMethod: (args: List<*>) -> T
+        respondMethod: suspend (args: List<*>) -> T
     ) {
         val parsed = Rpc.fromByteArray(request, format, argDeserializers)
         val result = respondMethod(parsed.arguments)
@@ -64,4 +63,8 @@ object GeneratedCodeUtils {
 
 interface GeneratedServerHandler {
     suspend fun handle(request: ByteArray, method: String)
+}
+
+interface GeneratedServerHandlerFactory<Api> {
+    fun build(api: Api, format: SerializationFormat, server: RpcServer): GeneratedServerHandler
 }

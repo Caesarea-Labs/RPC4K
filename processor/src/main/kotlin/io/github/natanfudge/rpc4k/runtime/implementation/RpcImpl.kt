@@ -1,4 +1,4 @@
-package io.github.natanfudge.rpc4k.runtime.impl
+package io.github.natanfudge.rpc4k.runtime.implementation
 
 import io.github.natanfudge.rpc4k.runtime.api.Rpc
 import io.github.natanfudge.rpc4k.runtime.api.SerializationFormat
