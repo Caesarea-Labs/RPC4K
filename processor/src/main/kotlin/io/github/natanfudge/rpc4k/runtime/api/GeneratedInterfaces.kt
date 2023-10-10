@@ -24,5 +24,5 @@ interface GeneratedServerImplFactory<Api> {
  * since actually creating a [Api] can be hard.
  */
 interface GeneratedClientImplFactory<Api> {
-    fun build(format: SerializationFormat, client: RpcClient): Api
+    fun build(client: RpcClient, format: SerializationFormat): Api
 }

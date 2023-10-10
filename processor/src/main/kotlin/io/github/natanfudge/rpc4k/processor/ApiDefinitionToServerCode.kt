@@ -68,6 +68,7 @@ object ApiDefinitionToServerCode {
         return fileSpec(GeneratedCodeUtils.Package, className) {
             // KotlinPoet doesn't handle extension methods well
             addImport("kotlinx.serialization.builtins", "serializer")
+            addImport("kotlinx.serialization.builtins", "nullable")
 
             addFunction(serverConstructorExtension(generatedClassName = className))
 
@@ -165,7 +166,7 @@ object ApiDefinitionToServerCode {
     }
 
     private fun endpointArguments(rpc: RpcDefinition) = rpc.args.mapIndexed { i, arg ->
-        "it[$i] as %T".formatWith(arg.type.asTypeName())
+        "it[$i] as %T".formatWith(arg.type.typeName)
     }
 }
 

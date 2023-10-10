@@ -12,7 +12,7 @@ dependencies {
     implementation(libs.kotlinpoet.ksp)
     compileOnly(libs.okhttp.core)
     compileOnly(libs.okhttp.sse)
-    compileOnly(libs.ktor)
+    compileOnly(libs.ktor.core)
     implementation("com.michael-bull.kotlin-result:kotlin-result:1.1.18")
     api(libs.coroutines.core)
     api(libs.serialization.json)

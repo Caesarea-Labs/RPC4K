@@ -8,19 +8,16 @@ import org.junit.jupiter.api.extension.RegisterExtension
 import kotlin.test.Test
 
 class SimpleKtorServerTest {
-
     companion object {
-        private val api = SimpleProtocol()
-
         @JvmField
         @RegisterExtension
-        val extension = rpcExtension(api)
+        val extension = rpcExtension(SimpleProtocol())
     }
 
 
     @Test
     fun testManual(): Unit = runBlocking {
-        val response = api.bar(2)
+        val response = extension.api.bar(2)
         assertEquals(3, response)
     }
 

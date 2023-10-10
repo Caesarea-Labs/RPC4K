@@ -13,7 +13,7 @@ import org.junit.jupiter.api.extension.BeforeAllCallback
 import org.junit.jupiter.api.extension.Extension
 import org.junit.jupiter.api.extension.ExtensionContext
 import kotlin.reflect.full.companionObjectInstance
-
+//io.github.natanfudge.rpc4k.test.util.KtorServerExtension@37a64f9d
 
 fun <API> rpcExtension(
     serverHandler: API,
@@ -25,7 +25,7 @@ fun <API> rpcExtension(
 ): ClientServerExtension<API> {
     val serverExtension = server.build(serverHandler, generatedClass, format)
     val url = "http://localhost:${serverExtension.port}"
-    return ClientServerExtension(server.build(serverHandler, generatedClass, format), generatedClient.build(format, client.build(url)))
+    return ClientServerExtension(serverExtension, generatedClient.build(client.build(url), format))
 }
 
 inline fun <reified API> rpcExtension(

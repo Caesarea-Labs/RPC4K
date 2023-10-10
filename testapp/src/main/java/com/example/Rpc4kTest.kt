@@ -2,16 +2,7 @@ package com.example
 
 import io.github.natanfudge.rpc4k.runtime.api.ApiClient
 import io.github.natanfudge.rpc4k.runtime.api.ApiServer
-import io.github.natanfudge.rpc4k.runtime.api.old.utils.DecoderContext
-import io.github.natanfudge.rpc4k.runtime.api.old.utils.Rpc4KGeneratedClientUtils
-import io.github.natanfudge.rpc4k.runtime.api.old.utils.Rpc4kGeneratedServerUtils
-import io.github.natanfudge.rpc4k.runtime.api.old.utils.RpcClientComponents
-import io.github.natanfudge.rpc4k.runtime.api.old.server.ProtocolDecoder
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flowOf
-import kotlinx.serialization.KSerializer
 import kotlinx.serialization.Serializable
-import kotlinx.serialization.builtins.serializer
 
 @Serializable
 data class PlayerId(val num: Long)
@@ -37,12 +28,12 @@ open class SimpleProtocol {
 open class UserProtocol {
 
     companion object {
-        fun distraction1(){}
-        val distraction2 : String = ""
+        fun distraction1() {}
+        val distraction2: String = ""
     }
 
     val distraction3 = 2
-    private fun distraction4(){}
+    private fun distraction4() {}
 
     class Distraction5
 
@@ -89,6 +80,21 @@ open class UserProtocol {
 
     }
 
+    @Serializable
+    enum class HeavyNullableTestMode {
+        EntirelyNull,
+        NullList,
+        NullString
+    }
+
+    open suspend fun heavyNullable(mode: HeavyNullableTestMode): GenericThing<List<String?>?, List<String>?, List<String?>>? {
+        return when (mode) {
+            HeavyNullableTestMode.EntirelyNull -> null
+            HeavyNullableTestMode.NullList -> GenericThing(null, null, listOf())
+            HeavyNullableTestMode.NullString -> GenericThing(listOf(null, "test"), null, listOf())
+        }
+    }
+
 //    open suspend fun flowTest(thing: Int): Flow<List<PlayerId>?> {
 //        return flowOf(listOf(PlayerId(thing.toLong())))
 //    }
@@ -98,23 +104,28 @@ open class UserProtocol {
 //        return flow.stateIn(CoroutineScope(currentCoroutineContext()))
 //    }
 
-    open suspend fun genericTest(thing: String) : GenericThing<String,Int,Long> {
+    open suspend fun genericTest(thing: String): GenericThing<String, Int, Long> {
         return GenericThing("", 2, 3)
     }
-    
+
     open suspend fun errorTest() {
         throw Exception("")
     }
+
+    open suspend fun requirementTest() {
+        // Literally 1984
+        require(4 == 5)
+    }
+
     open suspend fun noArgTest() {
         println("Halo")
     }
 
     open suspend fun requirementFail(value: Int) {
-        require(value == 2){"Value must be 2"}
+        require(value == 2) { "Value must be 2" }
     }
 }
 
 
-
 @Serializable
-class GenericThing<T1,T2,T3>(val x: T1, val y: T2, val z: T3)
+data class GenericThing<T1, T2, T3>(val x: T1, val y: T2, val z: T3)

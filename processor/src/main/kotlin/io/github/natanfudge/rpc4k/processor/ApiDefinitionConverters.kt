@@ -2,6 +2,7 @@ package io.github.natanfudge.rpc4k.processor
 
 import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.MemberName
+import com.squareup.kotlinpoet.TypeName
 import io.github.natanfudge.rpc4k.processor.utils.poet.FormattedString
 import io.github.natanfudge.rpc4k.processor.utils.poet.withArgumentList
 import io.github.natanfudge.rpc4k.processor.utils.toSerializerString

@@ -1,16 +1,14 @@
 package io.github.natanfudge.rpc4k.processor
 
 import com.squareup.kotlinpoet.*
+import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy
 import io.github.natanfudge.rpc4k.processor.utils.poet.*
 import io.github.natanfudge.rpc4k.processor.utils.toSerializerString
+import io.github.natanfudge.rpc4k.runtime.api.GeneratedClientImplFactory
 import io.github.natanfudge.rpc4k.runtime.api.RpcClient
 import io.github.natanfudge.rpc4k.runtime.api.SerializationFormat
 import io.github.natanfudge.rpc4k.runtime.implementation.GeneratedCodeUtils
 
-////TODO:
-//// Add .client(a,b) and .server(a,b,c) extension methods to reference the generated classes (this makes it more resilient to name changes)
-//// Add .ClientFactory and .ServerFactory objects to reference the constructors of the generated classes (this makes it easier to have generic stuff)
-//// Make Client generated class extend annotated class
 /**
  * Converts
  * ```
@@ -59,11 +57,14 @@ object ApiDefinitionToClientCode {
         return fileSpec(GeneratedCodeUtils.Package, className) {
             // KotlinPoet doesn't handle extension methods well
             addImport("kotlinx.serialization.builtins", "serializer")
+            addImport("kotlinx.serialization.builtins", "nullable")
 
 
             addFunction(clientConstructorExtension(className))
 
             addClass(className) {
+                addType(factoryCompanionObject(className))
+
                 addPrimaryConstructor {
                     addConstructorProperty(ClientPropertyName, type = RpcClient::class, KModifier.PRIVATE)
                     addConstructorProperty(FormatPropertyName, type = SerializationFormat::class, KModifier.PRIVATE)
@@ -73,6 +74,31 @@ object ApiDefinitionToClientCode {
             }
         }
     }
+
+
+    /**
+     * We generate a factory for the generated client implementation for it to be easy to just pass a [GeneratedClientImplFactory]
+     * The generated code looks like this:
+     * ```
+     *     companion object Factory: GeneratedClientImplFactory<UserProtocol> {
+     *         override fun build(client: RpcClient, format: SerializationFormat): UserProtocol {
+     *             return UserProtocolClientImpl(client, format)
+     *         }
+     *     }
+     * ```
+     */
+    context(JvmContext)
+    private fun factoryCompanionObject(generatedClassName: String) = companionObject(GeneratedCodeUtils.FactoryName) {
+        addSuperinterface(GeneratedClientImplFactory::class.asClassName().parameterizedBy(userClassName))
+        addFunction("build") {
+            addModifiers(KModifier.OVERRIDE)
+            addParameter(ClientPropertyName, RpcClient::class)
+            addParameter(FormatPropertyName, SerializationFormat::class)
+            returns(userClassName)
+            addStatement("return $generatedClassName($ClientPropertyName, $FormatPropertyName)")
+        }
+    }
+
 
     /**
      * Making the generated class available with an extension function makes it more resilient to name changes
@@ -90,17 +116,16 @@ object ApiDefinitionToClientCode {
             returns(ClassName(GeneratedCodeUtils.Package, generatedClassName))
             addStatement("return $generatedClassName($ClientPropertyName, $FormatPropertyName)")
         }
-    //TODO: write codegen for client factory
 
     private fun convertMethod(rpcDefinition: RpcDefinition): FunSpec = funSpec(rpcDefinition.name) {
         // We need to call network methods in this
         addModifiers(KModifier.SUSPEND, KModifier.OVERRIDE)
 
         for (argument in rpcDefinition.args) addParameter(convertArgument(argument))
-        val returnType = rpcDefinition.returnType.asTypeName()
-        returns(returnType)
+        val returnType = rpcDefinition.returnType
+        returns(returnType.typeName)
 
-        val returnsValue = returnType != UNIT
+        val returnsValue = !returnType.isUnit
         // We use a simpler method where no return type is required
         val method = if (returnsValue) requestMethod else sendMethod
 
@@ -127,7 +152,7 @@ object ApiDefinitionToClientCode {
     }
 
     private fun convertArgument(arg: RpcArgumentDefinition): ParameterSpec {
-        return ParameterSpec(arg.name, arg.type.asTypeName())
+        return ParameterSpec(arg.name, arg.type.typeName)
     }
 }
 

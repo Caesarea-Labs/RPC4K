@@ -1,11 +1,14 @@
 package io.github.natanfudge.rpc4k.processor
 
-import com.google.devtools.ksp.symbol.*
-import com.squareup.kotlinpoet.asTypeName
-import com.squareup.kotlinpoet.ksp.toTypeName
+import com.google.devtools.ksp.symbol.KSClassDeclaration
+import com.google.devtools.ksp.symbol.KSFunctionDeclaration
+import com.google.devtools.ksp.symbol.KSTypeReference
+import com.google.devtools.ksp.symbol.KSValueParameter
 import io.github.natanfudge.rpc4k.processor.old.toTypeName
 import io.github.natanfudge.rpc4k.processor.utils.getPublicApiFunctions
+import io.github.natanfudge.rpc4k.processor.utils.nonNullQualifiedName
 import io.github.natanfudge.rpc4k.processor.utils.nonNullReturnType
+import io.github.natanfudge.rpc4k.processor.utils.nonNullType
 
 object KspToApiDefinition {
     fun convert(kspClass: KSClassDeclaration): ApiDefinition {
@@ -31,6 +34,18 @@ object KspToApiDefinition {
     }
 
     private fun convertType(type: KSTypeReference): RpcType {
-        return RpcType.Ksp(type)
+        val resolved = type.resolve()
+        type.toTypeName()
+        val declaration = resolved.declaration
+        val qualifiedName = resolved.nonNullQualifiedName()
+        val packageName = declaration.packageName.asString()
+        val className = qualifiedName.removePrefix("$packageName.")
+
+        return RpcType(
+            packageName = packageName,
+            simpleName = className,
+            typeArguments = resolved.arguments.map { convertType(it.nonNullType()) },
+            isNullable = resolved.isMarkedNullable
+        )
     }
 }

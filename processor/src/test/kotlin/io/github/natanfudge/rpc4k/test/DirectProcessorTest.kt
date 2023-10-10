@@ -31,19 +31,18 @@ class DirectProcessorTest {
 
     @Test
     fun `Symbol processor gives off correct errors`() {
-        val testSources = File("../testapp/src/errors").walkBottomUp()
-            .filter { it.isFile }
-            .map { SourceFile.fromPath(it) }
-            .toList()
+        for(errorFile in File("../testapp/src/errors").walkBottomUp().filter { it.isFile }) {
+            val testSources = listOf(SourceFile.fromPath(errorFile))
 
-        val result = KotlinCompilation().apply {
-            sources = testSources
-            symbolProcessorProviders = listOf(Rpc4kProcessorProvider())
-            inheritClassPath = true
-            messageOutputStream = System.out // see diagnostics in real time
-        }.compile()
+            val result = KotlinCompilation().apply {
+                sources = testSources
+                symbolProcessorProviders = listOf(Rpc4kProcessorProvider())
+                inheritClassPath = true
+                messageOutputStream = System.out // see diagnostics in real time
+            }.compile()
 
-        assertEquals(KotlinCompilation.ExitCode.COMPILATION_ERROR, result.exitCode)
+            assertEquals(KotlinCompilation.ExitCode.COMPILATION_ERROR, result.exitCode)
+        }
     }
 
 }

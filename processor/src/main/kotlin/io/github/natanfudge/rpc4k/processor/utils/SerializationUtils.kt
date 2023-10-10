@@ -1,15 +1,13 @@
 package io.github.natanfudge.rpc4k.processor.utils
 
 import com.google.devtools.ksp.symbol.KSType
-import com.google.devtools.ksp.symbol.KSTypeArgument
 import com.squareup.kotlinpoet.MemberName
 import com.squareup.kotlinpoet.ksp.toClassName
-import com.squareup.kotlinpoet.ksp.toTypeName
 import io.github.natanfudge.rpc4k.processor.RpcType
-import io.github.natanfudge.rpc4k.processor.utils.poet.*
 import io.github.natanfudge.rpc4k.processor.utils.poet.FormattedString
 import io.github.natanfudge.rpc4k.processor.utils.poet.formatWith
 import io.github.natanfudge.rpc4k.processor.utils.poet.withArgumentList
+import io.github.natanfudge.rpc4k.processor.utils.poet.withMethodArguments
 import kotlinx.serialization.Serializable
 
 internal fun KSType.isSerializable() = isBuiltinSerializableType() || isAnnotatedBySerializable()
@@ -43,18 +41,12 @@ private val builtinSerializableTypes = listOf(
     Map::class,
 ).map { it.qualifiedName!! }.toHashSet()
 
-private fun KSType.isBuiltinSerializableType() =
-    declaration.qualifiedName?.asString() in builtinSerializableTypes
+private fun KSType.isBuiltinSerializableType() = declaration.qualifiedName?.asString() in builtinSerializableTypes
 
-internal fun RpcType.toSerializerString() = when (this) {
-    is RpcType.Ksp -> value.resolve().toSerializerString()
-}
 
-private fun KSType.toSerializerString(): FormattedString {
-    val name = nonNullQualifiedName()
-
-    return if (name in builtinSerializableTypes) {
-        if (nonNullQualifiedName() in classesWithSeparateSerializerMethod) {
+internal fun RpcType.toSerializerString(): FormattedString {
+    val withoutNullable = if (qualifiedName in builtinSerializableTypes) {
+        if (qualifiedName in classesWithSeparateSerializerMethod) {
             // Serializers like MapSerializer
             topLevelSerializerMethod()
         } else {
@@ -63,20 +55,27 @@ private fun KSType.toSerializerString(): FormattedString {
     } else {
         userClassSerializer()
     }
+    // Add .nullable if needed
+    return if (isNullable) {
+        withoutNullable + ".nullable"
+    } else {
+        withoutNullable
+    }
 }
+
 /**
  * Gets serializers like ListSerializer, SetSerializer, etc
  */
-private fun KSType.topLevelSerializerMethod(): FormattedString {
+private fun RpcType.topLevelSerializerMethod(): FormattedString {
     // Map.Entry needs special handling to get the correct serializer
-    val name = declaration.simpleName.asString().let { if(it == "Entry") "MapEntry" else it }
+    val name = simpleName.let { if (it == "Map.Entry") "MapEntry" else it }
     // For example, for the name Map.Entry we get MapEntrySerializer
     val serializerMethod = MemberName("kotlinx.serialization.builtins", "${name}Serializer")
-    return serializerMethod.withSerializerArguments(arguments)
+    return serializerMethod.withSerializerArguments(typeArguments)
 }
 
-private fun KSType.builtinExtensionSerializerMethod(): FormattedString {
-    return "%T.serializer()".formatWith(toTypeName())
+private fun RpcType.builtinExtensionSerializerMethod(): FormattedString {
+    return "%T.serializer()".formatWith(className)
 }
 
 /**
@@ -87,15 +86,16 @@ private val classesWithSeparateSerializerMethod = listOf(
 ).map { it.qualifiedName }.toHashSet()
 
 
-private fun KSType.userClassSerializer() = "%T.serializer".formatWith(toClassName())
-    .withMethodSerializerArguments(arguments)
+// Nullability is handled separately
+private fun RpcType.userClassSerializer() = "%T.serializer".formatWith(className)
+    .withMethodSerializerArguments(typeArguments)
 
-private fun FormattedString.withMethodSerializerArguments(args: List<KSTypeArgument>) = withMethodArguments(
-    args.map { it.nonNullType().resolve().toSerializerString() }
+private fun FormattedString.withMethodSerializerArguments(args: List<RpcType>) = withMethodArguments(
+    args.map { it.toSerializerString() }
 )
 
-private fun MemberName.withSerializerArguments(args: List<KSTypeArgument>) = withArgumentList(
-    args.map { it.nonNullType().resolve().toSerializerString() }
+private fun MemberName.withSerializerArguments(args: List<RpcType>) = withArgumentList(
+    args.map { it.toSerializerString() }
 )
 
 
