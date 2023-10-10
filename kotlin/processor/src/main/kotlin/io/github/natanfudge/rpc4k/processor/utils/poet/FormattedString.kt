@@ -2,7 +2,6 @@ package io.github.natanfudge.rpc4k.processor.utils.poet
 
 import com.squareup.kotlinpoet.FunSpec
 import com.squareup.kotlinpoet.MemberName
-import java.text.Normalizer.Form
 
 /**
  * Represents a string like `"%T.serializer()"` formatted with a value like `Int`.

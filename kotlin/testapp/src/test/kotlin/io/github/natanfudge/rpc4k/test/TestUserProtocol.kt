@@ -1,22 +1,14 @@
 package io.github.natanfudge.rpc4k.test
 
 import com.example.*
-import io.github.natanfudge.rpc4k.runtime.api.RpcClientException
 import io.github.natanfudge.rpc4k.runtime.api.RpcResponseException
-import io.github.natanfudge.rpc4k.runtime.api.old.server.RpcServer
 import io.github.natanfudge.rpc4k.test.util.rpcExtension
-import kotlinx.coroutines.DelicateCoroutinesApi
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.toList
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import org.junit.jupiter.api.extension.RegisterExtension
 import strikt.api.expectThat
 import strikt.api.expectThrows
 import strikt.assertions.isEqualTo
 import kotlin.test.Test
-import kotlin.test.assertContentEquals
 import kotlin.test.assertEquals
 
 class TestUserProtocol {

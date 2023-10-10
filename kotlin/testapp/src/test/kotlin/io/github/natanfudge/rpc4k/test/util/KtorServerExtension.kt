@@ -10,9 +10,6 @@ import io.ktor.server.request.*
 import io.ktor.server.routing.*
 import io.ktor.utils.io.core.*
 import org.junit.jupiter.api.extension.ExtensionContext
-import java.net.BindException
-import java.net.ServerSocket
-import java.net.SocketException
 
 @JvmInline value class Port(val value: Int)
 

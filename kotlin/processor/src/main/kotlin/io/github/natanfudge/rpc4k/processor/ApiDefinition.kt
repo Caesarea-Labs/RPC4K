@@ -1,7 +1,6 @@
 package io.github.natanfudge.rpc4k.processor
 
 import com.squareup.kotlinpoet.ClassName
-import com.squareup.kotlinpoet.ParameterizedTypeName
 import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy
 import com.squareup.kotlinpoet.TypeName
 import kotlinx.serialization.KSerializer
