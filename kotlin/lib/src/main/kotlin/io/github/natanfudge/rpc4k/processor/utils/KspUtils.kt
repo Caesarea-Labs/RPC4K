@@ -21,6 +21,8 @@ fun Resolver.getClassesWithAnnotation(annotation: KClass<*>): Sequence<KSClassDe
 internal fun KSClassDeclaration.getPublicApiFunctions() = getDeclaredFunctions()
     .filter { !it.isConstructor() && it.isPublic() }
 
+fun KSDeclaration.getSimpleName() =simpleName.asString()
+
 /**
  * Will mark the [KSNode] itself as the cause of the failure if this check fails
  */

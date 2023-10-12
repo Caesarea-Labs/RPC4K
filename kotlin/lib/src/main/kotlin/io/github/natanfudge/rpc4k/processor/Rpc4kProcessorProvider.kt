@@ -10,6 +10,7 @@ import com.google.devtools.ksp.symbol.KSClassDeclaration
 import com.google.devtools.ksp.validate
 import com.squareup.kotlinpoet.ksp.writeTo
 import io.github.natanfudge.rpc4k.processor.utils.checkRequirement
+import io.github.natanfudge.rpc4k.processor.utils.findDuplicate
 import io.github.natanfudge.rpc4k.processor.utils.getClassesWithAnnotation
 import io.github.natanfudge.rpc4k.runtime.api.ApiClient
 import io.github.natanfudge.rpc4k.runtime.api.ApiServer
@@ -55,7 +56,7 @@ internal class Rpc4kProcessor(private val env: SymbolProcessorEnvironment) : Sym
         val time = measureTimeMillis {
             val api = KspToApiDefinition.toApiDefinition(apiClass)
 
-            val nameDuplicate = api.models.nameDuplicate()
+            val nameDuplicate = api.models.findDuplicate { it.name }
             // TODO: test this
             // Since models are not namespaced, they cannot contain duplicate names
             apiClass.checkRequirement(env, nameDuplicate == null) { "There's two types with the name '$nameDuplicate', which is not allowed" }
@@ -74,18 +75,6 @@ internal class Rpc4kProcessor(private val env: SymbolProcessorEnvironment) : Sym
         }
 
         env.logger.warn("Generated RPC classes for: ${apiClass.qualifiedName!!.asString()} in $time millis")
-    }
-
-    private fun List<RpcModel>.nameDuplicate(): String? {
-        val keys = hashSetOf<String>()
-        for (model in this) {
-            val key = model.name
-            if (key in keys) {
-                return key
-            }
-            keys.add(key)
-        }
-        return null
     }
 
 }

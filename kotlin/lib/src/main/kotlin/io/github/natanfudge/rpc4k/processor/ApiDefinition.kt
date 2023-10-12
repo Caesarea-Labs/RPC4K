@@ -22,9 +22,27 @@ data class RpcDefinition(val name: String, val parameters: List<RpcParameter>, v
 
 @Serializable
 data class RpcParameter(val name: String, val type: RpcClass)
-
 @Serializable
-data class RpcModel(val name: String, val typeParameters: List<String> = listOf(), val properties: Map<String, RpcType>)
+sealed interface RpcModel {
+    val name: String
+    @Serializable
+    @SerialName("struct")
+    data class Struct(override val name: String, val typeParameters: List<String> = listOf(), val properties: Map<String, RpcType>): RpcModel
+    @Serializable
+    @SerialName("enum")
+    data class Enum(override val name: String, val options: List<String>): RpcModel
+
+    /**
+     * @param [options] a list of possible types this union can evaluate to.
+     */
+    @Serializable
+    @SerialName("union")
+    data class Union(override val name: String, val options: List<String>): RpcModel
+}
+@Serializable
+enum class Bar(val x: Int)
+
+
 
 
 /**
@@ -32,7 +50,7 @@ data class RpcModel(val name: String, val typeParameters: List<String> = listOf(
  * which makes it more fitting for [RpcModel]s
  */
 @Serializable
-data class RpcType(val name: String, val isTypeParameter: Boolean = false, val typeArguments: List<RpcType> = listOf()) {
+data class RpcType(val name: String, val isTypeParameter: Boolean = false, val isOptional: Boolean = false, val typeArguments: List<RpcType> = listOf()) {
     init {
         // Kotlin doesn't have higher-kinded types yet
         if (isTypeParameter) check(typeArguments.isEmpty())
@@ -57,8 +75,6 @@ data class RpcClass(val packageName: String, val simpleName: String, val isNulla
     @Transient
     val qualifiedName = "$packageName.$simpleName"
 
-    //    // Inner classes are dollar seperated
-//     val qualifiedDollarName get() = "$packageName.${simpleName.replace(".", "$")}"
     @Transient
     val className = ClassName(packageName, simpleName)
 
@@ -69,27 +85,29 @@ data class RpcClass(val packageName: String, val simpleName: String, val isNulla
     val isUnit get() = packageName == "kotlin" && simpleName == "Unit"
 }
 
+/**
+ * Exist purely to serialize [RpcClass]s
+ */
 @Serializable
-@SerialName("AnotherModel")
-private data class RpcTypeSurrogate(val name: String, val optional: Boolean = false, val typeArguments: List<RpcTypeSurrogate> = listOf())
+private data class RpcClassSurrogate(val name: String, val isOptional: Boolean = false, val typeArguments: List<RpcClassSurrogate> = listOf())
 
-private fun RpcClass.toSurrogate(): RpcTypeSurrogate =
-    RpcTypeSurrogate(name = simpleName, optional = isNullable, typeArguments = typeArguments.map { it.toSurrogate() })
+private fun RpcClass.toSurrogate(): RpcClassSurrogate =
+    RpcClassSurrogate(name = simpleName, isOptional = isNullable, typeArguments = typeArguments.map { it.toSurrogate() })
 
-private fun RpcTypeSurrogate.toActual(packageName: String): RpcClass =
-    RpcClass(packageName = packageName, simpleName = name, isNullable = optional, typeArguments = typeArguments.map { it.toActual(packageName) })
+private fun RpcClassSurrogate.toActual(packageName: String): RpcClass =
+    RpcClass(packageName = packageName, simpleName = name, isNullable = isOptional, typeArguments = typeArguments.map { it.toActual(packageName) })
 
 //TODO: handle kotlin code generation from non-kotlin sources
 private const val GeneratedModelsPackage = "io.github.natanfudge.generated.models"
 
 class RpcTypeSerializer : KSerializer<RpcClass> {
-    override val descriptor = RpcTypeSurrogate.serializer().descriptor
+    override val descriptor = RpcClassSurrogate.serializer().descriptor
 
     override fun deserialize(decoder: Decoder): RpcClass {
-        return decoder.decodeSerializableValue(RpcTypeSurrogate.serializer()).toActual(GeneratedModelsPackage)
+        return decoder.decodeSerializableValue(RpcClassSurrogate.serializer()).toActual(GeneratedModelsPackage)
     }
 
     override fun serialize(encoder: Encoder, value: RpcClass) {
-        encoder.encodeSerializableValue(RpcTypeSurrogate.serializer(), value.toSurrogate())
+        encoder.encodeSerializableValue(RpcClassSurrogate.serializer(), value.toSurrogate())
     }
 }
