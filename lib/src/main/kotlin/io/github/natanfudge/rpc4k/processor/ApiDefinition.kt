@@ -5,6 +5,7 @@ import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy
 import com.squareup.kotlinpoet.TypeName
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.Transient
 import kotlinx.serialization.encoding.Decoder
 import kotlinx.serialization.encoding.Encoder
 
@@ -29,10 +30,14 @@ data class RpcArgumentDefinition(val name: String, @Serializable(RpcTypeSerializ
  * @param packageName expected to be inferred from context
  * @param typeArguments expected to exist partially in text format (need to see if it's even possible with non-lists and such)
  */
-data class RpcType(val packageName: String, val simpleName: String, val isNullable: Boolean, val typeArguments: List<RpcType>) {
-    val qualifiedName = "$packageName.$simpleName"
-    val className = ClassName(packageName, simpleName)
-    val typeName: TypeName = className.let { name ->
+@Serializable
+data class RpcType(val packageName: String, val simpleName: String, val isNullable: Boolean = false, val typeArguments: List<RpcType> = listOf()) {
+    // Inner classes are dot seperated
+    @Transient val qualifiedName = "$packageName.$simpleName"
+    // Inner classes are dollar seperated
+     val qualifiedDollarName get() = "$packageName.${simpleName.replace(".", "$")}"
+    @Transient val className = ClassName(packageName, simpleName)
+    @Transient val typeName: TypeName = className.let { name ->
         if (typeArguments.isEmpty()) name else name.parameterizedBy(typeArguments.map { it.typeName })
     }.copy(nullable = isNullable)
     val isUnit get() = packageName == "kotlin" && simpleName == "Unit"

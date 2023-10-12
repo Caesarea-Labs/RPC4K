@@ -35,7 +35,6 @@ object KspToApiDefinition {
 
     private fun convertType(type: KSTypeReference): RpcType {
         val resolved = type.resolve()
-        type.toTypeName()
         val declaration = resolved.declaration
         val qualifiedName = resolved.nonNullQualifiedName()
         val packageName = declaration.packageName.asString()

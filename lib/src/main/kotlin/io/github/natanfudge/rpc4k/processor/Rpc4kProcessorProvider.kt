@@ -67,8 +67,7 @@ internal class Rpc4kProcessor(private val env: SymbolProcessorEnvironment) : Sym
                 if (client) ApiDefinitionToClientCode.convert(api).writeTo(codeGenerator, false, files)
                 if (server) {
                     ApiDefinitionToServerCode.convert(api).writeTo(codeGenerator, false, files)
-                    ApiDefinitionToRpcJson.write(api, codeGenerator, file)
-                    env.logger.warn("Wrote files to: ${codeGenerator.generatedFile}")
+                    ApiDefinitionToRpc.writeModelList(api, codeGenerator, file)
                 }
             }
         }

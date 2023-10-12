@@ -3,7 +3,6 @@ package io.github.natanfudge.rpc4k.processor
 import com.squareup.kotlinpoet.*
 import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy
 import io.github.natanfudge.rpc4k.processor.utils.poet.*
-import io.github.natanfudge.rpc4k.processor.utils.toSerializerString
 import io.github.natanfudge.rpc4k.runtime.api.GeneratedClientImplFactory
 import io.github.natanfudge.rpc4k.runtime.api.RpcClient
 import io.github.natanfudge.rpc4k.runtime.api.SerializationFormat

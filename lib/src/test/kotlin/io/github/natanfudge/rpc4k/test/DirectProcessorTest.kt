@@ -14,7 +14,7 @@ class DirectProcessorTest {
     @Test
     fun `Symbol processor success`() {
         val testSources = (File("../testapp/src/main").walkBottomUp() + File("../testapp/src/test").walkBottomUp())
-            .filter { it.isFile }
+            .filter { it.isFile && it.extension == "kt" }
             .map { SourceFile.fromPath(it) }
             .toList()
 
@@ -31,7 +31,7 @@ class DirectProcessorTest {
 
     @Test
     fun `Symbol processor gives off correct errors`() {
-        for(errorFile in File("../testapp/src/errors").walkBottomUp().filter { it.isFile }) {
+        for(errorFile in File("../testapp/src/errors").walkBottomUp().filter { it.isFile && it.extension == "kt" }) {
             val testSources = listOf(SourceFile.fromPath(errorFile))
 
             val result = KotlinCompilation().apply {

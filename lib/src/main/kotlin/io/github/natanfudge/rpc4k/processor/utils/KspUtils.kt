@@ -3,6 +3,8 @@ package io.github.natanfudge.rpc4k.processor.utils
 import com.google.devtools.ksp.getDeclaredFunctions
 import com.google.devtools.ksp.isConstructor
 import com.google.devtools.ksp.isPublic
+import com.google.devtools.ksp.processing.CodeGenerator
+import com.google.devtools.ksp.processing.Dependencies
 import com.google.devtools.ksp.processing.Resolver
 import com.google.devtools.ksp.processing.SymbolProcessorEnvironment
 import com.google.devtools.ksp.symbol.*
@@ -38,3 +40,10 @@ fun KSType.nonNullQualifiedName() =
 fun KSFunctionDeclaration.nonNullReturnType() =
     returnType
         ?: error("There's no reason why the return type of a function would be null. If you encounter this error, open a bug report ASAP! This happened for '$this'.")
+
+fun CodeGenerator.writeFile(contents: String,
+                            dependencies: Dependencies,
+                            path: String,
+                            extensionName: String = "kt") {
+    createNewFileByPath(dependencies,path,extensionName).use { it.write(contents.toByteArray()) }
+}

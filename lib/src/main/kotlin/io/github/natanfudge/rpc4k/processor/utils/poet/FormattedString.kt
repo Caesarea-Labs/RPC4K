@@ -1,7 +1,12 @@
 package io.github.natanfudge.rpc4k.processor.utils.poet
 
+import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.FunSpec
 import com.squareup.kotlinpoet.MemberName
+import io.github.natanfudge.rpc4k.processor.RpcType
+import io.github.natanfudge.rpc4k.processor.utils.ClassBasedKotlinSerializer
+import io.github.natanfudge.rpc4k.processor.utils.KotlinSerializer
+import io.github.natanfudge.rpc4k.processor.utils.getKSerializer
 
 /**
  * Represents a string like `"%T.serializer()"` formatted with a value like `Int`.
@@ -31,12 +36,6 @@ internal fun List<FormattedString>.join(separator: String = ", "): FormattedStri
     )
 }
 
-//internal fun MemberName.withArguments(vararg arguments: Any): FormattedString {
-//    return withArgumentList(arguments.toList())
-//}
-
-//internal fun MemberName.noArguments(): FormattedString = FormattedString("%M()", listOf(this))
-
 internal fun MemberName.withArgumentList(arguments: List<Any>): FormattedString {
     return withFormatStringArguments(arguments.map {
         when (it) {
@@ -49,5 +48,30 @@ internal fun MemberName.withArgumentList(arguments: List<Any>): FormattedString 
 
 internal fun FormattedString.withMethodArguments(arguments: List<FormattedString>): FormattedString = this + "(" + arguments.join() + ")"
 
-
 internal fun MemberName.withFormatStringArguments(arguments: List<FormattedString>): FormattedString = "%M(".formatWith(this) + arguments.join() + ")"
+
+internal fun RpcType.toSerializerString(): FormattedString {
+    return getKSerializer().toSerializerString()
+}
+
+private fun KotlinSerializer.toSerializerString(): FormattedString  {
+    val withoutNullable = when(this) {
+        is ClassBasedKotlinSerializer ->"%T.serializer".formatWith(ClassName.bestGuess(className)).withMethodSerializerArguments(typeArguments)
+        is KotlinSerializer.BuiltinToplevel -> MemberName("kotlinx.serialization.builtins", functionName)
+            .withSerializerArguments(typeArguments)
+    }
+    // Add .nullable if needed
+    return if (isNullable) {
+        withoutNullable + ".nullable"
+    } else {
+        withoutNullable
+    }
+}
+
+private fun FormattedString.withMethodSerializerArguments(args: List<KotlinSerializer>) = withMethodArguments(
+    args.map { it.toSerializerString() }
+)
+
+private fun MemberName.withSerializerArguments(args: List<KotlinSerializer>) = withArgumentList(
+    args.map { it.toSerializerString() }
+)
