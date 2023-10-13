@@ -2,6 +2,9 @@ package io.github.natanfudge.rpc4k.runtime.implementation
 
 import io.github.natanfudge.rpc4k.runtime.api.*
 import kotlinx.serialization.KSerializer
+import kotlinx.serialization.SerializationException
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 
 /**
  * These functions are used by generated code and code that interacts with them
@@ -11,6 +14,7 @@ object GeneratedCodeUtils {
     const val ClientSuffix = "ClientImpl"
     const val ServerSuffix = "ServerImpl"
     const val Package = "io.github.natanfudge.rpc4k.generated"
+
 
     /**
      * Sends a value and returns the result
@@ -36,6 +40,8 @@ object GeneratedCodeUtils {
         client.send(rpc, format, argSerializers)
     }
 
+    @PublishedApi internal val logger = LoggerFactory.getLogger("RPC4K")
+
     /**
      * Catches rpc exceptions and sends the correct error back to the client
      */
@@ -43,9 +49,18 @@ object GeneratedCodeUtils {
         try {
             handler()
         } catch (e: RpcServerException) {
+            logger.warn("Invalid request", e)
+            // RpcServerException messages are trustworthy
             server.sendError(e.message, RpcError.InvalidRequest)
-        } catch (e: Throwable) {
-            server.sendError(e.message ?: "", RpcError.InternalError)
+        } catch (e: SerializationException) {
+            logger.warn("Malformed request arguments", e)
+            // SerializationException messages only include data passed to the server or to the client, in other words, information the client already has
+            server.sendError(e.message ?: "", RpcError.InvalidRequest)
+        }
+        catch (e: Throwable) {
+            logger.error("Failed to handle request", e)
+            // Don't send arbitrary throwable messages because it could leak data
+            server.sendError("Server failed to process request", RpcError.InternalError)
         }
     }
 

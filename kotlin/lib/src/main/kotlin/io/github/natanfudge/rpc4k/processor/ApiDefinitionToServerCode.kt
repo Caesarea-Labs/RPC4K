@@ -3,8 +3,8 @@ package io.github.natanfudge.rpc4k.processor
 import com.squareup.kotlinpoet.*
 import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy
 import io.github.natanfudge.rpc4k.processor.utils.poet.*
-import io.github.natanfudge.rpc4k.runtime.api.GeneratedServerImpl
-import io.github.natanfudge.rpc4k.runtime.api.GeneratedServerImplFactory
+import io.github.natanfudge.rpc4k.runtime.api.GeneratedServerHandler
+import io.github.natanfudge.rpc4k.runtime.api.GeneratedServerHandlerFactory
 import io.github.natanfudge.rpc4k.runtime.api.RpcServer
 import io.github.natanfudge.rpc4k.runtime.api.SerializationFormat
 import io.github.natanfudge.rpc4k.runtime.implementation.GeneratedCodeUtils
@@ -76,7 +76,7 @@ object ApiDefinitionToServerCode {
 
                 addType(factoryCompanionObject(apiDefinition, generatedClassName = className))
 
-                addSuperinterface(GeneratedServerImpl::class)
+                addSuperinterface(GeneratedServerHandler::class)
                 addPrimaryConstructor {
                     addConstructorProperty(ApiPropertyName, type = apiDefinition.name.className, KModifier.PRIVATE)
                     addConstructorProperty(FormatPropertyName, type = SerializationFormat::class, KModifier.PRIVATE)
@@ -88,7 +88,7 @@ object ApiDefinitionToServerCode {
     }
 
     /**
-     * We generate a factory for the generated server implementation for it to be easy to just pass a [GeneratedServerImplFactory]
+     * We generate a factory for the generated server implementation for it to be easy to just pass a [GeneratedServerHandlerFactory]
      * The generated code looks like this:
      * ```
      *     companion object Factory : GeneratedServerHandlerFactory<UserProtocol> {
@@ -100,13 +100,13 @@ object ApiDefinitionToServerCode {
      */
     private fun factoryCompanionObject(api: ApiDefinition, generatedClassName: String) = companionObject(GeneratedCodeUtils.FactoryName) {
         val userClassName = api.name.className
-        addSuperinterface(GeneratedServerImplFactory::class.asClassName().parameterizedBy(userClassName))
+        addSuperinterface(GeneratedServerHandlerFactory::class.asClassName().parameterizedBy(userClassName))
         addFunction("build") {
             addModifiers(KModifier.OVERRIDE)
             addParameter(ApiPropertyName, userClassName)
             addParameter(FormatPropertyName, SerializationFormat::class)
             addParameter(ServerPropertyName, RpcServer::class)
-            returns(GeneratedServerImpl::class)
+            returns(GeneratedServerHandler::class)
             addStatement("return $generatedClassName($ApiPropertyName, $FormatPropertyName, $ServerPropertyName)")
         }
     }

@@ -10,7 +10,6 @@ import io.ktor.server.response.*
 import kotlinx.serialization.KSerializer
 
 //TODO: add utility for registering a route that uses KtorRpcServer
-//TODO: add utility for completely handling the management of a ktor server
 class KtorSingleRouteRpcServer(private val call: ApplicationCall) : RpcServer {
     override suspend fun <T> send(format: SerializationFormat, response: T, serializer: KSerializer<T>) {
         call.respondBytes(format.encode(serializer, response))

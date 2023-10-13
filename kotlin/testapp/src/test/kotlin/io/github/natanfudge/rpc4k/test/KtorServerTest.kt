@@ -15,7 +15,7 @@ class KtorServerTest {
     companion object {
         @JvmField
         @RegisterExtension
-        val extension = rpcExtension(MyApi())
+        val extension = rpcExtension(BasicApi())
     }
 
     @Test
@@ -30,7 +30,7 @@ class KtorServerTest {
 
 @ApiClient
 @ApiServer
-open class MyApi {
+open class BasicApi {
     companion object;
     private val dogs = mutableListOf<Dog>()
     open suspend fun getDogs(num: Int, type: String): List<Dog> {

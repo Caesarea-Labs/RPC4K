@@ -1,7 +1,7 @@
 package io.github.natanfudge.rpc4k.test.util
 
 import io.github.natanfudge.rpc4k.runtime.api.GeneratedClientImplFactory
-import io.github.natanfudge.rpc4k.runtime.api.GeneratedServerImplFactory
+import io.github.natanfudge.rpc4k.runtime.api.GeneratedServerHandlerFactory
 import io.github.natanfudge.rpc4k.runtime.api.RpcClient
 import io.github.natanfudge.rpc4k.runtime.api.SerializationFormat
 import io.github.natanfudge.rpc4k.runtime.api.components.JsonFormat
@@ -17,7 +17,7 @@ import kotlin.reflect.full.companionObjectInstance
 
 fun <API> rpcExtension(
     serverHandler: API,
-    generatedClass: GeneratedServerImplFactory<API>,
+    generatedClass: GeneratedServerHandlerFactory<API>,
     generatedClient: GeneratedClientImplFactory<API>,
     format: SerializationFormat = JsonFormat(),
     server: ServerExtensionFactory<API> = ServerExtensionFactory.Ktor(),
@@ -38,9 +38,9 @@ inline fun <reified API> rpcExtension(
 }
 
 @Suppress("UNCHECKED_CAST")
-inline fun <reified API> apiServerFactory(): GeneratedServerImplFactory<API> {
+inline fun <reified API> apiServerFactory(): GeneratedServerHandlerFactory<API> {
     return Class.forName(GeneratedCodeUtils.Package + "." + API::class.simpleName + GeneratedCodeUtils.ServerSuffix)
-        .kotlin.companionObjectInstance as GeneratedServerImplFactory<API>
+        .kotlin.companionObjectInstance as GeneratedServerHandlerFactory<API>
 }
 
 @Suppress("UNCHECKED_CAST")
@@ -67,10 +67,10 @@ class ClientServerExtension<API>(private val serverExtension: ServerExtension, v
  * often have many parameters.
  */
 interface ServerExtensionFactory<API> {
-    fun build(api: API, generatedClassFactory: GeneratedServerImplFactory<API>, format: SerializationFormat): ServerExtension
+    fun build(api: API, generatedClassFactory: GeneratedServerHandlerFactory<API>, format: SerializationFormat): ServerExtension
 
     class Ktor<Api> : ServerExtensionFactory<Api> {
-        override fun build(api: Api, generatedClassFactory: GeneratedServerImplFactory<Api>, format: SerializationFormat): ServerExtension {
+        override fun build(api: Api, generatedClassFactory: GeneratedServerHandlerFactory<Api>, format: SerializationFormat): ServerExtension {
             return KtorServerExtension { generatedClassFactory.build(api, format, it) }
         }
     }

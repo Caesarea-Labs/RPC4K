@@ -1,7 +1,7 @@
 import {RpcClient} from "../RpcClient";
 import {Rpc} from "../Rpc";
 import {SerializationFormat} from "../SerializationFormat";
-import {RpcResponseException} from "../RpcClientError";
+import {RpcFetchError, RpcResponseError} from "../RpcClientError";
 
 
 export class FetchRpcClient implements RpcClient {
@@ -13,10 +13,22 @@ export class FetchRpcClient implements RpcClient {
 
     async send(rpc: Rpc, format: SerializationFormat): Promise<Uint8Array> {
         const data = rpc.toByteArray(format);
-        const response = await fetch(this.url,{ body: data});
+        let response: Response
+        try {
+            response = await fetch(this.url, {body: data, method: "POST"});
+        } catch (e) {
+            // @ts-ignore
+            console.error("Error fetching data:", e.message);
+            // @ts-ignore
+            console.error("Error name:", e.name);
+            // @ts-ignore
+            console.error("Error stack:", e.stack);
+            throw new RpcFetchError(`Fetch failed`, rpc, format, this, e as TypeError)
+        }
 
         const exception = async (message: string): Promise<never> => {
-            throw new RpcResponseException(message, rpc, format, this, await response.text(), response.status);
+            const body = await response.text()
+            throw new RpcResponseError(message + ": " + body, rpc, format, this, body, response.status);
         };
 
 

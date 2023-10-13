@@ -16,7 +16,7 @@ dependencies {
     testImplementation(kotlin("test"))
     testImplementation(Testing.Strikt.core)
     testImplementation(libs.okhttp.core)
-    testImplementation(libs.ktor.cio)
+    testImplementation(libs.ktor.netty)
     testImplementation(libs.logback)
 }
 

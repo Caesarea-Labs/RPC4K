@@ -3,7 +3,6 @@ package io.github.natanfudge.rpc4k.processor
 import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy
 import com.squareup.kotlinpoet.TypeName
-import dev.adamko.kxstsgen.KxsTsGenerator
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
@@ -11,9 +10,6 @@ import kotlinx.serialization.Transient
 import kotlinx.serialization.encoding.Decoder
 import kotlinx.serialization.encoding.Encoder
 
-fun main() {
-    println(KxsTsGenerator().generate(ApiDefinition.serializer()))
-}
 
 /**
  * @param name The type of this is not exactly accurate, as it's always not nullable and with no type arguments.
