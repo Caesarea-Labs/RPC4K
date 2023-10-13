@@ -1,14 +1,50 @@
+@file:Suppress("UNCHECKED_CAST")
+
 package io.github.natanfudge.rpc4k.runtime.api
 
-import io.github.natanfudge.rpc4k.runtime.implementation.*
-import kotlinx.serialization.DeserializationStrategy
-import kotlinx.serialization.SerializationStrategy
+import io.github.natanfudge.rpc4k.runtime.implementation.HeterogeneousListSerializer
+import kotlinx.serialization.KSerializer
 
 
 /**
  * Data representing a Remote Procedure Call.
  */
 data class Rpc(val method: String, val arguments: List<*>) {
+    companion object {
+        private val Encoding = Charsets.UTF_8
+//        fun getSerializer(argumentSerializers: List<KSerializer<*>>): KSerializer<Rpc> {
+//            return serializer(HeterogeneousListSerializer(argumentSerializers)) as KSerializer<Rpc>
+//        }
+
+        fun fromByteArray(bytes: ByteArray, format: SerializationFormat, argDeserializers: List<KSerializer<*>>): Rpc {
+            val (method, readBytes) = readMethodName(bytes)
+            val arguments = format.decode(HeterogeneousListSerializer(argDeserializers), bytes.copyOfRange(readBytes, bytes.size))
+            return Rpc(method, arguments)
+        }
+
+        private const val ColonCode: Byte = 58 // :
+
+        fun peekMethodName(rpcBytes: ByteArray): String {
+            return readMethodName(rpcBytes).first
+        }
+
+        /**
+         * Returns the method name and how many bytes it spans at the start of the [bytes].
+         */
+        private fun readMethodName(bytes: ByteArray): Pair<String, Int> {
+            var pos = 0
+            // Reads up until COLON_CODE,
+            do {
+                val currentByte = bytes[pos]
+                // Happens after array[pos] so we will already skip by the color itself
+                pos++
+            } while (currentByte != ColonCode)
+
+            // Exclude colon itself
+            return bytes.copyOfRange(0, pos - 1).toString(Encoding) to pos
+        }
+    }
+
     init {
         check(!method.contains(':')) { "Method name must not contain ':', but it did: \"$method\"" }
     }
@@ -21,71 +57,46 @@ data class Rpc(val method: String, val arguments: List<*>) {
     /**
      * See docs/rpc_format.png
      */
-    fun toByteArray(format: SerializationFormat, serializers: List<SerializationStrategy<*>>): ByteArray {
-        //TODO: OPTIMIZATION: for JVM only, and for formats supporting writing to a stream only,
-        // it would be faster to create a ByteArrayOutputStream and write to it directly
-        // instead of creating ByteArrays for every argument and then copying those ByteArrays:
-        // 1. Create BAOS
-        // 2. Write methodName to BAOS
-        // 3. Write length of first param to BAOS
-        // 4. Write first param to BAOS using format stream encoding directly
-        // 5. Repeat for all params
-        // 6. Extend BAOS to directly get the written bytes instead of copying them
-
-        val argBytes = serializeArgs(arguments, format, serializers)
-        validateArgSizes(argBytes)
-
-        val resultArray = ByteArray(calculatePayloadSize(argBytes))
-        with(WriteContext(resultArray)) {
-            writeMethod(method)
-
-            // Write args
-            for (arg in argBytes) {
-                writeArgument(arg, resultArray)
-            }
-
-            check(resultArray.size == pos) { "Sanity check to see the array we allocated is of the exact correct size" }
-        }
-
-        return resultArray
+    fun toByteArray(format: SerializationFormat, serializers: List<KSerializer<*>>): ByteArray {
+        return (method.toByteArray(Encoding) + ColonCode) + format.encode(HeterogeneousListSerializer(serializers), arguments)
     }
 
 
-    companion object {
-        fun peekMethodName(bytes: ByteArray): String = with(ReadContext(bytes)){
-            readMethodName()
-        }
-
-        /**
-         * See docs/rpc_format.png
-         * @param argDeserializers The callback should return the serializers of the arguments of the given method.
-         */
-        fun fromByteArray(
-            bytes: ByteArray,
-            format: SerializationFormat,
-            argDeserializers: List<DeserializationStrategy<*>>
-        ): Rpc {
-            with(ReadContext(bytes)) {
-                val methodName = readMethodName()
-
-                val args = mutableListOf<ByteArray>()
-                while (pos < bytes.size) {
-                    args.add(readArgument())
-                }
-
-                serverRequirement(bytes.size == pos) {
-                    "Incorrect argument lengths are specified. Total size of payload is ${bytes.size} when it should be $pos according to the payload itself."
-                }
-
-                serverRequirement(args.size == argDeserializers.size) {
-                    "Only ${args.size} arguments were provided when ${argDeserializers.size} are required."
-                }
-
-                return Rpc(methodName, deserializeArgs(args, format, argDeserializers))
-            }
-
-        }
-    }
+//    companion object {
+//        fun peekMethodName(bytes: ByteArray): String = with(ReadContext(bytes)){
+//            readMethodName()
+//        }
+//
+//        /**
+//         * See docs/rpc_format.png
+//         * @param argDeserializers The callback should return the serializers of the arguments of the given method.
+//         */
+//        fun fromByteArray(
+//            bytes: ByteArray,
+//            format: SerializationFormat,
+//            argDeserializers: List<DeserializationStrategy<*>>
+//        ): Rpc {
+//            with(ReadContext(bytes)) {
+//                val methodName = readMethodName()
+//
+//                val args = mutableListOf<ByteArray>()
+//                while (pos < bytes.size) {
+//                    args.add(readArgument())
+//                }
+//
+//                serverRequirement(bytes.size == pos) {
+//                    "Incorrect argument lengths are specified. Total size of payload is ${bytes.size} when it should be $pos according to the payload itself."
+//                }
+//
+//                serverRequirement(args.size == argDeserializers.size) {
+//                    "Only ${args.size} arguments were provided when ${argDeserializers.size} are required."
+//                }
+//
+//                return Rpc(methodName, deserializeArgs(args, format, argDeserializers))
+//            }
+//
+//        }
+//    }
 }
 
 

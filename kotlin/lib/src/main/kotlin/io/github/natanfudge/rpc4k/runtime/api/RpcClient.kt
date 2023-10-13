@@ -1,6 +1,6 @@
 package io.github.natanfudge.rpc4k.runtime.api
 
-import kotlinx.serialization.SerializationStrategy
+import kotlinx.serialization.KSerializer
 
 /**
  * Generic interface for anything that sends information across the network.
@@ -14,7 +14,7 @@ interface RpcClient {
      *
      * @return The response body's bytes.
      */
-    suspend fun send(rpc: Rpc, format: SerializationFormat, serializers: List<SerializationStrategy<*>>): ByteArray
+    suspend fun send(rpc: Rpc, format: SerializationFormat, serializers: List<KSerializer<*>>): ByteArray
 }
 
 

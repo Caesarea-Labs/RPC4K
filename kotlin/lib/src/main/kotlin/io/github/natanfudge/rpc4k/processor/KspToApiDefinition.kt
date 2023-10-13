@@ -82,7 +82,8 @@ object KspToApiDefinition {
             val optionsEnum = RpcModel.Enum(name = declaration.simpleName.asString() + "Options", options)
             // When it's an enum with data, it serializes it like a data class with the addition of the "name" property which has the
             // enum value's name.
-            val enumStruct = model.copy(properties = model.properties + ("name" to RpcType(name = optionsEnum.name)))
+            val nameType = RpcType(name = optionsEnum.name, isTypeParameter = false, isOptional = false, typeArguments = listOf())
+            val enumStruct = model.copy(properties = model.properties + ("name" to nameType))
             listOf(enumStruct, optionsEnum)
             //TODO: test on the other side we get a proper union enum as the type of the "name" property here
         }

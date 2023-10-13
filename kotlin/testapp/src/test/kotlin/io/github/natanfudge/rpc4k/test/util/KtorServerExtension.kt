@@ -36,6 +36,9 @@ class KtorServerExtension(private val handler: (KtorSingleRouteRpcServer) -> Gen
     }
 }
 
+//TODO: add an api for an easy server, ManagedKtorRpcServer.
+class KtorServer
+
 //private fun embeddedServerOnAvailablePort(startPort: Int, endPort: Int, config: Application.() -> Unit): Pair<ApplicationEngine, Int> {
 //    return try {
 //        val server = embeddedServer(CIO, port = startPort) { config() }

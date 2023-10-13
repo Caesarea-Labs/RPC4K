@@ -10,9 +10,9 @@ import strikt.api.expectThat
 import strikt.assertions.isEqualTo
 import kotlin.test.Test
 
+
 class KtorServerTest {
     companion object {
-
         @JvmField
         @RegisterExtension
         val extension = rpcExtension(MyApi())

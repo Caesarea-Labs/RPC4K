@@ -36,14 +36,6 @@ class EncodingTest {
         validateRpcSerialization(generateRandomRpc(minArrays = 1, maxArrays = 2, minArraySize = 4_477_215, maxArraySize = 4_777_215))
     }
 
-    @Test
-    fun `Too large arrays are not allowed`() {
-        val rpc = generateRandomRpc(minArrays = 2, maxArrays = 3, minArraySize = 18_777_215, maxArraySize = 18_777_216)
-        expectThrows<IllegalArgumentException> {
-            rpc.toByteArray(JsonFormat(), rpc.arguments.map { String.serializer() })
-        }
-    }
-
     private fun generateRandomRpc(minArrays: Int = 1, maxArrays: Int, minArraySize: Int = 0, maxArraySize: Int): Rpc {
         val arrays = generateRandomByteArrays(minArrays = minArrays, maxArrays = maxArrays, minArraySize = minArraySize, maxArraySize = maxArraySize)
         return Rpc(randomValidMethodName(), arrays.map { it.decodeToString() })

@@ -12,5 +12,7 @@ open class RpcClientException(message: String, val rpc: Rpc, val format: Seriali
 /**
  * Thrown when the response to an RPC indicates a problem.
  */
-class RpcResponseException(message: String, rpc: Rpc, format: SerializationFormat, transmitter: RpcClient, val response: String, val code: Int) :
-    RpcClientException(message, rpc, format, transmitter)
+class RpcResponseException(message: String, rpc: Rpc, format: SerializationFormat, client: RpcClient, val response: String, val code: Int) :
+    RpcClientException(message, rpc, format, client)
+
+

@@ -3,6 +3,7 @@ package io.github.natanfudge.rpc4k.processor
 import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy
 import com.squareup.kotlinpoet.TypeName
+import dev.adamko.kxstsgen.KxsTsGenerator
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
@@ -10,6 +11,9 @@ import kotlinx.serialization.Transient
 import kotlinx.serialization.encoding.Decoder
 import kotlinx.serialization.encoding.Encoder
 
+fun main() {
+    println(KxsTsGenerator().generate(ApiDefinition.serializer()))
+}
 
 /**
  * @param name The type of this is not exactly accurate, as it's always not nullable and with no type arguments.
@@ -39,10 +43,6 @@ sealed interface RpcModel {
     @SerialName("union")
     data class Union(override val name: String, val options: List<String>): RpcModel
 }
-@Serializable
-enum class Bar(val x: Int)
-
-
 
 
 /**
@@ -50,7 +50,7 @@ enum class Bar(val x: Int)
  * which makes it more fitting for [RpcModel]s
  */
 @Serializable
-data class RpcType(val name: String, val isTypeParameter: Boolean = false, val isOptional: Boolean = false, val typeArguments: List<RpcType> = listOf()) {
+data class RpcType(val name: String, val isTypeParameter: Boolean, val isOptional: Boolean, val typeArguments: List<RpcType>) {
     init {
         // Kotlin doesn't have higher-kinded types yet
         if (isTypeParameter) check(typeArguments.isEmpty())
@@ -89,7 +89,7 @@ data class RpcClass(val packageName: String, val simpleName: String, val isNulla
  * Exist purely to serialize [RpcClass]s
  */
 @Serializable
-private data class RpcClassSurrogate(val name: String, val isOptional: Boolean = false, val typeArguments: List<RpcClassSurrogate> = listOf())
+private data class RpcClassSurrogate(val name: String, val isOptional: Boolean, val typeArguments: List<RpcClassSurrogate>)
 
 private fun RpcClass.toSurrogate(): RpcClassSurrogate =
     RpcClassSurrogate(name = simpleName, isOptional = isNullable, typeArguments = typeArguments.map { it.toSurrogate() })

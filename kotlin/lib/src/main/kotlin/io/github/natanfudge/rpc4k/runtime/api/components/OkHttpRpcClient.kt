@@ -2,7 +2,7 @@ package io.github.natanfudge.rpc4k.runtime.api.components
 
 import io.github.natanfudge.rpc4k.runtime.api.*
 import kotlinx.coroutines.suspendCancellableCoroutine
-import kotlinx.serialization.SerializationStrategy
+import kotlinx.serialization.KSerializer
 import okhttp3.*
 import okhttp3.HttpUrl.Companion.toHttpUrl
 import okhttp3.RequestBody.Companion.toRequestBody
@@ -11,7 +11,7 @@ import kotlin.coroutines.resume
 
 class OkHttpRpcClient(private val url: String, private val client: OkHttpClient = OkHttpClient()) : RpcClient {
 
-    override suspend fun send(rpc: Rpc, format: SerializationFormat, serializers: List<SerializationStrategy<*>>): ByteArray {
+    override suspend fun send(rpc: Rpc, format: SerializationFormat, serializers: List<KSerializer<*>>): ByteArray {
         val data = rpc.toByteArray(format, serializers)
         val response = client.request(Request(url.toHttpUrl(), body = data.toRequestBody()))
         fun exception(message: String): Nothing = throw RpcResponseException(message, rpc, format, this, response.body.string(), response.code)
