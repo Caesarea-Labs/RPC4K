@@ -1,10 +1,9 @@
-package io.github.natanfudge.rpc4k.testapp.errorcases
 
-import io.github.natanfudge.rpc4k.runtime.api.ApiClient
+import io.github.natanfudge.rpc4k.runtime.api.Api
 import java.util.Locale
 
 
-@ApiClient
+@Api(true)
 abstract class NonSerializableReturn {
     companion object;
     open suspend fun foo(): Locale {

@@ -1,8 +1,7 @@
 package com.example
 
 import com.example.EnumArgs.*
-import io.github.natanfudge.rpc4k.runtime.api.ApiClient
-import io.github.natanfudge.rpc4k.runtime.api.ApiServer
+import io.github.natanfudge.rpc4k.runtime.api.Api
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -11,8 +10,7 @@ data class PlayerId(val num: Long)
 @Serializable
 data class CreateLobbyResponse(val id: Long)
 
-@ApiClient
-@ApiServer
+@Api(true)
 open class SimpleProtocol {
     companion object;
 //    open suspend fun foo(thing: Int): Flow<Int> {
@@ -24,8 +22,7 @@ open class SimpleProtocol {
     }
 }
 
-@ApiClient
-@ApiServer
+@Api(true)
 open class UserProtocol {
 
     companion object {
@@ -144,19 +141,117 @@ open class UserProtocol {
     }
 
 
-    //TODO
     open suspend fun polymorphicTest(obj: PolymorphicThing): PolymorphicThing {
         return obj
     }
 
-    //TODO
     open suspend fun directPolymorphicAccess(obj: PolymorphicThing.Option1): PolymorphicThing.Option1 {
         return obj
     }
 
-    //TODO
     open suspend fun polymorphicClassTest(obj: PolymorphicClass): PolymorphicClass {
         return obj
+    }
+
+    open suspend fun everyBuiltinType(obj: EveryBuiltinType): EveryBuiltinType {
+        return obj
+    }
+
+    open suspend fun everyBuiltinTypeParams(
+         a: Boolean,
+         b: Byte,
+         c: Short,
+         d: Int,
+         e: Long,
+         f: Char,
+         g: String,
+         h: ByteArray,
+         i: ShortArray,
+         j: IntArray,
+         k: LongArray,
+         l: CharArray,
+         m: List<Int>,
+         n: Map<Int,Int>,
+         o: Set<Int>,
+         p: Pair<Int,Int>,
+         q: Triple<Int,Int,Int>,
+         r: Unit
+    ): Triple<Int,Int,Int> {
+        return q
+    }
+
+}
+
+
+@Serializable
+data class EveryBuiltinType(
+    val a: Boolean,
+    val b: Byte,
+    val c: Short,
+    val d: Int,
+    val e: Long,
+    val f: Char,
+    val g: String,
+    val h: ByteArray,
+    val i: ShortArray,
+    val j: IntArray,
+    val k: LongArray,
+    val l: CharArray,
+    val m: List<Int>,
+    val n: Map<Int,Int>,
+    val o: Set<Int>,
+    val p: Pair<Int,Int>,
+    val q: Triple<Int,Int,Int>,
+    val r: Unit
+) {
+    @Suppress("DuplicatedCode")
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (javaClass != other?.javaClass) return false
+
+        other as EveryBuiltinType
+
+        if (a != other.a) return false
+        if (b != other.b) return false
+        if (c != other.c) return false
+        if (d != other.d) return false
+        if (e != other.e) return false
+        if (f != other.f) return false
+        if (g != other.g) return false
+        if (!h.contentEquals(other.h)) return false
+        if (!i.contentEquals(other.i)) return false
+        if (!j.contentEquals(other.j)) return false
+        if (!k.contentEquals(other.k)) return false
+        if (!l.contentEquals(other.l)) return false
+        if (m != other.m) return false
+        if (n != other.n) return false
+        if (o != other.o) return false
+        if (p != other.p) return false
+        if (q != other.q) return false
+
+        return true
+    }
+
+    override fun hashCode(): Int {
+        var result = a.hashCode()
+        result = 31 * result + b
+        result = 31 * result + c
+        result = 31 * result + d
+        result = 31 * result + e.hashCode()
+        result = 31 * result + f.hashCode()
+        result = 31 * result + g.hashCode()
+        result = 31 * result + h.contentHashCode()
+        result = 31 * result + i.contentHashCode()
+        result = 31 * result + j.contentHashCode()
+        result = 31 * result + k.contentHashCode()
+        result = 31 * result + l.contentHashCode()
+        result = 31 * result + m.hashCode()
+        result = 31 * result + n.hashCode()
+        result = 31 * result + o.hashCode()
+        result = 31 * result + p.hashCode()
+        result = 31 * result + q.hashCode()
+        result = 31 * result + r.hashCode()
+        return result
     }
 }
 

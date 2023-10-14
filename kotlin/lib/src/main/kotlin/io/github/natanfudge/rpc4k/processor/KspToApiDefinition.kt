@@ -40,7 +40,7 @@ object KspToApiDefinition {
      * as [RpcModel]s
      */
     private fun getRpcModels(kspClass: KSClassDeclaration): List<RpcModel> {
-        return getReferencedTypes(kspClass).flatMap { toRpcModels(it) }
+        return kspClass.getReferencedClasses().flatMap { toRpcModels(it) }
     }
 
     /**
@@ -55,9 +55,51 @@ object KspToApiDefinition {
         ANNOTATION_CLASS -> error("Annotation classes can't be serializable")
     }
 
+    /**
+     * Given a sealed class/interface
+     * ```
+     * @Serializable
+     * sealed interface GenericSealed<T1, T2> {
+     *     @Serializable
+     *     class GenericSubclass<T> : GenericSealed<T, Int>
+     * }
+     * ```
+     *
+     * generates the [RpcModel.Union] for it.
+     */
     private fun toRpcUnionModel(declaration: KSClassDeclaration) = listOf(
-        RpcModel.Union(name = declaration.getSimpleName(), options = declaration.getSealedSubclasses().map { it.getSimpleName() }.toList())
+        RpcModel.Union(
+            name = declaration.getSimpleName(),
+            options = declaration.getSealedSubclasses().map { sealedSubclassToRpcType(it) }.toList(),
+            declaration.typeParameters.map { it.name.asString() }
+        )
     )
+
+
+    /**
+     *      A normal union looks like this:
+     *      ```
+     *      type Foo<T> = Something<T> | SomethingElse
+     *      interface Something<T>
+     *      interface SomethingElse
+     *      ```
+     *      But in Kotlin it looks like this:
+     *      ```
+     *      sealed interface Foo<T> {
+     *          class Something<T> : Something<T>
+     *          class SomethingElse: Something<Int>
+     *     }
+     *     ```
+     *     So the sealed interface model for generic types doesn't really fit well with the union type model.
+     *     Generic types could be implemented by adding inheritance to the format, but I don't think that's really required yet.
+     *
+     */
+    private fun sealedSubclassToRpcType(sealedSubclass: KSClassDeclaration): RpcType {
+        val name = sealedSubclass.getSimpleName()
+        return RpcType(name = name, isTypeParameter = false, isOptional = false,
+            typeArguments = listOf()
+        )
+    }
 
     /**
      * Converts an enum model like this:
@@ -96,6 +138,7 @@ object KspToApiDefinition {
      * ```
      * to a [RpcModel.Struct]
      */
+    //TODO: needs to check if this is a son of a sealed class, in which case a `type: ` is required
     private fun toRpcStructModel(declaration: KSClassDeclaration) = RpcModel.Struct(
         name = declaration.getSimpleName(),
         typeParameters = declaration.typeParameters.map { it.name.asString() },
@@ -142,59 +185,5 @@ object KspToApiDefinition {
         return packageName to className
     }
 
-    /**
-     * When you have methods like
-     * ```
-     * fun foo(param: SomeClass)
-     * ```
-     *
-     * It will return everything referenced by `SomeClass` and other such referenced classes.
-     */
-    private fun getReferencedTypes(kspClass: KSClassDeclaration): Set<KSClassDeclaration> {
-        val types = hashSetOf<KSClassDeclaration>()
-        // Add things referenced in methods
-        for (method in kspClass.getPublicApiFunctions()) {
-            addReferencedTypes(method.nonNullReturnType(), types)
-            for (arg in method.parameters) {
-                addReferencedTypes(arg.type, types)
-            }
-        }
 
-        return types
-    }
-
-
-    //TODO: test recursive references
-    /**
-     * When you have a reference like
-     * ```
-     * SomeClass<SomeOtherClass> {
-     *     val anotherThing: AnotherClass
-     * }
-     * ```
-     * It will return everything referenced by `SomeClass`, including `SomeOtherClass` and `AnotherClass`.
-     */
-    private fun addReferencedTypes(type: KSTypeReference, addTo: MutableSet<KSClassDeclaration>) {
-        val resolved = type.resolve()
-        val declaration = resolved.declaration
-        // We really don't want to iterate over builtin types, and we need to be careful to only process everything once or this will be infinite recursion.
-        if (!resolved.isBuiltinSerializableType() && declaration !in addTo && declaration is KSClassDeclaration) {
-            for (arg in resolved.arguments) {
-                addReferencedTypes(arg.nonNullType(), addTo)
-            }
-            addReferencedTypes(declaration, addTo)
-        }
-    }
-
-    private fun addReferencedTypes(declaration: KSClassDeclaration, addTo: MutableSet<KSClassDeclaration>) {
-        addTo.add(declaration)
-        // Include types referenced in properties of models as well
-        for (property in declaration.getAllProperties()) {
-            addReferencedTypes(property.type, addTo)
-        }
-        // Add sealed subclasses as well
-        for(sealedSubClass in declaration.getSealedSubclasses()) {
-            addReferencedTypes(sealedSubClass, addTo)
-        }
-    }
 }

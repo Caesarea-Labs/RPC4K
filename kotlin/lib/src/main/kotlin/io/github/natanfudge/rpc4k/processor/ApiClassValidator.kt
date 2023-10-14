@@ -3,14 +3,52 @@ package io.github.natanfudge.rpc4k.processor
 import com.google.devtools.ksp.isOpen
 import com.google.devtools.ksp.processing.SymbolProcessorEnvironment
 import com.google.devtools.ksp.symbol.*
+import com.google.devtools.ksp.validate
 import io.github.natanfudge.rpc4k.processor.utils.*
+import io.github.natanfudge.rpc4k.runtime.api.Api
 
 /**
  * The methods of this class evaluate all checks to reveal all errors, not just stop at one.
  */
 class ApiClassValidator(private val env: SymbolProcessorEnvironment) {
+    fun validate(apiClass: KSClassDeclaration): Boolean {
+        if (!apiClass.validate()) return false
+        var valid = checkApiClassIsValid(apiClass)
+        if (apiClass.shouldGenerateClient()) {
+            // Servers don't need to be suspendOpen, only clients
+            valid = checkClassIsSuspendOpen(apiClass) && valid
+        }
+        return checkNoGenericSealedClasses(apiClass) && valid
+    }
 
-     fun checkApiClassIsValid(apiClass: KSClassDeclaration): Boolean {
+
+    /**
+     *      A normal union looks like this:
+     *      ```
+     *      type Foo<T> = Something<T> | SomethingElse
+     *      interface Something<T>
+     *      interface SomethingElse
+     *      ```
+     *      But in Kotlin it looks like this:
+     *      ```
+     *      sealed interface Foo<T> {
+     *          class Something<T> : Something<T>
+     *          class SomethingElse: Something<Int>
+     *     }
+     *     ```
+     *     So the sealed interface model for generic types doesn't really fit well with the union type model.
+     *     Generic types could be implemented by adding inheritance to the format, but I don't think that's a good idea.
+     *
+     */
+    private fun checkNoGenericSealedClasses(apiClass: KSClassDeclaration) : Boolean {
+        return apiClass.getReferencedClasses().evaluateAll {
+            it.checkRequirement(env, it.typeParameters.isEmpty() || it.getSealedSubclasses().toList().isEmpty()) {
+                "Generic sealed classes are not supported in RPC4K. The concept doesn't fit well with other languages and kotlinx.serialization breaks with them anyway."
+            }
+        }
+    }
+
+    private fun checkApiClassIsValid(apiClass: KSClassDeclaration): Boolean {
         val serializable = apiClass.getPublicApiFunctions().evaluateAll { checkIsSerializable(it) }
         return checkHasCompanionClass(apiClass) && serializable
     }
@@ -19,7 +57,7 @@ class ApiClassValidator(private val env: SymbolProcessorEnvironment) {
      * Api clients should be open (abstract and interface works too) and suspending
      * because the @ApiClient class serves as an interface for the generated client implementation.
      */
-     fun checkClassIsSuspendOpen(apiClass: KSClassDeclaration): Boolean {
+    private fun checkClassIsSuspendOpen(apiClass: KSClassDeclaration): Boolean {
         val classOpen = checkIsSuspendOpen(apiClass, method = false)
         // Make sure to evaluate all the checks
         return apiClass.getPublicApiFunctions().evaluateAll { checkIsSuspendOpen(it, method = true) } && classOpen
@@ -33,7 +71,7 @@ class ApiClassValidator(private val env: SymbolProcessorEnvironment) {
 
         return when {
             // Make the error messages as descriptive as possible
-            !isOpen && !isSuspending -> node.checkRequirement(env ,false) {
+            !isOpen && !isSuspending -> node.checkRequirement(env, false) {
                 "$messagePrefix@ApiClient class must be suspending and open for inheritance"
             }
 
@@ -48,7 +86,6 @@ class ApiClassValidator(private val env: SymbolProcessorEnvironment) {
             else -> true
         }
     }
-
 
 
     private fun checkIsSerializable(function: KSFunctionDeclaration): Boolean {

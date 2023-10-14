@@ -25,20 +25,26 @@ data class RpcParameter(val name: String, val type: RpcClass)
 @Serializable
 sealed interface RpcModel {
     val name: String
+    //TODO: consider whether or not it's worth having default values on these things. The benefit is that it often reduces size by like 4x
+    // the downside is that it's more work on clients to write down what the default value is.
+    // Need to consider the fact we might want multiple api versions floating around sitting in the server's DB.
     @Serializable
     @SerialName("struct")
-    data class Struct(override val name: String, val typeParameters: List<String> = listOf(), val properties: Map<String, RpcType>): RpcModel
+    data class Struct(override val name: String, val typeParameters: List<String>, val properties: Map<String, RpcType>): RpcModel
     @Serializable
     @SerialName("enum")
     data class Enum(override val name: String, val options: List<String>): RpcModel
 
     /**
+     * Important note: Languages implementing this MUST add a `type: ` field to the structs referenced by `options` so the other side
+     * may know which of the union options a union value is
      * @param [options] a list of possible types this union can evaluate to.
      */
     @Serializable
     @SerialName("union")
-    data class Union(override val name: String, val options: List<String>): RpcModel
+    data class Union(override val name: String, val options: List<RpcType>, val typeParameters: List<String>): RpcModel
 }
+//TODO: make the `_type` property name reserved, because we sometimes need it for union types, and configure json to use _type.
 
 
 /**

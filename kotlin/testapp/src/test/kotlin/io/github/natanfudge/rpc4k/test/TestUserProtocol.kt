@@ -98,6 +98,19 @@ class TestUserProtocol {
         expectThat(protocol.directPolymorphicAccess(direct)).isEqualTo(direct)
         val polymorphicClass = PolymorphicClass.Option4(3)
         expectThat(protocol.polymorphicClassTest(polymorphicClass)).isEqualTo(polymorphicClass)
+        val everything = EveryBuiltinType(
+            false, 1, 2, 3, 4, '5', "6",
+            byteArrayOf(7), ShortArray(8), IntArray(9), longArrayOf(10), charArrayOf('@'),
+            listOf(11), mapOf(12 to 13), setOf(14), 15 to 16, Triple(17, 18, 19), Unit
+        )
+        expectThat(protocol.everyBuiltinType(everything)).isEqualTo(everything)
+        expectThat(
+            protocol.everyBuiltinTypeParams(
+                false, 1, 2, 3, 4, '5', "6",
+                byteArrayOf(7), ShortArray(8), IntArray(9), longArrayOf(10), charArrayOf('@'),
+                listOf(11), mapOf(12 to 13), setOf(14), 15 to 16, Triple(17, 18, 19), Unit
+            )
+        ).isEqualTo(Triple(17, 18, 19))
     }
 
 }

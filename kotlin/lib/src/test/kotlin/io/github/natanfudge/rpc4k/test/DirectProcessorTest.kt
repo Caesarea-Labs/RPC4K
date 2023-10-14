@@ -4,6 +4,8 @@ import com.tschuchort.compiletesting.KotlinCompilation
 import com.tschuchort.compiletesting.SourceFile
 import com.tschuchort.compiletesting.symbolProcessorProviders
 import io.github.natanfudge.rpc4k.processor.Rpc4kProcessorProvider
+import strikt.api.expectThat
+import strikt.assertions.isEqualTo
 import java.io.File
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -31,7 +33,7 @@ class DirectProcessorTest {
 
     @Test
     fun `Symbol processor gives off correct errors`() {
-        val errorCasesDir = File("../testapp/src/errors/kotlin/io/github/natanfudge/rpc4k/testapp/errorcases")
+        val errorCasesDir = File("../testerrors")
         for (errorFile in errorCasesDir.listFiles()!!.filter { it.isFile }) {
             // Test individual files
             val testSources = listOf(SourceFile.fromPath(errorFile))
@@ -43,7 +45,9 @@ class DirectProcessorTest {
                 messageOutputStream = System.out // see diagnostics in real time
             }.compile()
 
-            assertEquals(KotlinCompilation.ExitCode.COMPILATION_ERROR, result.exitCode)
+            expectThat(result.exitCode)
+                .describedAs {"Exit code for error file $errorFile"}
+                .isEqualTo(KotlinCompilation.ExitCode.COMPILATION_ERROR)
         }
 
         // Test DuplicateTypeName together with 2 other files

@@ -1,4 +1,4 @@
-package io.github.natanfudge.rpc4k.testapp.errorcases.package2
+package package2
 
 import kotlinx.serialization.Serializable
 

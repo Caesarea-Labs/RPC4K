@@ -41,7 +41,8 @@ export namespace RpcModel {
     export interface Union {
         type: RpcModel.Type.union;
         name: string;
-        options: string[];
+        typeParameters: string[]
+        options: RpcType[];
     }
 }
 

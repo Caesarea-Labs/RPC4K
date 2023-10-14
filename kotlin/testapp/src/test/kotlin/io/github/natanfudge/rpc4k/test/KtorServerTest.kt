@@ -1,7 +1,6 @@
 package io.github.natanfudge.rpc4k.test
 
-import io.github.natanfudge.rpc4k.runtime.api.ApiClient
-import io.github.natanfudge.rpc4k.runtime.api.ApiServer
+import io.github.natanfudge.rpc4k.runtime.api.Api
 import io.github.natanfudge.rpc4k.test.util.rpcExtension
 import kotlinx.coroutines.runBlocking
 import kotlinx.serialization.Serializable
@@ -28,8 +27,7 @@ class KtorServerTest {
     }
 }
 
-@ApiClient
-@ApiServer
+@Api(true)
 open class BasicApi {
     companion object;
     private val dogs = mutableListOf<Dog>()

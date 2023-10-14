@@ -2,10 +2,9 @@
 
 package com.example
 
-import io.github.natanfudge.rpc4k.runtime.api.ApiClient
-import io.github.natanfudge.rpc4k.runtime.api.ApiServer
+import io.github.natanfudge.rpc4k.runtime.api.Api
 
-@ApiClient
+@Api(true)
 abstract class TestValidClass1 {
     companion object;
     open suspend fun foo(thing: Int) {
@@ -15,7 +14,7 @@ abstract class TestValidClass1 {
     abstract suspend fun bar(thing: Int)
 }
 
-@ApiClient
+@Api(true)
 interface TestValidClass2 {
     companion object;
     suspend fun foo(thing: Int) {
@@ -25,7 +24,7 @@ interface TestValidClass2 {
     suspend fun bar(thing: Int) {}
 }
 
-@ApiServer
+@Api
 class TestValidClass3 {
     companion object;
     open fun foo(thing: Int) {
@@ -35,7 +34,7 @@ class TestValidClass3 {
     suspend fun bar(thing: Int) {}
 }
 
-@ApiServer
+@Api
 open class TestValidClass4 {
     companion object;
     fun foo(thing: Int) {

@@ -38,6 +38,7 @@ sealed interface ClassBasedKotlinSerializer: KotlinSerializer {
     val className: String
 }
 
+//TODO: map with non-primitive keys are gonna need some extra work, mostly on the client side.
 
 internal fun KSType.isSerializable() = isBuiltinSerializableType() || isAnnotatedBySerializable()
 
@@ -110,7 +111,8 @@ private fun RpcClass.userClassSerializer() = KotlinSerializer.User(
  * These classes don't have a T.serializer() for some reason but instead have a separate top-level method
  */
 private val classesWithSeparateSerializerMethod = listOf(
-    List::class, Set::class, Map::class, Pair::class, Map.Entry::class, Triple::class
+    List::class, Set::class, Map::class, Pair::class, Map.Entry::class, Triple::class,
+    ByteArray::class, ShortArray::class, IntArray::class, LongArray::class, CharArray::class
 ).map { it.qualifiedName }.toHashSet()
 
 
@@ -142,4 +144,9 @@ private val builtinSerializableTypes = listOf(
     Triple::class,
     Map.Entry::class,
     Map::class,
+    ByteArray::class,
+    ShortArray::class,
+    IntArray::class,
+    LongArray::class,
+    CharArray::class
 ).map { it.qualifiedName!! }.toHashSet()

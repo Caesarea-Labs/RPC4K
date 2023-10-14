@@ -1,3 +1,5 @@
+// noinspection PointlessBooleanExpressionJS
+
 /**
  * Minimalist and ultra simple code generator based on appending to a string
  */
@@ -12,10 +14,10 @@ export class CodeBuilder {
         return this.code
     }
 
-    addInterface(name: string, interfaceBuilder: (builder: InterfaceBuilder) => void): CodeBuilder {
-        return this._addBlock(`interface ${name}`, () => {
+    addInterface({name, typeParameters}: {name: string, typeParameters?: string[]}, interfaceBuilder: (builder: InterfaceBuilder) => void): CodeBuilder {
+        return this._addBlock(`interface ${name}${this.typeParametersString(typeParameters)}`, () => {
             interfaceBuilder(new InterfaceBuilder(this))
-        })
+        })._addLineOfCode("") // Add empty line
     }
 
     addClass(name: string, classBuilder: (builder: ClassBuilder) => void): CodeBuilder {
@@ -23,6 +25,15 @@ export class CodeBuilder {
             classBuilder(new ClassBuilder(this))
         })
     }
+    addUnionType({name,typeParameters, types}:{name: string, typeParameters?: string[], types: string[]}): CodeBuilder {
+        //TODO: handle wrapping
+        return this._addLineOfCode(`type ${name}${this.typeParametersString(typeParameters)} = ` + types.join(" | "))
+    }
+
+     typeParametersString(params: string[] | undefined) : string {
+        if(params === undefined || params.length === 0) return ""
+         return `<${params.join(", ")}>`
+     }
 
     ///////////////////// Internal ////////////////
 
@@ -106,7 +117,7 @@ export class CodeBuilder {
 
 }
 
-
+type THing<T> = T[] | Record<string, T>
 
 
 export class InterfaceBuilder {
@@ -116,8 +127,9 @@ export class InterfaceBuilder {
         this.codegen = codegen
     }
 
-    addProperty(name: string, type: string): InterfaceBuilder {
-        this.codegen._addLineOfCode(`${name}: ${type}`)
+    addProperty({name, type, optional}: {name: string, type: string, optional?: boolean}): InterfaceBuilder {
+        const optionalString = optional === true? "?" : ""
+        this.codegen._addLineOfCode(`${name}${optionalString}: ${type}`)
         return this
     }
 
@@ -129,8 +141,8 @@ export class ClassBuilder extends InterfaceBuilder {
         super(codegen)
     }
 
-    addProperty(name: string, type: string): ClassBuilder {
-        return super.addProperty(name,type) as ClassBuilder
+    addProperty(property: {name: string, type: string, optional?: boolean}): ClassBuilder {
+        return super.addProperty(property) as ClassBuilder
     }
 
     addConstructor(parameterList: [string, string][], body: (builder: BodyBuilder) => void): ClassBuilder {
