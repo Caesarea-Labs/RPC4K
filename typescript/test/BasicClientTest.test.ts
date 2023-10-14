@@ -29,6 +29,9 @@ class MyApiClientImpl {
         return GeneratedCodeUtils.request(this.client, this.format, "putDog", dog)
     }
 }
+//TODO: for union types, generate classes instead with isX checks
+
+
 //TODO: note that this is different from the current approach i have of explicitly handling fetch and generic errors...
 // what i should do instead is have the error boundary handle everything but have it change the display based on the exception,
 // it could differ between different RpcExceptions
@@ -40,35 +43,3 @@ interface Dog {
     age: number
 }
 
-//class KtorServerTest {
-//     companion object {
-//
-//         @JvmField
-//         @RegisterExtension
-//         val extension = rpcExtension(MyApi())
-//     }
-//
-//     @Test
-//     fun `Basic RPCs work`(): Unit = runBlocking {
-//         val client = extension.api
-//         val dog = Dog("asdf", "shiba", 2)
-//         client.putDog(dog)
-//         val dogs = client.getDogs(2, "shiba")
-//         expectThat(dogs).isEqualTo(listOf(dog))
-//     }
-// }
-//
-// @ApiClient
-// @ApiServer
-// open class MyApi {
-//     companion object;
-//     private val dogs = mutableListOf<Dog>()
-//     open suspend fun getDogs(num: Int, type: String): List<Dog> {
-//         return dogs.filter { it.type == type }.take(num)
-//     }
-//
-//     open suspend fun putDog(dog: Dog) {
-//         dogs.add(dog)
-//     }
-// }
-//
