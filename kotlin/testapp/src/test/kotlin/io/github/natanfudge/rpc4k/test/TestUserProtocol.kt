@@ -1,3 +1,5 @@
+@file:OptIn(ExperimentalUnsignedTypes::class)
+
 package io.github.natanfudge.rpc4k.test
 
 import com.example.*
@@ -101,14 +103,17 @@ class TestUserProtocol {
         val everything = EveryBuiltinType(
             false, 1, 2, 3, 4, '5', "6",
             byteArrayOf(7), ShortArray(8), IntArray(9), longArrayOf(10), charArrayOf('@'),
-            listOf(11), mapOf(12 to 13), setOf(14), 15 to 16, Triple(17, 18, 19), Unit
+            listOf(11), mapOf(12 to 13), setOf(14), 15 to 16, Triple(17, 18, 19), Unit,
+            arrayOf(20), ubyteArrayOf(21u), ushortArrayOf(22u), uintArrayOf(23u), ULongArray(24), 25u, 26u, 27u, 28u,29f,30.0
+
         )
         expectThat(protocol.everyBuiltinType(everything)).isEqualTo(everything)
         expectThat(
             protocol.everyBuiltinTypeParams(
                 false, 1, 2, 3, 4, '5', "6",
                 byteArrayOf(7), ShortArray(8), IntArray(9), longArrayOf(10), charArrayOf('@'),
-                listOf(11), mapOf(12 to 13), setOf(14), 15 to 16, Triple(17, 18, 19), Unit
+                listOf(11), mapOf(12 to 13), setOf(14), 15 to 16, Triple(17, 18, 19), Unit,
+                arrayOf(20), ubyteArrayOf(21u), ushortArrayOf(22u), uintArrayOf(23u), ULongArray(24), 25u, 26u, 27u, 28u,29f,30.0
             )
         ).isEqualTo(Triple(17, 18, 19))
     }

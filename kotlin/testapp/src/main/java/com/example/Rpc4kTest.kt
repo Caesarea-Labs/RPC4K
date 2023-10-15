@@ -1,8 +1,12 @@
+@file:OptIn(ExperimentalUnsignedTypes::class)
+
 package com.example
 
-import com.example.EnumArgs.*
+import com.example.EnumArgs.Option1
+import com.example.EnumArgs.Option5
 import io.github.natanfudge.rpc4k.runtime.api.Api
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.builtins.serializer
 
 @Serializable
 data class PlayerId(val num: Long)
@@ -158,25 +162,36 @@ open class UserProtocol {
     }
 
     open suspend fun everyBuiltinTypeParams(
-         a: Boolean,
-         b: Byte,
-         c: Short,
-         d: Int,
-         e: Long,
-         f: Char,
-         g: String,
-         h: ByteArray,
-         i: ShortArray,
-         j: IntArray,
-         k: LongArray,
-         l: CharArray,
-         m: List<Int>,
-         n: Map<Int,Int>,
-         o: Set<Int>,
-         p: Pair<Int,Int>,
-         q: Triple<Int,Int,Int>,
-         r: Unit
-    ): Triple<Int,Int,Int> {
+        a: Boolean,
+        b: Byte,
+        c: Short,
+        d: Int,
+        e: Long,
+        f: Char,
+        g: String,
+        h: ByteArray,
+        i: ShortArray,
+        j: IntArray,
+        k: LongArray,
+        l: CharArray,
+        m: List<Int>,
+        n: Map<Int, Int>,
+        o: Set<Int>,
+        p: Pair<Int, Int>,
+        q: Triple<Int, Int, Int>,
+        r: Unit,
+        s: Array<Int>,
+        t: UByteArray,
+        u: UShortArray,
+        v: UIntArray,
+        w: ULongArray,
+        x: UByte,
+        y: UShort,
+        z: UInt,
+        a2: ULong,
+        b2: Float,
+        b3: Double
+    ): Triple<Int, Int, Int> {
         return q
     }
 
@@ -198,11 +213,22 @@ data class EveryBuiltinType(
     val k: LongArray,
     val l: CharArray,
     val m: List<Int>,
-    val n: Map<Int,Int>,
+    val n: Map<Int, Int>,
     val o: Set<Int>,
-    val p: Pair<Int,Int>,
-    val q: Triple<Int,Int,Int>,
-    val r: Unit
+    val p: Pair<Int, Int>,
+    val q: Triple<Int, Int, Int>,
+    val r: Unit,
+    val s: Array<Int>,
+    val t: UByteArray,
+    val u: UShortArray,
+    val v: UIntArray,
+    val w: ULongArray,
+    val x: UByte,
+    val y: UShort,
+    val z: UInt,
+    val a2: ULong,
+    val b2: Float,
+    val b3: Double
 ) {
     @Suppress("DuplicatedCode")
     override fun equals(other: Any?): Boolean {

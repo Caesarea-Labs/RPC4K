@@ -1,6 +1,7 @@
 export const TestRpcJson = `{
     "name": {
         "name": "UserProtocol",
+        "isTypeParameter": false,
         "isOptional": false,
         "typeArguments": [
         ]
@@ -13,6 +14,7 @@ export const TestRpcJson = `{
                     "name": "createdBy",
                     "type": {
                         "name": "PlayerId",
+                        "isTypeParameter": false,
                         "isOptional": false,
                         "typeArguments": [
                         ]
@@ -21,7 +23,8 @@ export const TestRpcJson = `{
                 {
                     "name": "otherThing",
                     "type": {
-                        "name": "String",
+                        "name": "string",
+                        "isTypeParameter": false,
                         "isOptional": false,
                         "typeArguments": [
                         ]
@@ -30,6 +33,7 @@ export const TestRpcJson = `{
             ],
             "returnType": {
                 "name": "CreateLobbyResponse",
+                "isTypeParameter": false,
                 "isOptional": false,
                 "typeArguments": [
                 ]
@@ -41,7 +45,8 @@ export const TestRpcJson = `{
                 {
                     "name": "killer",
                     "type": {
-                        "name": "Int",
+                        "name": "i32",
+                        "isTypeParameter": false,
                         "isOptional": false,
                         "typeArguments": [
                         ]
@@ -51,6 +56,7 @@ export const TestRpcJson = `{
                     "name": "shit",
                     "type": {
                         "name": "PlayerId",
+                        "isTypeParameter": false,
                         "isOptional": false,
                         "typeArguments": [
                         ]
@@ -59,7 +65,8 @@ export const TestRpcJson = `{
                 {
                     "name": "bar",
                     "type": {
-                        "name": "Unit",
+                        "name": "void",
+                        "isTypeParameter": false,
                         "isOptional": false,
                         "typeArguments": [
                         ]
@@ -67,7 +74,8 @@ export const TestRpcJson = `{
                 }
             ],
             "returnType": {
-                "name": "UInt",
+                "name": "i32",
+                "isTypeParameter": false,
                 "isOptional": false,
                 "typeArguments": [
                 ]
@@ -79,7 +87,8 @@ export const TestRpcJson = `{
                 {
                     "name": "x",
                     "type": {
-                        "name": "Int",
+                        "name": "i32",
+                        "isTypeParameter": false,
                         "isOptional": false,
                         "typeArguments": [
                         ]
@@ -88,7 +97,8 @@ export const TestRpcJson = `{
                 {
                     "name": "y",
                     "type": {
-                        "name": "Int",
+                        "name": "i32",
+                        "isTypeParameter": false,
                         "isOptional": false,
                         "typeArguments": [
                         ]
@@ -96,7 +106,8 @@ export const TestRpcJson = `{
                 }
             ],
             "returnType": {
-                "name": "String",
+                "name": "string",
+                "isTypeParameter": false,
                 "isOptional": false,
                 "typeArguments": [
                 ]
@@ -108,11 +119,13 @@ export const TestRpcJson = `{
                 {
                     "name": "list",
                     "type": {
-                        "name": "List",
+                        "name": "array",
+                        "isTypeParameter": false,
                         "isOptional": false,
                         "typeArguments": [
                             {
                                 "name": "PlayerId",
+                                "isTypeParameter": false,
                                 "isOptional": false,
                                 "typeArguments": [
                                 ]
@@ -123,15 +136,18 @@ export const TestRpcJson = `{
                 {
                     "name": "double",
                     "type": {
-                        "name": "List",
+                        "name": "array",
+                        "isTypeParameter": false,
                         "isOptional": false,
                         "typeArguments": [
                             {
-                                "name": "Set",
+                                "name": "array",
+                                "isTypeParameter": false,
                                 "isOptional": false,
                                 "typeArguments": [
                                     {
-                                        "name": "String",
+                                        "name": "string",
+                                        "isTypeParameter": false,
                                         "isOptional": false,
                                         "typeArguments": [
                                         ]
@@ -144,17 +160,20 @@ export const TestRpcJson = `{
                 {
                     "name": "pair",
                     "type": {
-                        "name": "Pair",
+                        "name": "tuple",
+                        "isTypeParameter": false,
                         "isOptional": false,
                         "typeArguments": [
                             {
-                                "name": "Int",
+                                "name": "i32",
+                                "isTypeParameter": false,
                                 "isOptional": false,
                                 "typeArguments": [
                                 ]
                             },
                             {
-                                "name": "Long",
+                                "name": "i64",
+                                "isTypeParameter": false,
                                 "isOptional": false,
                                 "typeArguments": [
                                 ]
@@ -165,23 +184,27 @@ export const TestRpcJson = `{
                 {
                     "name": "triple",
                     "type": {
-                        "name": "Triple",
+                        "name": "tuple",
+                        "isTypeParameter": false,
                         "isOptional": false,
                         "typeArguments": [
                             {
-                                "name": "Unit",
+                                "name": "void",
+                                "isTypeParameter": false,
                                 "isOptional": false,
                                 "typeArguments": [
                                 ]
                             },
                             {
                                 "name": "PlayerId",
+                                "isTypeParameter": false,
                                 "isOptional": false,
                                 "typeArguments": [
                                 ]
                             },
                             {
-                                "name": "String",
+                                "name": "string",
+                                "isTypeParameter": false,
                                 "isOptional": false,
                                 "typeArguments": [
                                 ]
@@ -192,17 +215,20 @@ export const TestRpcJson = `{
                 {
                     "name": "entry",
                     "type": {
-                        "name": "Map.Entry",
+                        "name": "tuple",
+                        "isTypeParameter": false,
                         "isOptional": false,
                         "typeArguments": [
                             {
-                                "name": "Int",
+                                "name": "i32",
+                                "isTypeParameter": false,
                                 "isOptional": false,
                                 "typeArguments": [
                                 ]
                             },
                             {
-                                "name": "Int",
+                                "name": "i32",
+                                "isTypeParameter": false,
                                 "isOptional": false,
                                 "typeArguments": [
                                 ]
@@ -212,29 +238,35 @@ export const TestRpcJson = `{
                 }
             ],
             "returnType": {
-                "name": "Map",
+                "name": "record",
+                "isTypeParameter": false,
                 "isOptional": false,
                 "typeArguments": [
                     {
-                        "name": "Long",
+                        "name": "i64",
+                        "isTypeParameter": false,
                         "isOptional": false,
                         "typeArguments": [
                         ]
                     },
                     {
-                        "name": "Map",
+                        "name": "record",
+                        "isTypeParameter": false,
                         "isOptional": false,
                         "typeArguments": [
                             {
-                                "name": "Set",
+                                "name": "array",
+                                "isTypeParameter": false,
                                 "isOptional": false,
                                 "typeArguments": [
                                     {
-                                        "name": "List",
+                                        "name": "array",
+                                        "isTypeParameter": false,
                                         "isOptional": false,
                                         "typeArguments": [
                                             {
                                                 "name": "PlayerId",
+                                                "isTypeParameter": false,
                                                 "isOptional": false,
                                                 "typeArguments": [
                                                 ]
@@ -244,7 +276,8 @@ export const TestRpcJson = `{
                                 ]
                             },
                             {
-                                "name": "Double",
+                                "name": "f64",
+                                "isTypeParameter": false,
                                 "isOptional": false,
                                 "typeArguments": [
                                 ]
@@ -260,17 +293,20 @@ export const TestRpcJson = `{
                 {
                     "name": "pair",
                     "type": {
-                        "name": "Pair",
+                        "name": "tuple",
+                        "isTypeParameter": false,
                         "isOptional": false,
                         "typeArguments": [
                             {
-                                "name": "Int",
+                                "name": "i32",
+                                "isTypeParameter": false,
                                 "isOptional": false,
                                 "typeArguments": [
                                 ]
                             },
                             {
-                                "name": "Long",
+                                "name": "i64",
+                                "isTypeParameter": false,
                                 "isOptional": false,
                                 "typeArguments": [
                                 ]
@@ -280,27 +316,32 @@ export const TestRpcJson = `{
                 }
             ],
             "returnType": {
-                "name": "Pair",
+                "name": "tuple",
+                "isTypeParameter": false,
                 "isOptional": false,
                 "typeArguments": [
                     {
-                        "name": "Triple",
+                        "name": "tuple",
+                        "isTypeParameter": false,
                         "isOptional": false,
                         "typeArguments": [
                             {
-                                "name": "Int",
+                                "name": "i32",
+                                "isTypeParameter": false,
                                 "isOptional": false,
                                 "typeArguments": [
                                 ]
                             },
                             {
-                                "name": "Int",
+                                "name": "i32",
+                                "isTypeParameter": false,
                                 "isOptional": false,
                                 "typeArguments": [
                                 ]
                             },
                             {
-                                "name": "String",
+                                "name": "string",
+                                "isTypeParameter": false,
                                 "isOptional": false,
                                 "typeArguments": [
                                 ]
@@ -308,7 +349,8 @@ export const TestRpcJson = `{
                         ]
                     },
                     {
-                        "name": "Double",
+                        "name": "f64",
+                        "isTypeParameter": false,
                         "isOptional": false,
                         "typeArguments": [
                         ]
@@ -322,11 +364,13 @@ export const TestRpcJson = `{
                 {
                     "name": "mayNull",
                     "type": {
-                        "name": "List",
+                        "name": "array",
+                        "isTypeParameter": false,
                         "isOptional": true,
                         "typeArguments": [
                             {
                                 "name": "PlayerId",
+                                "isTypeParameter": false,
                                 "isOptional": false,
                                 "typeArguments": [
                                 ]
@@ -337,11 +381,13 @@ export const TestRpcJson = `{
                 {
                     "name": "mayNull2",
                     "type": {
-                        "name": "List",
+                        "name": "array",
+                        "isTypeParameter": false,
                         "isOptional": false,
                         "typeArguments": [
                             {
                                 "name": "PlayerId",
+                                "isTypeParameter": false,
                                 "isOptional": true,
                                 "typeArguments": [
                                 ]
@@ -351,7 +397,8 @@ export const TestRpcJson = `{
                 }
             ],
             "returnType": {
-                "name": "Unit",
+                "name": "void",
+                "isTypeParameter": false,
                 "isOptional": false,
                 "typeArguments": [
                 ]
@@ -364,6 +411,7 @@ export const TestRpcJson = `{
                     "name": "mode",
                     "type": {
                         "name": "UserProtocol.HeavyNullableTestMode",
+                        "isTypeParameter": false,
                         "isOptional": false,
                         "typeArguments": [
                         ]
@@ -372,14 +420,17 @@ export const TestRpcJson = `{
             ],
             "returnType": {
                 "name": "GenericThing",
+                "isTypeParameter": false,
                 "isOptional": true,
                 "typeArguments": [
                     {
-                        "name": "List",
+                        "name": "array",
+                        "isTypeParameter": false,
                         "isOptional": true,
                         "typeArguments": [
                             {
-                                "name": "String",
+                                "name": "string",
+                                "isTypeParameter": false,
                                 "isOptional": true,
                                 "typeArguments": [
                                 ]
@@ -387,11 +438,13 @@ export const TestRpcJson = `{
                         ]
                     },
                     {
-                        "name": "List",
+                        "name": "array",
+                        "isTypeParameter": false,
                         "isOptional": true,
                         "typeArguments": [
                             {
-                                "name": "String",
+                                "name": "string",
+                                "isTypeParameter": false,
                                 "isOptional": false,
                                 "typeArguments": [
                                 ]
@@ -399,11 +452,13 @@ export const TestRpcJson = `{
                         ]
                     },
                     {
-                        "name": "List",
+                        "name": "array",
+                        "isTypeParameter": false,
                         "isOptional": false,
                         "typeArguments": [
                             {
-                                "name": "String",
+                                "name": "string",
+                                "isTypeParameter": false,
                                 "isOptional": true,
                                 "typeArguments": [
                                 ]
@@ -419,7 +474,8 @@ export const TestRpcJson = `{
                 {
                     "name": "thing",
                     "type": {
-                        "name": "String",
+                        "name": "string",
+                        "isTypeParameter": false,
                         "isOptional": false,
                         "typeArguments": [
                         ]
@@ -428,22 +484,26 @@ export const TestRpcJson = `{
             ],
             "returnType": {
                 "name": "GenericThing",
+                "isTypeParameter": false,
                 "isOptional": false,
                 "typeArguments": [
                     {
-                        "name": "String",
+                        "name": "string",
+                        "isTypeParameter": false,
                         "isOptional": false,
                         "typeArguments": [
                         ]
                     },
                     {
-                        "name": "Int",
+                        "name": "i32",
+                        "isTypeParameter": false,
                         "isOptional": false,
                         "typeArguments": [
                         ]
                     },
                     {
-                        "name": "Long",
+                        "name": "i64",
+                        "isTypeParameter": false,
                         "isOptional": false,
                         "typeArguments": [
                         ]
@@ -456,7 +516,8 @@ export const TestRpcJson = `{
             "parameters": [
             ],
             "returnType": {
-                "name": "Unit",
+                "name": "void",
+                "isTypeParameter": false,
                 "isOptional": false,
                 "typeArguments": [
                 ]
@@ -467,7 +528,8 @@ export const TestRpcJson = `{
             "parameters": [
             ],
             "returnType": {
-                "name": "Unit",
+                "name": "void",
+                "isTypeParameter": false,
                 "isOptional": false,
                 "typeArguments": [
                 ]
@@ -478,7 +540,8 @@ export const TestRpcJson = `{
             "parameters": [
             ],
             "returnType": {
-                "name": "Unit",
+                "name": "void",
+                "isTypeParameter": false,
                 "isOptional": false,
                 "typeArguments": [
                 ]
@@ -490,7 +553,8 @@ export const TestRpcJson = `{
                 {
                     "name": "value",
                     "type": {
-                        "name": "Int",
+                        "name": "i32",
+                        "isTypeParameter": false,
                         "isOptional": false,
                         "typeArguments": [
                         ]
@@ -498,7 +562,8 @@ export const TestRpcJson = `{
                 }
             ],
             "returnType": {
-                "name": "Unit",
+                "name": "void",
+                "isTypeParameter": false,
                 "isOptional": false,
                 "typeArguments": [
                 ]
@@ -511,10 +576,12 @@ export const TestRpcJson = `{
                     "name": "withNulls",
                     "type": {
                         "name": "WithNulls",
+                        "isTypeParameter": false,
                         "isOptional": false,
                         "typeArguments": [
                             {
-                                "name": "String",
+                                "name": "string",
+                                "isTypeParameter": false,
                                 "isOptional": false,
                                 "typeArguments": [
                                 ]
@@ -525,10 +592,12 @@ export const TestRpcJson = `{
             ],
             "returnType": {
                 "name": "WithNulls",
+                "isTypeParameter": false,
                 "isOptional": false,
                 "typeArguments": [
                     {
-                        "name": "Int",
+                        "name": "i32",
+                        "isTypeParameter": false,
                         "isOptional": false,
                         "typeArguments": [
                         ]
@@ -543,6 +612,7 @@ export const TestRpcJson = `{
                     "name": "enumArgs",
                     "type": {
                         "name": "EnumArgs",
+                        "isTypeParameter": false,
                         "isOptional": false,
                         "typeArguments": [
                         ]
@@ -551,6 +621,7 @@ export const TestRpcJson = `{
             ],
             "returnType": {
                 "name": "EnumArgs",
+                "isTypeParameter": false,
                 "isOptional": false,
                 "typeArguments": [
                 ]
@@ -563,6 +634,7 @@ export const TestRpcJson = `{
                     "name": "obj",
                     "type": {
                         "name": "TheObject",
+                        "isTypeParameter": false,
                         "isOptional": false,
                         "typeArguments": [
                         ]
@@ -571,6 +643,7 @@ export const TestRpcJson = `{
             ],
             "returnType": {
                 "name": "TheObject",
+                "isTypeParameter": false,
                 "isOptional": false,
                 "typeArguments": [
                 ]
@@ -583,6 +656,7 @@ export const TestRpcJson = `{
                     "name": "obj",
                     "type": {
                         "name": "PolymorphicThing",
+                        "isTypeParameter": false,
                         "isOptional": false,
                         "typeArguments": [
                         ]
@@ -591,6 +665,7 @@ export const TestRpcJson = `{
             ],
             "returnType": {
                 "name": "PolymorphicThing",
+                "isTypeParameter": false,
                 "isOptional": false,
                 "typeArguments": [
                 ]
@@ -603,6 +678,7 @@ export const TestRpcJson = `{
                     "name": "obj",
                     "type": {
                         "name": "PolymorphicThing.Option1",
+                        "isTypeParameter": false,
                         "isOptional": false,
                         "typeArguments": [
                         ]
@@ -611,6 +687,7 @@ export const TestRpcJson = `{
             ],
             "returnType": {
                 "name": "PolymorphicThing.Option1",
+                "isTypeParameter": false,
                 "isOptional": false,
                 "typeArguments": [
                 ]
@@ -623,6 +700,7 @@ export const TestRpcJson = `{
                     "name": "obj",
                     "type": {
                         "name": "PolymorphicClass",
+                        "isTypeParameter": false,
                         "isOptional": false,
                         "typeArguments": [
                         ]
@@ -631,6 +709,7 @@ export const TestRpcJson = `{
             ],
             "returnType": {
                 "name": "PolymorphicClass",
+                "isTypeParameter": false,
                 "isOptional": false,
                 "typeArguments": [
                 ]
@@ -643,6 +722,7 @@ export const TestRpcJson = `{
                     "name": "obj",
                     "type": {
                         "name": "EveryBuiltinType",
+                        "isTypeParameter": false,
                         "isOptional": false,
                         "typeArguments": [
                         ]
@@ -651,6 +731,7 @@ export const TestRpcJson = `{
             ],
             "returnType": {
                 "name": "EveryBuiltinType",
+                "isTypeParameter": false,
                 "isOptional": false,
                 "typeArguments": [
                 ]
@@ -662,7 +743,8 @@ export const TestRpcJson = `{
                 {
                     "name": "a",
                     "type": {
-                        "name": "Boolean",
+                        "name": "bool",
+                        "isTypeParameter": false,
                         "isOptional": false,
                         "typeArguments": [
                         ]
@@ -671,7 +753,8 @@ export const TestRpcJson = `{
                 {
                     "name": "b",
                     "type": {
-                        "name": "Byte",
+                        "name": "i8",
+                        "isTypeParameter": false,
                         "isOptional": false,
                         "typeArguments": [
                         ]
@@ -680,7 +763,8 @@ export const TestRpcJson = `{
                 {
                     "name": "c",
                     "type": {
-                        "name": "Short",
+                        "name": "i16",
+                        "isTypeParameter": false,
                         "isOptional": false,
                         "typeArguments": [
                         ]
@@ -689,7 +773,8 @@ export const TestRpcJson = `{
                 {
                     "name": "d",
                     "type": {
-                        "name": "Int",
+                        "name": "i32",
+                        "isTypeParameter": false,
                         "isOptional": false,
                         "typeArguments": [
                         ]
@@ -698,7 +783,8 @@ export const TestRpcJson = `{
                 {
                     "name": "e",
                     "type": {
-                        "name": "Long",
+                        "name": "i64",
+                        "isTypeParameter": false,
                         "isOptional": false,
                         "typeArguments": [
                         ]
@@ -707,7 +793,8 @@ export const TestRpcJson = `{
                 {
                     "name": "f",
                     "type": {
-                        "name": "Char",
+                        "name": "char",
+                        "isTypeParameter": false,
                         "isOptional": false,
                         "typeArguments": [
                         ]
@@ -716,7 +803,8 @@ export const TestRpcJson = `{
                 {
                     "name": "g",
                     "type": {
-                        "name": "String",
+                        "name": "string",
+                        "isTypeParameter": false,
                         "isOptional": false,
                         "typeArguments": [
                         ]
@@ -725,56 +813,98 @@ export const TestRpcJson = `{
                 {
                     "name": "h",
                     "type": {
-                        "name": "ByteArray",
+                        "name": "array",
+                        "isTypeParameter": false,
                         "isOptional": false,
                         "typeArguments": [
+                            {
+                                "name": "i8",
+                                "isTypeParameter": false,
+                                "isOptional": false,
+                                "typeArguments": [
+                                ]
+                            }
                         ]
                     }
                 },
                 {
                     "name": "i",
                     "type": {
-                        "name": "ShortArray",
+                        "name": "array",
+                        "isTypeParameter": false,
                         "isOptional": false,
                         "typeArguments": [
+                            {
+                                "name": "i16",
+                                "isTypeParameter": false,
+                                "isOptional": false,
+                                "typeArguments": [
+                                ]
+                            }
                         ]
                     }
                 },
                 {
                     "name": "j",
                     "type": {
-                        "name": "IntArray",
+                        "name": "array",
+                        "isTypeParameter": false,
                         "isOptional": false,
                         "typeArguments": [
+                            {
+                                "name": "i32",
+                                "isTypeParameter": false,
+                                "isOptional": false,
+                                "typeArguments": [
+                                ]
+                            }
                         ]
                     }
                 },
                 {
                     "name": "k",
                     "type": {
-                        "name": "LongArray",
+                        "name": "array",
+                        "isTypeParameter": false,
                         "isOptional": false,
                         "typeArguments": [
+                            {
+                                "name": "i64",
+                                "isTypeParameter": false,
+                                "isOptional": false,
+                                "typeArguments": [
+                                ]
+                            }
                         ]
                     }
                 },
                 {
                     "name": "l",
                     "type": {
-                        "name": "CharArray",
+                        "name": "array",
+                        "isTypeParameter": false,
                         "isOptional": false,
                         "typeArguments": [
+                            {
+                                "name": "char",
+                                "isTypeParameter": false,
+                                "isOptional": false,
+                                "typeArguments": [
+                                ]
+                            }
                         ]
                     }
                 },
                 {
                     "name": "m",
                     "type": {
-                        "name": "List",
+                        "name": "array",
+                        "isTypeParameter": false,
                         "isOptional": false,
                         "typeArguments": [
                             {
-                                "name": "Int",
+                                "name": "i32",
+                                "isTypeParameter": false,
                                 "isOptional": false,
                                 "typeArguments": [
                                 ]
@@ -785,17 +915,20 @@ export const TestRpcJson = `{
                 {
                     "name": "n",
                     "type": {
-                        "name": "Map",
+                        "name": "record",
+                        "isTypeParameter": false,
                         "isOptional": false,
                         "typeArguments": [
                             {
-                                "name": "Int",
+                                "name": "i32",
+                                "isTypeParameter": false,
                                 "isOptional": false,
                                 "typeArguments": [
                                 ]
                             },
                             {
-                                "name": "Int",
+                                "name": "i32",
+                                "isTypeParameter": false,
                                 "isOptional": false,
                                 "typeArguments": [
                                 ]
@@ -806,11 +939,13 @@ export const TestRpcJson = `{
                 {
                     "name": "o",
                     "type": {
-                        "name": "Set",
+                        "name": "array",
+                        "isTypeParameter": false,
                         "isOptional": false,
                         "typeArguments": [
                             {
-                                "name": "Int",
+                                "name": "i32",
+                                "isTypeParameter": false,
                                 "isOptional": false,
                                 "typeArguments": [
                                 ]
@@ -821,17 +956,20 @@ export const TestRpcJson = `{
                 {
                     "name": "p",
                     "type": {
-                        "name": "Pair",
+                        "name": "tuple",
+                        "isTypeParameter": false,
                         "isOptional": false,
                         "typeArguments": [
                             {
-                                "name": "Int",
+                                "name": "i32",
+                                "isTypeParameter": false,
                                 "isOptional": false,
                                 "typeArguments": [
                                 ]
                             },
                             {
-                                "name": "Int",
+                                "name": "i32",
+                                "isTypeParameter": false,
                                 "isOptional": false,
                                 "typeArguments": [
                                 ]
@@ -842,23 +980,27 @@ export const TestRpcJson = `{
                 {
                     "name": "q",
                     "type": {
-                        "name": "Triple",
+                        "name": "tuple",
+                        "isTypeParameter": false,
                         "isOptional": false,
                         "typeArguments": [
                             {
-                                "name": "Int",
+                                "name": "i32",
+                                "isTypeParameter": false,
                                 "isOptional": false,
                                 "typeArguments": [
                                 ]
                             },
                             {
-                                "name": "Int",
+                                "name": "i32",
+                                "isTypeParameter": false,
                                 "isOptional": false,
                                 "typeArguments": [
                                 ]
                             },
                             {
-                                "name": "Int",
+                                "name": "i32",
+                                "isTypeParameter": false,
                                 "isOptional": false,
                                 "typeArguments": [
                                 ]
@@ -869,75 +1011,181 @@ export const TestRpcJson = `{
                 {
                     "name": "r",
                     "type": {
-                        "name": "Unit",
+                        "name": "void",
+                        "isTypeParameter": false,
                         "isOptional": false,
                         "typeArguments": [
                         ]
                     }
-                }
-            ],
-            "returnType": {
-                "name": "Triple",
-                "isOptional": false,
-                "typeArguments": [
-                    {
-                        "name": "Int",
-                        "isOptional": false,
-                        "typeArguments": [
-                        ]
-                    },
-                    {
-                        "name": "Int",
-                        "isOptional": false,
-                        "typeArguments": [
-                        ]
-                    },
-                    {
-                        "name": "Int",
-                        "isOptional": false,
-                        "typeArguments": [
-                        ]
-                    }
-                ]
-            }
-        },
-        {
-            "name": "genericSealed",
-            "parameters": [
+                },
                 {
-                    "name": "sealed",
+                    "name": "s",
                     "type": {
-                        "name": "GenericSealed",
+                        "name": "array",
+                        "isTypeParameter": false,
                         "isOptional": false,
                         "typeArguments": [
                             {
-                                "name": "String",
-                                "isOptional": false,
-                                "typeArguments": [
-                                ]
-                            },
-                            {
-                                "name": "Int",
+                                "name": "i32",
+                                "isTypeParameter": false,
                                 "isOptional": false,
                                 "typeArguments": [
                                 ]
                             }
                         ]
                     }
+                },
+                {
+                    "name": "t",
+                    "type": {
+                        "name": "array",
+                        "isTypeParameter": false,
+                        "isOptional": false,
+                        "typeArguments": [
+                            {
+                                "name": "i8",
+                                "isTypeParameter": false,
+                                "isOptional": false,
+                                "typeArguments": [
+                                ]
+                            }
+                        ]
+                    }
+                },
+                {
+                    "name": "u",
+                    "type": {
+                        "name": "array",
+                        "isTypeParameter": false,
+                        "isOptional": false,
+                        "typeArguments": [
+                            {
+                                "name": "i16",
+                                "isTypeParameter": false,
+                                "isOptional": false,
+                                "typeArguments": [
+                                ]
+                            }
+                        ]
+                    }
+                },
+                {
+                    "name": "v",
+                    "type": {
+                        "name": "array",
+                        "isTypeParameter": false,
+                        "isOptional": false,
+                        "typeArguments": [
+                            {
+                                "name": "i32",
+                                "isTypeParameter": false,
+                                "isOptional": false,
+                                "typeArguments": [
+                                ]
+                            }
+                        ]
+                    }
+                },
+                {
+                    "name": "w",
+                    "type": {
+                        "name": "array",
+                        "isTypeParameter": false,
+                        "isOptional": false,
+                        "typeArguments": [
+                            {
+                                "name": "i64",
+                                "isTypeParameter": false,
+                                "isOptional": false,
+                                "typeArguments": [
+                                ]
+                            }
+                        ]
+                    }
+                },
+                {
+                    "name": "x",
+                    "type": {
+                        "name": "i8",
+                        "isTypeParameter": false,
+                        "isOptional": false,
+                        "typeArguments": [
+                        ]
+                    }
+                },
+                {
+                    "name": "y",
+                    "type": {
+                        "name": "i16",
+                        "isTypeParameter": false,
+                        "isOptional": false,
+                        "typeArguments": [
+                        ]
+                    }
+                },
+                {
+                    "name": "z",
+                    "type": {
+                        "name": "i32",
+                        "isTypeParameter": false,
+                        "isOptional": false,
+                        "typeArguments": [
+                        ]
+                    }
+                },
+                {
+                    "name": "a2",
+                    "type": {
+                        "name": "i64",
+                        "isTypeParameter": false,
+                        "isOptional": false,
+                        "typeArguments": [
+                        ]
+                    }
+                },
+                {
+                    "name": "b2",
+                    "type": {
+                        "name": "f32",
+                        "isTypeParameter": false,
+                        "isOptional": false,
+                        "typeArguments": [
+                        ]
+                    }
+                },
+                {
+                    "name": "b3",
+                    "type": {
+                        "name": "f64",
+                        "isTypeParameter": false,
+                        "isOptional": false,
+                        "typeArguments": [
+                        ]
+                    }
                 }
             ],
             "returnType": {
-                "name": "GenericSealed",
+                "name": "tuple",
+                "isTypeParameter": false,
                 "isOptional": false,
                 "typeArguments": [
                     {
-                        "name": "String",
+                        "name": "i32",
+                        "isTypeParameter": false,
                         "isOptional": false,
                         "typeArguments": [
                         ]
                     },
                     {
-                        "name": "Int",
+                        "name": "i32",
+                        "isTypeParameter": false,
+                        "isOptional": false,
+                        "typeArguments": [
+                        ]
+                    },
+                    {
+                        "name": "i32",
+                        "isTypeParameter": false,
                         "isOptional": false,
                         "typeArguments": [
                         ]
@@ -949,230 +1197,20 @@ export const TestRpcJson = `{
     "models": [
         {
             "type": "struct",
-            "name": "WithNulls",
+            "name": "TheObject",
             "typeParameters": [
-                "T"
             ],
             "properties": {
-                "x": {
-                    "name": "List",
-                    "isTypeParameter": false,
-                    "isOptional": false,
-                    "typeArguments": [
-                        {
-                            "name": "T",
-                            "isTypeParameter": true,
-                            "isOptional": true,
-                            "typeArguments": [
-                            ]
-                        }
-                    ]
-                },
-                "y": {
-                    "name": "String",
-                    "isTypeParameter": false,
-                    "isOptional": true,
-                    "typeArguments": [
-                    ]
-                }
             }
         },
         {
-            "type": "struct",
-            "name": "EveryBuiltinType",
-            "typeParameters": [
-            ],
-            "properties": {
-                "a": {
-                    "name": "Boolean",
-                    "isTypeParameter": false,
-                    "isOptional": false,
-                    "typeArguments": [
-                    ]
-                },
-                "b": {
-                    "name": "Byte",
-                    "isTypeParameter": false,
-                    "isOptional": false,
-                    "typeArguments": [
-                    ]
-                },
-                "c": {
-                    "name": "Short",
-                    "isTypeParameter": false,
-                    "isOptional": false,
-                    "typeArguments": [
-                    ]
-                },
-                "d": {
-                    "name": "Int",
-                    "isTypeParameter": false,
-                    "isOptional": false,
-                    "typeArguments": [
-                    ]
-                },
-                "e": {
-                    "name": "Long",
-                    "isTypeParameter": false,
-                    "isOptional": false,
-                    "typeArguments": [
-                    ]
-                },
-                "f": {
-                    "name": "Char",
-                    "isTypeParameter": false,
-                    "isOptional": false,
-                    "typeArguments": [
-                    ]
-                },
-                "g": {
-                    "name": "String",
-                    "isTypeParameter": false,
-                    "isOptional": false,
-                    "typeArguments": [
-                    ]
-                },
-                "h": {
-                    "name": "ByteArray",
-                    "isTypeParameter": false,
-                    "isOptional": false,
-                    "typeArguments": [
-                    ]
-                },
-                "i": {
-                    "name": "ShortArray",
-                    "isTypeParameter": false,
-                    "isOptional": false,
-                    "typeArguments": [
-                    ]
-                },
-                "j": {
-                    "name": "IntArray",
-                    "isTypeParameter": false,
-                    "isOptional": false,
-                    "typeArguments": [
-                    ]
-                },
-                "k": {
-                    "name": "LongArray",
-                    "isTypeParameter": false,
-                    "isOptional": false,
-                    "typeArguments": [
-                    ]
-                },
-                "l": {
-                    "name": "CharArray",
-                    "isTypeParameter": false,
-                    "isOptional": false,
-                    "typeArguments": [
-                    ]
-                },
-                "m": {
-                    "name": "List",
-                    "isTypeParameter": false,
-                    "isOptional": false,
-                    "typeArguments": [
-                        {
-                            "name": "Int",
-                            "isTypeParameter": false,
-                            "isOptional": false,
-                            "typeArguments": [
-                            ]
-                        }
-                    ]
-                },
-                "n": {
-                    "name": "Map",
-                    "isTypeParameter": false,
-                    "isOptional": false,
-                    "typeArguments": [
-                        {
-                            "name": "Int",
-                            "isTypeParameter": false,
-                            "isOptional": false,
-                            "typeArguments": [
-                            ]
-                        },
-                        {
-                            "name": "Int",
-                            "isTypeParameter": false,
-                            "isOptional": false,
-                            "typeArguments": [
-                            ]
-                        }
-                    ]
-                },
-                "o": {
-                    "name": "Set",
-                    "isTypeParameter": false,
-                    "isOptional": false,
-                    "typeArguments": [
-                        {
-                            "name": "Int",
-                            "isTypeParameter": false,
-                            "isOptional": false,
-                            "typeArguments": [
-                            ]
-                        }
-                    ]
-                },
-                "p": {
-                    "name": "Pair",
-                    "isTypeParameter": false,
-                    "isOptional": false,
-                    "typeArguments": [
-                        {
-                            "name": "Int",
-                            "isTypeParameter": false,
-                            "isOptional": false,
-                            "typeArguments": [
-                            ]
-                        },
-                        {
-                            "name": "Int",
-                            "isTypeParameter": false,
-                            "isOptional": false,
-                            "typeArguments": [
-                            ]
-                        }
-                    ]
-                },
-                "q": {
-                    "name": "Triple",
-                    "isTypeParameter": false,
-                    "isOptional": false,
-                    "typeArguments": [
-                        {
-                            "name": "Int",
-                            "isTypeParameter": false,
-                            "isOptional": false,
-                            "typeArguments": [
-                            ]
-                        },
-                        {
-                            "name": "Int",
-                            "isTypeParameter": false,
-                            "isOptional": false,
-                            "typeArguments": [
-                            ]
-                        },
-                        {
-                            "name": "Int",
-                            "isTypeParameter": false,
-                            "isOptional": false,
-                            "typeArguments": [
-                            ]
-                        }
-                    ]
-                },
-                "r": {
-                    "name": "Unit",
-                    "isTypeParameter": false,
-                    "isOptional": false,
-                    "typeArguments": [
-                    ]
-                }
-            }
+            "type": "enum",
+            "name": "HeavyNullableTestMode",
+            "options": [
+                "EntirelyNull",
+                "NullList",
+                "NullString"
+            ]
         },
         {
             "type": "struct",
@@ -1181,7 +1219,7 @@ export const TestRpcJson = `{
             ],
             "properties": {
                 "x": {
-                    "name": "Int",
+                    "name": "i32",
                     "isTypeParameter": false,
                     "isOptional": false,
                     "typeArguments": [
@@ -1205,21 +1243,12 @@ export const TestRpcJson = `{
             ]
         },
         {
-            "type": "union",
-            "name": "GenericSealed",
-            "options": [
-                {
-                    "name": "GenericSubclass",
-                    "isTypeParameter": false,
-                    "isOptional": false,
-                    "typeArguments": [
-                    ]
-                }
-            ],
+            "type": "struct",
+            "name": "Option2",
             "typeParameters": [
-                "T1",
-                "T2"
-            ]
+            ],
+            "properties": {
+            }
         },
         {
             "type": "struct",
@@ -1228,7 +1257,7 @@ export const TestRpcJson = `{
             ],
             "properties": {
                 "id": {
-                    "name": "Long",
+                    "name": "i64",
                     "isTypeParameter": false,
                     "isOptional": false,
                     "typeArguments": [
@@ -1243,7 +1272,7 @@ export const TestRpcJson = `{
             ],
             "properties": {
                 "num": {
-                    "name": "Long",
+                    "name": "i64",
                     "isTypeParameter": false,
                     "isOptional": false,
                     "typeArguments": [
@@ -1256,14 +1285,14 @@ export const TestRpcJson = `{
             "name": "PolymorphicThing",
             "options": [
                 {
-                    "name": "Option1",
+                    "name": "PolymorphicThing.Option1",
                     "isTypeParameter": false,
                     "isOptional": false,
                     "typeArguments": [
                     ]
                 },
                 {
-                    "name": "Option2",
+                    "name": "PolymorphicThing.Option2",
                     "isTypeParameter": false,
                     "isOptional": false,
                     "typeArguments": [
@@ -1275,12 +1304,55 @@ export const TestRpcJson = `{
         },
         {
             "type": "struct",
-            "name": "GenericSubclass",
+            "name": "WithNulls",
             "typeParameters": [
                 "T"
             ],
             "properties": {
+                "x": {
+                    "name": "array",
+                    "isTypeParameter": false,
+                    "isOptional": false,
+                    "typeArguments": [
+                        {
+                            "name": "T",
+                            "isTypeParameter": true,
+                            "isOptional": true,
+                            "typeArguments": [
+                            ]
+                        }
+                    ]
+                },
+                "y": {
+                    "name": "string",
+                    "isTypeParameter": false,
+                    "isOptional": true,
+                    "typeArguments": [
+                    ]
+                }
             }
+        },
+        {
+            "type": "union",
+            "name": "PolymorphicClass",
+            "options": [
+                {
+                    "name": "PolymorphicClass.Option3",
+                    "isTypeParameter": false,
+                    "isOptional": false,
+                    "typeArguments": [
+                    ]
+                },
+                {
+                    "name": "PolymorphicClass.Option4",
+                    "isTypeParameter": false,
+                    "isOptional": false,
+                    "typeArguments": [
+                    ]
+                }
+            ],
+            "typeParameters": [
+            ]
         },
         {
             "type": "struct",
@@ -1292,42 +1364,18 @@ export const TestRpcJson = `{
         },
         {
             "type": "struct",
-            "name": "TheObject",
+            "name": "Option1",
             "typeParameters": [
             ],
             "properties": {
-            }
-        },
-        {
-            "type": "union",
-            "name": "PolymorphicClass",
-            "options": [
-                {
-                    "name": "Option3",
-                    "isTypeParameter": false,
-                    "isOptional": false,
-                    "typeArguments": [
-                    ]
-                },
-                {
-                    "name": "Option4",
+                "x": {
+                    "name": "i32",
                     "isTypeParameter": false,
                     "isOptional": false,
                     "typeArguments": [
                     ]
                 }
-            ],
-            "typeParameters": [
-            ]
-        },
-        {
-            "type": "enum",
-            "name": "HeavyNullableTestMode",
-            "options": [
-                "EntirelyNull",
-                "NullList",
-                "NullString"
-            ]
+            }
         },
         {
             "type": "struct",
@@ -1360,7 +1408,7 @@ export const TestRpcJson = `{
                     ]
                 },
                 "w": {
-                    "name": "List",
+                    "name": "array",
                     "isTypeParameter": false,
                     "isOptional": false,
                     "typeArguments": [
@@ -1377,12 +1425,12 @@ export const TestRpcJson = `{
         },
         {
             "type": "struct",
-            "name": "Option1",
+            "name": "Option4",
             "typeParameters": [
             ],
             "properties": {
                 "x": {
-                    "name": "Int",
+                    "name": "i32",
                     "isTypeParameter": false,
                     "isOptional": false,
                     "typeArguments": [
@@ -1392,20 +1440,341 @@ export const TestRpcJson = `{
         },
         {
             "type": "struct",
-            "name": "Option2",
+            "name": "EveryBuiltinType",
             "typeParameters": [
             ],
             "properties": {
-            }
-        },
-        {
-            "type": "struct",
-            "name": "Option4",
-            "typeParameters": [
-            ],
-            "properties": {
+                "a": {
+                    "name": "bool",
+                    "isTypeParameter": false,
+                    "isOptional": false,
+                    "typeArguments": [
+                    ]
+                },
+                "b": {
+                    "name": "i8",
+                    "isTypeParameter": false,
+                    "isOptional": false,
+                    "typeArguments": [
+                    ]
+                },
+                "c": {
+                    "name": "i16",
+                    "isTypeParameter": false,
+                    "isOptional": false,
+                    "typeArguments": [
+                    ]
+                },
+                "d": {
+                    "name": "i32",
+                    "isTypeParameter": false,
+                    "isOptional": false,
+                    "typeArguments": [
+                    ]
+                },
+                "e": {
+                    "name": "i64",
+                    "isTypeParameter": false,
+                    "isOptional": false,
+                    "typeArguments": [
+                    ]
+                },
+                "f": {
+                    "name": "char",
+                    "isTypeParameter": false,
+                    "isOptional": false,
+                    "typeArguments": [
+                    ]
+                },
+                "g": {
+                    "name": "string",
+                    "isTypeParameter": false,
+                    "isOptional": false,
+                    "typeArguments": [
+                    ]
+                },
+                "h": {
+                    "name": "array",
+                    "isTypeParameter": false,
+                    "isOptional": false,
+                    "typeArguments": [
+                        {
+                            "name": "i8",
+                            "isTypeParameter": false,
+                            "isOptional": false,
+                            "typeArguments": [
+                            ]
+                        }
+                    ]
+                },
+                "i": {
+                    "name": "array",
+                    "isTypeParameter": false,
+                    "isOptional": false,
+                    "typeArguments": [
+                        {
+                            "name": "i16",
+                            "isTypeParameter": false,
+                            "isOptional": false,
+                            "typeArguments": [
+                            ]
+                        }
+                    ]
+                },
+                "j": {
+                    "name": "array",
+                    "isTypeParameter": false,
+                    "isOptional": false,
+                    "typeArguments": [
+                        {
+                            "name": "i32",
+                            "isTypeParameter": false,
+                            "isOptional": false,
+                            "typeArguments": [
+                            ]
+                        }
+                    ]
+                },
+                "k": {
+                    "name": "array",
+                    "isTypeParameter": false,
+                    "isOptional": false,
+                    "typeArguments": [
+                        {
+                            "name": "i64",
+                            "isTypeParameter": false,
+                            "isOptional": false,
+                            "typeArguments": [
+                            ]
+                        }
+                    ]
+                },
+                "l": {
+                    "name": "array",
+                    "isTypeParameter": false,
+                    "isOptional": false,
+                    "typeArguments": [
+                        {
+                            "name": "char",
+                            "isTypeParameter": false,
+                            "isOptional": false,
+                            "typeArguments": [
+                            ]
+                        }
+                    ]
+                },
+                "m": {
+                    "name": "array",
+                    "isTypeParameter": false,
+                    "isOptional": false,
+                    "typeArguments": [
+                        {
+                            "name": "i32",
+                            "isTypeParameter": false,
+                            "isOptional": false,
+                            "typeArguments": [
+                            ]
+                        }
+                    ]
+                },
+                "n": {
+                    "name": "record",
+                    "isTypeParameter": false,
+                    "isOptional": false,
+                    "typeArguments": [
+                        {
+                            "name": "i32",
+                            "isTypeParameter": false,
+                            "isOptional": false,
+                            "typeArguments": [
+                            ]
+                        },
+                        {
+                            "name": "i32",
+                            "isTypeParameter": false,
+                            "isOptional": false,
+                            "typeArguments": [
+                            ]
+                        }
+                    ]
+                },
+                "o": {
+                    "name": "array",
+                    "isTypeParameter": false,
+                    "isOptional": false,
+                    "typeArguments": [
+                        {
+                            "name": "i32",
+                            "isTypeParameter": false,
+                            "isOptional": false,
+                            "typeArguments": [
+                            ]
+                        }
+                    ]
+                },
+                "p": {
+                    "name": "tuple",
+                    "isTypeParameter": false,
+                    "isOptional": false,
+                    "typeArguments": [
+                        {
+                            "name": "i32",
+                            "isTypeParameter": false,
+                            "isOptional": false,
+                            "typeArguments": [
+                            ]
+                        },
+                        {
+                            "name": "i32",
+                            "isTypeParameter": false,
+                            "isOptional": false,
+                            "typeArguments": [
+                            ]
+                        }
+                    ]
+                },
+                "q": {
+                    "name": "tuple",
+                    "isTypeParameter": false,
+                    "isOptional": false,
+                    "typeArguments": [
+                        {
+                            "name": "i32",
+                            "isTypeParameter": false,
+                            "isOptional": false,
+                            "typeArguments": [
+                            ]
+                        },
+                        {
+                            "name": "i32",
+                            "isTypeParameter": false,
+                            "isOptional": false,
+                            "typeArguments": [
+                            ]
+                        },
+                        {
+                            "name": "i32",
+                            "isTypeParameter": false,
+                            "isOptional": false,
+                            "typeArguments": [
+                            ]
+                        }
+                    ]
+                },
+                "r": {
+                    "name": "void",
+                    "isTypeParameter": false,
+                    "isOptional": false,
+                    "typeArguments": [
+                    ]
+                },
+                "s": {
+                    "name": "array",
+                    "isTypeParameter": false,
+                    "isOptional": false,
+                    "typeArguments": [
+                        {
+                            "name": "i32",
+                            "isTypeParameter": false,
+                            "isOptional": false,
+                            "typeArguments": [
+                            ]
+                        }
+                    ]
+                },
+                "t": {
+                    "name": "array",
+                    "isTypeParameter": false,
+                    "isOptional": false,
+                    "typeArguments": [
+                        {
+                            "name": "i8",
+                            "isTypeParameter": false,
+                            "isOptional": false,
+                            "typeArguments": [
+                            ]
+                        }
+                    ]
+                },
+                "u": {
+                    "name": "array",
+                    "isTypeParameter": false,
+                    "isOptional": false,
+                    "typeArguments": [
+                        {
+                            "name": "i16",
+                            "isTypeParameter": false,
+                            "isOptional": false,
+                            "typeArguments": [
+                            ]
+                        }
+                    ]
+                },
+                "v": {
+                    "name": "array",
+                    "isTypeParameter": false,
+                    "isOptional": false,
+                    "typeArguments": [
+                        {
+                            "name": "i32",
+                            "isTypeParameter": false,
+                            "isOptional": false,
+                            "typeArguments": [
+                            ]
+                        }
+                    ]
+                },
+                "w": {
+                    "name": "array",
+                    "isTypeParameter": false,
+                    "isOptional": false,
+                    "typeArguments": [
+                        {
+                            "name": "i64",
+                            "isTypeParameter": false,
+                            "isOptional": false,
+                            "typeArguments": [
+                            ]
+                        }
+                    ]
+                },
                 "x": {
-                    "name": "Int",
+                    "name": "i8",
+                    "isTypeParameter": false,
+                    "isOptional": false,
+                    "typeArguments": [
+                    ]
+                },
+                "y": {
+                    "name": "i16",
+                    "isTypeParameter": false,
+                    "isOptional": false,
+                    "typeArguments": [
+                    ]
+                },
+                "z": {
+                    "name": "i32",
+                    "isTypeParameter": false,
+                    "isOptional": false,
+                    "typeArguments": [
+                    ]
+                },
+                "a2": {
+                    "name": "i64",
+                    "isTypeParameter": false,
+                    "isOptional": false,
+                    "typeArguments": [
+                    ]
+                },
+                "b2": {
+                    "name": "f32",
+                    "isTypeParameter": false,
+                    "isOptional": false,
+                    "typeArguments": [
+                    ]
+                },
+                "b3": {
+                    "name": "f64",
                     "isTypeParameter": false,
                     "isOptional": false,
                     "typeArguments": [

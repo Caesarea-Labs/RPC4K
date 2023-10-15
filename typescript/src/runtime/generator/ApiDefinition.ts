@@ -1,19 +1,13 @@
 export interface ApiDefinition {
-    name: RpcClassSurrogate;
+    name: RpcType;
     methods: RpcDefinition[];
     models: RpcModel[];
-}
-
-export interface RpcClassSurrogate {
-    name: string;
-    isOptional: boolean;
-    typeArguments: RpcClassSurrogate[];
 }
 
 export interface RpcDefinition {
     name: string;
     parameters: RpcParameter[];
-    returnType: RpcClassSurrogate;
+    returnType: RpcType;
 }
 
 export type RpcModel = RpcModel.Enum | RpcModel.Struct | RpcModel.Union
@@ -35,7 +29,7 @@ export namespace RpcModel {
         type: RpcModel.Type.struct;
         name: string;
         typeParameters: string[];
-        properties: { [key: string]: RpcType };
+        properties: Record<string, RpcType>;
     }
 
     export interface Union {
@@ -48,7 +42,7 @@ export namespace RpcModel {
 
 export interface RpcParameter {
     name: string;
-    type: RpcClassSurrogate;
+    type: RpcType;
 }
 
 export interface RpcType {
@@ -57,4 +51,3 @@ export interface RpcType {
     isOptional: boolean;
     typeArguments: RpcType[];
 }
-

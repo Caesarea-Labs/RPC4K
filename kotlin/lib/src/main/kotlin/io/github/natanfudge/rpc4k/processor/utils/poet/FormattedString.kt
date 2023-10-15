@@ -3,7 +3,7 @@ package io.github.natanfudge.rpc4k.processor.utils.poet
 import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.FunSpec
 import com.squareup.kotlinpoet.MemberName
-import io.github.natanfudge.rpc4k.processor.RpcClass
+import io.github.natanfudge.rpc4k.processor.KotlinTypeReference
 import io.github.natanfudge.rpc4k.processor.utils.ClassBasedKotlinSerializer
 import io.github.natanfudge.rpc4k.processor.utils.KotlinSerializer
 import io.github.natanfudge.rpc4k.processor.utils.getKSerializer
@@ -50,7 +50,7 @@ internal fun FormattedString.withMethodArguments(arguments: List<FormattedString
 
 internal fun MemberName.withFormatStringArguments(arguments: List<FormattedString>): FormattedString = "%M(".formatWith(this) + arguments.join() + ")"
 
-internal fun RpcClass.toSerializerString(): FormattedString {
+internal fun KotlinTypeReference.toSerializerString(): FormattedString {
     return getKSerializer().toSerializerString()
 }
 

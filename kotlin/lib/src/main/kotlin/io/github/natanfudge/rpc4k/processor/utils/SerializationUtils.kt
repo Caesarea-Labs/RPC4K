@@ -2,7 +2,7 @@ package io.github.natanfudge.rpc4k.processor.utils
 
 import com.google.devtools.ksp.symbol.KSType
 import com.squareup.kotlinpoet.ksp.toClassName
-import io.github.natanfudge.rpc4k.processor.RpcClass
+import io.github.natanfudge.rpc4k.processor.KotlinTypeReference
 import kotlinx.serialization.Serializable
 
 /**
@@ -15,26 +15,29 @@ sealed interface KotlinSerializer {
     /**
      * Serializers of the form `MyClass.serializer()` where `MyClass` is annotated by `@Serializable`
      */
-    data class User(override val className: String, override val typeArguments: List<KotlinSerializer>, override val isNullable: Boolean):  ClassBasedKotlinSerializer
+    data class User(override val className: String, override val typeArguments: List<KotlinSerializer>, override val isNullable: Boolean) :
+        ClassBasedKotlinSerializer
 
 
     /**
      * Serializers like `String.serializer()`, `Int.serializer()`
      */
-    data class BuiltinExtension(override val className: String, override val isNullable: Boolean): ClassBasedKotlinSerializer {
+    data class BuiltinExtension(override val className: String, override val isNullable: Boolean) : ClassBasedKotlinSerializer {
         // The builtin ones don't accept any params
         override val typeArguments: List<KotlinSerializer> = listOf()
     }
+
     /**
      * Serializers like `ListSerializer()`, `SetSerializer()`
      */
-    data class BuiltinToplevel(val functionName: String, override val typeArguments: List<KotlinSerializer>, override val isNullable: Boolean): KotlinSerializer
+    data class BuiltinToplevel(val functionName: String, override val typeArguments: List<KotlinSerializer>, override val isNullable: Boolean) :
+        KotlinSerializer
 }
 
 /**
  * [KotlinSerializer.User] and [KotlinSerializer.BuiltinExtension], basically.
  */
-sealed interface ClassBasedKotlinSerializer: KotlinSerializer {
+sealed interface ClassBasedKotlinSerializer : KotlinSerializer {
     val className: String
 }
 
@@ -45,11 +48,11 @@ internal fun KSType.isSerializable() = isBuiltinSerializableType() || isAnnotate
 private fun KSType.isAnnotatedBySerializable() =
     declaration.annotations.any { it.annotationType.resolve().toClassName().canonicalName == serializableClassName }
 
-fun RpcClass.isBuiltinSerializableType() = qualifiedName in builtinSerializableTypes
+fun KotlinTypeReference.isBuiltinSerializableType() = qualifiedName in builtinSerializableTypes
 
- fun KSType.isBuiltinSerializableType() = declaration.qualifiedName?.asString() in builtinSerializableTypes
+fun KSType.isBuiltinSerializableType() = declaration.qualifiedName?.asString() in builtinSerializableTypes
 
-internal fun RpcClass.getKSerializer(): KotlinSerializer {
+internal fun KotlinTypeReference.getKSerializer(): KotlinSerializer {
     return if (isBuiltinSerializableType()) {
         if (qualifiedName in classesWithSeparateSerializerMethod) {
             // Serializers like MapSerializer
@@ -66,7 +69,7 @@ internal fun RpcClass.getKSerializer(): KotlinSerializer {
 /**
  * Gets serializers like ListSerializer, SetSerializer, etc
  */
-private fun RpcClass.topLevelSerializerMethod(): KotlinSerializer {
+private fun KotlinTypeReference.topLevelSerializerMethod(): KotlinSerializer {
     // Map.Entry needs special handling to get the correct serializer
     val name = simpleName.let { if (it == "Map.Entry") "MapEntry" else it }
     // For example, for the name Map.Entry we get MapEntrySerializer
@@ -77,17 +80,16 @@ private fun RpcClass.topLevelSerializerMethod(): KotlinSerializer {
     )
 }
 
-private fun RpcClass.builtinExtensionSerializerMethod(): KotlinSerializer.BuiltinExtension {
+private fun KotlinTypeReference.builtinExtensionSerializerMethod(): KotlinSerializer.BuiltinExtension {
     return KotlinSerializer.BuiltinExtension(className = qualifiedName, isNullable)
 }
 
 
-private fun RpcClass.userClassSerializer() = KotlinSerializer.User(
+private fun KotlinTypeReference.userClassSerializer() = KotlinSerializer.User(
     className = qualifiedName,
     typeArguments = typeArguments.map { it.getKSerializer() },
     isNullable
 )
-
 
 
 /**
@@ -106,13 +108,14 @@ private fun RpcClass.userClassSerializer() = KotlinSerializer.User(
 //}
 
 
-
 /**
  * These classes don't have a T.serializer() for some reason but instead have a separate top-level method
  */
+@OptIn(ExperimentalUnsignedTypes::class)
 private val classesWithSeparateSerializerMethod = listOf(
     List::class, Set::class, Map::class, Pair::class, Map.Entry::class, Triple::class,
-    ByteArray::class, ShortArray::class, IntArray::class, LongArray::class, CharArray::class
+    ByteArray::class, ShortArray::class, IntArray::class, LongArray::class, CharArray::class,
+    Array::class, UByteArray::class, UShortArray::class, UIntArray::class, ULongArray::class
 ).map { it.qualifiedName }.toHashSet()
 
 
@@ -121,8 +124,9 @@ private val classesWithSeparateSerializerMethod = listOf(
 //    .withMethodSerializerArguments(typeArguments)
 
 
-
 private val serializableClassName = Serializable::class.qualifiedName
+
+@ExperimentalUnsignedTypes
 private val builtinSerializableTypes = listOf(
     Byte::class,
     Short::class,
@@ -148,5 +152,16 @@ private val builtinSerializableTypes = listOf(
     ShortArray::class,
     IntArray::class,
     LongArray::class,
-    CharArray::class
+    CharArray::class,
+    Array::class,
+    UByteArray::class,
+    UShortArray::class,
+    UIntArray::class,
+    ULongArray::class,
+    UByte::class,
+    UShort::class,
+    UInt::class,
+    ULong::class
 ).map { it.qualifiedName!! }.toHashSet()
+
+

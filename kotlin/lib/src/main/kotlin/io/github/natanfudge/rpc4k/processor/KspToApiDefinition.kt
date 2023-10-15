@@ -9,8 +9,10 @@ object KspToApiDefinition {
     fun toApiDefinition(kspClass: KSClassDeclaration): ApiDefinition {
         val (packageName, className) = kspClass.getPackageAndClassName()
         return ApiDefinition(
-            // Doesn't quite fit, but good enough to represent the name as an RpcClass
-            name = RpcClass(packageName = packageName, simpleName = className, isNullable = false, typeArguments = listOf()),
+            // Doesn't quite fit, but good enough to represent the name as an KotlinTypeReference
+            name = KotlinTypeReference(
+                packageName = packageName, simpleName = className, isNullable = false, typeArguments = listOf(), isTypeParameter = false
+            ),
             methods = kspClass.getPublicApiFunctions().map { toRpc(it) }.toList(),
             getRpcModels(kspClass)
         )
@@ -20,14 +22,14 @@ object KspToApiDefinition {
         return RpcDefinition(
             kspMethod.simpleName.getShortName(),
             parameters = kspMethod.parameters.map { toRpcParameter(it) }.toList(),
-            returnType = toRpcClass(kspMethod.nonNullReturnType())
+            returnType = toKotlinTypeReference(kspMethod.nonNullReturnType())
         )
     }
 
     private fun toRpcParameter(argument: KSValueParameter): RpcParameter {
         return RpcParameter(
             name = argument.name?.getShortName() ?: error("Only named parameters are expected at the moment"),
-            type = toRpcClass(argument.type)
+            type = toKotlinTypeReference(argument.type)
         )
     }
 
@@ -94,10 +96,11 @@ object KspToApiDefinition {
      *     Generic types could be implemented by adding inheritance to the format, but I don't think that's really required yet.
      *
      */
-    private fun sealedSubclassToRpcType(sealedSubclass: KSClassDeclaration): RpcType {
-        val name = sealedSubclass.getSimpleName()
-        return RpcType(name = name, isTypeParameter = false, isOptional = false,
-            typeArguments = listOf()
+    private fun sealedSubclassToRpcType(sealedSubclass: KSClassDeclaration): KotlinTypeReference {
+        val (packageName, className) = sealedSubclass.getPackageAndClassName()
+        return KotlinTypeReference(
+            packageName = packageName, simpleName = className,
+            isTypeParameter = false, isNullable = false, typeArguments = listOf()
         )
     }
 
@@ -124,7 +127,10 @@ object KspToApiDefinition {
             val optionsEnum = RpcModel.Enum(name = declaration.simpleName.asString() + "Options", options)
             // When it's an enum with data, it serializes it like a data class with the addition of the "name" property which has the
             // enum value's name.
-            val nameType = RpcType(name = optionsEnum.name, isTypeParameter = false, isOptional = false, typeArguments = listOf())
+            val nameType = KotlinTypeReference(
+                packageName = GeneratedModelsPackage, simpleName = optionsEnum.name,
+                isTypeParameter = false, isNullable = false, typeArguments = listOf()
+            )
             val enumStruct = model.copy(properties = model.properties + ("name" to nameType))
             listOf(enumStruct, optionsEnum)
             //TODO: test on the other side we get a proper union enum as the type of the "name" property here
@@ -143,37 +149,26 @@ object KspToApiDefinition {
         name = declaration.getSimpleName(),
         typeParameters = declaration.typeParameters.map { it.name.asString() },
         properties = declaration.getDeclaredProperties().map {
-            it.getSimpleName() to toRpcType(it.type)
+            it.getSimpleName() to toKotlinTypeReference(it.type)
         }.toMap()
     )
 
     /**
-     * Get `MyClass<Int,T>` as an [RpcType]
+     * Get `com.foo.bar.MyClass<Int,String>` as an [KotlinTypeReference]
      * */
-    private fun toRpcType(reference: KSTypeReference): RpcType {
-        val type = reference.resolve()
-        val declaration = type.declaration
-        val (_, className) = declaration.getPackageAndClassName()
-        return RpcType(
-            name = if (declaration is KSTypeParameter) declaration.name.getShortName() else className,
-            isOptional = type.isMarkedNullable,
-            isTypeParameter = declaration is KSTypeParameter,
-            typeArguments = type.arguments.map { toRpcType(it.nonNullType()) }
+    private fun toKotlinTypeReference(type: KSTypeReference): KotlinTypeReference {
+        val resolved = type.resolve()
+        val declaration = resolved.declaration
+        val (packageName, className) = declaration.getPackageAndClassName()
+        val isTypeParameter = declaration is KSTypeParameter
+        return KotlinTypeReference(
+            packageName = packageName, simpleName = if (isTypeParameter) declaration.getSimpleName() else className,
+            typeArguments = resolved.arguments.map { toKotlinTypeReference(it.nonNullType()) },
+            isNullable = resolved.isMarkedNullable,
+            isTypeParameter = isTypeParameter
         )
     }
 
-    /**
-     * Get `com.foo.bar.MyClass<Int,String>` as an [RpcClass]
-     * */
-    private fun toRpcClass(type: KSTypeReference): RpcClass {
-        val resolved = type.resolve()
-        val (packageName, className) = resolved.declaration.getPackageAndClassName()
-        return RpcClass(
-            packageName = packageName, simpleName = className,
-            typeArguments = resolved.arguments.map { toRpcClass(it.nonNullType()) },
-            isNullable = resolved.isMarkedNullable
-        )
-    }
 
     /**
      * Extract from `com.foo.bar.Inner$Thing` the pair `[com.foo.bar, inner.Thing]`

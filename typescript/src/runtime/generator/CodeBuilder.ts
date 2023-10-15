@@ -15,19 +15,19 @@ export class CodeBuilder {
     }
 
     addInterface({name, typeParameters}: {name: string, typeParameters?: string[]}, interfaceBuilder: (builder: InterfaceBuilder) => void): CodeBuilder {
-        return this._addBlock(`interface ${name}${this.typeParametersString(typeParameters)}`, () => {
+        return this._addBlock(`export interface ${name}${this.typeParametersString(typeParameters)}`, () => {
             interfaceBuilder(new InterfaceBuilder(this))
         })._addLineOfCode("") // Add empty line
     }
 
     addClass(name: string, classBuilder: (builder: ClassBuilder) => void): CodeBuilder {
-        return this._addBlock(`class ${name}`, () => {
+        return this._addBlock(`export class ${name}`, () => {
             classBuilder(new ClassBuilder(this))
         })
     }
     addUnionType({name,typeParameters, types}:{name: string, typeParameters?: string[], types: string[]}): CodeBuilder {
         //TODO: handle wrapping
-        return this._addLineOfCode(`type ${name}${this.typeParametersString(typeParameters)} = ` + types.join(" | "))
+        return this._addLineOfCode(`export type ${name}${this.typeParametersString(typeParameters)} = ` + types.join(" | "))
     }
 
      typeParametersString(params: string[] | undefined) : string {

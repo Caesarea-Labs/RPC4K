@@ -72,6 +72,8 @@ function resolveBuiltinType(type: RpcType): string | undefined {
         case "i16":
         case "i32":
         case "i64":
+        case "f32":
+        case "f64":
             return "number"
         case "char":
         case "string":
