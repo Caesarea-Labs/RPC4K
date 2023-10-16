@@ -4,8 +4,11 @@ import io.github.natanfudge.rpc4k.runtime.api.SerializationFormat
 import kotlinx.serialization.DeserializationStrategy
 import kotlinx.serialization.SerializationStrategy
 import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.JsonConfiguration
 
-
+/**
+ * [JsonConfiguration.allowStructuredMapKeys] is not supported.
+ */
 class JsonFormat(private val json: Json = Json) : SerializationFormat {
     private val encoding = Charsets.UTF_8
 

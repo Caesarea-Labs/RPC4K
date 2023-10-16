@@ -1,5 +1,8 @@
 // noinspection PointlessBooleanExpressionJS
 
+const MaxLineLength = 140;
+const tabWidth = 4;
+
 /**
  * Minimalist and ultra simple code generator based on appending to a string
  */
@@ -14,7 +17,20 @@ export class CodeBuilder {
         return this.code
     }
 
-    addInterface({name, typeParameters}: {name: string, typeParameters?: string[]}, interfaceBuilder: (builder: InterfaceBuilder) => void): CodeBuilder {
+    addImport(identifiers: string[], path: string): CodeBuilder {
+        const identifiersJoined = identifiers.join(", ")
+        const unwrappedLine = `import {${identifiersJoined}} from "${path}"`
+        if (this.isTooLong(unwrappedLine.length)) {
+            return this._addLineOfCode(`import {\n${this.indentList(identifiers).join(",\n")}\n} from "${path}"`)
+        } else {
+            return this._addLineOfCode(unwrappedLine)
+        }
+    }
+
+    addInterface({name, typeParameters}: {
+        name: string,
+        typeParameters?: string[]
+    }, interfaceBuilder: (builder: InterfaceBuilder) => void): CodeBuilder {
         return this._addBlock(`export interface ${name}${this.typeParametersString(typeParameters)}`, () => {
             interfaceBuilder(new InterfaceBuilder(this))
         })._addLineOfCode("") // Add empty line
@@ -25,15 +41,25 @@ export class CodeBuilder {
             classBuilder(new ClassBuilder(this))
         })
     }
-    addUnionType({name,typeParameters, types}:{name: string, typeParameters?: string[], types: string[]}): CodeBuilder {
-        //TODO: handle wrapping
-        return this._addLineOfCode(`export type ${name}${this.typeParametersString(typeParameters)} = ` + types.join(" | "))
+
+    addUnionType({name, typeParameters, types}: {
+        name: string,
+        typeParameters?: string[],
+        types: string[]
+    }): CodeBuilder {
+        const prefix = `export type ${name}${this.typeParametersString(typeParameters)} = `
+        const typesJoined = this.indentList(types).join(" | ")
+        if (this.isTooLong(prefix.length + typesJoined.length)) {
+            return this._addLineOfCode(prefix + types.join(" |\n"))
+        } else {
+            return this._addLineOfCode(prefix + typesJoined)
+        }
     }
 
-     typeParametersString(params: string[] | undefined) : string {
-        if(params === undefined || params.length === 0) return ""
-         return `<${params.join(", ")}>`
-     }
+    typeParametersString(params: string[] | undefined): string {
+        if (params === undefined || params.length === 0) return ""
+        return `<${params.join(", ")}>`
+    }
 
     ///////////////////// Internal ////////////////
 
@@ -56,14 +82,14 @@ export class CodeBuilder {
     }
 
 
-    _addParameterListBlock(prefix: string, list: string[], blockBuilder: () => void): CodeBuilder {
-        return this._addBlock(prefix + this.parameterList(this.blockStart(prefix), list), blockBuilder)
-    }
+    // _addParameterListBlock(prefix: string, list: string[], blockBuilder: () => void): CodeBuilder {
+    //     return this._addBlock(prefix + this.parameterList(this.blockStart(prefix).length, list), blockBuilder)
+    // }
 
     _addFunction(prefix: string, parameters: [string, string][], returnType: string | undefined, body: (body: BodyBuilder) => void): CodeBuilder {
         const returnTypeString = returnType === undefined ? "" : `: ${returnType}`
         const parametersString = this.parameterList(
-            this.blockStart(prefix), parameters.map(([name, type]) => `${name}: ${type}`)
+            this.blockStart(prefix).length + returnTypeString.length, parameters.map(([name, type]) => `${name}: ${type}`)
         )
         return this._addBlock(prefix + parametersString + returnTypeString, () => {
             body(new BodyBuilder(this))
@@ -71,18 +97,40 @@ export class CodeBuilder {
     }
 
     _addParameterListLineOfCode(prefix: string, list: string[]): CodeBuilder {
-        return this._addLineOfCode(prefix + this.parameterList(prefix, list))
+        return this._addLineOfCode(prefix + this.parameterList(prefix.length, list))
     }
 
     /**
      * Takes care of wrapping safely
-     * @param codeBefore all code in the current line that appears before the parameter list. Must be passed
-     * in order to calculate correct wrapping.
+     * @param otherCodeLength the amount of characters that this line contains other than the parameter list.
+     * Required for knowing whether to wrap parameters.
      */
-    private parameterList(codeBefore: string, list: string[]): string {
-        //TODO: handle wrapping
-        return "(" + list.join(", ") + ")"
+    private parameterList(otherCodeLength: number, list: string[]): string {
+        const joined = "(" + list.join(", ") + ")"
+        if (this.isTooLong(otherCodeLength + joined.length)) {
+            // Chop argument list into separate lines if it's too long
+            return "(\n" + this.indentList(list).join(",\n") + "\n" + this.indent(")")
+        } else {
+            return joined
+        }
     }
+
+    private isTooLong(codeLength: number): boolean {
+        return this.getLineLength(codeLength) > MaxLineLength
+    }
+
+    private getLineLength(codeLength: number): number {
+        return this.currentIndent * tabWidth + codeLength
+    }
+
+    private indentList(list: string[]): string[] {
+        return list.map(s => "\t".repeat(this.currentIndent + 1) + s)
+    }
+
+    private indent(str: string): string {
+        return "\t".repeat(this.currentIndent) + str
+    }
+
 
     _addBlock(blockName: string, blockBuilder: () => void): CodeBuilder {
         this._addLineOfCode(this.blockStart(blockName))
@@ -95,29 +143,9 @@ export class CodeBuilder {
     private blockStart(prefix: string) {
         return `${prefix} {`
     }
-
-    // /**
-    //  * Adds <blockName> {
-    //  */
-    // startBlock(blockName: string): CodeBuilder {
-    //     this.addLineOfCode(blockName + " {")
-    //     this.indent()
-    //     return this
-    // }
-    //
-    // /**
-    //  * Adds }
-    //  */
-    // endBlock(): CodeBuilder {
-    //     this.unindent()
-    //
-    //     return this
-    // }
-
-
 }
 
-type THing<T> = T[] | Record<string, T>
+
 
 
 export class InterfaceBuilder {
@@ -127,8 +155,8 @@ export class InterfaceBuilder {
         this.codegen = codegen
     }
 
-    addProperty({name, type, optional}: {name: string, type: string, optional?: boolean}): InterfaceBuilder {
-        const optionalString = optional === true? "?" : ""
+    addProperty({name, type, optional}: { name: string, type: string, optional?: boolean }): InterfaceBuilder {
+        const optionalString = optional === true ? "?" : ""
         this.codegen._addLineOfCode(`${name}${optionalString}: ${type}`)
         return this
     }
@@ -141,7 +169,7 @@ export class ClassBuilder extends InterfaceBuilder {
         super(codegen)
     }
 
-    addProperty(property: {name: string, type: string, optional?: boolean}): ClassBuilder {
+    addProperty(property: { name: string, type: string, optional?: boolean }): ClassBuilder {
         return super.addProperty(property) as ClassBuilder
     }
 

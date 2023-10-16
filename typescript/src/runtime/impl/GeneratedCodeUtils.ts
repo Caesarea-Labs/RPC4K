@@ -1,6 +1,7 @@
-import {RpcClient} from "../api/RpcClient";
-import {SerializationFormat} from "../api/SerializationFormat";
-import {Rpc} from "../api/Rpc";
+import {RpcClient} from "../RpcClient";
+import {SerializationFormat} from "../SerializationFormat";
+import {Rpc} from "../Rpc";
+
 
 export namespace GeneratedCodeUtils {
     export async function request<T>(client: RpcClient, format: SerializationFormat, method: string, ...args: unknown[]): Promise<T> {

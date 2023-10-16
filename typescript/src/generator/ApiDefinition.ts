@@ -1,5 +1,5 @@
 export interface ApiDefinition {
-    name: RpcType;
+    name: string;
     methods: RpcDefinition[];
     models: RpcModel[];
 }
@@ -50,4 +50,5 @@ export interface RpcType {
     isTypeParameter: boolean;
     isOptional: boolean;
     typeArguments: RpcType[];
+    inlinedType: RpcType | null
 }

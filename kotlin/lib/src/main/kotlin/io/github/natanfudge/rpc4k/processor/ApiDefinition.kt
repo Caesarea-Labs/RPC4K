@@ -6,16 +6,24 @@ import com.squareup.kotlinpoet.TypeName
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
-import kotlinx.serialization.builtins.MapEntrySerializer
+import kotlinx.serialization.builtins.serializer
+import kotlinx.serialization.descriptors.SerialDescriptor
 import kotlinx.serialization.encoding.Decoder
 import kotlinx.serialization.encoding.Encoder
 
 
+//TODO: I think a cool feature would be to have a link to the server file in the clients in cases you have the server source
+
+
 /**
- * @param name The type of this is not exactly accurate, as it's always not nullable and with no type arguments.
+ * @param name The type of this is not exactly accurate, as it's always not nullable and with no type arguments, so we serialize it to just a String.
  */
 @Serializable
-data class ApiDefinition(val name: KotlinTypeReference, val methods: List<RpcDefinition>, val models: List<RpcModel>)
+data class ApiDefinition(
+    @Serializable(with = KotlinTypeReferenceNameSerializer::class) val name: KotlinTypeReference,
+    val methods: List<RpcDefinition>,
+    val models: List<RpcModel>
+)
 
 @Serializable
 data class RpcDefinition(val name: String, val parameters: List<RpcParameter>, val returnType: KotlinTypeReference)
@@ -47,7 +55,8 @@ sealed interface RpcModel {
     @SerialName("union")
     data class Union(override val name: String, val options: List<KotlinTypeReference>, val typeParameters: List<String>) : RpcModel
 }
-//TODO: make the `_type` property name reserved, because we sometimes need it for union types, and configure json to use _type.
+//TODO: make the `type` property name reserved, because we sometimes need it for union types
+//TODO: add type property to any struct that is part of a union
 
 
 /**
@@ -55,7 +64,10 @@ sealed interface RpcModel {
  * which makes it more fitting for [RpcModel]s
  */
 @Serializable
-data class RpcType(val name: String, val isTypeParameter: Boolean, val isOptional: Boolean, val typeArguments: List<RpcType>) {
+data class RpcType(val name: String, val isTypeParameter: Boolean, val isOptional: Boolean, val typeArguments: List<RpcType>, val inlinedType: RpcType?) {
+
+    constructor(name: String, isTypeParameter: Boolean = false, isOptional: Boolean = false, typeArguments: List<RpcType> = listOf()) :
+            this(name,isTypeParameter, isOptional, typeArguments, null)
     init {
         // Kotlin doesn't have higher-kinded types yet
         if (isTypeParameter) check(typeArguments.isEmpty())
@@ -64,19 +76,19 @@ data class RpcType(val name: String, val isTypeParameter: Boolean, val isOptiona
     companion object BuiltinNames {
 
         //TODO: consider supporting unsigned types if it's required enough
-            const val Bool = "bool"
-            const val I8 = "i8"
-            const val I16 = "i16"
-            const val I32 = "i32"
-            const val I64 = "i64"
-            const val F32 = "f32"
-            const val F64 = "f64"
-            const val Char = "char"
-            const val String = "string"
-            const val Void = "void"
-            const val Array = "array"
-            const val Record = "record"
-            const val Tuple = "tuple"
+        const val Bool = "bool"
+        const val I8 = "i8"
+        const val I16 = "i16"
+        const val I32 = "i32"
+        const val I64 = "i64"
+        const val F32 = "f32"
+        const val F64 = "f64"
+        const val Char = "char"
+        const val String = "string"
+        const val Void = "void"
+        const val Array = "array"
+        const val Record = "record"
+        const val Tuple = "tuple"
     }
 }
 
@@ -85,8 +97,15 @@ data class RpcType(val name: String, val isTypeParameter: Boolean, val isOptiona
  * More precise description of an [RpcType] that comes from the JVM, and makes it easier to generate kotlin code as it includes the package name of the type
  * and uses kotlin class names and not RPC class names
  */
-@Serializable(with = RpcTypeSerializer::class)
-data class KotlinTypeReference(val packageName: String, val simpleName: String, val isNullable: Boolean, val typeArguments: List<KotlinTypeReference>, val isTypeParameter: Boolean) {
+@Serializable(with = KotlinTypeReferenceSerializer::class)
+data class KotlinTypeReference(
+    val packageName: String,
+    val simpleName: String,
+    val isNullable: Boolean = false,
+    val typeArguments: List<KotlinTypeReference> = listOf(),
+    val isTypeParameter: Boolean = false,
+    val inlinedType: KotlinTypeReference? = null
+) {
     // Inner classes are dot seperated
     val qualifiedName = "$packageName.$simpleName"
 
@@ -98,12 +117,28 @@ data class KotlinTypeReference(val packageName: String, val simpleName: String, 
     val isUnit get() = packageName == "kotlin" && simpleName == "Unit"
 }
 
- const val GeneratedModelsPackage = "io.github.natanfudge.generated.models"
+const val GeneratedModelsPackage = "io.github.natanfudge.generated.models"
+
+/**
+ * Only serializes the name of the [KotlinTypeReference], so just a string
+ */
+class KotlinTypeReferenceNameSerializer : KSerializer<KotlinTypeReference> {
+    override val descriptor: SerialDescriptor = String.serializer().descriptor
+
+    override fun deserialize(decoder: Decoder): KotlinTypeReference {
+        return KotlinTypeReference(packageName = GeneratedModelsPackage, simpleName = decoder.decodeString())
+    }
+
+    override fun serialize(encoder: Encoder, value: KotlinTypeReference) {
+        encoder.encodeString(value.simpleName)
+    }
+
+}
 
 /**
  * [KotlinTypeReference] is serialized to a [RpcType]
  */
-class RpcTypeSerializer : KSerializer<KotlinTypeReference> {
+class KotlinTypeReferenceSerializer : KSerializer<KotlinTypeReference> {
     override val descriptor = RpcType.serializer().descriptor
 
     override fun deserialize(decoder: Decoder): KotlinTypeReference {
@@ -145,7 +180,7 @@ private fun KotlinTypeReference.toBuiltinRpcType(): RpcType {
                 "Double" -> RpcType.F64
                 else -> error("Impossible class name $simpleName")
             }
-            RpcType(name, isOptional = isNullable, isTypeParameter = false, typeArguments = listOf())
+            RpcType(name, isOptional = isNullable)
         }
 
         "ByteArray", "ShortArray", "IntArray", "LongArray", "CharArray", "UByteArray", "UShortArray", "UIntArray", "ULongArray" -> {
@@ -160,8 +195,8 @@ private fun KotlinTypeReference.toBuiltinRpcType(): RpcType {
                 "CharArray" -> RpcType.Char
                 else -> error("Impossible class name $className")
             }
-            val typeArgument = RpcType(typeArgumentName, isOptional = false, isTypeParameter = false, typeArguments = listOf())
-            RpcType(RpcType.Array, isOptional = isNullable, isTypeParameter = false, typeArguments = listOf(typeArgument))
+            val typeArgument = RpcType(typeArgumentName)
+            RpcType(RpcType.Array, isOptional = isNullable, typeArguments = listOf(typeArgument))
         }
 
         "Pair", "Triple", "Array" -> {
@@ -170,8 +205,7 @@ private fun KotlinTypeReference.toBuiltinRpcType(): RpcType {
             RpcType(
                 name = name,
                 isOptional = isNullable,
-                isTypeParameter = false,
-                typeArguments = typeArguments.map { it.toRpcType() }
+                typeArguments = typeArguments.map { it.toRpcType() },
             )
         }
 
@@ -198,17 +232,18 @@ private fun KotlinTypeReference.toBuiltinCollectionType(): RpcType {
     return RpcType(
         name = name,
         isOptional = isNullable,
-        isTypeParameter = false,
-        typeArguments = typeArguments.map { it.toRpcType() }
+        typeArguments = typeArguments.map { it.toRpcType() },
     )
 }
 
 
 private fun KotlinTypeReference.toUserType(): RpcType {
     return RpcType(
-        name = simpleName,
+        // We don't have nested classes in RPC4all
+        name = simpleName.substringAfterLast("."),
         isOptional = isNullable,
         isTypeParameter = isTypeParameter,
-        typeArguments = typeArguments.map { it.toRpcType() }
+        typeArguments = typeArguments.map { it.toRpcType() },
+        inlinedType = inlinedType?.toRpcType()
     )
 }

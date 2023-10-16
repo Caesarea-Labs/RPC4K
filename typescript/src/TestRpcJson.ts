@@ -1,11 +1,5 @@
 export const TestRpcJson = `{
-    "name": {
-        "name": "UserProtocol",
-        "isTypeParameter": false,
-        "isOptional": false,
-        "typeArguments": [
-        ]
-    },
+    "name": "UserProtocol",
     "methods": [
         {
             "name": "createLobby",
@@ -17,7 +11,8 @@ export const TestRpcJson = `{
                         "isTypeParameter": false,
                         "isOptional": false,
                         "typeArguments": [
-                        ]
+                        ],
+                        "inlinedType": null
                     }
                 },
                 {
@@ -27,7 +22,8 @@ export const TestRpcJson = `{
                         "isTypeParameter": false,
                         "isOptional": false,
                         "typeArguments": [
-                        ]
+                        ],
+                        "inlinedType": null
                     }
                 }
             ],
@@ -36,7 +32,8 @@ export const TestRpcJson = `{
                 "isTypeParameter": false,
                 "isOptional": false,
                 "typeArguments": [
-                ]
+                ],
+                "inlinedType": null
             }
         },
         {
@@ -49,7 +46,8 @@ export const TestRpcJson = `{
                         "isTypeParameter": false,
                         "isOptional": false,
                         "typeArguments": [
-                        ]
+                        ],
+                        "inlinedType": null
                     }
                 },
                 {
@@ -59,7 +57,8 @@ export const TestRpcJson = `{
                         "isTypeParameter": false,
                         "isOptional": false,
                         "typeArguments": [
-                        ]
+                        ],
+                        "inlinedType": null
                     }
                 },
                 {
@@ -69,7 +68,8 @@ export const TestRpcJson = `{
                         "isTypeParameter": false,
                         "isOptional": false,
                         "typeArguments": [
-                        ]
+                        ],
+                        "inlinedType": null
                     }
                 }
             ],
@@ -78,7 +78,8 @@ export const TestRpcJson = `{
                 "isTypeParameter": false,
                 "isOptional": false,
                 "typeArguments": [
-                ]
+                ],
+                "inlinedType": null
             }
         },
         {
@@ -91,7 +92,8 @@ export const TestRpcJson = `{
                         "isTypeParameter": false,
                         "isOptional": false,
                         "typeArguments": [
-                        ]
+                        ],
+                        "inlinedType": null
                     }
                 },
                 {
@@ -101,7 +103,8 @@ export const TestRpcJson = `{
                         "isTypeParameter": false,
                         "isOptional": false,
                         "typeArguments": [
-                        ]
+                        ],
+                        "inlinedType": null
                     }
                 }
             ],
@@ -110,7 +113,8 @@ export const TestRpcJson = `{
                 "isTypeParameter": false,
                 "isOptional": false,
                 "typeArguments": [
-                ]
+                ],
+                "inlinedType": null
             }
         },
         {
@@ -128,9 +132,11 @@ export const TestRpcJson = `{
                                 "isTypeParameter": false,
                                 "isOptional": false,
                                 "typeArguments": [
-                                ]
+                                ],
+                                "inlinedType": null
                             }
-                        ]
+                        ],
+                        "inlinedType": null
                     }
                 },
                 {
@@ -150,11 +156,14 @@ export const TestRpcJson = `{
                                         "isTypeParameter": false,
                                         "isOptional": false,
                                         "typeArguments": [
-                                        ]
+                                        ],
+                                        "inlinedType": null
                                     }
-                                ]
+                                ],
+                                "inlinedType": null
                             }
-                        ]
+                        ],
+                        "inlinedType": null
                     }
                 },
                 {
@@ -169,16 +178,19 @@ export const TestRpcJson = `{
                                 "isTypeParameter": false,
                                 "isOptional": false,
                                 "typeArguments": [
-                                ]
+                                ],
+                                "inlinedType": null
                             },
                             {
                                 "name": "i64",
                                 "isTypeParameter": false,
                                 "isOptional": false,
                                 "typeArguments": [
-                                ]
+                                ],
+                                "inlinedType": null
                             }
-                        ]
+                        ],
+                        "inlinedType": null
                     }
                 },
                 {
@@ -193,23 +205,27 @@ export const TestRpcJson = `{
                                 "isTypeParameter": false,
                                 "isOptional": false,
                                 "typeArguments": [
-                                ]
+                                ],
+                                "inlinedType": null
                             },
                             {
                                 "name": "PlayerId",
                                 "isTypeParameter": false,
                                 "isOptional": false,
                                 "typeArguments": [
-                                ]
+                                ],
+                                "inlinedType": null
                             },
                             {
                                 "name": "string",
                                 "isTypeParameter": false,
                                 "isOptional": false,
                                 "typeArguments": [
-                                ]
+                                ],
+                                "inlinedType": null
                             }
-                        ]
+                        ],
+                        "inlinedType": null
                     }
                 },
                 {
@@ -224,16 +240,19 @@ export const TestRpcJson = `{
                                 "isTypeParameter": false,
                                 "isOptional": false,
                                 "typeArguments": [
-                                ]
+                                ],
+                                "inlinedType": null
                             },
                             {
                                 "name": "i32",
                                 "isTypeParameter": false,
                                 "isOptional": false,
                                 "typeArguments": [
-                                ]
+                                ],
+                                "inlinedType": null
                             }
-                        ]
+                        ],
+                        "inlinedType": null
                     }
                 }
             ],
@@ -247,7 +266,8 @@ export const TestRpcJson = `{
                         "isTypeParameter": false,
                         "isOptional": false,
                         "typeArguments": [
-                        ]
+                        ],
+                        "inlinedType": null
                     },
                     {
                         "name": "record",
@@ -255,36 +275,33 @@ export const TestRpcJson = `{
                         "isOptional": false,
                         "typeArguments": [
                             {
-                                "name": "array",
+                                "name": "InlineId",
                                 "isTypeParameter": false,
                                 "isOptional": false,
                                 "typeArguments": [
-                                    {
-                                        "name": "array",
-                                        "isTypeParameter": false,
-                                        "isOptional": false,
-                                        "typeArguments": [
-                                            {
-                                                "name": "PlayerId",
-                                                "isTypeParameter": false,
-                                                "isOptional": false,
-                                                "typeArguments": [
-                                                ]
-                                            }
-                                        ]
-                                    }
-                                ]
+                                ],
+                                "inlinedType": {
+                                    "name": "i64",
+                                    "isTypeParameter": false,
+                                    "isOptional": false,
+                                    "typeArguments": [
+                                    ],
+                                    "inlinedType": null
+                                }
                             },
                             {
                                 "name": "f64",
                                 "isTypeParameter": false,
                                 "isOptional": false,
                                 "typeArguments": [
-                                ]
+                                ],
+                                "inlinedType": null
                             }
-                        ]
+                        ],
+                        "inlinedType": null
                     }
-                ]
+                ],
+                "inlinedType": null
             }
         },
         {
@@ -302,16 +319,19 @@ export const TestRpcJson = `{
                                 "isTypeParameter": false,
                                 "isOptional": false,
                                 "typeArguments": [
-                                ]
+                                ],
+                                "inlinedType": null
                             },
                             {
                                 "name": "i64",
                                 "isTypeParameter": false,
                                 "isOptional": false,
                                 "typeArguments": [
-                                ]
+                                ],
+                                "inlinedType": null
                             }
-                        ]
+                        ],
+                        "inlinedType": null
                     }
                 }
             ],
@@ -330,32 +350,38 @@ export const TestRpcJson = `{
                                 "isTypeParameter": false,
                                 "isOptional": false,
                                 "typeArguments": [
-                                ]
+                                ],
+                                "inlinedType": null
                             },
                             {
                                 "name": "i32",
                                 "isTypeParameter": false,
                                 "isOptional": false,
                                 "typeArguments": [
-                                ]
+                                ],
+                                "inlinedType": null
                             },
                             {
                                 "name": "string",
                                 "isTypeParameter": false,
                                 "isOptional": false,
                                 "typeArguments": [
-                                ]
+                                ],
+                                "inlinedType": null
                             }
-                        ]
+                        ],
+                        "inlinedType": null
                     },
                     {
                         "name": "f64",
                         "isTypeParameter": false,
                         "isOptional": false,
                         "typeArguments": [
-                        ]
+                        ],
+                        "inlinedType": null
                     }
-                ]
+                ],
+                "inlinedType": null
             }
         },
         {
@@ -373,9 +399,11 @@ export const TestRpcJson = `{
                                 "isTypeParameter": false,
                                 "isOptional": false,
                                 "typeArguments": [
-                                ]
+                                ],
+                                "inlinedType": null
                             }
-                        ]
+                        ],
+                        "inlinedType": null
                     }
                 },
                 {
@@ -390,9 +418,11 @@ export const TestRpcJson = `{
                                 "isTypeParameter": false,
                                 "isOptional": true,
                                 "typeArguments": [
-                                ]
+                                ],
+                                "inlinedType": null
                             }
-                        ]
+                        ],
+                        "inlinedType": null
                     }
                 }
             ],
@@ -401,7 +431,8 @@ export const TestRpcJson = `{
                 "isTypeParameter": false,
                 "isOptional": false,
                 "typeArguments": [
-                ]
+                ],
+                "inlinedType": null
             }
         },
         {
@@ -410,11 +441,12 @@ export const TestRpcJson = `{
                 {
                     "name": "mode",
                     "type": {
-                        "name": "UserProtocol.HeavyNullableTestMode",
+                        "name": "HeavyNullableTestMode",
                         "isTypeParameter": false,
                         "isOptional": false,
                         "typeArguments": [
-                        ]
+                        ],
+                        "inlinedType": null
                     }
                 }
             ],
@@ -433,9 +465,11 @@ export const TestRpcJson = `{
                                 "isTypeParameter": false,
                                 "isOptional": true,
                                 "typeArguments": [
-                                ]
+                                ],
+                                "inlinedType": null
                             }
-                        ]
+                        ],
+                        "inlinedType": null
                     },
                     {
                         "name": "array",
@@ -447,9 +481,11 @@ export const TestRpcJson = `{
                                 "isTypeParameter": false,
                                 "isOptional": false,
                                 "typeArguments": [
-                                ]
+                                ],
+                                "inlinedType": null
                             }
-                        ]
+                        ],
+                        "inlinedType": null
                     },
                     {
                         "name": "array",
@@ -461,11 +497,14 @@ export const TestRpcJson = `{
                                 "isTypeParameter": false,
                                 "isOptional": true,
                                 "typeArguments": [
-                                ]
+                                ],
+                                "inlinedType": null
                             }
-                        ]
+                        ],
+                        "inlinedType": null
                     }
-                ]
+                ],
+                "inlinedType": null
             }
         },
         {
@@ -478,7 +517,8 @@ export const TestRpcJson = `{
                         "isTypeParameter": false,
                         "isOptional": false,
                         "typeArguments": [
-                        ]
+                        ],
+                        "inlinedType": null
                     }
                 }
             ],
@@ -492,23 +532,27 @@ export const TestRpcJson = `{
                         "isTypeParameter": false,
                         "isOptional": false,
                         "typeArguments": [
-                        ]
+                        ],
+                        "inlinedType": null
                     },
                     {
                         "name": "i32",
                         "isTypeParameter": false,
                         "isOptional": false,
                         "typeArguments": [
-                        ]
+                        ],
+                        "inlinedType": null
                     },
                     {
                         "name": "i64",
                         "isTypeParameter": false,
                         "isOptional": false,
                         "typeArguments": [
-                        ]
+                        ],
+                        "inlinedType": null
                     }
-                ]
+                ],
+                "inlinedType": null
             }
         },
         {
@@ -520,7 +564,8 @@ export const TestRpcJson = `{
                 "isTypeParameter": false,
                 "isOptional": false,
                 "typeArguments": [
-                ]
+                ],
+                "inlinedType": null
             }
         },
         {
@@ -532,7 +577,8 @@ export const TestRpcJson = `{
                 "isTypeParameter": false,
                 "isOptional": false,
                 "typeArguments": [
-                ]
+                ],
+                "inlinedType": null
             }
         },
         {
@@ -544,7 +590,8 @@ export const TestRpcJson = `{
                 "isTypeParameter": false,
                 "isOptional": false,
                 "typeArguments": [
-                ]
+                ],
+                "inlinedType": null
             }
         },
         {
@@ -557,7 +604,8 @@ export const TestRpcJson = `{
                         "isTypeParameter": false,
                         "isOptional": false,
                         "typeArguments": [
-                        ]
+                        ],
+                        "inlinedType": null
                     }
                 }
             ],
@@ -566,7 +614,8 @@ export const TestRpcJson = `{
                 "isTypeParameter": false,
                 "isOptional": false,
                 "typeArguments": [
-                ]
+                ],
+                "inlinedType": null
             }
         },
         {
@@ -584,9 +633,11 @@ export const TestRpcJson = `{
                                 "isTypeParameter": false,
                                 "isOptional": false,
                                 "typeArguments": [
-                                ]
+                                ],
+                                "inlinedType": null
                             }
-                        ]
+                        ],
+                        "inlinedType": null
                     }
                 }
             ],
@@ -600,9 +651,11 @@ export const TestRpcJson = `{
                         "isTypeParameter": false,
                         "isOptional": false,
                         "typeArguments": [
-                        ]
+                        ],
+                        "inlinedType": null
                     }
-                ]
+                ],
+                "inlinedType": null
             }
         },
         {
@@ -615,7 +668,8 @@ export const TestRpcJson = `{
                         "isTypeParameter": false,
                         "isOptional": false,
                         "typeArguments": [
-                        ]
+                        ],
+                        "inlinedType": null
                     }
                 }
             ],
@@ -624,7 +678,8 @@ export const TestRpcJson = `{
                 "isTypeParameter": false,
                 "isOptional": false,
                 "typeArguments": [
-                ]
+                ],
+                "inlinedType": null
             }
         },
         {
@@ -637,7 +692,8 @@ export const TestRpcJson = `{
                         "isTypeParameter": false,
                         "isOptional": false,
                         "typeArguments": [
-                        ]
+                        ],
+                        "inlinedType": null
                     }
                 }
             ],
@@ -646,7 +702,8 @@ export const TestRpcJson = `{
                 "isTypeParameter": false,
                 "isOptional": false,
                 "typeArguments": [
-                ]
+                ],
+                "inlinedType": null
             }
         },
         {
@@ -659,7 +716,8 @@ export const TestRpcJson = `{
                         "isTypeParameter": false,
                         "isOptional": false,
                         "typeArguments": [
-                        ]
+                        ],
+                        "inlinedType": null
                     }
                 }
             ],
@@ -668,7 +726,8 @@ export const TestRpcJson = `{
                 "isTypeParameter": false,
                 "isOptional": false,
                 "typeArguments": [
-                ]
+                ],
+                "inlinedType": null
             }
         },
         {
@@ -677,20 +736,22 @@ export const TestRpcJson = `{
                 {
                     "name": "obj",
                     "type": {
-                        "name": "PolymorphicThing.Option1",
+                        "name": "Option1",
                         "isTypeParameter": false,
                         "isOptional": false,
                         "typeArguments": [
-                        ]
+                        ],
+                        "inlinedType": null
                     }
                 }
             ],
             "returnType": {
-                "name": "PolymorphicThing.Option1",
+                "name": "Option1",
                 "isTypeParameter": false,
                 "isOptional": false,
                 "typeArguments": [
-                ]
+                ],
+                "inlinedType": null
             }
         },
         {
@@ -703,7 +764,8 @@ export const TestRpcJson = `{
                         "isTypeParameter": false,
                         "isOptional": false,
                         "typeArguments": [
-                        ]
+                        ],
+                        "inlinedType": null
                     }
                 }
             ],
@@ -712,7 +774,8 @@ export const TestRpcJson = `{
                 "isTypeParameter": false,
                 "isOptional": false,
                 "typeArguments": [
-                ]
+                ],
+                "inlinedType": null
             }
         },
         {
@@ -725,7 +788,8 @@ export const TestRpcJson = `{
                         "isTypeParameter": false,
                         "isOptional": false,
                         "typeArguments": [
-                        ]
+                        ],
+                        "inlinedType": null
                     }
                 }
             ],
@@ -734,7 +798,8 @@ export const TestRpcJson = `{
                 "isTypeParameter": false,
                 "isOptional": false,
                 "typeArguments": [
-                ]
+                ],
+                "inlinedType": null
             }
         },
         {
@@ -747,7 +812,8 @@ export const TestRpcJson = `{
                         "isTypeParameter": false,
                         "isOptional": false,
                         "typeArguments": [
-                        ]
+                        ],
+                        "inlinedType": null
                     }
                 },
                 {
@@ -757,7 +823,8 @@ export const TestRpcJson = `{
                         "isTypeParameter": false,
                         "isOptional": false,
                         "typeArguments": [
-                        ]
+                        ],
+                        "inlinedType": null
                     }
                 },
                 {
@@ -767,7 +834,8 @@ export const TestRpcJson = `{
                         "isTypeParameter": false,
                         "isOptional": false,
                         "typeArguments": [
-                        ]
+                        ],
+                        "inlinedType": null
                     }
                 },
                 {
@@ -777,7 +845,8 @@ export const TestRpcJson = `{
                         "isTypeParameter": false,
                         "isOptional": false,
                         "typeArguments": [
-                        ]
+                        ],
+                        "inlinedType": null
                     }
                 },
                 {
@@ -787,7 +856,8 @@ export const TestRpcJson = `{
                         "isTypeParameter": false,
                         "isOptional": false,
                         "typeArguments": [
-                        ]
+                        ],
+                        "inlinedType": null
                     }
                 },
                 {
@@ -797,7 +867,8 @@ export const TestRpcJson = `{
                         "isTypeParameter": false,
                         "isOptional": false,
                         "typeArguments": [
-                        ]
+                        ],
+                        "inlinedType": null
                     }
                 },
                 {
@@ -807,7 +878,8 @@ export const TestRpcJson = `{
                         "isTypeParameter": false,
                         "isOptional": false,
                         "typeArguments": [
-                        ]
+                        ],
+                        "inlinedType": null
                     }
                 },
                 {
@@ -822,9 +894,11 @@ export const TestRpcJson = `{
                                 "isTypeParameter": false,
                                 "isOptional": false,
                                 "typeArguments": [
-                                ]
+                                ],
+                                "inlinedType": null
                             }
-                        ]
+                        ],
+                        "inlinedType": null
                     }
                 },
                 {
@@ -839,9 +913,11 @@ export const TestRpcJson = `{
                                 "isTypeParameter": false,
                                 "isOptional": false,
                                 "typeArguments": [
-                                ]
+                                ],
+                                "inlinedType": null
                             }
-                        ]
+                        ],
+                        "inlinedType": null
                     }
                 },
                 {
@@ -856,9 +932,11 @@ export const TestRpcJson = `{
                                 "isTypeParameter": false,
                                 "isOptional": false,
                                 "typeArguments": [
-                                ]
+                                ],
+                                "inlinedType": null
                             }
-                        ]
+                        ],
+                        "inlinedType": null
                     }
                 },
                 {
@@ -873,9 +951,11 @@ export const TestRpcJson = `{
                                 "isTypeParameter": false,
                                 "isOptional": false,
                                 "typeArguments": [
-                                ]
+                                ],
+                                "inlinedType": null
                             }
-                        ]
+                        ],
+                        "inlinedType": null
                     }
                 },
                 {
@@ -890,9 +970,11 @@ export const TestRpcJson = `{
                                 "isTypeParameter": false,
                                 "isOptional": false,
                                 "typeArguments": [
-                                ]
+                                ],
+                                "inlinedType": null
                             }
-                        ]
+                        ],
+                        "inlinedType": null
                     }
                 },
                 {
@@ -907,9 +989,11 @@ export const TestRpcJson = `{
                                 "isTypeParameter": false,
                                 "isOptional": false,
                                 "typeArguments": [
-                                ]
+                                ],
+                                "inlinedType": null
                             }
-                        ]
+                        ],
+                        "inlinedType": null
                     }
                 },
                 {
@@ -924,16 +1008,19 @@ export const TestRpcJson = `{
                                 "isTypeParameter": false,
                                 "isOptional": false,
                                 "typeArguments": [
-                                ]
+                                ],
+                                "inlinedType": null
                             },
                             {
                                 "name": "i32",
                                 "isTypeParameter": false,
                                 "isOptional": false,
                                 "typeArguments": [
-                                ]
+                                ],
+                                "inlinedType": null
                             }
-                        ]
+                        ],
+                        "inlinedType": null
                     }
                 },
                 {
@@ -948,9 +1035,11 @@ export const TestRpcJson = `{
                                 "isTypeParameter": false,
                                 "isOptional": false,
                                 "typeArguments": [
-                                ]
+                                ],
+                                "inlinedType": null
                             }
-                        ]
+                        ],
+                        "inlinedType": null
                     }
                 },
                 {
@@ -965,16 +1054,19 @@ export const TestRpcJson = `{
                                 "isTypeParameter": false,
                                 "isOptional": false,
                                 "typeArguments": [
-                                ]
+                                ],
+                                "inlinedType": null
                             },
                             {
                                 "name": "i32",
                                 "isTypeParameter": false,
                                 "isOptional": false,
                                 "typeArguments": [
-                                ]
+                                ],
+                                "inlinedType": null
                             }
-                        ]
+                        ],
+                        "inlinedType": null
                     }
                 },
                 {
@@ -989,23 +1081,27 @@ export const TestRpcJson = `{
                                 "isTypeParameter": false,
                                 "isOptional": false,
                                 "typeArguments": [
-                                ]
+                                ],
+                                "inlinedType": null
                             },
                             {
                                 "name": "i32",
                                 "isTypeParameter": false,
                                 "isOptional": false,
                                 "typeArguments": [
-                                ]
+                                ],
+                                "inlinedType": null
                             },
                             {
                                 "name": "i32",
                                 "isTypeParameter": false,
                                 "isOptional": false,
                                 "typeArguments": [
-                                ]
+                                ],
+                                "inlinedType": null
                             }
-                        ]
+                        ],
+                        "inlinedType": null
                     }
                 },
                 {
@@ -1015,7 +1111,8 @@ export const TestRpcJson = `{
                         "isTypeParameter": false,
                         "isOptional": false,
                         "typeArguments": [
-                        ]
+                        ],
+                        "inlinedType": null
                     }
                 },
                 {
@@ -1030,9 +1127,11 @@ export const TestRpcJson = `{
                                 "isTypeParameter": false,
                                 "isOptional": false,
                                 "typeArguments": [
-                                ]
+                                ],
+                                "inlinedType": null
                             }
-                        ]
+                        ],
+                        "inlinedType": null
                     }
                 },
                 {
@@ -1047,9 +1146,11 @@ export const TestRpcJson = `{
                                 "isTypeParameter": false,
                                 "isOptional": false,
                                 "typeArguments": [
-                                ]
+                                ],
+                                "inlinedType": null
                             }
-                        ]
+                        ],
+                        "inlinedType": null
                     }
                 },
                 {
@@ -1064,9 +1165,11 @@ export const TestRpcJson = `{
                                 "isTypeParameter": false,
                                 "isOptional": false,
                                 "typeArguments": [
-                                ]
+                                ],
+                                "inlinedType": null
                             }
-                        ]
+                        ],
+                        "inlinedType": null
                     }
                 },
                 {
@@ -1081,9 +1184,11 @@ export const TestRpcJson = `{
                                 "isTypeParameter": false,
                                 "isOptional": false,
                                 "typeArguments": [
-                                ]
+                                ],
+                                "inlinedType": null
                             }
-                        ]
+                        ],
+                        "inlinedType": null
                     }
                 },
                 {
@@ -1098,9 +1203,11 @@ export const TestRpcJson = `{
                                 "isTypeParameter": false,
                                 "isOptional": false,
                                 "typeArguments": [
-                                ]
+                                ],
+                                "inlinedType": null
                             }
-                        ]
+                        ],
+                        "inlinedType": null
                     }
                 },
                 {
@@ -1110,7 +1217,8 @@ export const TestRpcJson = `{
                         "isTypeParameter": false,
                         "isOptional": false,
                         "typeArguments": [
-                        ]
+                        ],
+                        "inlinedType": null
                     }
                 },
                 {
@@ -1120,7 +1228,8 @@ export const TestRpcJson = `{
                         "isTypeParameter": false,
                         "isOptional": false,
                         "typeArguments": [
-                        ]
+                        ],
+                        "inlinedType": null
                     }
                 },
                 {
@@ -1130,7 +1239,8 @@ export const TestRpcJson = `{
                         "isTypeParameter": false,
                         "isOptional": false,
                         "typeArguments": [
-                        ]
+                        ],
+                        "inlinedType": null
                     }
                 },
                 {
@@ -1140,7 +1250,8 @@ export const TestRpcJson = `{
                         "isTypeParameter": false,
                         "isOptional": false,
                         "typeArguments": [
-                        ]
+                        ],
+                        "inlinedType": null
                     }
                 },
                 {
@@ -1150,7 +1261,8 @@ export const TestRpcJson = `{
                         "isTypeParameter": false,
                         "isOptional": false,
                         "typeArguments": [
-                        ]
+                        ],
+                        "inlinedType": null
                     }
                 },
                 {
@@ -1160,7 +1272,8 @@ export const TestRpcJson = `{
                         "isTypeParameter": false,
                         "isOptional": false,
                         "typeArguments": [
-                        ]
+                        ],
+                        "inlinedType": null
                     }
                 }
             ],
@@ -1174,134 +1287,31 @@ export const TestRpcJson = `{
                         "isTypeParameter": false,
                         "isOptional": false,
                         "typeArguments": [
-                        ]
+                        ],
+                        "inlinedType": null
                     },
                     {
                         "name": "i32",
                         "isTypeParameter": false,
                         "isOptional": false,
                         "typeArguments": [
-                        ]
+                        ],
+                        "inlinedType": null
                     },
                     {
                         "name": "i32",
                         "isTypeParameter": false,
                         "isOptional": false,
                         "typeArguments": [
-                        ]
+                        ],
+                        "inlinedType": null
                     }
-                ]
+                ],
+                "inlinedType": null
             }
         }
     ],
     "models": [
-        {
-            "type": "struct",
-            "name": "TheObject",
-            "typeParameters": [
-            ],
-            "properties": {
-            }
-        },
-        {
-            "type": "enum",
-            "name": "HeavyNullableTestMode",
-            "options": [
-                "EntirelyNull",
-                "NullList",
-                "NullString"
-            ]
-        },
-        {
-            "type": "struct",
-            "name": "EnumArgs",
-            "typeParameters": [
-            ],
-            "properties": {
-                "x": {
-                    "name": "i32",
-                    "isTypeParameter": false,
-                    "isOptional": false,
-                    "typeArguments": [
-                    ]
-                },
-                "name": {
-                    "name": "EnumArgsOptions",
-                    "isTypeParameter": false,
-                    "isOptional": false,
-                    "typeArguments": [
-                    ]
-                }
-            }
-        },
-        {
-            "type": "enum",
-            "name": "EnumArgsOptions",
-            "options": [
-                "Option1",
-                "Option5"
-            ]
-        },
-        {
-            "type": "struct",
-            "name": "Option2",
-            "typeParameters": [
-            ],
-            "properties": {
-            }
-        },
-        {
-            "type": "struct",
-            "name": "CreateLobbyResponse",
-            "typeParameters": [
-            ],
-            "properties": {
-                "id": {
-                    "name": "i64",
-                    "isTypeParameter": false,
-                    "isOptional": false,
-                    "typeArguments": [
-                    ]
-                }
-            }
-        },
-        {
-            "type": "struct",
-            "name": "PlayerId",
-            "typeParameters": [
-            ],
-            "properties": {
-                "num": {
-                    "name": "i64",
-                    "isTypeParameter": false,
-                    "isOptional": false,
-                    "typeArguments": [
-                    ]
-                }
-            }
-        },
-        {
-            "type": "union",
-            "name": "PolymorphicThing",
-            "options": [
-                {
-                    "name": "PolymorphicThing.Option1",
-                    "isTypeParameter": false,
-                    "isOptional": false,
-                    "typeArguments": [
-                    ]
-                },
-                {
-                    "name": "PolymorphicThing.Option2",
-                    "isTypeParameter": false,
-                    "isOptional": false,
-                    "typeArguments": [
-                    ]
-                }
-            ],
-            "typeParameters": [
-            ]
-        },
         {
             "type": "struct",
             "name": "WithNulls",
@@ -1319,36 +1329,57 @@ export const TestRpcJson = `{
                             "isTypeParameter": true,
                             "isOptional": true,
                             "typeArguments": [
-                            ]
+                            ],
+                            "inlinedType": null
                         }
-                    ]
+                    ],
+                    "inlinedType": null
                 },
                 "y": {
                     "name": "string",
                     "isTypeParameter": false,
                     "isOptional": true,
                     "typeArguments": [
-                    ]
+                    ],
+                    "inlinedType": null
+                }
+            }
+        },
+        {
+            "type": "struct",
+            "name": "PlayerId",
+            "typeParameters": [
+            ],
+            "properties": {
+                "num": {
+                    "name": "i64",
+                    "isTypeParameter": false,
+                    "isOptional": false,
+                    "typeArguments": [
+                    ],
+                    "inlinedType": null
                 }
             }
         },
         {
             "type": "union",
-            "name": "PolymorphicClass",
+            "name": "PolymorphicThing",
             "options": [
                 {
-                    "name": "PolymorphicClass.Option3",
+                    "name": "Option1",
                     "isTypeParameter": false,
                     "isOptional": false,
                     "typeArguments": [
-                    ]
+                    ],
+                    "inlinedType": null
                 },
                 {
-                    "name": "PolymorphicClass.Option4",
+                    "name": "Option2",
                     "isTypeParameter": false,
                     "isOptional": false,
                     "typeArguments": [
-                    ]
+                    ],
+                    "inlinedType": null
                 }
             ],
             "typeParameters": [
@@ -1356,15 +1387,7 @@ export const TestRpcJson = `{
         },
         {
             "type": "struct",
-            "name": "Option3",
-            "typeParameters": [
-            ],
-            "properties": {
-            }
-        },
-        {
-            "type": "struct",
-            "name": "Option1",
+            "name": "Option4",
             "typeParameters": [
             ],
             "properties": {
@@ -1373,7 +1396,24 @@ export const TestRpcJson = `{
                     "isTypeParameter": false,
                     "isOptional": false,
                     "typeArguments": [
-                    ]
+                    ],
+                    "inlinedType": null
+                }
+            }
+        },
+        {
+            "type": "struct",
+            "name": "CreateLobbyResponse",
+            "typeParameters": [
+            ],
+            "properties": {
+                "id": {
+                    "name": "i64",
+                    "isTypeParameter": false,
+                    "isOptional": false,
+                    "typeArguments": [
+                    ],
+                    "inlinedType": null
                 }
             }
         },
@@ -1391,21 +1431,24 @@ export const TestRpcJson = `{
                     "isTypeParameter": true,
                     "isOptional": false,
                     "typeArguments": [
-                    ]
+                    ],
+                    "inlinedType": null
                 },
                 "y": {
                     "name": "T2",
                     "isTypeParameter": true,
                     "isOptional": false,
                     "typeArguments": [
-                    ]
+                    ],
+                    "inlinedType": null
                 },
                 "z": {
                     "name": "T3",
                     "isTypeParameter": true,
                     "isOptional": false,
                     "typeArguments": [
-                    ]
+                    ],
+                    "inlinedType": null
                 },
                 "w": {
                     "name": "array",
@@ -1417,15 +1460,41 @@ export const TestRpcJson = `{
                             "isTypeParameter": true,
                             "isOptional": false,
                             "typeArguments": [
-                            ]
+                            ],
+                            "inlinedType": null
                         }
-                    ]
+                    ],
+                    "inlinedType": null
                 }
             }
         },
         {
             "type": "struct",
-            "name": "Option4",
+            "name": "Option2",
+            "typeParameters": [
+            ],
+            "properties": {
+            }
+        },
+        {
+            "type": "struct",
+            "name": "Option3",
+            "typeParameters": [
+            ],
+            "properties": {
+            }
+        },
+        {
+            "type": "struct",
+            "name": "TheObject",
+            "typeParameters": [
+            ],
+            "properties": {
+            }
+        },
+        {
+            "type": "struct",
+            "name": "EnumArgs",
             "typeParameters": [
             ],
             "properties": {
@@ -1434,9 +1503,50 @@ export const TestRpcJson = `{
                     "isTypeParameter": false,
                     "isOptional": false,
                     "typeArguments": [
-                    ]
+                    ],
+                    "inlinedType": null
+                },
+                "name": {
+                    "name": "EnumArgsOptions",
+                    "isTypeParameter": false,
+                    "isOptional": false,
+                    "typeArguments": [
+                    ],
+                    "inlinedType": null
                 }
             }
+        },
+        {
+            "type": "enum",
+            "name": "EnumArgsOptions",
+            "options": [
+                "Option1",
+                "Option5"
+            ]
+        },
+        {
+            "type": "union",
+            "name": "PolymorphicClass",
+            "options": [
+                {
+                    "name": "Option3",
+                    "isTypeParameter": false,
+                    "isOptional": false,
+                    "typeArguments": [
+                    ],
+                    "inlinedType": null
+                },
+                {
+                    "name": "Option4",
+                    "isTypeParameter": false,
+                    "isOptional": false,
+                    "typeArguments": [
+                    ],
+                    "inlinedType": null
+                }
+            ],
+            "typeParameters": [
+            ]
         },
         {
             "type": "struct",
@@ -1449,49 +1559,56 @@ export const TestRpcJson = `{
                     "isTypeParameter": false,
                     "isOptional": false,
                     "typeArguments": [
-                    ]
+                    ],
+                    "inlinedType": null
                 },
                 "b": {
                     "name": "i8",
                     "isTypeParameter": false,
                     "isOptional": false,
                     "typeArguments": [
-                    ]
+                    ],
+                    "inlinedType": null
                 },
                 "c": {
                     "name": "i16",
                     "isTypeParameter": false,
                     "isOptional": false,
                     "typeArguments": [
-                    ]
+                    ],
+                    "inlinedType": null
                 },
                 "d": {
                     "name": "i32",
                     "isTypeParameter": false,
                     "isOptional": false,
                     "typeArguments": [
-                    ]
+                    ],
+                    "inlinedType": null
                 },
                 "e": {
                     "name": "i64",
                     "isTypeParameter": false,
                     "isOptional": false,
                     "typeArguments": [
-                    ]
+                    ],
+                    "inlinedType": null
                 },
                 "f": {
                     "name": "char",
                     "isTypeParameter": false,
                     "isOptional": false,
                     "typeArguments": [
-                    ]
+                    ],
+                    "inlinedType": null
                 },
                 "g": {
                     "name": "string",
                     "isTypeParameter": false,
                     "isOptional": false,
                     "typeArguments": [
-                    ]
+                    ],
+                    "inlinedType": null
                 },
                 "h": {
                     "name": "array",
@@ -1503,9 +1620,11 @@ export const TestRpcJson = `{
                             "isTypeParameter": false,
                             "isOptional": false,
                             "typeArguments": [
-                            ]
+                            ],
+                            "inlinedType": null
                         }
-                    ]
+                    ],
+                    "inlinedType": null
                 },
                 "i": {
                     "name": "array",
@@ -1517,9 +1636,11 @@ export const TestRpcJson = `{
                             "isTypeParameter": false,
                             "isOptional": false,
                             "typeArguments": [
-                            ]
+                            ],
+                            "inlinedType": null
                         }
-                    ]
+                    ],
+                    "inlinedType": null
                 },
                 "j": {
                     "name": "array",
@@ -1531,9 +1652,11 @@ export const TestRpcJson = `{
                             "isTypeParameter": false,
                             "isOptional": false,
                             "typeArguments": [
-                            ]
+                            ],
+                            "inlinedType": null
                         }
-                    ]
+                    ],
+                    "inlinedType": null
                 },
                 "k": {
                     "name": "array",
@@ -1545,9 +1668,11 @@ export const TestRpcJson = `{
                             "isTypeParameter": false,
                             "isOptional": false,
                             "typeArguments": [
-                            ]
+                            ],
+                            "inlinedType": null
                         }
-                    ]
+                    ],
+                    "inlinedType": null
                 },
                 "l": {
                     "name": "array",
@@ -1559,9 +1684,11 @@ export const TestRpcJson = `{
                             "isTypeParameter": false,
                             "isOptional": false,
                             "typeArguments": [
-                            ]
+                            ],
+                            "inlinedType": null
                         }
-                    ]
+                    ],
+                    "inlinedType": null
                 },
                 "m": {
                     "name": "array",
@@ -1573,9 +1700,11 @@ export const TestRpcJson = `{
                             "isTypeParameter": false,
                             "isOptional": false,
                             "typeArguments": [
-                            ]
+                            ],
+                            "inlinedType": null
                         }
-                    ]
+                    ],
+                    "inlinedType": null
                 },
                 "n": {
                     "name": "record",
@@ -1587,16 +1716,19 @@ export const TestRpcJson = `{
                             "isTypeParameter": false,
                             "isOptional": false,
                             "typeArguments": [
-                            ]
+                            ],
+                            "inlinedType": null
                         },
                         {
                             "name": "i32",
                             "isTypeParameter": false,
                             "isOptional": false,
                             "typeArguments": [
-                            ]
+                            ],
+                            "inlinedType": null
                         }
-                    ]
+                    ],
+                    "inlinedType": null
                 },
                 "o": {
                     "name": "array",
@@ -1608,9 +1740,11 @@ export const TestRpcJson = `{
                             "isTypeParameter": false,
                             "isOptional": false,
                             "typeArguments": [
-                            ]
+                            ],
+                            "inlinedType": null
                         }
-                    ]
+                    ],
+                    "inlinedType": null
                 },
                 "p": {
                     "name": "tuple",
@@ -1622,16 +1756,19 @@ export const TestRpcJson = `{
                             "isTypeParameter": false,
                             "isOptional": false,
                             "typeArguments": [
-                            ]
+                            ],
+                            "inlinedType": null
                         },
                         {
                             "name": "i32",
                             "isTypeParameter": false,
                             "isOptional": false,
                             "typeArguments": [
-                            ]
+                            ],
+                            "inlinedType": null
                         }
-                    ]
+                    ],
+                    "inlinedType": null
                 },
                 "q": {
                     "name": "tuple",
@@ -1643,30 +1780,35 @@ export const TestRpcJson = `{
                             "isTypeParameter": false,
                             "isOptional": false,
                             "typeArguments": [
-                            ]
+                            ],
+                            "inlinedType": null
                         },
                         {
                             "name": "i32",
                             "isTypeParameter": false,
                             "isOptional": false,
                             "typeArguments": [
-                            ]
+                            ],
+                            "inlinedType": null
                         },
                         {
                             "name": "i32",
                             "isTypeParameter": false,
                             "isOptional": false,
                             "typeArguments": [
-                            ]
+                            ],
+                            "inlinedType": null
                         }
-                    ]
+                    ],
+                    "inlinedType": null
                 },
                 "r": {
                     "name": "void",
                     "isTypeParameter": false,
                     "isOptional": false,
                     "typeArguments": [
-                    ]
+                    ],
+                    "inlinedType": null
                 },
                 "s": {
                     "name": "array",
@@ -1678,9 +1820,11 @@ export const TestRpcJson = `{
                             "isTypeParameter": false,
                             "isOptional": false,
                             "typeArguments": [
-                            ]
+                            ],
+                            "inlinedType": null
                         }
-                    ]
+                    ],
+                    "inlinedType": null
                 },
                 "t": {
                     "name": "array",
@@ -1692,9 +1836,11 @@ export const TestRpcJson = `{
                             "isTypeParameter": false,
                             "isOptional": false,
                             "typeArguments": [
-                            ]
+                            ],
+                            "inlinedType": null
                         }
-                    ]
+                    ],
+                    "inlinedType": null
                 },
                 "u": {
                     "name": "array",
@@ -1706,9 +1852,11 @@ export const TestRpcJson = `{
                             "isTypeParameter": false,
                             "isOptional": false,
                             "typeArguments": [
-                            ]
+                            ],
+                            "inlinedType": null
                         }
-                    ]
+                    ],
+                    "inlinedType": null
                 },
                 "v": {
                     "name": "array",
@@ -1720,9 +1868,11 @@ export const TestRpcJson = `{
                             "isTypeParameter": false,
                             "isOptional": false,
                             "typeArguments": [
-                            ]
+                            ],
+                            "inlinedType": null
                         }
-                    ]
+                    ],
+                    "inlinedType": null
                 },
                 "w": {
                     "name": "array",
@@ -1734,53 +1884,86 @@ export const TestRpcJson = `{
                             "isTypeParameter": false,
                             "isOptional": false,
                             "typeArguments": [
-                            ]
+                            ],
+                            "inlinedType": null
                         }
-                    ]
+                    ],
+                    "inlinedType": null
                 },
                 "x": {
                     "name": "i8",
                     "isTypeParameter": false,
                     "isOptional": false,
                     "typeArguments": [
-                    ]
+                    ],
+                    "inlinedType": null
                 },
                 "y": {
                     "name": "i16",
                     "isTypeParameter": false,
                     "isOptional": false,
                     "typeArguments": [
-                    ]
+                    ],
+                    "inlinedType": null
                 },
                 "z": {
                     "name": "i32",
                     "isTypeParameter": false,
                     "isOptional": false,
                     "typeArguments": [
-                    ]
+                    ],
+                    "inlinedType": null
                 },
                 "a2": {
                     "name": "i64",
                     "isTypeParameter": false,
                     "isOptional": false,
                     "typeArguments": [
-                    ]
+                    ],
+                    "inlinedType": null
                 },
                 "b2": {
                     "name": "f32",
                     "isTypeParameter": false,
                     "isOptional": false,
                     "typeArguments": [
-                    ]
+                    ],
+                    "inlinedType": null
                 },
                 "b3": {
                     "name": "f64",
                     "isTypeParameter": false,
                     "isOptional": false,
                     "typeArguments": [
-                    ]
+                    ],
+                    "inlinedType": null
                 }
             }
+        },
+        {
+            "type": "struct",
+            "name": "Option1",
+            "typeParameters": [
+            ],
+            "properties": {
+                "x": {
+                    "name": "i32",
+                    "isTypeParameter": false,
+                    "isOptional": false,
+                    "typeArguments": [
+                    ],
+                    "inlinedType": null
+                }
+            }
+        },
+        {
+            "type": "enum",
+            "name": "HeavyNullableTestMode",
+            "options": [
+                "EntirelyNull",
+                "NullList",
+                "NullString"
+            ]
         }
     ]
 }`

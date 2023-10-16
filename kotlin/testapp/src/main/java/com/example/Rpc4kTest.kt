@@ -12,6 +12,10 @@ import kotlinx.serialization.builtins.serializer
 data class PlayerId(val num: Long)
 
 @Serializable
+@JvmInline
+value class InlineId(val num: Long)
+
+@Serializable
 data class CreateLobbyResponse(val id: Long)
 
 @Api(true)
@@ -69,7 +73,7 @@ open class UserProtocol {
         pair: Pair<Int, Long>,
         triple: Triple<Unit, PlayerId, String>,
         entry: Map.Entry<Int, Int>
-    ): Map<Long, Map<Set<List<PlayerId>>, Double>> {
+    ): Map<Long, Map<InlineId, Double>> {
         return mapOf()
     }
 

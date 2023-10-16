@@ -12,3 +12,4 @@ src/**.js
 coverage
 *.log
 yarn.lock
+generated/

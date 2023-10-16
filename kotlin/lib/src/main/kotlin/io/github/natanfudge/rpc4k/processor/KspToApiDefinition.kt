@@ -11,7 +11,7 @@ object KspToApiDefinition {
         return ApiDefinition(
             // Doesn't quite fit, but good enough to represent the name as an KotlinTypeReference
             name = KotlinTypeReference(
-                packageName = packageName, simpleName = className, isNullable = false, typeArguments = listOf(), isTypeParameter = false
+                packageName = packageName, simpleName = className
             ),
             methods = kspClass.getPublicApiFunctions().map { toRpc(it) }.toList(),
             getRpcModels(kspClass)
@@ -98,10 +98,7 @@ object KspToApiDefinition {
      */
     private fun sealedSubclassToRpcType(sealedSubclass: KSClassDeclaration): KotlinTypeReference {
         val (packageName, className) = sealedSubclass.getPackageAndClassName()
-        return KotlinTypeReference(
-            packageName = packageName, simpleName = className,
-            isTypeParameter = false, isNullable = false, typeArguments = listOf()
-        )
+        return KotlinTypeReference(packageName = packageName, simpleName = className)
     }
 
     /**
@@ -128,8 +125,7 @@ object KspToApiDefinition {
             // When it's an enum with data, it serializes it like a data class with the addition of the "name" property which has the
             // enum value's name.
             val nameType = KotlinTypeReference(
-                packageName = GeneratedModelsPackage, simpleName = optionsEnum.name,
-                isTypeParameter = false, isNullable = false, typeArguments = listOf()
+                packageName = GeneratedModelsPackage, simpleName = optionsEnum.name
             )
             val enumStruct = model.copy(properties = model.properties + ("name" to nameType))
             listOf(enumStruct, optionsEnum)
@@ -165,8 +161,15 @@ object KspToApiDefinition {
             packageName = packageName, simpleName = if (isTypeParameter) declaration.getSimpleName() else className,
             typeArguments = resolved.arguments.map { toKotlinTypeReference(it.nonNullType()) },
             isNullable = resolved.isMarkedNullable,
-            isTypeParameter = isTypeParameter
+            isTypeParameter = isTypeParameter,
+            inlinedType = declaration.inlinedType()
         )
+    }
+
+    private fun KSDeclaration.inlinedType(): KotlinTypeReference? {
+        // Value classes may support multiple properties in the future so we require exactly one property to think ahead
+        if (this !is KSClassDeclaration || Modifier.VALUE !in this.modifiers || this.getDeclaredProperties().count() != 1) return null
+        return toKotlinTypeReference(getDeclaredProperties().single().type)
     }
 
 

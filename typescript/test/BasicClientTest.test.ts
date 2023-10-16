@@ -1,8 +1,9 @@
-import {RpcClient} from "../src/runtime/api/RpcClient";
-import {SerializationFormat} from "../src/runtime/api/SerializationFormat";
-import {GeneratedCodeUtils} from "../src/runtime/implementation/GeneratedCodeUtils";
-import {FetchRpcClient} from "../src/runtime/api/components/FetchRpcClient";
-import {JsonFormat} from "../src/runtime/api/components/JsonFormat";
+import {FetchRpcClient} from "../src/runtime/components/FetchRpcClient";
+import {JsonFormat} from "../src/runtime/components/JsonFormat";
+import {RpcClient} from "../src/runtime/RpcClient";
+import {SerializationFormat} from "../src/runtime/SerializationFormat";
+import {GeneratedCodeUtils} from "../src/runtime/impl/GeneratedCodeUtils";
+
 
 test("Basic Client works", async () => {
     const client = new MyApiClientImpl(new FetchRpcClient("http://localhost:8080"), JsonFormat)

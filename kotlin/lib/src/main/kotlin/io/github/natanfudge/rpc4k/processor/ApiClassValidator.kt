@@ -5,7 +5,6 @@ import com.google.devtools.ksp.processing.SymbolProcessorEnvironment
 import com.google.devtools.ksp.symbol.*
 import com.google.devtools.ksp.validate
 import io.github.natanfudge.rpc4k.processor.utils.*
-import io.github.natanfudge.rpc4k.runtime.api.Api
 
 /**
  * The methods of this class evaluate all checks to reveal all errors, not just stop at one.
@@ -40,7 +39,7 @@ class ApiClassValidator(private val env: SymbolProcessorEnvironment) {
      *     Generic types could be implemented by adding inheritance to the format, but I don't think that's a good idea.
      *
      */
-    private fun checkNoGenericSealedClasses(apiClass: KSClassDeclaration) : Boolean {
+    private fun checkNoGenericSealedClasses(apiClass: KSClassDeclaration): Boolean {
         return apiClass.getReferencedClasses().evaluateAll {
             it.checkRequirement(env, it.typeParameters.isEmpty() || it.getSealedSubclasses().toList().isEmpty()) {
                 "Generic sealed classes are not supported in RPC4K. The concept doesn't fit well with other languages and kotlinx.serialization breaks with them anyway."
