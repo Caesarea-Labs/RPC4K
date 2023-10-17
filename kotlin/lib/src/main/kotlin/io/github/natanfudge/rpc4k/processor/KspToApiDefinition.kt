@@ -1,5 +1,6 @@
 package io.github.natanfudge.rpc4k.processor
 
+import com.google.devtools.ksp.getAllSuperTypes
 import com.google.devtools.ksp.getDeclaredProperties
 import com.google.devtools.ksp.symbol.*
 import com.google.devtools.ksp.symbol.ClassKind.*
@@ -140,14 +141,23 @@ object KspToApiDefinition {
      * ```
      * to a [RpcModel.Struct]
      */
-    //TODO: needs to check if this is a son of a sealed class, in which case a `type: ` is required
-    private fun toRpcStructModel(declaration: KSClassDeclaration) = RpcModel.Struct(
-        name = declaration.getSimpleName(),
-        typeParameters = declaration.typeParameters.map { it.name.asString() },
-        properties = declaration.getDeclaredProperties().map {
+    private fun toRpcStructModel(declaration: KSClassDeclaration): RpcModel.Struct {
+        val properties = declaration.getDeclaredProperties().map {
             it.getSimpleName() to toKotlinTypeReference(it.type)
         }.toMap()
-    )
+
+        return RpcModel.Struct(
+            name = declaration.getSimpleName(),
+            typeParameters = declaration.typeParameters.map { it.name.asString() },
+            // If the struct is part of a tuple kotlinx.serialization also inserts a String "type" property
+            properties = if (isPartOfTuple(declaration)) properties + (unionTypeDiscriminatorProperty) else properties,
+        )
+    }
+
+    private val unionTypeDiscriminatorProperty = ApiDefinitionConverters.UnionTypeDiscriminator to KotlinTypeReference.string
+
+    private fun isPartOfTuple(declaration: KSClassDeclaration) = declaration.getAllSuperTypes()
+        .any { Modifier.SEALED in it.declaration.modifiers }
 
     /**
      * Get `com.foo.bar.MyClass<Int,String>` as an [KotlinTypeReference]

@@ -7,11 +7,15 @@ import io.github.natanfudge.rpc4k.runtime.api.components.JsonFormat
 import io.github.natanfudge.rpc4k.runtime.api.components.ManagedKtorRpcServer
 import io.github.natanfudge.rpc4k.test.BasicApi
 import io.ktor.server.netty.*
+import kotlinx.serialization.encodeToString
+import kotlinx.serialization.json.Json
+import org.junit.jupiter.api.Tag
 import kotlin.test.Test
 
 class TestServers {
     @Test
     fun myApi() {
+         val x = Json.encodeToString()
         val api = BasicApi()
         ManagedKtorRpcServer(Netty, port = 8080) {
             BasicApiServerImpl(api, JsonFormat(), it)

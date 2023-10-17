@@ -59,6 +59,10 @@ private fun KotlinSerializer.toSerializerString(): FormattedString  {
         is ClassBasedKotlinSerializer ->"%T.serializer".formatWith(ClassName.bestGuess(className)).withMethodSerializerArguments(typeArguments)
         is KotlinSerializer.BuiltinToplevel -> MemberName("kotlinx.serialization.builtins", functionName)
             .withSerializerArguments(typeArguments)
+
+        // See TuplePairSerializer and similar
+        is KotlinSerializer.Rpc4KTopLevel -> MemberName("io.github.natanfudge.rpc4k.runtime.implementation", functionName)
+            .withSerializerArguments(typeArguments)
     }
     // Add .nullable if needed
     return if (isNullable) {

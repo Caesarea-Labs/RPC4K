@@ -106,6 +106,9 @@ data class KotlinTypeReference(
     val isTypeParameter: Boolean = false,
     val inlinedType: KotlinTypeReference? = null
 ) {
+    companion object {
+        val string = KotlinTypeReference("kotlin", "String")
+    }
     // Inner classes are dot seperated
     val qualifiedName = "$packageName.$simpleName"
 

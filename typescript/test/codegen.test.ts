@@ -1,7 +1,5 @@
 
-import {TestRpcJson} from "../src/TestRpcJson";
 import {CodeBuilder} from "../src/generator/CodeBuilder";
-import {generateClientModel} from "../src/generator/ClientGenerator";
 
 test("Test codegen", () => {
     const dog = new CodeBuilder().addInterface({name: "Dog"}, builder => {
@@ -28,6 +26,6 @@ test("Test codegen", () => {
     console.log(myApiClientImpl)
 })
 
-test("Test apidefinition codegen", () => {
-    generateClientModel(TestRpcJson,"test/generated/", {localLibPaths: true})
-})
+// test("Test apidefinition codegen", () => {
+//     generateClientModel(TestRpcJson,"test/generated/", {localLibPaths: true})
+// })

@@ -1,4 +1,4 @@
-import {ApiDefinition, RpcType} from "./ApiDefinition";
+import {ApiDefinition, RpcParameter, RpcType} from "./ApiDefinition";
 import {CodeBuilder} from "./CodeBuilder";
 import {isBuiltinType, typescriptRpcType} from "./TypescriptRpcType";
 import {Rpc4TsClientGenerationOptions} from "./ClientGenerator";
@@ -18,11 +18,6 @@ export function generateAccessor(api: ApiDefinition, options: Rpc4TsClientGenera
         .addImport(["GeneratedCodeUtils"], libraryPath("impl/GeneratedCodeUtils"))
 
     builder.addImport(getReferencedGeneratedTypeNames(api), `./${api.name}Models`)
-
-    // import {RpcClient} from "../src/runtime/api/RpcClient";
-    // import {SerializationFormat} from "../src/runtime/api/SerializationFormat";
-    // import {CreateLobbyResponse, HeavyNullableTestMode, PlayerId} from "./UserProtocolModels";
-    // import {GeneratedCodeUtils} from "../src/runtime/implementation/GeneratedCodeUtils";
 
     builder.addClass(`${api.name}Api`, (clazz) => {
         clazz.addProperty({name: "private readonly client", type: "RpcClient"})
@@ -49,13 +44,22 @@ export function generateAccessor(api: ApiDefinition, options: Rpc4TsClientGenera
                     body.addReturningFunctionCall(
                         "GeneratedCodeUtils.request",
                         // Add all the parameters as a trailing argument to GeneratedCodeUtils.request
-                        ["this.client","this.format", `"${method.name}"`, ...method.parameters.map(param => param.name)]
+                        [
+                            "this.client", "this.format", `"${method.name}"`,
+                            ...method.parameters.map(param => paramValue(param))
+                        ]
                     )
                 })
         }
     })
 
     return builder.build()
+}
+
+function paramValue(param: RpcParameter): string {
+    // RPC4All defines that the value of the void type should always be "void"
+    if (param.type.name === "void") return `"void"`
+    else return param.name
 }
 
 /**
@@ -76,7 +80,7 @@ function addReferencedGeneratedTypeNames(type: RpcType, addTo: Set<string>) {
     if (type.inlinedType !== null) {
         addReferencedGeneratedTypeNames(type.inlinedType, addTo)
     } else {
-        if(!isBuiltinType(type)) {
+        if (!isBuiltinType(type)) {
             addTo.add(type.name)
         }
         for (const typeArgument of type.typeArguments) {

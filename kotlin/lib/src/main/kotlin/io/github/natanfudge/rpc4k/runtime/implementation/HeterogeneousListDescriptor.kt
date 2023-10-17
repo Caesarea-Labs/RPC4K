@@ -1,13 +1,10 @@
 @file:OptIn(ExperimentalSerializationApi::class)
-@file:Suppress("UNCHECKED_CAST")
+@file:Suppress("UNCHECKED_CAST", "FunctionName")
 
 package io.github.natanfudge.rpc4k.runtime.implementation
 
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.KSerializer
-import kotlinx.serialization.Serializable
-import kotlinx.serialization.builtins.ListSerializer
-import kotlinx.serialization.builtins.serializer
 import kotlinx.serialization.descriptors.SerialDescriptor
 import kotlinx.serialization.descriptors.SerialKind
 import kotlinx.serialization.descriptors.StructureKind
@@ -15,15 +12,67 @@ import kotlinx.serialization.encoding.CompositeDecoder
 import kotlinx.serialization.encoding.Decoder
 import kotlinx.serialization.encoding.Encoder
 import kotlinx.serialization.encoding.encodeCollection
-import kotlinx.serialization.json.Json
-import kotlin.reflect.jvm.internal.ReflectProperties.Val
 
+
+
+/**
+ * Serializes a pair as an array of two elements
+ */
+fun <K, V> TuplePairSerializer(keySerializer: KSerializer<K>, valueSerializer: KSerializer<V>): KSerializer<Pair<K,V>> = TupleSerializer(
+    listOf(keySerializer, valueSerializer), { listOf(it.first, it.second) }, { it[0] as K to it[1] as V }
+)
+
+
+/**
+ * Serializes a triple as an array of three elements
+ */
+fun <T1, T2, T3> TupleTripleSerializer(
+    firstSerializer: KSerializer<T1>, secondSerializer: KSerializer<T2>, thirdSerializer: KSerializer<T3>
+): KSerializer<Triple<T1,T2,T3>> = TupleSerializer(
+    listOf(firstSerializer, secondSerializer, thirdSerializer),
+    { listOf(it.first, it.second, it.third) },
+    { Triple(it[0] as T1, it[1] as T2, it[2] as T3) }
+)
+
+
+/**
+ * Serializes a map entry the same way as a pair - array of two elements
+ */
+fun <K, V> TupleMapEntrySerializer(keySerializer: KSerializer<K>, valueSerializer: KSerializer<V>): KSerializer<Map.Entry<K,V>> = TupleSerializer(
+    listOf(keySerializer, valueSerializer), { listOf(it.key, it.value) }, { MapEntryImpl(it[0] as K, it[1] as V ) }
+)
+
+private class MapEntryImpl<K,V>(override val key: K, override val value: V): Map.Entry<K,V>
+
+
+
+/**
+ * Serializes tuples as an array
+ */
+private class TupleSerializer<T>(elementSerializers: List<KSerializer<*>>, private val toList: (T) -> List<*>, private val fromList: (List<*>) -> T) :
+    KSerializer<T> {
+    private val length = elementSerializers.size
+    private val delegate = HeterogeneousListSerializer(elementSerializers)
+    override val descriptor: SerialDescriptor = delegate.descriptor
+
+    override fun deserialize(decoder: Decoder): T {
+        val list = delegate.deserialize(decoder)
+        require(list.size == length) {
+            "Expected a tuple of exactly $length elements, got ${list.size} elements"
+        }
+        return fromList(list)
+    }
+
+    override fun serialize(encoder: Encoder, value: T) {
+        delegate.serialize(encoder, toList(value))
+    }
+}
 
 /**
  * Adapted from [kotlinx.serialization.internal.CollectionLikeSerializer], [kotlinx.serialization.internal.CollectionSerializer]
  * and [kotlinx.serialization.internal.ArrayListSerializer]
  */
-class HeterogeneousListSerializer(private val elementSerializers: List<KSerializer<*>>): KSerializer<List<*>> {
+class HeterogeneousListSerializer(private val elementSerializers: List<KSerializer<*>>) : KSerializer<List<*>> {
     override val descriptor: SerialDescriptor = HeterogeneousListDescriptor(elementSerializers.map { it.descriptor })
 
     override fun deserialize(decoder: Decoder): List<*> {
@@ -31,7 +80,7 @@ class HeterogeneousListSerializer(private val elementSerializers: List<KSerializ
         val startIndex = 0
         val compositeDecoder = decoder.beginStructure(descriptor)
         if (compositeDecoder.decodeSequentially()) {
-            readAll(compositeDecoder,  builder, readSize(compositeDecoder, builder))
+            readAll(compositeDecoder, builder, readSize(compositeDecoder, builder))
         } else {
             while (true) {
                 val index = compositeDecoder.decodeElementIndex(descriptor)
@@ -43,12 +92,13 @@ class HeterogeneousListSerializer(private val elementSerializers: List<KSerializ
         return builder
     }
 
-    private fun readAll(decoder: CompositeDecoder,list: ArrayList<Any?>,  size: Int) {
+    private fun readAll(decoder: CompositeDecoder, list: ArrayList<Any?>, size: Int) {
         require(size >= 0) { "Size must be known in advance when using READ_ALL" }
         for (index in 0 until size) {
             readElement(decoder, index, list)
         }
     }
+
     private fun readElement(decoder: CompositeDecoder, index: Int, builder: ArrayList<Any?>) {
         builder.add(index, decoder.decodeSerializableElement(descriptor, index, elementSerializers[index]))
     }
