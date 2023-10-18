@@ -3,13 +3,12 @@ package io.github.natanfudge.rpc4k.processor
 import com.google.devtools.ksp.processing.CodeGenerator
 import com.google.devtools.ksp.processing.Dependencies
 import com.google.devtools.ksp.symbol.KSFile
-import io.github.natanfudge.rpc4k.processor.utils.isBuiltinSerializableType
 import io.github.natanfudge.rpc4k.processor.utils.writeFile
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 
 
-object ApiDefinitionToRpc {
+object ApiDefinitionWriter {
     private val json = Json {
         prettyPrint = true
     }

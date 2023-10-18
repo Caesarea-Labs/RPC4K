@@ -1,7 +1,8 @@
-import {ApiDefinition, RpcParameter, RpcType} from "./ApiDefinition";
 import {CodeBuilder} from "./CodeBuilder";
 import {isBuiltinType, typescriptRpcType} from "./TypescriptRpcType";
 import {Rpc4TsClientGenerationOptions} from "./ClientGenerator";
+import {ApiDefinition, RpcParameter, RpcType, RpcTypeNames} from "../runtime/ApiDefinition";
+import {stripDefaultTypeValues} from "../runtime/impl/ApiDefinitionsDefaults";
 
 export function generateAccessor(api: ApiDefinition, options: Rpc4TsClientGenerationOptions): string {
     const builder = new CodeBuilder()
@@ -16,12 +17,18 @@ export function generateAccessor(api: ApiDefinition, options: Rpc4TsClientGenera
     builder.addImport(["RpcClient"], libraryPath("RpcClient"))
         .addImport(["SerializationFormat"], libraryPath("SerializationFormat"))
         .addImport(["GeneratedCodeUtils"], libraryPath("impl/GeneratedCodeUtils"))
-
-    builder.addImport(getReferencedGeneratedTypeNames(api), `./${api.name}Models`)
+        .addImport(["Rpc4aTypeAdapter"], libraryPath("impl/Rpc4aTypeAdapter"))
+        .addImport(getReferencedGeneratedTypeNames(api), `./${api.name}Models`)
+        .addImport(["UserProtocolRuntimeModels"], `./${api.name}RuntimeModels`)
 
     builder.addClass(`${api.name}Api`, (clazz) => {
         clazz.addProperty({name: "private readonly client", type: "RpcClient"})
             .addProperty({name: "private readonly format", type: "SerializationFormat"})
+            .addProperty({
+                name: "private readonly adapter",
+                type: "Rpc4aTypeAdapter",
+                initializer: "GeneratedCodeUtils.createTypeAdapter(UserProtocolRuntimeModels)"
+            })
             .addConstructor([["client", "RpcClient"], ["format", "SerializationFormat"]], constructor => {
                 constructor.addAssignment("this.client", "client")
                     .addAssignment("this.format", "format")
@@ -31,23 +38,30 @@ export function generateAccessor(api: ApiDefinition, options: Rpc4TsClientGenera
             // We wrap the return type with a promise because api methods are network calls
             const returnType: RpcType = {
                 name: "Promise",
-                isOptional: false,
+                isNullable: false,
                 typeArguments: [method.returnType],
                 isTypeParameter: false,
-                inlinedType: null
+                inlinedType: undefined
             }
             clazz.addFunction(
                 method.name,
                 method.parameters.map(param => [param.name, typescriptRpcType(param.type)]),
                 typescriptRpcType(returnType),
                 (body) => {
+                    const args = [
+                        "this.client", "this.format", "this.adapter", `"${method.name}"`,
+                        arrayLiteral(method.parameters.map(param => param.name)),
+                        // Get rid of default values to be the type that is manually inputted be shorter
+                        arrayLiteral(method.parameters.map(param => stringifyToJsObject(stripDefaultTypeValues(param.type))))
+                    ]
+                    if (method.returnType.name !== RpcTypeNames.Void) {
+                        // Add return type if it's not null
+                        args.push(stringifyToJsObject(stripDefaultTypeValues(method.returnType)))
+                    }
                     body.addReturningFunctionCall(
                         "GeneratedCodeUtils.request",
                         // Add all the parameters as a trailing argument to GeneratedCodeUtils.request
-                        [
-                            "this.client", "this.format", `"${method.name}"`,
-                            ...method.parameters.map(param => paramValue(param))
-                        ]
+                        args
                     )
                 })
         }
@@ -56,10 +70,12 @@ export function generateAccessor(api: ApiDefinition, options: Rpc4TsClientGenera
     return builder.build()
 }
 
-function paramValue(param: RpcParameter): string {
-    // RPC4All defines that the value of the void type should always be "void"
-    if (param.type.name === "void") return `"void"`
-    else return param.name
+function stringifyToJsObject(obj: unknown): string {
+    return JSON.stringify(obj).replace(/"(\w+)"\s*:/g, '$1:')
+}
+
+function arrayLiteral(list: string[]): string {
+    return "[" + list.join(", ") + "]"
 }
 
 /**
@@ -77,7 +93,7 @@ function getReferencedGeneratedTypeNames(api: ApiDefinition): string[] {
 }
 
 function addReferencedGeneratedTypeNames(type: RpcType, addTo: Set<string>) {
-    if (type.inlinedType !== null) {
+    if (type.inlinedType !== undefined) {
         addReferencedGeneratedTypeNames(type.inlinedType, addTo)
     } else {
         if (!isBuiltinType(type)) {

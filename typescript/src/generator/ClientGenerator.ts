@@ -1,7 +1,8 @@
-import {ApiDefinition} from "./ApiDefinition";
 import {generateModels} from "./ModelGenerator";
 import * as fs from "fs";
 import {generateAccessor} from "./ClientAccessorGenerator";
+import {fillDefaultApiDefinitionValues} from "../runtime/impl/ApiDefinitionsDefaults";
+import {ApiDefinition} from "../runtime/ApiDefinition";
 
 
 export interface Rpc4TsClientGenerationOptions {
@@ -12,14 +13,17 @@ export interface Rpc4TsClientGenerationOptions {
 }
 
 export function generateClientModel(definitionJson: string, toDir: string, options: Rpc4TsClientGenerationOptions) {
-    const api = JSON.parse(definitionJson) as ApiDefinition
+    // This value doesn't contain default values
+    const rawApi = JSON.parse(definitionJson) as ApiDefinition
+    const api = fillDefaultApiDefinitionValues(rawApi)
     const models = generateModels(api.models)
     const accessor = generateAccessor(api, options)
-    console.log(models)
 
     fs.mkdirSync(toDir, {recursive: true})
     fs.writeFileSync(toDir + `${api.name}Models.ts`, models)
     fs.writeFileSync(toDir + `${api.name}Api.ts`, accessor)
-    // TODO: models.writeTo(toPath + "${api.name}Models")
-    // TODO: accessor.writeTo(toPath + "${api.name}Api")
+    const runtimeModelsName = `${api.name}RuntimeModels`
+    // We write out a definition without the default values because it's easy to resolve them at runtime
+    fs.writeFileSync(toDir + `${runtimeModelsName}.ts`, `export const ${runtimeModelsName} = \`${JSON.stringify(rawApi.models)}\``)
 }
+

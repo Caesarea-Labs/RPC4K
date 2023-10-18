@@ -17,12 +17,6 @@ export class FetchRpcClient implements RpcClient {
         try {
             response = await fetch(this.url, {body: data, method: "POST"});
         } catch (e) {
-            // @ts-ignore
-            console.error("Error fetching data:", e.message);
-            // @ts-ignore
-            console.error("Error name:", e.name);
-            // @ts-ignore
-            console.error("Error stack:", e.stack);
             throw new RpcFetchError(`Fetch failed`, rpc, format, this, e as TypeError)
         }
 

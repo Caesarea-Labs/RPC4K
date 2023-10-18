@@ -16,3 +16,4 @@ class RpcResponseException(message: String, request: Rpc, format: SerializationF
     RpcClientException(message, request, format, client)
 
 
+//TODO: write an rpc4All spec

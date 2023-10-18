@@ -1,18 +1,15 @@
-import {RpcType} from "./ApiDefinition";
+import {RpcType, RpcTypeNames, RpcTypes} from "../runtime/ApiDefinition";
 
 
 export function typescriptRpcType(type: RpcType): string {
-    if (type.inlinedType !== null) return typescriptRpcType(type.inlinedType)
-    const undefinedString = type.isOptional ? " | undefined" : ""
-    return typescriptRpcTypeIgnoreOptional(type) + undefinedString
+    // Handle | null adding
+    if (type.inlinedType !== undefined) return typescriptRpcType(type.inlinedType)
+    const nullableString = type.isNullable ? " | null" : ""
+    // Handle other things
+    return typescriptRpcTypeIgnoreOptional(type) + nullableString
 }
 
-
-/**
- * Normally, an optional type in Typescript is `T | undefined`. However,
- * in property and parameter declarations the `| undefined` can be omitted if the property is denoted as optional with `?`.
- */
-export function typescriptRpcTypeIgnoreOptional(type: RpcType): string {
+function typescriptRpcTypeIgnoreOptional(type: RpcType): string {
     // If it's a type parameter we don't care if it's a builtin type, we treat it as a type parameter.
     if (type.isTypeParameter) return type.name
     const builtinType = resolveBuiltinType(type)
@@ -22,7 +19,7 @@ export function typescriptRpcTypeIgnoreOptional(type: RpcType): string {
     return type.name + typeArgumentString
 }
 
-export function isBuiltinType(type: RpcType) : boolean {
+export function isBuiltinType(type: RpcType): boolean {
     return resolveBuiltinType(type) !== undefined
 }
 
@@ -40,15 +37,20 @@ function resolveBuiltinType(type: RpcType): string | undefined {
         case "char":
         case "string":
             return "string"
-        case "array": {
+        case RpcTypeNames.Arr: {
             const typeArgs = type.typeArguments
             if (typeArgs.length !== 1) {
                 throw new Error(`Array type had an unexpected amount of type arguments: ${typeArgs.length}`)
             }
+
+            const elementType = typeArgs[0]
+            const elementTypeString = typescriptRpcType(elementType)
+            // Add brackets in case the element type is nullable to avoid ambiguity
+            const elementTypeStringWithBrackets = elementType.isNullable ? `(${elementTypeString})` : elementTypeString
             // Typescript arrays are T[]
-            return `${typescriptRpcType(typeArgs[0])}[]`
+            return `${elementTypeStringWithBrackets}[]`
         }
-        case "record" : {
+        case RpcTypeNames.Rec : {
             const typeArgs = type.typeArguments
             if (typeArgs.length !== 2) {
                 throw new Error(`Record type had an unexpected amount of type arguments: ${typeArgs.length}`)
@@ -62,11 +64,11 @@ function resolveBuiltinType(type: RpcType): string | undefined {
             // Typescript Records are Record<K,V>
             return `Record<${keyType}, ${valueType}>`
         }
-        case "tuple": {
+        case RpcTypeNames.Tuple: {
             // Typescript tuples are [T1, T2, ..., Tn]
             return `[${type.typeArguments.map(arg => typescriptRpcType(arg)).join(", ")}]`
         }
-        case "void":
+        case RpcTypeNames.Void:
             return "void"
         default:
             return undefined

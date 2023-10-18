@@ -1,6 +1,6 @@
 // noinspection PointlessBooleanExpressionJS
 
-const MaxLineLength = 140;
+const MaxLineLength = 120;
 const tabWidth = 4;
 
 /**
@@ -48,9 +48,9 @@ export class CodeBuilder {
         types: string[]
     }): CodeBuilder {
         const prefix = `export type ${name}${this.typeParametersString(typeParameters)} = `
-        const typesJoined = this.indentList(types).join(" | ")
+        const typesJoined = types.join(" | ")
         if (this.isTooLong(prefix.length + typesJoined.length)) {
-            return this._addLineOfCode(prefix + types.join(" |\n"))
+            return this._addLineOfCode(prefix + this.indentList(types).join(" |\n"))
         } else {
             return this._addLineOfCode(prefix + typesJoined)
         }
@@ -88,6 +88,7 @@ export class CodeBuilder {
 
     _addFunction(prefix: string, parameters: [string, string][], returnType: string | undefined, body: (body: BodyBuilder) => void): CodeBuilder {
         const returnTypeString = returnType === undefined ? "" : `: ${returnType}`
+        //TODO: implement optional parameters
         const parametersString = this.parameterList(
             this.blockStart(prefix).length + returnTypeString.length, parameters.map(([name, type]) => `${name}: ${type}`)
         )
@@ -155,9 +156,10 @@ export class InterfaceBuilder {
         this.codegen = codegen
     }
 
-    addProperty({name, type, optional}: { name: string, type: string, optional?: boolean }): InterfaceBuilder {
+    addProperty({name, type, optional, initializer}: { name: string, type: string, optional?: boolean, initializer?: string }): InterfaceBuilder {
         const optionalString = optional === true ? "?" : ""
-        this.codegen._addLineOfCode(`${name}${optionalString}: ${type}`)
+        const initializerString = initializer === undefined? "": ` = ${initializer}`
+        this.codegen._addLineOfCode(`${name}${optionalString}: ${type}${initializerString}`)
         return this
     }
 
@@ -169,7 +171,7 @@ export class ClassBuilder extends InterfaceBuilder {
         super(codegen)
     }
 
-    addProperty(property: { name: string, type: string, optional?: boolean }): ClassBuilder {
+    addProperty(property: { name: string, type: string, optional?: boolean, initializer?: string }): ClassBuilder {
         return super.addProperty(property) as ClassBuilder
     }
 

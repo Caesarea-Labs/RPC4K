@@ -20,8 +20,14 @@ import kotlinx.serialization.modules.overwriteWith
 class JsonFormat(config: JsonBuilder.() -> Unit = {}) : SerializationFormat {
     private val json = Json {
         config()
+        //TODO: It pains me to do this but there's no easy way to detect that a property has a default value, so we can't tell clients to
+        // expect 'no value' when the default value is omitted.
+        // In the future with better default handling we can get rid of this.
+        encodeDefaults = true
         // This should be done by every format
         serializersModule = serializersModule.overwriteWith(Rpc4kSerializersModule)
+
+        //TODO: big problem... Kotlin serialization won't accept simple type discriminators... need to see what i can do aboutthis.
     }
 
     private val encoding = Charsets.UTF_8

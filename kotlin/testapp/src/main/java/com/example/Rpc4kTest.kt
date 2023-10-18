@@ -5,8 +5,10 @@ package com.example
 import com.example.EnumArgs.Option1
 import com.example.EnumArgs.Option5
 import io.github.natanfudge.rpc4k.runtime.api.Api
+import io.github.natanfudge.rpc4k.runtime.api.serverRequirement
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.builtins.serializer
+import kotlinx.serialization.json.Json
 
 @Serializable
 data class PlayerId(val num: Long)
@@ -121,7 +123,7 @@ open class UserProtocol {
 
     open suspend fun requirementTest() {
         // Literally 1984
-        require(4 == 5)
+        serverRequirement(4 == 5) { "1984" }
     }
 
     open suspend fun noArgTest() {
@@ -129,7 +131,7 @@ open class UserProtocol {
     }
 
     open suspend fun requirementFail(value: Int) {
-        require(value == 2) { "Value must be 2" }
+        serverRequirement(value == 2) { "Value must be 2" }
     }
 
 
@@ -285,6 +287,13 @@ data class EveryBuiltinType(
     }
 }
 
+
+fun main() {
+    val json = Json
+    val jsonString = "\"Option1\""
+    val back = json.decodeFromString<EnumArgs>(jsonString)
+    println(back)
+}
 
 @Serializable
 enum class EnumArgs(val x: Int) {

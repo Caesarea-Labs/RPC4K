@@ -15,7 +15,6 @@ import kotlin.test.Test
 class TestServers {
     @Test
     fun myApi() {
-         val x = Json.encodeToString()
         val api = BasicApi()
         ManagedKtorRpcServer(Netty, port = 8080) {
             BasicApiServerImpl(api, JsonFormat(), it)

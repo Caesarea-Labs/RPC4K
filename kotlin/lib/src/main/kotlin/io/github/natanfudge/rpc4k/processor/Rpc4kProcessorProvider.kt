@@ -63,7 +63,7 @@ internal class Rpc4kProcessor(private val env: SymbolProcessorEnvironment) : Sym
                     .writeTo(codeGenerator, false, files)
             }
             ApiDefinitionToServerCode.convert(api).writeTo(codeGenerator, false, files)
-            ApiDefinitionToRpc.writeRpcJsons(api, codeGenerator, file)
+            ApiDefinitionWriter.writeRpcJsons(api, codeGenerator, file)
         }
 
         env.logger.warn("Generated RPC classes for: ${apiClass.qualifiedName!!.asString()} in $time millis")

@@ -13,6 +13,7 @@ import kotlinx.serialization.encoding.Encoder
 
 
 //TODO: I think a cool feature would be to have a link to the server file in the clients in cases you have the server source
+//TODO: javadoc/jsdoc generation
 
 
 /**
@@ -40,7 +41,10 @@ sealed interface RpcModel {
     // Need to consider the fact we might want multiple api versions floating around sitting in the server's DB.
     @Serializable
     @SerialName("struct")
-    data class Struct(override val name: String, val typeParameters: List<String>, val properties: Map<String, KotlinTypeReference>) : RpcModel
+    data class Struct(override val name: String, val typeParameters: List<String> = listOf(), val properties: List<Property>) : RpcModel {
+        @Serializable
+        data class Property(val name: String, val type: KotlinTypeReference, val isOptional: Boolean = false)
+    }
 
     @Serializable
     @SerialName("enum")
@@ -53,21 +57,58 @@ sealed interface RpcModel {
      */
     @Serializable
     @SerialName("union")
-    data class Union(override val name: String, val options: List<KotlinTypeReference>, val typeParameters: List<String>) : RpcModel
+    data class Union(override val name: String, val options: List<KotlinTypeReference>, val typeParameters: List<String> = listOf()) : RpcModel
 }
+
+
+
 //TODO: make the `type` property name reserved, because we sometimes need it for union types
 //TODO: add type property to any struct that is part of a union
 
+
+/**
+ * More precise description of an [RpcType] that comes from the JVM, and makes it easier to generate kotlin code as it includes the package name of the type
+ * and uses kotlin class names and not RPC class names
+ */
+@Serializable(with = KotlinTypeReferenceSerializer::class)
+data class KotlinTypeReference(
+    val packageName: String,
+    val simpleName: String,
+    val isNullable: Boolean = false,
+    // True in cases where the value is initialized by a default value
+    val hasDefaultValue: Boolean = false,
+    val typeArguments: List<KotlinTypeReference> = listOf(),
+    val isTypeParameter: Boolean = false,
+    val inlinedType: KotlinTypeReference? = null
+) {
+    companion object {
+        val string = KotlinTypeReference("kotlin", "String")
+    }
+
+    // Inner classes are dot seperated
+    val qualifiedName = "$packageName.$simpleName"
+
+    val className = ClassName(packageName, simpleName)
+
+    val typeName: TypeName = className.let { name ->
+        if (typeArguments.isEmpty()) name else name.parameterizedBy(typeArguments.map { it.typeName })
+    }.copy(nullable = isNullable)
+    val isUnit get() = packageName == "kotlin" && simpleName == "Unit"
+}
 
 /**
  * This class is similar to [KotlinTypeReference] except it doesn't have the concept of package names, and it does have the concept of type argument types,
  * which makes it more fitting for [RpcModel]s
  */
 @Serializable
-data class RpcType(val name: String, val isTypeParameter: Boolean, val isOptional: Boolean, val typeArguments: List<RpcType>, val inlinedType: RpcType?) {
+data class RpcType(
+    val name: String,
+    val isTypeParameter: Boolean = false,
+    val isNullable: Boolean = false,
+    val typeArguments: List<RpcType> = listOf(),
+    val inlinedType: RpcType? = null
+) {
 
-    constructor(name: String, isTypeParameter: Boolean = false, isOptional: Boolean = false, typeArguments: List<RpcType> = listOf()) :
-            this(name,isTypeParameter, isOptional, typeArguments, null)
     init {
         // Kotlin doesn't have higher-kinded types yet
         if (isTypeParameter) check(typeArguments.isEmpty())
@@ -93,32 +134,7 @@ data class RpcType(val name: String, val isTypeParameter: Boolean, val isOptiona
 }
 
 
-/**
- * More precise description of an [RpcType] that comes from the JVM, and makes it easier to generate kotlin code as it includes the package name of the type
- * and uses kotlin class names and not RPC class names
- */
-@Serializable(with = KotlinTypeReferenceSerializer::class)
-data class KotlinTypeReference(
-    val packageName: String,
-    val simpleName: String,
-    val isNullable: Boolean = false,
-    val typeArguments: List<KotlinTypeReference> = listOf(),
-    val isTypeParameter: Boolean = false,
-    val inlinedType: KotlinTypeReference? = null
-) {
-    companion object {
-        val string = KotlinTypeReference("kotlin", "String")
-    }
-    // Inner classes are dot seperated
-    val qualifiedName = "$packageName.$simpleName"
 
-    val className = ClassName(packageName, simpleName)
-
-    val typeName: TypeName = className.let { name ->
-        if (typeArguments.isEmpty()) name else name.parameterizedBy(typeArguments.map { it.typeName })
-    }.copy(nullable = isNullable)
-    val isUnit get() = packageName == "kotlin" && simpleName == "Unit"
-}
 
 const val GeneratedModelsPackage = "io.github.natanfudge.generated.models"
 
@@ -183,7 +199,7 @@ private fun KotlinTypeReference.toBuiltinRpcType(): RpcType {
                 "Double" -> RpcType.F64
                 else -> error("Impossible class name $simpleName")
             }
-            RpcType(name, isOptional = isNullable)
+            RpcType(name, isNullable = isNullable)
         }
 
         "ByteArray", "ShortArray", "IntArray", "LongArray", "CharArray", "UByteArray", "UShortArray", "UIntArray", "ULongArray" -> {
@@ -199,7 +215,7 @@ private fun KotlinTypeReference.toBuiltinRpcType(): RpcType {
                 else -> error("Impossible class name $className")
             }
             val typeArgument = RpcType(typeArgumentName)
-            RpcType(RpcType.Array, isOptional = isNullable, typeArguments = listOf(typeArgument))
+            RpcType(RpcType.Array, isNullable = isNullable, typeArguments = listOf(typeArgument))
         }
 
         "Pair", "Triple", "Array" -> {
@@ -207,7 +223,7 @@ private fun KotlinTypeReference.toBuiltinRpcType(): RpcType {
             val name = if (simpleName == "Array") RpcType.Array else RpcType.Tuple
             RpcType(
                 name = name,
-                isOptional = isNullable,
+                isNullable = isNullable,
                 typeArguments = typeArguments.map { it.toRpcType() },
             )
         }
@@ -223,8 +239,6 @@ private fun KotlinTypeReference.toBuiltinCollectionType(): RpcType {
     val name = when (simpleName) {
         "List", "Set" -> RpcType.Array
         "Map" -> RpcType.Record
-        //TODO: need to register different serializers for MapEntry, I want to serialize it as a tuple but currently it's serialized as a {key: , value: }
-        // object. This requires changing the generated code to use my own MapEntrySerializer and registering my own serializer in the json serialzation context.
         "Map.Entry" -> RpcType.Tuple
         else -> error(
             "Unexpected kotlin builtin collection type: ${className}." +
@@ -234,7 +248,7 @@ private fun KotlinTypeReference.toBuiltinCollectionType(): RpcType {
 
     return RpcType(
         name = name,
-        isOptional = isNullable,
+        isNullable = isNullable,
         typeArguments = typeArguments.map { it.toRpcType() },
     )
 }
@@ -244,9 +258,15 @@ private fun KotlinTypeReference.toUserType(): RpcType {
     return RpcType(
         // We don't have nested classes in RPC4all
         name = simpleName.substringAfterLast("."),
-        isOptional = isNullable,
+        isNullable = isNullable,
         isTypeParameter = isTypeParameter,
         typeArguments = typeArguments.map { it.toRpcType() },
         inlinedType = inlinedType?.toRpcType()
     )
 }
+
+//TODO: This implementation doesn't support default values in parameters.
+// There's no easy to way to tell kotlin "use the default value if this value is null".
+// Kotlin serialization can only do it because it's a compiler plugin that can use the underlying full-args constructor that accepts possibly null/0 values.
+// If we want to support this in a really native way of `x: Int = 2` then we probably need a compiler plugin.
+// It's not even possible to copy the initializer code ourselves because ksp doesn't provide code.

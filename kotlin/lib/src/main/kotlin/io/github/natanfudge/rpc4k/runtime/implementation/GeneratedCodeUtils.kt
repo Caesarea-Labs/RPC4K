@@ -3,7 +3,6 @@ package io.github.natanfudge.rpc4k.runtime.implementation
 import io.github.natanfudge.rpc4k.runtime.api.*
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.SerializationException
-import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 
 /**
@@ -40,7 +39,8 @@ object GeneratedCodeUtils {
         client.send(rpc, format, argSerializers)
     }
 
-    @PublishedApi internal val logger = LoggerFactory.getLogger("RPC4K")
+    @PublishedApi
+    internal val logger = LoggerFactory.getLogger("RPC4K")
 
     /**
      * Catches rpc exceptions and sends the correct error back to the client
@@ -52,12 +52,7 @@ object GeneratedCodeUtils {
             logger.warn("Invalid request", e)
             // RpcServerException messages are trustworthy
             server.sendError(e.message, RpcError.InvalidRequest)
-        } catch (e: SerializationException) {
-            logger.warn("Malformed request arguments", e)
-            // SerializationException messages only include data passed to the server or to the client, in other words, information the client already has
-            server.sendError(e.message ?: "", RpcError.InvalidRequest)
-        }
-        catch (e: Throwable) {
+        } catch (e: Throwable) {
             logger.error("Failed to handle request", e)
             // Don't send arbitrary throwable messages because it could leak data
             server.sendError("Server failed to process request", RpcError.InternalError)
@@ -75,7 +70,11 @@ object GeneratedCodeUtils {
         resultSerializer: KSerializer<T>,
         respondMethod: suspend (args: List<*>) -> T
     ) {
-        val parsed = Rpc.fromByteArray(request, format, argDeserializers)
+        val parsed = try {
+            Rpc.fromByteArray(request, format, argDeserializers)
+        } catch (e: SerializationException) {
+            throw RpcServerException("Malformed request arguments: ${e.message}", e)
+        }
         val result = respondMethod(parsed.arguments)
         server.send(format, result, resultSerializer)
     }
