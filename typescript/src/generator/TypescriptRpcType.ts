@@ -57,7 +57,7 @@ function resolveBuiltinType(type: RpcType): string | undefined {
             }
             const keyType = typescriptRpcType(typeArgs[0])
             if (keyType !== "string" && keyType !== "number") {
-                //TODO: support it
+                // NiceToHave: Support complex keys in Typescript
                 throw new Error(`Unsupported map key type: ${keyType} in type: ${JSON.stringify(type)}`)
             }
             const valueType = typescriptRpcType(typeArgs[1])

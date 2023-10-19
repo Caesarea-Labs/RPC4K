@@ -7,7 +7,6 @@ import {createRpcType, PartialRpcType, RpcModel, RpcTypes} from "../ApiDefinitio
 
 
 export namespace GeneratedCodeUtils {
-    //TODO: try doing dayjs shenanigens
     export async function request<T>(
         client: RpcClient, format: SerializationFormat, adapter: Rpc4aTypeAdapter,
         method: string, args: unknown[], argTypes: PartialRpcType[], returnType?: PartialRpcType

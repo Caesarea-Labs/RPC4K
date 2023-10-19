@@ -9,7 +9,6 @@ import {
 } from "../ApiDefinition";
 import {buildRecord, objectForEach, objectMapValues, removeBeforeLastExclusive} from "./Util";
 
-// TODO: maybe add a special UnionType type to kotlin  that is treated as an honest to god union types in rpc4a
 
 /**
  * Allow transforming any value while knowing its type.
@@ -102,7 +101,6 @@ export class Rpc4aTypeAdapter {
             if (matchingModel !== undefined) {
                 // This item is one of the models
                 switch (matchingModel.type) {
-                    //TODO: i'm not sure if it's correct to not have array models
                     case RpcModelKind.enum:
                         throw new Error(`Item ${JSON.stringify(item)} is invalid: it's an object but it's defined as an enum (string union)`)
                     case RpcModelKind.struct:
@@ -149,7 +147,6 @@ export class Rpc4aTypeAdapter {
             type.typeArguments, (typeArg, i) => [matchingModel.typeParameters[i], typeArg]
         )
         return this.expandModelTypeParameters(matchingModel, parameterValues);
-        //TODO expand type.typeArguments...
     }
 
     private expandModelTypeParameters(matchingModel: RpcModel, parameterValues: Record<string, RpcType>): RpcModel {
@@ -247,70 +244,13 @@ export class Rpc4aTypeAdapter {
         }
     }
 
-    //TODO: this ain't gonna work with nested sealed/union types
-    //TODO: later on, this ain't gonna work with non-struct union types.
-
-    // getModelOfUnionMemberType(type: RpcType) : RpcStructModel {
-    //     const memberModel = this.getModelOfType(modelType)
-    //
-    //     if (memberModel === undefined) {
-    //         throw new Error(
-    //             `Union type object specified its type as '${typeValue}', but no such model exists.` +
-    //             `Object: ${JSON.stringify(obj)}. Model: ${JSON.stringify(model)}`
-    //         )
-    //     }
-    //     if (memberModel.type !== RpcModelKind.struct) {
-    //         throw new Error(
-    //             `Union type object specified its type as '${typeValue}', but that's not an actual struct (interface).` +
-    //             `Object: ${JSON.stringify(obj)}. Model: ${JSON.stringify(model)}`
-    //         )
-    //     }
-    //
-    //     return memberModel
-    // }
-    //
-    // /**
-    //  * When we have a union like this:
-    //  * ```
-    //  * type MyUnion = Object1 | Object2
-    //  * ```
-    //  * As the model, we need to determine from the actual object if it's Object1 or Object2.
-    //  */
-    // private resolveActualMemberOfUnionType(obj: object, model: RpcUnionModel): RpcStructModel {
-    //     if (RpcTypeDiscriminator in obj) {
-    //         // Determine what this object is based on the "type" field
-    //         const typeValue = obj[RpcTypeDiscriminator]
-    //         if (typeof typeValue !== "string") {
-    //             throw new Error(
-    //                 `Union type object 'type' discriminator is of incorrect type, it should be a string but it's a ${typeof typeValue}.` +
-    //                 `Object: ${JSON.stringify(obj)}. Model: ${JSON.stringify(model)}`
-    //             )
-    //         }
-    //         // Resolve the full type info of the model, most importantly the type arguments, by inspecting the union type.
-    //         const modelType = model.options.find(type => type.name === typeValue)
-    //         if (modelType === undefined) {
-    //             throw new Error(`Union type object specified its type as '${typeValue}',` +
-    //                 " but that's not one of the members of the union type it's supposed to be." +
-    //                 ` Available members: ${model.options.map(type => type.name)}` +
-    //                 ` Object: ${JSON.stringify(obj)}. Model: ${JSON.stringify(model)}`
-    //             )
-    //         }
-    //
-    //
-    //     } else {
-    //         throw new Error(
-    //             "Union type object is missing 'type' discriminator and therefore its value can't " +
-    //             `be inferred: ${JSON.stringify(obj)}. Model: ${JSON.stringify(model)}`
-    //         )
-    //     }
-    // }
 
     private alignStructWithModel(obj: object, model: RpcStructModel, adapter: TypedValueAdapter, objType: RpcType, polymorphic: boolean): object {
         if (Array.isArray(obj)) {
             throw new Error(`Item ${JSON.stringify(obj)} is invalid: it's an array but it's defined as a struct (object)`)
         }
         return objectMapValues(obj, (key, value) => {
-            ///TODO: might be slow to search through all properties and might be worth to have some sort of name -> property map
+            // SLOW: O(n) search on every object property
             const property = model.properties.find(property => property.name === key)
             if (property === undefined) throw new Error(`Item ${JSON.stringify(obj)} is invalid: it doesn't exist in the defined struct (interface): ${JSON.stringify(model)}`)
             // Important: pass the key of the property to the alignWithType and the type of the parent object

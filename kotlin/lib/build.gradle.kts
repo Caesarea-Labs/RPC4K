@@ -9,18 +9,13 @@ dependencies {
     implementation(libs.kotlinpoet.core)
     implementation(libs.kotlinpoet.ksp)
 
-    implementation("com.michael-bull.kotlin-result:kotlin-result:1.1.18")
     api(libs.coroutines.core)
     api(libs.serialization.json)
-//    implementation("dev.adamko.kxstsgen:kxs-ts-gen-core:0.2.1")
 
-    //TODO: these should be separate modules
-    /////////////////////////////////////////
     implementation(libs.okhttp.core)
     implementation(libs.okhttp.sse)
     implementation(libs.ktor.host)
-    implementation("io.ktor:ktor-server-call-logging-jvm:2.2.4")
-////////////////////////////////////////////
+    implementation(libs.ktor.logging)
 
     testImplementation(libs.kotlin.test)
     testImplementation (libs.compile.testing.ksp)

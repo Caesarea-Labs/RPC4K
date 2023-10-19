@@ -6,10 +6,9 @@ import com.example.EnumArgs.Option1
 import com.example.EnumArgs.Option5
 import io.github.natanfudge.rpc4k.runtime.api.Api
 import io.github.natanfudge.rpc4k.runtime.api.serverRequirement
-import io.github.natanfudge.rpc4k.runtime.implementation.HeterogeneousListSerializer
 import kotlinx.serialization.Contextual
 import kotlinx.serialization.Serializable
-import kotlinx.serialization.builtins.serializer
+import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 
 @Serializable
@@ -199,7 +198,7 @@ open class UserProtocol {
         a2: ULong,
         b2: Float,
         b3: Double,
-        b4 : Map.Entry<Int, Int>
+        b4: Map.Entry<Int, Int>
     ): Triple<Int, Int, Int> {
         return q
     }
@@ -217,6 +216,16 @@ open class UserProtocol {
 @Serializable
 data class SomeBuiltinTypes(@Contextual val p: Pair<Int, Int>)
 
+@Serializable
+data class Foo(val x: Int, val y: String)
+typealias MyMap = Map<Foo, Foo>
+
+
+fun main() {
+    val map = mapOf(Foo(1, "2") to Foo(3, "4"))
+    val json = Json { allowStructuredMapKeys = true }.encodeToString(map)
+    println(json)
+}
 
 @Serializable
 data class EveryBuiltinType(
@@ -249,7 +258,7 @@ data class EveryBuiltinType(
     val a2: ULong,
     val b2: Float,
     val b3: Double,
-    @Contextual val b4 : Map.Entry<Int, Int>
+    @Contextual val b4: Map.Entry<Int, Int>
 ) {
     @Suppress("DuplicatedCode")
     override fun equals(other: Any?): Boolean {
@@ -302,13 +311,6 @@ data class EveryBuiltinType(
     }
 }
 
-
-fun main() {
-    val json = Json
-    val jsonString = "\"Option1\""
-    val back = json.decodeFromString<EnumArgs>(jsonString)
-    println(back)
-}
 
 @Serializable
 enum class EnumArgs(val x: Int) {
