@@ -1,4 +1,3 @@
-@file:Suppress("UNCHECKED_CAST")
 
 package io.github.natanfudge.rpc4k.runtime.api
 
@@ -18,6 +17,7 @@ data class Rpc(val method: String, val arguments: List<*>) {
 
         fun fromByteArray(bytes: ByteArray, format: SerializationFormat, argDeserializers: List<KSerializer<*>>): Rpc {
             val (method, readBytes) = readMethodName(bytes)
+            //TODO: OPTIMIZATION: if the format supports streaming, we could start off the reading from a certain index and avoid copying this large array
             val arguments = format.decode(HeterogeneousListSerializer(argDeserializers), bytes.copyOfRange(readBytes, bytes.size))
             return Rpc(method, arguments)
         }
@@ -58,6 +58,7 @@ data class Rpc(val method: String, val arguments: List<*>) {
      * See docs/rpc_format.png
      */
     fun toByteArray(format: SerializationFormat, serializers: List<KSerializer<*>>): ByteArray {
+        //TODO: OPTIMIZATION: if the format supports streaming, we could write everything into one array and avoid copying these large arrays.
         return (method.toByteArray(Encoding) + ColonCode) + format.encode(HeterogeneousListSerializer(serializers), arguments)
     }
 

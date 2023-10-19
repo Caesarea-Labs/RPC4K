@@ -43,17 +43,17 @@ object KspToApiDefinition {
      * as [RpcModel]s
      */
     private fun getRpcModels(kspClass: KSClassDeclaration): List<RpcModel> {
-        return kspClass.getReferencedClasses().flatMap { toRpcModels(it) }
+        return kspClass.getReferencedClasses().map { toRpcModel(it) }
     }
 
     //TODO: I think we don't need this to return a list anymore since i simplified enum handling
     /**
      * This returns a list because sometimes two models spawn from one class declaration. Such a case is enums with values.
      */
-    private fun toRpcModels(declaration: KSClassDeclaration): List<RpcModel> = when (declaration.classKind) {
+    private fun toRpcModel(declaration: KSClassDeclaration): RpcModel = when (declaration.classKind) {
         INTERFACE -> toRpcUnionModel(declaration)
         // If it has sealed subclasses, it means it is a sealed type, and it should be treated as a union.
-        CLASS, OBJECT -> if (declaration.getSealedSubclasses().count() == 0) listOf(toRpcStructModel(declaration)) else toRpcUnionModel(declaration)
+        CLASS, OBJECT -> if (declaration.getSealedSubclasses().count() == 0) toRpcStructModel(declaration) else toRpcUnionModel(declaration)
         ENUM_CLASS -> toRpcEnumModel(declaration)
         ENUM_ENTRY -> error("Enum entries can't be serializable")
         ANNOTATION_CLASS -> error("Annotation classes can't be serializable")
@@ -71,13 +71,12 @@ object KspToApiDefinition {
      *
      * generates the [RpcModel.Union] for it.
      */
-    private fun toRpcUnionModel(declaration: KSClassDeclaration) = listOf(
-        RpcModel.Union(
+    private fun toRpcUnionModel(declaration: KSClassDeclaration) = RpcModel.Union(
             name = declaration.getSimpleName(),
             options = declaration.getSealedSubclasses().map { sealedSubclassToRpcType(it) }.toList(),
             declaration.typeParameters.map { it.name.asString() }
         )
-    )
+
 
 
     /**
@@ -110,13 +109,13 @@ object KspToApiDefinition {
      * ```
      * to a [RpcModel.Enum] (and sometimes also a [RpcModel.Struct])
      */
-    private fun toRpcEnumModel(declaration: KSClassDeclaration): List<RpcModel> {
+    private fun toRpcEnumModel(declaration: KSClassDeclaration): RpcModel {
 //        val properties = declaration.getDeclaredProperties().toList()
         // Get all enum entries/options
         val options = declaration.declarations.filter { it is KSClassDeclaration && it.classKind == ENUM_ENTRY }
             .map { it.getSimpleName() }.toList()
         val name = declaration.getSimpleName()
-        return listOf(RpcModel.Enum(name = name, options))
+        return RpcModel.Enum(name = name, options)
 //        return if (properties.isEmpty()) {
 //            // When it's a simple enum with no data, kotlin serializes it as a simple string union.
 //

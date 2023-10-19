@@ -3,6 +3,7 @@ package io.github.natanfudge.rpc4k.processor
 import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy
 import com.squareup.kotlinpoet.TypeName
+import io.github.natanfudge.rpc4k.processor.utils.appendIf
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
@@ -36,12 +37,13 @@ data class RpcParameter(val name: String, val type: KotlinTypeReference)
 sealed interface RpcModel {
     val name: String
 
-    //TODO: consider whether or not it's worth having default values on these things. The benefit is that it often reduces size by like 4x
-    // the downside is that it's more work on clients to write down what the default value is.
-    // Need to consider the fact we might want multiple api versions floating around sitting in the server's DB.
+
     @Serializable
     @SerialName("struct")
-    data class Struct(override val name: String, val typeParameters: List<String> = listOf(), val properties: List<Property>) : RpcModel {
+    data class Struct(
+        override val name: String, val typeParameters: List<String> = listOf(), val properties: List<Property>,
+
+        ) : RpcModel {
         @Serializable
         data class Property(val name: String, val type: KotlinTypeReference, val isOptional: Boolean = false)
     }
@@ -59,7 +61,6 @@ sealed interface RpcModel {
     @SerialName("union")
     data class Union(override val name: String, val options: List<KotlinTypeReference>, val typeParameters: List<String> = listOf()) : RpcModel
 }
-
 
 
 //TODO: make the `type` property name reserved, because we sometimes need it for union types
@@ -96,6 +97,24 @@ data class KotlinTypeReference(
     val isUnit get() = packageName == "kotlin" && simpleName == "Unit"
 }
 
+
+//TODO: I think I should seperate the RPC4K format and the kotlin stuff into two different things. Maybe give up KOtlinTypeReference in favor of TypeName and similar things.
+
+//TODO: The 'packageName' currently exists because kotlinx.serialization demands the fully qualified name of the model as its type discriminator.
+// Optimally we won't need to specify the package name.
+// Possible alternatives
+// 1. Annotate every single sealed subclass with @SerialName("SimpleName") - too much work for the user.
+// 2. Register completely custom serializers that customize the descriptor of every sealed subclass to have the serialName be equal
+// to the simple name. This is possible but is a ton of work, in the SerialModule, we need to register every sealed class,
+// and for each sealed class we need to register each subclass, and for each subclass we need to register the custom serializer
+// and then that doesn't work for top-level serialization so we need to create custom Serializers for every single generic serializer to use
+// our special simple subclass serializers. Fuck that.
+// 3. Fork kotlinx.serialization to use simple names instead of qualified names - has the usual problems of forking.
+// 4. Use a compiler plugin to generate @SerialNames with simple names for every class <---- this is probably the best solution, we will do it
+// once this becomes a compiler plugin.
+// 5. Allow simple serial names with a kotlinx.serialization PR, see https://github.com/Kotlin/kotlinx.serialization/issues/2319#issuecomment-1771023838
+
+
 /**
  * This class is similar to [KotlinTypeReference] except it doesn't have the concept of package names, and it does have the concept of type argument types,
  * which makes it more fitting for [RpcModel]s
@@ -103,6 +122,7 @@ data class KotlinTypeReference(
 @Serializable
 data class RpcType(
     val name: String,
+    val packageName: String,
     val isTypeParameter: Boolean = false,
     val isNullable: Boolean = false,
     val typeArguments: List<RpcType> = listOf(),
@@ -132,8 +152,6 @@ data class RpcType(
         const val Tuple = "tuple"
     }
 }
-
-
 
 
 const val GeneratedModelsPackage = "io.github.natanfudge.generated.models"
@@ -199,7 +217,7 @@ private fun KotlinTypeReference.toBuiltinRpcType(): RpcType {
                 "Double" -> RpcType.F64
                 else -> error("Impossible class name $simpleName")
             }
-            RpcType(name, isNullable = isNullable)
+            RpcType(name = name, packageName = packageName, isNullable = isNullable)
         }
 
         "ByteArray", "ShortArray", "IntArray", "LongArray", "CharArray", "UByteArray", "UShortArray", "UIntArray", "ULongArray" -> {
@@ -214,8 +232,8 @@ private fun KotlinTypeReference.toBuiltinRpcType(): RpcType {
                 "CharArray" -> RpcType.Char
                 else -> error("Impossible class name $className")
             }
-            val typeArgument = RpcType(typeArgumentName)
-            RpcType(RpcType.Array, isNullable = isNullable, typeArguments = listOf(typeArgument))
+            val typeArgument = RpcType(name = typeArgumentName, packageName = packageName)
+            RpcType(name = RpcType.Array, packageName = packageName, isNullable = isNullable, typeArguments = listOf(typeArgument))
         }
 
         "Pair", "Triple", "Array" -> {
@@ -223,6 +241,7 @@ private fun KotlinTypeReference.toBuiltinRpcType(): RpcType {
             val name = if (simpleName == "Array") RpcType.Array else RpcType.Tuple
             RpcType(
                 name = name,
+                packageName = packageName,
                 isNullable = isNullable,
                 typeArguments = typeArguments.map { it.toRpcType() },
             )
@@ -250,6 +269,7 @@ private fun KotlinTypeReference.toBuiltinCollectionType(): RpcType {
         name = name,
         isNullable = isNullable,
         typeArguments = typeArguments.map { it.toRpcType() },
+        packageName = packageName
     )
 }
 
@@ -258,6 +278,10 @@ private fun KotlinTypeReference.toUserType(): RpcType {
     return RpcType(
         // We don't have nested classes in RPC4all
         name = simpleName.substringAfterLast("."),
+        // This code is bad... I wish to get rid of "package name" shenanigans
+        // The idea is that we treat the package name as "everything that comes before the last part of the simple name" so it fits when kotlinx.serialization
+        // serializes it.
+        packageName = packageName.appendIf(simpleName.contains(".")) { "." + simpleName.substringBeforeLast(".") },
         isNullable = isNullable,
         isTypeParameter = isTypeParameter,
         typeArguments = typeArguments.map { it.toRpcType() },

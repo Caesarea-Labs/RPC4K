@@ -54,21 +54,3 @@ export function fillDefaultMethodValues(partialMethod: RpcDefinition): RpcDefini
 }
 
 
-export function stripDefaultTypeValues(type: RpcType): PartialRpcType {
-    if (!type.isTypeParameter && !type.isNullable && type.inlinedType === undefined) {
-        if (type.typeArguments.length === 0) {
-            // If everything is default except for the name, we can just use a simple string instead
-            return type.name
-        } else {
-            // If everything is default except for the name and type arguments, we can just use an array.
-            return [type.name, type.typeArguments.map(arg => stripDefaultTypeValues(arg))]
-        }
-    }
-    return {
-        name: type.name,
-        typeArguments: type.typeArguments.length === 0 ? undefined : type.typeArguments.map(arg => stripDefaultTypeValues(arg)),
-        inlinedType: type.inlinedType === undefined ? undefined : stripDefaultTypeValues(type.inlinedType),
-        isTypeParameter: !type.isTypeParameter ? undefined : type.isTypeParameter,
-        isNullable: !type.isNullable ? undefined : type.isNullable
-    }
-}

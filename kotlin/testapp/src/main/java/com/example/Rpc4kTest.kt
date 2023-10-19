@@ -6,6 +6,8 @@ import com.example.EnumArgs.Option1
 import com.example.EnumArgs.Option5
 import io.github.natanfudge.rpc4k.runtime.api.Api
 import io.github.natanfudge.rpc4k.runtime.api.serverRequirement
+import io.github.natanfudge.rpc4k.runtime.implementation.HeterogeneousListSerializer
+import kotlinx.serialization.Contextual
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.builtins.serializer
 import kotlinx.serialization.json.Json
@@ -196,12 +198,24 @@ open class UserProtocol {
         z: UInt,
         a2: ULong,
         b2: Float,
-        b3: Double
+        b3: Double,
+        b4 : Map.Entry<Int, Int>
     ): Triple<Int, Int, Int> {
         return q
     }
 
+    open suspend fun someBuiltinTypes(types: SomeBuiltinTypes): SomeBuiltinTypes {
+        return types
+    }
+
 }
+
+
+//TODO: add a compile-time error when @Contextual is not used with Pair, Triple, Map.Entry, and Unit.
+//TODO: with a compiler plugin, we could auto put @Contextual on these or replace the serializer ourselves.
+
+@Serializable
+data class SomeBuiltinTypes(@Contextual val p: Pair<Int, Int>)
 
 
 @Serializable
@@ -221,9 +235,9 @@ data class EveryBuiltinType(
     val m: List<Int>,
     val n: Map<Int, Int>,
     val o: Set<Int>,
-    val p: Pair<Int, Int>,
-    val q: Triple<Int, Int, Int>,
-    val r: Unit,
+    @Contextual val p: Pair<Int, Int>,
+    @Contextual val q: Triple<Int, Int, Int>,
+    @Contextual val r: Unit,
     val s: Array<Int>,
     val t: UByteArray,
     val u: UShortArray,
@@ -234,7 +248,8 @@ data class EveryBuiltinType(
     val z: UInt,
     val a2: ULong,
     val b2: Float,
-    val b3: Double
+    val b3: Double,
+    @Contextual val b4 : Map.Entry<Int, Int>
 ) {
     @Suppress("DuplicatedCode")
     override fun equals(other: Any?): Boolean {

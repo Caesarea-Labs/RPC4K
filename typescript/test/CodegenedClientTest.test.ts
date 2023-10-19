@@ -23,37 +23,37 @@ test("Codegened Client works in more cases", async () => {
 
 test("Codegened Client works in all cases", async () => {
     const client = new UserProtocolApi(new FetchRpcClient("http://localhost:8080"), JsonFormat)
-    // const res = await client.test([1, 2])
-    // expect(res).toEqual([[1, 2, "3"], 4])
-    //
-    // expect(await client.createLobby({num: 123}, "alo"))
-    //     .toEqual({id: 126})
-    //
-    // expect(await client.killSomeone(111, {num: 5})).toEqual(116)
-    //
-    // await client.someShit(1, 2);
-    // await client.someShit(1, 2);
-    // await client.moreTypes(
-    //     [],
-    //     [],
-    //     [1, 2],
-    //     [undefined, {num: 1}, ""],
-    //     [1,1]
-    // );
-    //
-    // const result = await client.test([1, 2]);
-    //
-    // expect(result[0]).toEqual([1, 2, "3"])
-    // expect(result[1]).toEqual(4.0)
-    //
-    // await client.nullable(null, [null]);
-    //
-    // await client.someShit(1, 2);
-    // await client.genericTest("");
-    //
-    // expect(await client.heavyNullable("EntirelyNull")).toEqual<NullableArgType>(null)
-    // expect(await client.heavyNullable("NullList")).toEqual<NullableArgType>({x: null, y: null, z: [], w: []})
-    // expect(await client.heavyNullable("NullString")).toEqual<NullableArgType>({x: [null, "test"], y: null, z: [], w: []})
+    const res = await client.test([1, 2])
+    expect(res).toEqual([[1, 2, "3"], 4])
+
+    expect(await client.createLobby({num: 123}, "alo"))
+        .toEqual({id: 126})
+
+    expect(await client.killSomeone(111, {num: 5})).toEqual(116)
+
+    await client.someShit(1, 2);
+    await client.someShit(1, 2);
+    await client.moreTypes(
+        [],
+        [],
+        [1, 2],
+        [undefined, {num: 1}, ""],
+        [1,1]
+    );
+
+    const result = await client.test([1, 2]);
+
+    expect(result[0]).toEqual([1, 2, "3"])
+    expect(result[1]).toEqual(4.0)
+
+    await client.nullable(null, [null]);
+
+    await client.someShit(1, 2);
+    await client.genericTest("");
+
+    expect(await client.heavyNullable("EntirelyNull")).toEqual<NullableArgType>(null)
+    expect(await client.heavyNullable("NullList")).toEqual<NullableArgType>({x: null, y: null, z: [], w: []})
+    expect(await client.heavyNullable("NullString")).toEqual<NullableArgType>({x: [null, "test"], y: null, z: [], w: []})
 
     const error1 = (await expectThrows(() => client.errorTest(), RpcResponseError))
     error1.toHaveProperty("code", 500)
@@ -77,14 +77,17 @@ test("Codegened Client works in all cases", async () => {
     const polymorphicClass: Option4 = {type: "Option4", x: 3}
     expect(await client.polymorphicClassTest(polymorphicClass)).toEqual(polymorphicClass);
 
+
+
+    expect(await client.someBuiltinTypes({p: [15,16]})).toEqual({p: [15,16]})
+
     const everything: EveryBuiltinType = {
         // Adjusted with simplified array literals
         a: false, b: 1, c: 2, d: 3, e: 4, f: '5', g: "6",
         h: [7], i: [8], j: [9], k: [10], l: ['@'],
         m: [11], n: { 12: 13 }, o:[14], p: [ 15, 16 ], q: [17, 18, 19],
-        r: undefined, s: [21], t: [22], u: [23], v: [24], w: [25], x: 26, y: 27, z: 28, a2: 29.0, b2: 30.0,b3:31
+        r: undefined, s: [21], t: [22], u: [23], v: [24], w: [25], x: 26, y: 27, z: 28, a2: 29.0, b2: 30.0,b3:31, b4: [32, 33]
     };
-
     expect(await client.everyBuiltinType(everything)).toEqual(everything);
 
     expect(
@@ -92,7 +95,8 @@ test("Codegened Client works in all cases", async () => {
                 false, 1, 2, 3, 4, '5', "6",
                 [7], [8], [9], [10], ['@'],
                 [11], { 12: 13 }, [14], [15, 16], [17, 18, 19],
-                undefined, [21], [22], [23], [24], [25], 26, 27, 28, 29.0, 30.0, 31
+                undefined, [21], [22], [23], [24], [25],
+            26, 27, 28, 29.0, 30.0, 31, [32,33]
         )
     ).toEqual([17, 18, 19]);
 })

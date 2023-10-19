@@ -1,8 +1,7 @@
 import {CodeBuilder} from "./CodeBuilder";
 import {isBuiltinType, typescriptRpcType} from "./TypescriptRpcType";
 import {Rpc4TsClientGenerationOptions} from "./ClientGenerator";
-import {ApiDefinition, RpcParameter, RpcType, RpcTypeNames} from "../runtime/ApiDefinition";
-import {stripDefaultTypeValues} from "../runtime/impl/ApiDefinitionsDefaults";
+import {ApiDefinition, RpcParameter, RpcType, RpcTypeNames, stripDefaultTypeValues} from "../runtime/ApiDefinition";
 
 export function generateAccessor(api: ApiDefinition, options: Rpc4TsClientGenerationOptions): string {
     const builder = new CodeBuilder()

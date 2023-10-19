@@ -48,4 +48,12 @@ export function buildRecord<T, V>(array: T[], builder: (element: T, index: numbe
     return record as Record<string, V>
 }
 
+export function removeBeforeLastExclusive  (string: string, removeBefore: string): string {
+    const index = string.lastIndexOf(removeBefore)
+    if (index === -1) {
+        return string
+    } else {
+        return string.slice(index + removeBefore.length)
+    }
+}
 // type X = Partial<any>

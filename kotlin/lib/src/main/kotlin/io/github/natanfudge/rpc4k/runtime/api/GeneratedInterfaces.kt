@@ -14,7 +14,7 @@ interface GeneratedServerHandler {
  * since actually creating a [GeneratedServerHandler] can be hard.
  */
 interface GeneratedServerHandlerFactory<Api> {
-    fun build(api: Api, format: SerializationFormat, server: RpcServer): GeneratedServerHandler
+    fun build(api: Api, format:  SerializationFormat, server: RpcServer): GeneratedServerHandler
 }
 
 /**
@@ -24,5 +24,5 @@ interface GeneratedServerHandlerFactory<Api> {
  * since actually creating a [Api] can be hard.
  */
 interface GeneratedClientImplFactory<Api> {
-    fun build(client: RpcClient, format: SerializationFormat): Api
+    fun build(client: RpcClient, format:  SerializationFormat): Api
 }
