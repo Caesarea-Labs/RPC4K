@@ -12,18 +12,18 @@ export interface Rpc4TsClientGenerationOptions {
     localLibPaths: boolean
 }
 
-export function generateClientModel(definitionJson: string, toDir: string, options: Rpc4TsClientGenerationOptions) {
+export function generateClientModel(definitionJson: string, writeTo: string, options: Rpc4TsClientGenerationOptions) {
     // This value doesn't contain default values
     const rawApi = JSON.parse(definitionJson) as ApiDefinition
     const api = fillDefaultApiDefinitionValues(rawApi)
     const models = generateModels(api.models)
     const accessor = generateAccessor(api, options)
 
-    fs.mkdirSync(toDir, {recursive: true})
-    fs.writeFileSync(toDir + `${api.name}Models.ts`, models)
-    fs.writeFileSync(toDir + `${api.name}Api.ts`, accessor)
+    fs.mkdirSync(writeTo, {recursive: true})
+    fs.writeFileSync(writeTo + `${api.name}Models.ts`, models)
+    fs.writeFileSync(writeTo + `${api.name}Api.ts`, accessor)
     const runtimeModelsName = `${api.name}RuntimeModels`
     // We write out a definition without the default values because it's easy to resolve them at runtime
-    fs.writeFileSync(toDir + `${runtimeModelsName}.ts`, `export const ${runtimeModelsName} = \`${JSON.stringify(rawApi.models)}\``)
+    fs.writeFileSync(writeTo + `${runtimeModelsName}.ts`, `export const ${runtimeModelsName} = \`${JSON.stringify(rawApi.models)}\``)
 }
 

@@ -13,8 +13,6 @@ import kotlinx.serialization.encoding.Decoder
 import kotlinx.serialization.encoding.Encoder
 
 
-//TODO: I think a cool feature would be to have a link to the server file in the clients in cases you have the server source
-//TODO: javadoc/jsdoc generation
 
 
 /**
@@ -27,6 +25,9 @@ data class ApiDefinition(
     val models: List<RpcModel>
 )
 
+/**
+ * the [keepo 123][name]
+ */
 @Serializable
 data class RpcDefinition(val name: String, val parameters: List<RpcParameter>, val returnType: KotlinTypeReference)
 

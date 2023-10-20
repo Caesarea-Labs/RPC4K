@@ -50,7 +50,7 @@ open class UserProtocol {
 //    open suspend fun starTest( x: List<*>) {
 //
 //    }
-
+    
     open suspend fun createLobby(createdBy: PlayerId, otherThing: String): CreateLobbyResponse {
         println("Handled createlobby! $createdBy")
         return CreateLobbyResponse(createdBy.num + otherThing.length)
@@ -168,6 +168,9 @@ open class UserProtocol {
         return obj
     }
 
+    /**
+     *
+     */
     open suspend fun everyBuiltinTypeParams(
         a: Boolean,
         b: Byte,
@@ -260,7 +263,42 @@ data class EveryBuiltinType(
     val b3: Double,
     @Contextual val b4: Map.Entry<Int, Int>
 ) {
-    @Suppress("DuplicatedCode")
+
+
+    override fun hashCode(): Int {
+        var result = a.hashCode()
+        result = 31 * result + b
+        result = 31 * result + c
+        result = 31 * result + d
+        result = 31 * result + e.hashCode()
+        result = 31 * result + f.hashCode()
+        result = 31 * result + g.hashCode()
+        result = 31 * result + h.contentHashCode()
+        result = 31 * result + i.contentHashCode()
+        result = 31 * result + j.contentHashCode()
+        result = 31 * result + k.contentHashCode()
+        result = 31 * result + l.contentHashCode()
+        result = 31 * result + m.hashCode()
+        result = 31 * result + n.hashCode()
+        result = 31 * result + o.hashCode()
+        result = 31 * result + p.hashCode()
+        result = 31 * result + q.hashCode()
+        result = 31 * result + r.hashCode()
+        result = 31 * result + s.contentHashCode()
+        result = 31 * result + t.hashCode()
+        result = 31 * result + u.hashCode()
+        result = 31 * result + v.hashCode()
+        result = 31 * result + w.hashCode()
+        result = 31 * result + x.hashCode()
+        result = 31 * result + y.hashCode()
+        result = 31 * result + z.hashCode()
+        result = 31 * result + a2.hashCode()
+        result = 31 * result + b2.hashCode()
+        result = 31 * result + b3.hashCode()
+        result = 31 * result + b4.hashCode()
+        return result
+    }
+
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (javaClass != other?.javaClass) return false
@@ -284,30 +322,21 @@ data class EveryBuiltinType(
         if (o != other.o) return false
         if (p != other.p) return false
         if (q != other.q) return false
+        if (r != other.r) return false
+        if (!s.contentEquals(other.s)) return false
+        if (t != other.t) return false
+        if (u != other.u) return false
+        if (v != other.v) return false
+        if (w != other.w) return false
+        if (x != other.x) return false
+        if (y != other.y) return false
+        if (z != other.z) return false
+        if (a2 != other.a2) return false
+        if (b2 != other.b2) return false
+        if (b3 != other.b3) return false
+        if (b4 != other.b4) return false
 
         return true
-    }
-
-    override fun hashCode(): Int {
-        var result = a.hashCode()
-        result = 31 * result + b
-        result = 31 * result + c
-        result = 31 * result + d
-        result = 31 * result + e.hashCode()
-        result = 31 * result + f.hashCode()
-        result = 31 * result + g.hashCode()
-        result = 31 * result + h.contentHashCode()
-        result = 31 * result + i.contentHashCode()
-        result = 31 * result + j.contentHashCode()
-        result = 31 * result + k.contentHashCode()
-        result = 31 * result + l.contentHashCode()
-        result = 31 * result + m.hashCode()
-        result = 31 * result + n.hashCode()
-        result = 31 * result + o.hashCode()
-        result = 31 * result + p.hashCode()
-        result = 31 * result + q.hashCode()
-        result = 31 * result + r.hashCode()
-        return result
     }
 }
 

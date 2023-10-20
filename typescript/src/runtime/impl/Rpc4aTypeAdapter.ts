@@ -98,6 +98,10 @@ export class Rpc4aTypeAdapter {
         const item = adapter(propertyName, originalItem, type, matchingModel, parentType, isPolymorphic)
         if (item === null) return null
         if (typeof item === "object") {
+            //NiceToHave: Support complex keys in Typescript
+            // if(item instanceof HashMap) {
+            //       ...
+            // }
             if (matchingModel !== undefined) {
                 // This item is one of the models
                 switch (matchingModel.type) {
@@ -111,9 +115,6 @@ export class Rpc4aTypeAdapter {
                         // Important: Specify polymorphic as true
                         return this.alignWithType(item, actualType, adapter, undefined, undefined, true)
                     }
-                    //
-                    // // Need to do a bit of extra work with union type to know what the actual type is in this case
-                    // return this.alignStructWithModel(item, this.resolveActualMemberOfUnionType(item, matchingModel), adapter, type)
                 }
             } else {
                 if (Array.isArray(item)) {
@@ -268,8 +269,6 @@ export class Rpc4aTypeAdapter {
         const resultObject: Partial<Record<string | number, unknown>> = {}
 
         objectForEach(obj, (key, value) => {
-            //TODO: this might fail sometimes with complex keys, i'm not sure
-
             // Align both keys and values
             const alignedKey = this.alignWithType(key, keyType, adapter) as string | number
             resultObject[alignedKey] = this.alignWithType(value, valueType, adapter)
@@ -280,7 +279,6 @@ export class Rpc4aTypeAdapter {
 
 }
 
-type X = { key: string } | number[] | string[]
 
 
 
