@@ -21,10 +21,6 @@ interface SerializationFormat {
     fun <T> decode(serializer: DeserializationStrategy<T>, raw: ByteArray): T
 }
 
-//fun interface SerializationFormatProvider<F: SerializationFormat> {
-//    fun provide(module: SerializersModule): F
-//}
-
 
 val Rpc4kSerializersModule = SerializersModule {
     // Serialize Pair, Triple and Map.Entry as heterogeneous lists
@@ -34,4 +30,3 @@ val Rpc4kSerializersModule = SerializersModule {
     contextual(Unit::class, VoidUnitSerializer())
 }
 
- // TODO: POSSIBLE OPTIMIZATION: we could maybe cache serializers that we use in generated methods instead of creating them over and over?

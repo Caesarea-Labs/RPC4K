@@ -53,7 +53,6 @@ sealed interface ClassBasedKotlinSerializer : KotlinSerializer {
     val className: String
 }
 
-//TODO: map with non-primitive keys are gonna need some extra work, mostly on the client side.
 
 internal fun KSType.isSerializable() = isBuiltinSerializableType() || isAnnotatedBySerializable()
 

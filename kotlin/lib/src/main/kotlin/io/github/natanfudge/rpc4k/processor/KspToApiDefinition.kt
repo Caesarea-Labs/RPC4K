@@ -46,7 +46,6 @@ object KspToApiDefinition {
         return kspClass.getReferencedClasses().map { toRpcModel(it) }
     }
 
-    //TODO: I think we don't need this to return a list anymore since i simplified enum handling
     /**
      * This returns a list because sometimes two models spawn from one class declaration. Such a case is enums with values.
      */
@@ -110,29 +109,11 @@ object KspToApiDefinition {
      * to a [RpcModel.Enum] (and sometimes also a [RpcModel.Struct])
      */
     private fun toRpcEnumModel(declaration: KSClassDeclaration): RpcModel {
-//        val properties = declaration.getDeclaredProperties().toList()
         // Get all enum entries/options
         val options = declaration.declarations.filter { it is KSClassDeclaration && it.classKind == ENUM_ENTRY }
             .map { it.getSimpleName() }.toList()
         val name = declaration.getSimpleName()
         return RpcModel.Enum(name = name, options)
-//        return if (properties.isEmpty()) {
-//            // When it's a simple enum with no data, kotlin serializes it as a simple string union.
-//
-//        } else {
-//            val model = toRpcStructModel(declaration)
-//            // The "name" property is limited to only being one of the enum value's name, so we generate another model just for this property.
-//            // The generated type will be called <enum-name>Options
-//            val optionsEnum = RpcModel.Enum(name = declaration.simpleName.asString() + "Options", options)
-//            // When it's an enum with data, it serializes it like a data class with the addition of the "name" property which has the
-//            // enum value's name.
-//            val nameType = KotlinTypeReference(
-//                packageName = GeneratedModelsPackage, simpleName = optionsEnum.name
-//            )
-//            val enumStruct = model.copy(properties = model.properties + RpcModel.Struct.Property(name = "name", type = nameType))
-//            listOf(enumStruct, optionsEnum)
-//            //TODO: test on the other side we get a proper union enum as the type of the "name" property here
-//        }
     }
 
     /**
@@ -144,7 +125,7 @@ object KspToApiDefinition {
      */
     private fun toRpcStructModel(declaration: KSClassDeclaration): RpcModel.Struct {
         val properties = declaration.getDeclaredProperties().map {
-            //TODO : KSP doesn't tell me if it has a default value... once again I need a compiler plugin for default stuff
+            //NiceToHave: Support optional parameters and properties
             RpcModel.Struct.Property(name = it.getSimpleName(), type = toKotlinTypeReference(it.type), isOptional = false /*it.hasDefault*/)
         }.toList()
 

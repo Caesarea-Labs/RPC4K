@@ -17,9 +17,7 @@ test("Codegened Client works in more cases", async () => {
     expect(res).toEqual([[1, 2, "3"], 4])
 })
 
-//TODO: there's a troubling result that if you nest classes in kotlin and use short names like "Type", they will get that trash short name
-// name in other languages. I should consider adding namespacing or prepending the outer class name.
-// Example: Option1 => PolymorphicThingOption1
+
 
 test("Codegened Client works in all cases", async () => {
     const client = new UserProtocolApi(new FetchRpcClient("http://localhost:8080"), JsonFormat)
@@ -116,10 +114,3 @@ interface Constructable2<T> {
 }
 
 type NullableArgType = GenericThing<(string | null)[] | null, string[] | null, (string | null)[]> | null
-
-
-
-// Triple(1, 2, "3") to 4.0
-
-//TODO: type: in struct unions
-//TODO: in kotlin, serialize map.entry, pair and triple as arrays.

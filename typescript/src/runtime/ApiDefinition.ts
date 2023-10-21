@@ -52,9 +52,6 @@ export interface RpcParameter {
     type: RpcType;
 }
 
-export interface RpcTypeName {
-    className: string
-}
 
 export interface RpcType {
     name: string;

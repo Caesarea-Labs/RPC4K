@@ -42,9 +42,10 @@ sealed interface RpcModel {
     @Serializable
     @SerialName("struct")
     data class Struct(
-        override val name: String, val typeParameters: List<String> = listOf(), val properties: List<Property>,
-
-        ) : RpcModel {
+        override val name: String, val typeParameters: List<String> = listOf(), val properties: List<Property>, ) : RpcModel {
+        /**
+         * @param isOptional BLOCKED: Support optional parameters and properties
+         */
         @Serializable
         data class Property(val name: String, val type: KotlinTypeReference, val isOptional: Boolean = false)
     }
@@ -64,8 +65,6 @@ sealed interface RpcModel {
 }
 
 
-//TODO: make the `type` property name reserved, because we sometimes need it for union types
-//TODO: add type property to any struct that is part of a union
 
 
 /**
@@ -99,21 +98,6 @@ data class KotlinTypeReference(
 }
 
 
-//TODO: I think I should seperate the RPC4K format and the kotlin stuff into two different things. Maybe give up KOtlinTypeReference in favor of TypeName and similar things.
-
-//TODO: The 'packageName' currently exists because kotlinx.serialization demands the fully qualified name of the model as its type discriminator.
-// Optimally we won't need to specify the package name.
-// Possible alternatives
-// 1. Annotate every single sealed subclass with @SerialName("SimpleName") - too much work for the user.
-// 2. Register completely custom serializers that customize the descriptor of every sealed subclass to have the serialName be equal
-// to the simple name. This is possible but is a ton of work, in the SerialModule, we need to register every sealed class,
-// and for each sealed class we need to register each subclass, and for each subclass we need to register the custom serializer
-// and then that doesn't work for top-level serialization so we need to create custom Serializers for every single generic serializer to use
-// our special simple subclass serializers. Fuck that.
-// 3. Fork kotlinx.serialization to use simple names instead of qualified names - has the usual problems of forking.
-// 4. Use a compiler plugin to generate @SerialNames with simple names for every class <---- this is probably the best solution, we will do it
-// once this becomes a compiler plugin.
-// 5. Allow simple serial names with a kotlinx.serialization PR, see https://github.com/Kotlin/kotlinx.serialization/issues/2319#issuecomment-1771023838
 
 
 /**
@@ -136,8 +120,6 @@ data class RpcType(
     }
 
     companion object BuiltinNames {
-
-        //TODO: consider supporting unsigned types if it's required enough
         const val Bool = "bool"
         const val I8 = "i8"
         const val I16 = "i16"
@@ -188,7 +170,10 @@ class KotlinTypeReferenceSerializer : KSerializer<KotlinTypeReference> {
     }
 }
 
-private fun RpcType.toKotlinTypeReference(packageName: String): KotlinTypeReference = TODO("handle kotlin code generation from non-kotlin sources")
+private fun RpcType.toKotlinTypeReference(packageName: String): KotlinTypeReference {
+    // NiceToHave: Generate Kotlin clients from non-kotlin servers
+    throw UnsupportedOperationException("Generate Kotlin clients from non-kotlin servers")
+}
 
 private fun KotlinTypeReference.toRpcType() = when (packageName) {
     "kotlin" -> toBuiltinRpcType()
@@ -290,8 +275,3 @@ private fun KotlinTypeReference.toUserType(): RpcType {
     )
 }
 
-//TODO: This implementation doesn't support default values in parameters.
-// There's no easy to way to tell kotlin "use the default value if this value is null".
-// Kotlin serialization can only do it because it's a compiler plugin that can use the underlying full-args constructor that accepts possibly null/0 values.
-// If we want to support this in a really native way of `x: Int = 2` then we probably need a compiler plugin.
-// It's not even possible to copy the initializer code ourselves because ksp doesn't provide code.

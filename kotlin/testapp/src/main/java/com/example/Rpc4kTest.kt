@@ -212,23 +212,9 @@ open class UserProtocol {
 
 }
 
-
-//TODO: add a compile-time error when @Contextual is not used with Pair, Triple, Map.Entry, and Unit.
-//TODO: with a compiler plugin, we could auto put @Contextual on these or replace the serializer ourselves.
-
 @Serializable
 data class SomeBuiltinTypes(@Contextual val p: Pair<Int, Int>)
 
-@Serializable
-data class Foo(val x: Int, val y: String)
-typealias MyMap = Map<Foo, Foo>
-
-
-fun main() {
-    val map = mapOf(Foo(1, "2") to Foo(3, "4"))
-    val json = Json { allowStructuredMapKeys = true }.encodeToString(map)
-    println(json)
-}
 
 @Serializable
 data class EveryBuiltinType(
@@ -347,9 +333,6 @@ enum class EnumArgs(val x: Int) {
     Option5(8)
 }
 
-//TODO: data enums?
-//TODO: what happens when you have objects?
-//TODO: what about polymorphic things?
 
 @Serializable
 object TheObject

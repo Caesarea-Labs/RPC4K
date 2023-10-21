@@ -1,5 +1,12 @@
 # 1. High Priority - Do now
 
+###  See if todo highlighting is shared with other users of the project through vcs. 
+
+^^
+
+### Require @Contextual on Pair, Triple, Map.Entry, and Unit
+@Contextual is critical on them for them to use the correct serializer. This would prevent user error. 
+
 ### Ban "type" as a property name for children of sealed classes
 
 In classes that extend sealed types, disallow `type` as a property name in the KSP validator as this conflicts with the type discriminator
@@ -30,6 +37,37 @@ Instant should be serialized into dayjs instances and vice versa. The date value
 2. Add an InstantSerializer() and a ZonedDateTimeSerializer() and add it to the default module
 3. Add those two to the list of available builtin serializers and generate them when used as args/return types. 
 4. Add to the RPC -> JS adapter an adapter from date typed strings to dayjs (dayjs->ISO string is the default behavior)
+
+### Namespace inner classes
+For classes like so:
+```kotlin
+sealed interface Foo {
+    data class Bar(val x: Int) : Foo
+}
+```
+`Bar` should now be named `Foo.Bar` instead. Each language can choose how to interpret this, but in Typescript this would turn into an interface
+named `FooBar`, because there is no real concept of inner classes. 
+1. Emit inner class names in kotlin
+2. When creating models, convert Foo.Bar to FooBar
+3. When converting from RpcType to typescript, convert Foo.Bar to FooBar.
+
+### Setup CLI interface for Typescript generator
+
+Make the generator npm script accepts a path of the definition file and the desired output path of the typescript files, in addition to config options, 
+and then generate stuff.
+
+### Create Gradle Plugin
+
+Create a gradle plugin that allows you to specify the root dir of your typescript project and invokes the npm script that generates typescript files for you with the relevant paths whenever the KSP output changes. 
+
+### Publish
+
+Configure publishing for the following artifacts:
+
+- RPC4K Runtime + Gradle Plugin (one artifact)
+- Typescript generator + runtime (one artifact)
+
+
 # 2. Low Priority - Do later
 
 ### Generate Doc Comments
@@ -79,7 +117,63 @@ Use the class ${} for this.
 Learn more ${}.
 ```
 
+### Build complete Ktor-based API
 
+We should support the following use cases:
+
+- Completely managed. This is how Crashy does it, and in this case we spin up a full ktor server for you. Everything regarding the ktor server should be configurable to support all features, but a barebones server should be a one-liner. 
+- Single route. This is how Loggy does it. Given a ktor `Routing` context, we should add a function to register an RPC server for the given route string. 
+
+### Build complete Api-Gateway based API
+
+To support the caesarea POC, we should interface with the ApiGateway api to allow setting up a RPC server in an AWS Lambda. 
+
+### Wrap all configuration of a generated class with a `RpcConfig`:
+
+```kotlin
+class MyApiImpl(val config: RpcConfig)
+```
+
+And then pass that instead to `GenerateCodeUtils`, to make it easier to add new fields to the config - we won't need to change the generated code. 
+
+
+
+### Allow call contexts
+
+In servers using Loggy, we rely on a a `LoggingContext` to group up all logs of a single call. This is still doable with the current approach, but it requires manually construction a Loggy instance for every RPC definition. We should allow specifying a context for a RPC:
+
+```kotlin
+context(SomeContext)
+fun someCall() {
+   // logic...   
+}
+```
+
+And then allow constructing a `SomeContext` for each call:
+
+```kotlin
+val config : RpcConfig = RpcConfig {
+    contextProvider { methodName, client, ...
+        SomeContext(methodName, client, ...)
+    }
+}
+```
+
+And the context will be made available for every call. 
+
+The generated kotlin client code shouldn't include this context. 
+
+### Remove unused code and cleanup
+
+There's a bunch of leftover stuff, I should exterminate it and maybe do some restructuring in the files. 
+
+### Enable public api mode
+
+Add the kotlin compiler flag that forces everything to be public or internal, and figure out which needs to be which.
+
+### Document API
+
+Every `public` function or class should have detailed javadocs explaining it. 
 
 # 3a. The compiler plugin
 # 3. Blocked - Requires compiler plugin
@@ -90,13 +184,13 @@ to deserialize them. When we have the package name, it's easy to specify the ful
  Possible alternatives:
 1. Annotate every single sealed subclass with @SerialName("SimpleName") - too much work for the user.
 2. Register completely custom serializers that customize the descriptor of every sealed subclass to have the serialName be equal
-  to the simple name. This is possible but is a ton of work, in the SerialModule, we need to register every sealed class,
-  and for each sealed class we need to register each subclass, and for each subclass we need to register the custom serializer
-  and then that doesn't work for top-level serialization so we need to create custom Serializers for every single generic serializer to use
-  our special simple subclass serializers. Fuck that.
+    to the simple name. This is possible but is a ton of work, in the SerialModule, we need to register every sealed class,
+    and for each sealed class we need to register each subclass, and for each subclass we need to register the custom serializer
+    and then that doesn't work for top-level serialization so we need to create custom Serializers for every single generic serializer to use
+    our special simple subclass serializers. Fuck that.
 3. Fork kotlinx.serialization to use simple names instead of qualified names - has the usual problems of forking.
 4. Use a compiler plugin to generate @SerialNames with simple names for every class <---- this is probably the best solution, we will do it
-  once this becomes a compiler plugin.
+    once this becomes a compiler plugin.
 5. Allow simple serial names with a kotlinx.serialization PR, see https://github.com/Kotlin/kotlinx.serialization/issues/2319#issuecomment-1771023838
 
 ### Compact RpcType generation in Typescript
@@ -119,15 +213,46 @@ Considering how important bundle size is in frontend, we should take the followi
   type CompactRpcType = string | [string, string, boolean?, boolean?, RpcType?]
   ```
 
-  
+### Force serialization of Pair, Triple, Map.Entry, and Unit with our own serializer in data classes
+These classes use a custom serializer to fit with the Rpc4a standard. However, unless we specify @Contextual, these types in @Serializable classes
+will serialize using the builtin serializers. Right now we simply require @Contextual to be used, but with a compiler plugin we should force 
+serialization with our specific serializer using @Serializable (with = OurSerializer()) on every property of these types. 
+
+### Support optional parameters and properties
+
+Kotlin methods and properties with a default value should be considered optional:
+
+```kotlin
+fun someFunc(x: Int = 2)
+
+class SomeData(val y: Int = 3)
+```
+
+The parameter `x` should have `isOptional` set to `true` in the `RpcParameter` , and the property `y` should have `optional` set to `true` in the `RpcModel.Struct.Property`. 
+
+Currently we can't know if something has a default value because ksp doesn't expose it (for properties at least). With a compiler plugin it should be simple to determine something has a default value. 
+
+Typescript should interpret optional parameter and properties with the `?` property/parameter operator. In json, we can simply omit optional properties (or specify `undefined` in javascript)
+
+Note that there is some additional complexity to explicitly opting to use the default value in kotlin parameters, but it should be solvable with a compiler plugin. 
+
+We this is supported we can allow not encoding defaults in Kotlinx.serialization formats. 
 
 # 4. Nice to have - Will be done much later
-### Modularize RPC4k
+### Modularize RPC4All
 RPC4k interfaces with many foreign libraries that are not required for the core logic:
 - Ktor
 - OkHttp
 - Json Format
 RPC4K should have separate modules for each dependency, to prevent pulling in unnecessary dependencies.  
+
+Additionally:
+
+- Split the KSP and the runtime aritfacts.
+- Split the typescript generator and runtime library. 
+
+
+
 ### Support complex keys in Typescript
 The following serializes fine:
 ```kotlin
@@ -158,7 +283,95 @@ Becomes
 3. The RPC -> JS type adapter should be extended to simply serialize HashMaps as an array of key-values.  
 4. Update AlignWithType to handle Hashmaps 
 
-# 5. IDEA Plugin
+### Generate Kotlin clients from non-kotlin servers
+Currently we support a Kotlin client only if the server is in kotlin and in the same compilation context. We should support Kotlin model
+codegen like in Typescript to allow kotlin clients to interface with things like C++ servers. 
+
+### Route using HTTP routing
+
+Currently, to support all kinds of servers, we include the route as part of the payload, which has some cost and complexity attached. Optimally, if routing is available like in ktor, we should use the builtin support for routing and drop the custom RPC header. 
+
+This would require defining an interface for servers that support this:
+
+```kotlin
+interface RoutingRpcServer {
+    // Something along these lines:
+	fun route(path: String, (body: ByteArray) -> Unit)
+}
+```
+
+Additionally, the generated RPC definition json should include a flag that says that http routing is available. I think having something like this makes sense:
+
+```typescript
+type Routing = "http" | "rpc4a" | ... // Other methods of routing 
+```
+
+And then the clients will know to use the normal http routing instead. 
+
+### Support WebSocket
+
+Websocket is a problem. There's no definitive way to know what the "response" to a request is.
+However, this can be solved by providing a RequestId in each request, and then locking until a response with the same RequestId is returned.
+
+### Gradual Feature Adoption
+
+Some features are difficult to implement such as structured map keys, so some mechanism should exist to not require you to support everything.
+If the server using a feature forces a client to support it, there should be some warning about an experimental feature. 
+If the feature can just not be used by the client, it should be documented that this is optional and there is a simpler way to handle those cases. 
+
+### Improve wrapping of generated Typescript file
+
+Currently wrapping is very rudimentary and pretty bad code by itself. We should improve wrapping across the board to both improve the code generating it and make the resulting generated code actually wrap in all cases. The new approach should all be handled automatically in `CodeBuilder#addLineOfCode` and do some basic parsing to figure out where it is okay to wrap. 
+
+### Document internals & refactor
+
+Once we are pretty confident of the implementation, we should go around the code explaining the architecture, to make the code easier to deal with. I should go over every file and see if anything is unclear, and maybe do some refactoring
+
+### Support public API mode
+
+For use cases involving exposing an API to many users, we should generate an endpoint for RPC servers that returns the API Definition json. Then, in clients we should support specifying some definition URL, and the client generator will fetch the definition from there and generate the necessary code. 
+
+### Support setting the format on an individual request
+
+This would allow the server to support many formats while the client can choose whichever format it prefers or supports better. Note that HTTP already supports this as a header, so we don't need to add it to the RPC format for a simple HTTP request. 
+
+# 5. Alpha
+
+Once all of the above tasks are done, I should release an official alpha for the library. 
+
+### Write documentation
+
+I need to figure out how I want to host the documentation, and write it. There should be detailed examples, how-to's, getting started, etc. 
+
+### Create landing page
+
+Find a nice and easy way to create a landing page that highlights the main features of RPC4All:
+
+- Cross-Language
+- Code-First
+- Feature-Rich
+- Interoperable with existing code
+- Supports any format, transport, and environment
+- Easy to configure
+- Viable both in-house and as a public API
+
+### Create feature comparison table
+
+Compare RPC4All with other frameworks:
+
+- GRPC
+- OpenAPI
+- Thrift
+- Etc
+
+Across various metrics:
+
+- Code-First?
+- Supports Generics?
+- Any Format?
+- Any other advantage that RPC4All has over other approaches
+
+# 6. IDEA Plugin
 
 There are some useful features we can add with an IDEA plugin. 
 
@@ -181,7 +394,25 @@ The Kotlin function should have an 'implementors' gutter that references the sam
 
 Considering this is done with an IDEA plugin, I don't think it requires support from the RPC format. It should be possible to search for a kotlin/typescript class of the appropriate name and attach a reference to it, like how some plugins add "go-to" from json to real classes.  
 
-# 6. Performance Concerns
+# 7. Performance Concerns
+
+### Copying of entire request create Rpc`s
+
+Currently, the read approach is as follows:
+
+1. Read the entire RPC bytes into a ByteArray
+2. Copy the body bytes into another ByteArray
+3. Deserialize body from the other ByteArray
+
+This requires copying the entire body, which can be quite large. Here is a faster approach, which requires the format to support streams:
+
+1. Read the entire RPC bytes into a ByteArray
+2. Create a ByteArrayInputStream out of the ByteArray
+3. Read the header
+4. Pass the stream into the format to deserialize the body
+
+Note that the same optimization is not possible when writing an `RPC`, because we don't know ahead of time how large the json bytes is going to be. (Which means we won't be able to tell a `ByteArrayOutputStream` what the size of the array should be and would result in copying anyway)
+
 ### O(n) search on every object property
 When we align an object to its type, we iterate through every property, and get the type of that property to align the property to it.
 The problem is that we do an O(n) search (n = number of properties in the object) for the property in the type declaration, to know what the type of the object is.  
@@ -202,36 +433,20 @@ The generated code is around 27KB, for a not-so-big API. Here are some thing tha
 
    In addition, this should not always happen because it's only useful when exposing a very large public API to various users. When using a private API, usually all methods will be used so this would not be useful and would just be less nice to user than class methods. For this reason, the generate API Definition should include a flag that says whether this is a public API, and only if true, we should convert everything to top-level methods. Note that providing config options to individual users to change the generated code won't be allowed in any case, because this goes against the design philosophy that the same API should have the same code for all users.  
 
-# 7. May be supported by Kotlin in the future
+### Iterating over entire objects for Typescript type adapters is probably slow
+
+Currently, we have a multi-format approach to adapting to and from a simple javascript type - "what JSON.* gives". The problem is that there are probably much faster approaches, for example the one used in Kotlinx.serialization. If we want to do something like what they have there, it's going to be a lot of work and will probably require more work for every single format. 
+
+# 8. May be supported by Kotlin in the future
 ### Real union types 
 Currently, union types are supported in Kotlin by the virtue of sealed types. This means only objects can be a part of a union type.  
 However, [according to Roman Elizarov, Union types are planned](https://youtrack.jetbrains.com/issue/KT-13108/Denotable-union-and-intersection-types#focus=Comments-27-5474923.0-0). So once they are supported, we could adapt them to the full range of possible union types in rpc4a. 
 
-///////////////////
-
-NiceToHave: Have a mechanism of gradual feature adoption. 
-Some features are difficult to implement such as structured map keys, so some mechanism should exist to not require you to support everything.
-If the server using a feature forces a client to support it, there should be some warning about an experimental feature. 
-If the feature can just not be used by the client, it should be documented that this is optional and there is a simpler way to handle those cases. 
-
-
-
-Performance: typescript typeadapter approach is slow
-
-NiceToHave: non-dayjs date types
-
-NiceToHave: wrap the generated typescript file better
-
-LowPriority: Go through the database and remove random code that is unused
-LowPriority: Go through the API and document everything
-NiceToHave: Go through the implementation and document everything
-NiceToHave: Upload the schema through an API endpoint
-HighPriority: Create a standlone npm script that accepts the path of the definition file and the desired output path of the typescript files
-and generates stuff. 
-HighPriority: Create a gradle script that allows you to specify the root dir of your typescript project and invokes the npm script for you with the relevant paths. 
-
-High Priority: see if todo hightlighting is shared with other users of the project through vcs. 
-
-
-NiceToHave: support setting the format on an individual request, allowing the server to support many formats while the client can choose whichever
- format it prefers or supports better. Note that HTTP already supports this as a header, so we don't need to add it to the RPC format for simple HTTP request. 
+# 10. To be considered
+### Unsigned types
+Add unsigned types to the spec, like how protobuf has them. 
+# 11. Notes
+### Error result returning -> Error throwing
+Currently in caesarea we use an approach of returning a result object and displaying error GUI if the result is an error. 
+We should move to an approach of setting an error boundary for components that do service calls, and then it checks the type of the error
+To do an appropriate error message. 
