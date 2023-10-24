@@ -1,0 +1,7 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="Test Generated Client" type="Multirun" separateTabs="false" reuseTabsWithFailures="false" startOneByOne="true" markFailedProcess="true" hideSuccessProcess="false" delayTime="5.0">
+    <runConfiguration name="Setup Client Testing" type="Gradle" />
+    <runConfiguration name="Run Generated Client Tests" type="Jest" />
+    <method v="2" />
+  </configuration>
+</component>

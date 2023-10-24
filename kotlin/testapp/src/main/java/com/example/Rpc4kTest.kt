@@ -1,4 +1,5 @@
 @file:OptIn(ExperimentalUnsignedTypes::class)
+@file:Suppress("EqualsOrHashCode")
 
 package com.example
 
@@ -8,8 +9,8 @@ import io.github.natanfudge.rpc4k.runtime.api.Api
 import io.github.natanfudge.rpc4k.runtime.api.serverRequirement
 import kotlinx.serialization.Contextual
 import kotlinx.serialization.Serializable
-import kotlinx.serialization.encodeToString
-import kotlinx.serialization.json.Json
+import java.time.Instant
+import java.time.ZonedDateTime
 
 @Serializable
 data class PlayerId(val num: Long)
@@ -24,9 +25,6 @@ data class CreateLobbyResponse(val id: Long)
 @Api(true)
 open class SimpleProtocol {
     companion object;
-//    open suspend fun foo(thing: Int): Flow<Int> {
-//        return flowOf(1 + thing, 2, 3)
-//    }
 
     open suspend fun bar(thing: Int): Int {
         return thing + 1
@@ -47,10 +45,7 @@ open class UserProtocol {
 
     class Distraction5
 
-//    open suspend fun starTest( x: List<*>) {
-//
-//    }
-    
+
     open suspend fun createLobby(createdBy: PlayerId, otherThing: String): CreateLobbyResponse {
         println("Handled createlobby! $createdBy")
         return CreateLobbyResponse(createdBy.num + otherThing.length)
@@ -200,14 +195,20 @@ open class UserProtocol {
         z: UInt,
         a2: ULong,
         b2: Float,
-        b3: Double,
-        b4: Map.Entry<Int, Int>
+        c2: Double,
+        d2: Map.Entry<Int, Int>,
+        e2: Instant,
+        f2: ZonedDateTime,
     ): Triple<Int, Int, Int> {
         return q
     }
 
     open suspend fun someBuiltinTypes(types: SomeBuiltinTypes): SomeBuiltinTypes {
         return types
+    }
+
+    open suspend fun returningDataEnum(args: EnumArgs): EnumArgs {
+        return args
     }
 
 }
@@ -217,7 +218,7 @@ data class SomeBuiltinTypes(@Contextual val p: Pair<Int, Int>)
 
 
 @Serializable
-data class EveryBuiltinType(
+class EveryBuiltinType(
     val a: Boolean,
     val b: Byte,
     val c: Short,
@@ -246,45 +247,11 @@ data class EveryBuiltinType(
     val z: UInt,
     val a2: ULong,
     val b2: Float,
-    val b3: Double,
-    @Contextual val b4: Map.Entry<Int, Int>
+    val c2: Double,
+    @Contextual val d2: Map.Entry<Int, Int>,
+    @Contextual val e2: Instant,
+    @Contextual val f2: ZonedDateTime
 ) {
-
-
-    override fun hashCode(): Int {
-        var result = a.hashCode()
-        result = 31 * result + b
-        result = 31 * result + c
-        result = 31 * result + d
-        result = 31 * result + e.hashCode()
-        result = 31 * result + f.hashCode()
-        result = 31 * result + g.hashCode()
-        result = 31 * result + h.contentHashCode()
-        result = 31 * result + i.contentHashCode()
-        result = 31 * result + j.contentHashCode()
-        result = 31 * result + k.contentHashCode()
-        result = 31 * result + l.contentHashCode()
-        result = 31 * result + m.hashCode()
-        result = 31 * result + n.hashCode()
-        result = 31 * result + o.hashCode()
-        result = 31 * result + p.hashCode()
-        result = 31 * result + q.hashCode()
-        result = 31 * result + r.hashCode()
-        result = 31 * result + s.contentHashCode()
-        result = 31 * result + t.hashCode()
-        result = 31 * result + u.hashCode()
-        result = 31 * result + v.hashCode()
-        result = 31 * result + w.hashCode()
-        result = 31 * result + x.hashCode()
-        result = 31 * result + y.hashCode()
-        result = 31 * result + z.hashCode()
-        result = 31 * result + a2.hashCode()
-        result = 31 * result + b2.hashCode()
-        result = 31 * result + b3.hashCode()
-        result = 31 * result + b4.hashCode()
-        return result
-    }
-
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (javaClass != other?.javaClass) return false
@@ -310,17 +277,19 @@ data class EveryBuiltinType(
         if (q != other.q) return false
         if (r != other.r) return false
         if (!s.contentEquals(other.s)) return false
-        if (t != other.t) return false
-        if (u != other.u) return false
-        if (v != other.v) return false
-        if (w != other.w) return false
+        if (!t.contentEquals(other.t)) return false
+        if (!u.contentEquals(other.u)) return false
+        if (!v.contentEquals(other.v)) return false
+        if (!w.contentEquals(other.w)) return false
         if (x != other.x) return false
         if (y != other.y) return false
         if (z != other.z) return false
         if (a2 != other.a2) return false
         if (b2 != other.b2) return false
-        if (b3 != other.b3) return false
-        if (b4 != other.b4) return false
+        if (c2 != other.c2) return false
+        if (d2 != other.d2) return false
+        if (e2 != other.e2) return false
+        if (f2 != other.f2) return false
 
         return true
     }

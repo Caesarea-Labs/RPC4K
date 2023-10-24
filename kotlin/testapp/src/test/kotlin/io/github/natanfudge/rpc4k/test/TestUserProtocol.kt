@@ -10,6 +10,8 @@ import org.junit.jupiter.api.extension.RegisterExtension
 import strikt.api.expectThat
 import strikt.api.expectThrows
 import strikt.assertions.isEqualTo
+import java.time.Instant
+import java.time.ZonedDateTime
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
@@ -105,7 +107,7 @@ class TestUserProtocol {
             byteArrayOf(7), ShortArray(8), IntArray(9), longArrayOf(10), charArrayOf('@'),
             listOf(11), mapOf(12 to 13), setOf(14), 15 to 16, Triple(17, 18, 19), Unit,
             arrayOf(20), ubyteArrayOf(21u), ushortArrayOf(22u), uintArrayOf(23u), ULongArray(24),
-            25u, 26u, 27u, 28u, 29f, 30.0, mapOf(31 to 32).entries.first()
+            25u, 26u, 27u, 28u, 29f, 30.0, mapOf(31 to 32).entries.first(), Instant.now(), ZonedDateTime.now()
 
         )
         expectThat(protocol.everyBuiltinType(everything)).isEqualTo(everything)
@@ -115,7 +117,7 @@ class TestUserProtocol {
                 byteArrayOf(7), ShortArray(8), IntArray(9), longArrayOf(10), charArrayOf('@'),
                 listOf(11), mapOf(12 to 13), setOf(14), 15 to 16, Triple(17, 18, 19), Unit,
                 arrayOf(20), ubyteArrayOf(21u), ushortArrayOf(22u), uintArrayOf(23u), ULongArray(24),
-                25u, 26u, 27u, 28u, 29f, 30.0, mapOf(31 to 32).entries.first()
+                25u, 26u, 27u, 28u, 29f, 30.0, mapOf(31 to 32).entries.first(), Instant.now(), ZonedDateTime.now()
             )
         ).isEqualTo(Triple(17, 18, 19))
     }

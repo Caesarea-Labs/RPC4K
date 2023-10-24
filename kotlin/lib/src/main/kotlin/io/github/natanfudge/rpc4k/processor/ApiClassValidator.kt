@@ -1,10 +1,15 @@
 package io.github.natanfudge.rpc4k.processor
 
+import com.google.devtools.ksp.getAllSuperTypes
+import com.google.devtools.ksp.getDeclaredProperties
 import com.google.devtools.ksp.isOpen
 import com.google.devtools.ksp.processing.SymbolProcessorEnvironment
 import com.google.devtools.ksp.symbol.*
 import com.google.devtools.ksp.validate
 import io.github.natanfudge.rpc4k.processor.utils.*
+import kotlinx.serialization.Contextual
+
+private const val TypeDiscriminatorField = "type"
 
 /**
  * The methods of this class evaluate all checks to reveal all errors, not just stop at one.
@@ -17,8 +22,62 @@ class ApiClassValidator(private val env: SymbolProcessorEnvironment) {
             // Servers don't need to be suspendOpen, only clients
             valid = checkClassIsSuspendOpen(apiClass) && valid
         }
-        return checkNoGenericSealedClasses(apiClass) && valid
+
+        // Make sure to invoke all the checks so the user will get all the errors at once
+        val referencedClasses = apiClass.getReferencedClasses()
+        val noSealedClasses = checkNoGenericSealedClasses(referencedClasses)
+        val hasContextualWhenNeeded = checkContextualAnnotationOnCertainPropertyTypes(referencedClasses)
+        val notUsingReservedPropertyName = checkNoTypePropertyOnSealedSubclasses(referencedClasses)
+        return valid && noSealedClasses && hasContextualWhenNeeded && notUsingReservedPropertyName
     }
+
+    /**
+     * In sealed subclasses we use a 'type' field to identify its type in network form, so we can't allow users to use that property name.
+     */
+    private fun checkNoTypePropertyOnSealedSubclasses(referencedClasses: Set<KSClassDeclaration>): Boolean {
+        return referencedClasses.filter { it.isSealedSubclass() }.evaluateAll { classDecl ->
+            classDecl.getDeclaredProperties().evaluateAll { property ->
+                property.checkRequirement(env, property.getSimpleName() != TypeDiscriminatorField) {
+                    "The name '$TypeDiscriminatorField' is reserved for sealed classes"
+                }
+            }
+        }
+    }
+
+    private fun KSClassDeclaration.isSealedSubclass() = getAllSuperTypes().any { Modifier.SEALED in it.declaration.modifiers }
+
+
+    /**
+     * For [Pair], [Triple], [Map.Entry] and [Unit] we have special serializers.
+     * Currently there's no way to automatically force kotlinx.serialization to use those serializers for class properties, so we force
+     * the user to use @Contextual on them.
+     */
+    private fun checkContextualAnnotationOnCertainPropertyTypes(referencedClasses: Set<KSClassDeclaration>): Boolean {
+        // Blocked: this is not needed as soon as we can force kotlinx.serialization to use our serializers with a compiler plugin
+        // Blocked: Also we need to get rid of the test that verifies this in that case
+        return referencedClasses.evaluateAll { classDecl ->
+            classDecl.getDeclaredProperties().evaluateAll { property ->
+                val typeName = property.type.resolve().declaration.nonNullQualifiedName()
+                if (typeName in typesWithCustomSerializers) {
+                    property.type.checkRequirement(env, property.annotatedByContextual() || property.type.annotatedByContextual()) {
+                        "@Contextual must be specified on properties of type $typeName"
+                    }
+                } else {
+                    true
+                }
+
+            }
+        }
+    }
+
+    private fun KSAnnotated.annotatedByContextual() = annotations.any { it.shortName.asString() == Contextual::class.simpleName }
+
+    private val typesWithCustomSerializers = setOf(
+        "kotlin.Pair",
+        "kotlin.Triple",
+        "kotlin.collections.Map.Entry",
+        "kotlin.Unit"
+    )
 
 
     /**
@@ -39,8 +98,8 @@ class ApiClassValidator(private val env: SymbolProcessorEnvironment) {
      *     Generic types could be implemented by adding inheritance to the format, but I don't think that's a good idea.
      *
      */
-    private fun checkNoGenericSealedClasses(apiClass: KSClassDeclaration): Boolean {
-        return apiClass.getReferencedClasses().evaluateAll {
+    private fun checkNoGenericSealedClasses(referencedClasses: Set<KSClassDeclaration>): Boolean {
+        return referencedClasses.evaluateAll {
             it.checkRequirement(env, it.typeParameters.isEmpty() || it.getSealedSubclasses().toList().isEmpty()) {
                 "Generic sealed classes are not supported in RPC4K. The concept doesn't fit well with other languages and kotlinx.serialization breaks with them anyway."
             }

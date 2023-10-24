@@ -1,4 +1,6 @@
-import {RpcType, RpcTypeNames, RpcTypes} from "../runtime/ApiDefinition";
+import {RpcType, RpcTypeNames} from "../runtime/ApiDefinition";
+import dayjs, {Dayjs} from "dayjs";
+import {removeBeforeLastExclusive} from "../runtime/impl/Util";
 
 
 export function typescriptRpcType(type: RpcType): string {
@@ -16,7 +18,8 @@ function typescriptRpcTypeIgnoreOptional(type: RpcType): string {
     if (builtinType !== undefined) return builtinType
     const typeArgumentString = type.typeArguments.length === 0 ? ""
         : `<${type.typeArguments.map(arg => typescriptRpcType(arg)).join(", ")}>`
-    return type.name + typeArgumentString
+
+    return modelName(type.name) + typeArgumentString
 }
 
 export function isBuiltinType(type: RpcType): boolean {
@@ -37,6 +40,9 @@ function resolveBuiltinType(type: RpcType): string | undefined {
         case "char":
         case "string":
             return "string"
+        case  RpcTypeNames.Time:
+            // Dates are Dayjs in typescript
+            return "Dayjs"
         case RpcTypeNames.Arr: {
             const typeArgs = type.typeArguments
             if (typeArgs.length !== 1) {
@@ -73,4 +79,19 @@ function resolveBuiltinType(type: RpcType): string | undefined {
         default:
             return undefined
     }
+}
+
+/**
+ * Converts the Rpc representation of a struct name to the typescript representation
+ */
+export function modelName(name: string): string {
+    // Treat "Foo.Bar" as "FooBar"
+    return  name.replace(/\./g, "")
+}
+/**
+ * Converts the Rpc representation of a struct name of a form "Foo.Bar" to a form "Bar".
+ */
+export function simpleModelName(name: string): string {
+    // Treat "Foo.Bar" as "Bar"
+    return removeBeforeLastExclusive(name, ".")
 }

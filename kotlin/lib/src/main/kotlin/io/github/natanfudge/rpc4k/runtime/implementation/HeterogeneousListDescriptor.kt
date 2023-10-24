@@ -42,7 +42,21 @@ fun <K, V> TupleMapEntrySerializer(keySerializer: KSerializer<K>, valueSerialize
     listOf(keySerializer, valueSerializer), { listOf(it.key, it.value) }, { MapEntryImpl(it[0] as K, it[1] as V ) }
 )
 
-private class MapEntryImpl<K,V>(override val key: K, override val value: V): Map.Entry<K,V>
+private class MapEntryImpl<K,V>(override val key: K, override val value: V): Map.Entry<K,V> {
+    override fun equals(other: Any?): Boolean {
+        return other is Map.Entry<*,*> && other.key == key && other.value == value
+    }
+
+    override fun toString(): String {
+        return "$key=$value"
+    }
+
+    override fun hashCode(): Int {
+        var result = key?.hashCode() ?: 0
+        result = 31 * result + (value?.hashCode() ?: 0)
+        return result
+    }
+}
 
 
 

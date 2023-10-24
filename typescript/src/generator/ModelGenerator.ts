@@ -1,5 +1,5 @@
 import {CodeBuilder} from "./CodeBuilder";
-import {typescriptRpcType} from "./TypescriptRpcType";
+import {modelName, simpleModelName, typescriptRpcType} from "./TypescriptRpcType";
 import {
     RpcEnumModel,
     RpcModel,
@@ -11,6 +11,8 @@ import {
 
 export function generateModels(models: RpcModel[]): string {
     const builder = new CodeBuilder()
+        .addImport(["Dayjs"], `dayjs`)
+
     for (const model of models) {
         switch (model.type) {
             case RpcModelKind.struct:
@@ -29,12 +31,13 @@ export function generateModels(models: RpcModel[]): string {
 }
 
 function addStruct(code: CodeBuilder, struct: RpcStructModel) {
-    code.addInterface({name: struct.name, typeParameters: struct.typeParameters}, interfaceBuilder => {
+    const name = modelName(struct.name)
+    code.addInterface({name, typeParameters: struct.typeParameters}, interfaceBuilder => {
         struct.properties.forEach(({name, type, isOptional}) => {
             interfaceBuilder.addProperty(
                 {
-                    // "type" is a reserved
-                    name, optional: isOptional, type: name === RpcTypeDiscriminator ? `"${struct.name}"` : typescriptRpcType(type)
+                    // "type" is a reserved, and we use the simple model name to make the code more ergonomic
+                    name, optional: isOptional, type: name === RpcTypeDiscriminator ? `"${simpleModelName(struct.name)}"` : typescriptRpcType(type)
                 }
             )
         })
@@ -42,12 +45,12 @@ function addStruct(code: CodeBuilder, struct: RpcStructModel) {
 }
 
 function addEnum(code: CodeBuilder, enumModel: RpcEnumModel) {
-    code.addUnionType({name: enumModel.name, types: enumModel.options.map(option => `"${option}"`)})
+    code.addUnionType({name: modelName(enumModel.name), types: enumModel.options.map(option => `"${modelName(option)}"`)})
 }
 
 function addUnion(code: CodeBuilder, struct: RpcUnionModel) {
     code.addUnionType({
-        name: struct.name,
+        name: modelName(struct.name),
         types: struct.options.map(option => typescriptRpcType(option)),
         typeParameters: struct.typeParameters
     })

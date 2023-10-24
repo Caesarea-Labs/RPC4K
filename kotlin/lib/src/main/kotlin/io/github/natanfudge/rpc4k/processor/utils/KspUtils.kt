@@ -21,7 +21,33 @@ fun Resolver.getClassesWithAnnotation(annotation: KClass<*>): Sequence<KSClassDe
 internal fun KSClassDeclaration.getPublicApiFunctions() = getDeclaredFunctions()
     .filter { !it.isConstructor() && it.isPublic() }
 
-fun KSDeclaration.getSimpleName() = simpleName.asString()
+//fun KSDeclaration.getSimpleName() = simpleName.asString()
+
+/**
+ * Extract from `com.foo.bar.Inner$Thing` the pair `[com.foo.bar, inner.Thing]`
+ */
+fun KSDeclaration.getPackageAndClassName(): Pair<String, String> {
+    val qualifiedName = nonNullQualifiedName()
+    val packageName = packageName.asString()
+    val className = qualifiedName.removePrefix("$packageName.")
+    return packageName to className
+}
+
+/**
+ * Extract from `com.foo.bar.Inner$Thing` , `Inner.Thing`
+ */
+fun KSDeclaration.getSimpleName(): String = if (this is KSClassDeclaration) {
+    val qualifiedName = nonNullQualifiedName()
+    val packageName = packageName.asString()
+    qualifiedName.removePrefix("$packageName.")
+} else {
+    getTopLevelSimpleName()
+}
+/**
+ * Extract from `com.foo.bar.Inner$Thing` , `Thing`
+ */
+fun KSDeclaration.getTopLevelSimpleName(): String = simpleName.asString()
+
 
 /**
  * Will mark the [KSNode] itself as the cause of the failure if this check fails

@@ -111,7 +111,8 @@ object KspToApiDefinition {
     private fun toRpcEnumModel(declaration: KSClassDeclaration): RpcModel {
         // Get all enum entries/options
         val options = declaration.declarations.filter { it is KSClassDeclaration && it.classKind == ENUM_ENTRY }
-            .map { it.getSimpleName() }.toList()
+            // Make sure to use the simple names for the enum entries
+            .map { it.getTopLevelSimpleName() }.toList()
         val name = declaration.getSimpleName()
         return RpcModel.Enum(name = name, options)
     }
@@ -168,14 +169,6 @@ object KspToApiDefinition {
     }
 
 
-    /**
-     * Extract from `com.foo.bar.Inner$Thing` the pair `[com.foo.bar, inner.Thing]`
-     */
-    private fun KSDeclaration.getPackageAndClassName(): Pair<String, String> {
-        val qualifiedName = nonNullQualifiedName()
-        val packageName = packageName.asString()
-        val className = qualifiedName.removePrefix("$packageName.")
-        return packageName to className
-    }
+
 }
 

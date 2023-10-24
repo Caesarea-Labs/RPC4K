@@ -1,55 +1,5 @@
 # 1. High Priority - Do now
 
-###  See if todo highlighting is shared with other users of the project through vcs. 
-
-^^
-
-### Require @Contextual on Pair, Triple, Map.Entry, and Unit
-@Contextual is critical on them for them to use the correct serializer. This would prevent user error. 
-
-### Ban "type" as a property name for children of sealed classes
-
-In classes that extend sealed types, disallow `type` as a property name in the KSP validator as this conflicts with the type discriminator
-
-### Test behavior of the server returning an enum with values to a typescript client
-
-If I have an enum like this:
-
-```kotlin
-enum class Foo(val x: Int) {
-    Bar(2)
-}
-```
-
-It would be interpreted in typescript like this:
-
-```typescript
-type Foo = "Bar"
-```
-
-And would probably fail to go from kotlin to typescript if the server returned it. I think I will choose to convert `Foo` to a string in typescript, and assume the client doesn't need the value of `x`. In the future if this causes me an issue I could consider changing it. One reason for converting directly to string instead of a union of structs is that it should not be possible to assign other values to the value of `x` in this example. 
-
-### Support dates 
-Instant should be serialized into dayjs instances and vice versa. The date value is an ISO string. 
-1. Add a date type to the spec of RPC4all: 
-   - Output the date type for Instant and ZonedDateTime in Kotlin
-   - Convert date to dayjs in the generated types
-2. Add an InstantSerializer() and a ZonedDateTimeSerializer() and add it to the default module
-3. Add those two to the list of available builtin serializers and generate them when used as args/return types. 
-4. Add to the RPC -> JS adapter an adapter from date typed strings to dayjs (dayjs->ISO string is the default behavior)
-
-### Namespace inner classes
-For classes like so:
-```kotlin
-sealed interface Foo {
-    data class Bar(val x: Int) : Foo
-}
-```
-`Bar` should now be named `Foo.Bar` instead. Each language can choose how to interpret this, but in Typescript this would turn into an interface
-named `FooBar`, because there is no real concept of inner classes. 
-1. Emit inner class names in kotlin
-2. When creating models, convert Foo.Bar to FooBar
-3. When converting from RpcType to typescript, convert Foo.Bar to FooBar.
 
 ### Setup CLI interface for Typescript generator
 
@@ -335,9 +285,15 @@ For use cases involving exposing an API to many users, we should generate an end
 
 This would allow the server to support many formats while the client can choose whichever format it prefers or supports better. Note that HTTP already supports this as a header, so we don't need to add it to the RPC format for a simple HTTP request. 
 
+### Split generated javascript sources to .d.ts and .js
+This would make it easier to look at the code for users. 
+
 # 5. Alpha
 
 Once all of the above tasks are done, I should release an official alpha for the library. 
+
+### Write RPC4All spec
+Write a full document detailing everything that RPC4All expects in its networking format and its code generation format 
 
 ### Write documentation
 
@@ -436,6 +392,9 @@ The generated code is around 27KB, for a not-so-big API. Here are some thing tha
 ### Iterating over entire objects for Typescript type adapters is probably slow
 
 Currently, we have a multi-format approach to adapting to and from a simple javascript type - "what JSON.* gives". The problem is that there are probably much faster approaches, for example the one used in Kotlinx.serialization. If we want to do something like what they have there, it's going to be a lot of work and will probably require more work for every single format. 
+
+### Using ISO-Strings for dates is not performant on binary formats
+We should have some way to make serialization format specific, so that iso strings are used in json and numbers are used in binary formats like protobuf.
 
 # 8. May be supported by Kotlin in the future
 ### Real union types 

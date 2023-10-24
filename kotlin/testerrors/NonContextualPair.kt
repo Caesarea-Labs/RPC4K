@@ -1,0 +1,13 @@
+
+import io.github.natanfudge.rpc4k.runtime.api.Api
+
+
+@Api(true)
+open class NonContextualPair.kt {
+    companion object;
+    open suspend fun foo(): Foo {
+        error("Asdf")
+    }
+}
+
+data class Foo(val x: Pair<Int,Int>)

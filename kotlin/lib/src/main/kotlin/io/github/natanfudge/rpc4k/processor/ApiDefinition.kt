@@ -13,8 +13,6 @@ import kotlinx.serialization.encoding.Decoder
 import kotlinx.serialization.encoding.Encoder
 
 
-
-
 /**
  * @param name The type of this is not exactly accurate, as it's always not nullable and with no type arguments, so we serialize it to just a String.
  */
@@ -42,7 +40,8 @@ sealed interface RpcModel {
     @Serializable
     @SerialName("struct")
     data class Struct(
-        override val name: String, val typeParameters: List<String> = listOf(), val properties: List<Property>, ) : RpcModel {
+        override val name: String, val typeParameters: List<String> = listOf(), val properties: List<Property>,
+    ) : RpcModel {
         /**
          * @param isOptional BLOCKED: Support optional parameters and properties
          */
@@ -63,8 +62,6 @@ sealed interface RpcModel {
     @SerialName("union")
     data class Union(override val name: String, val options: List<KotlinTypeReference>, val typeParameters: List<String> = listOf()) : RpcModel
 }
-
-
 
 
 /**
@@ -98,8 +95,6 @@ data class KotlinTypeReference(
 }
 
 
-
-
 /**
  * This class is similar to [KotlinTypeReference] except it doesn't have the concept of package names, and it does have the concept of type argument types,
  * which makes it more fitting for [RpcModel]s
@@ -116,7 +111,19 @@ data class RpcType(
 
     init {
         // Kotlin doesn't have higher-kinded types yet
-        if (isTypeParameter) check(typeArguments.isEmpty())
+        if (isTypeParameter) check(typeArguments.isEmpty()) { "It doesn't make sense for type parameter <$name> to have type parameters: <${typeArguments.joinToString()}>" }
+        if (isTypeParameter) check(inlinedType == null) { "It doesn't make sense for type parameter <$name> to be an inlined type: $inlinedType" }
+    }
+
+    override fun toString(): String {
+        val string = if (isTypeParameter) {
+            name
+        } else {
+            "$packageName.$name"
+                .appendIf(typeArguments.isNotEmpty()) { "<${typeArguments.joinToString()}>" }
+                .appendIf(inlinedType != null) { "(Inlining $inlinedType)" }
+        }
+        return string.appendIf(isNullable) { "?" }
     }
 
     companion object BuiltinNames {
@@ -178,6 +185,7 @@ private fun RpcType.toKotlinTypeReference(packageName: String): KotlinTypeRefere
 private fun KotlinTypeReference.toRpcType() = when (packageName) {
     "kotlin" -> toBuiltinRpcType()
     "kotlin.collections" -> toBuiltinCollectionType()
+    "java.time" -> toDateType()
     else -> toUserType()
 }
 
@@ -203,7 +211,7 @@ private fun KotlinTypeReference.toBuiltinRpcType(): RpcType {
                 "Double" -> RpcType.F64
                 else -> error("Impossible class name $simpleName")
             }
-            RpcType(name = name, packageName = packageName, isNullable = isNullable)
+            buildRpcType(name = name)
         }
 
         "ByteArray", "ShortArray", "IntArray", "LongArray", "CharArray", "UByteArray", "UShortArray", "UIntArray", "ULongArray" -> {
@@ -219,18 +227,13 @@ private fun KotlinTypeReference.toBuiltinRpcType(): RpcType {
                 else -> error("Impossible class name $className")
             }
             val typeArgument = RpcType(name = typeArgumentName, packageName = packageName)
-            RpcType(name = RpcType.Array, packageName = packageName, isNullable = isNullable, typeArguments = listOf(typeArgument))
+            buildRpcType(name = RpcType.Array, typeArguments = listOf(typeArgument))
         }
 
         "Pair", "Triple", "Array" -> {
             // Types that use normal type arguments - pair, triple, array
             val name = if (simpleName == "Array") RpcType.Array else RpcType.Tuple
-            RpcType(
-                name = name,
-                packageName = packageName,
-                isNullable = isNullable,
-                typeArguments = typeArguments.map { it.toRpcType() },
-            )
+            buildRpcType(name = name)
         }
 
         else -> error(
@@ -251,23 +254,32 @@ private fun KotlinTypeReference.toBuiltinCollectionType(): RpcType {
         )
     }
 
-    return RpcType(
-        name = name,
-        isNullable = isNullable,
-        typeArguments = typeArguments.map { it.toRpcType() },
-        packageName = packageName
-    )
+    return buildRpcType(name = name)
+}
+
+
+private fun KotlinTypeReference.buildRpcType(
+    name: String,
+    isNullable: Boolean = this.isNullable,
+    typeArguments: List<RpcType> = this.typeArguments.map { it.toRpcType() },
+    packageName: String = this.packageName
+): RpcType {
+    return RpcType(name = name,packageName = packageName,isNullable = isNullable, typeArguments = typeArguments)
+}
+
+private fun KotlinTypeReference.toDateType(): RpcType {
+    if (simpleName == "ZonedDateTime" || simpleName == "Instant") {
+        return buildRpcType(name = "date", typeArguments = listOf())
+    } else {
+        error("Unexpected kotlin date type: ${simpleName}. These shouldn't be accepted by the compiler.")
+    }
 }
 
 
 private fun KotlinTypeReference.toUserType(): RpcType {
     return RpcType(
-        // We don't have nested classes in RPC4all
-        name = simpleName.substringAfterLast("."),
-        // This code is bad... I wish to get rid of "package name" shenanigans
-        // The idea is that we treat the package name as "everything that comes before the last part of the simple name" so it fits when kotlinx.serialization
-        // serializes it.
-        packageName = packageName.appendIf(simpleName.contains(".")) { "." + simpleName.substringBeforeLast(".") },
+        name = simpleName,
+        packageName = packageName,
         isNullable = isNullable,
         isTypeParameter = isTypeParameter,
         typeArguments = typeArguments.map { it.toRpcType() },

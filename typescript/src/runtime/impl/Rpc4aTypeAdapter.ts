@@ -8,6 +8,8 @@ import {
     RpcUnionModel
 } from "../ApiDefinition";
 import {buildRecord, objectForEach, objectMapValues, removeBeforeLastExclusive} from "./Util";
+import dayjs, {isDayjs} from "dayjs";
+import {simpleModelName} from "../../generator/TypescriptRpcType";
 
 
 /**
@@ -29,6 +31,8 @@ const DefaultJavascriptToSpecAdapter: TypedValueAdapter = (key, value, type,
                                                            _, parentType, polymorphic) => {
     // The rpc4k spec defines all "void" typed values to be equal to "void"
     if (type.name === RpcTypeNames.Void) return "void"
+    // dayjs is automatically converted to iso-string with json
+
     if (parentType !== undefined && key === RpcTypeDiscriminator) {
         if (polymorphic) {
             // Currently, because kotlin is being a bitch, we need to provide te package name in addition to the class name for the type discriminator.
@@ -38,7 +42,6 @@ const DefaultJavascriptToSpecAdapter: TypedValueAdapter = (key, value, type,
             // Return undefined to eliminate the "type" field.
             return undefined
         }
-
     }
 
     return value
@@ -48,15 +51,23 @@ const DefaultSpecToJavascriptAdapter: TypedValueAdapter = (key, value,
                                                            parentType, polymorphic) => {
     // Typescript defines all values typed "void" will be either undefined or null.
     if (type.name === RpcTypeNames.Void) return undefined
+
+    // Date values are deserialized to dayjs (from iso strings)
+    if (type.name === RpcTypeNames.Time) {
+        if (typeof value !== "string") {
+            throw new Error(`Unexpected non-string as a date value: ${value} of type ${typeof value}`)
+        }
+        return dayjs(value)
+    }
     // Typescript still expects the simple name to be the value of the type field
-    if (parentType !== undefined && key === RpcTypeDiscriminator) return parentType.name
+    if (parentType !== undefined && key === RpcTypeDiscriminator) return simpleModelName(parentType.name)
     // Even if in this case the type is not polymorphic, we want to include the "type" field anyway because it's vital for typescript code using it.
     if (!polymorphic && matchingModel !== undefined && matchingModel.type === RpcModelKind.struct &&
         // Check if the "type" field is supposed to exist
         matchingModel.properties.some(property => property.name === RpcTypeDiscriminator)) {
         if (typeof value !== "object") throw new Error("Unexpected non-object value with a struct type")
         // Add the "type" because the server might omit it
-        return {...value, type: type.name}
+        return {...value, type: simpleModelName(type.name)}
     }
     return value
 }
@@ -96,6 +107,8 @@ export class Rpc4aTypeAdapter {
         // matchingModel is not relevant when the originalItem is not an object
         const matchingModel = typeof originalItem === "object" ? this.getModelOfType(type) : undefined
         const item = adapter(propertyName, originalItem, type, matchingModel, parentType, isPolymorphic)
+        // Don't allow further processing on dayjs objects
+        if (isDayjs(item)) return item
         if (item === null) return null
         if (typeof item === "object") {
             //NiceToHave: Support complex keys in Typescript
@@ -228,7 +241,7 @@ export class Rpc4aTypeAdapter {
             // Ignore package name
             const simpleTypeName = removeBeforeLastExclusive(typeValue, ".")
             // Resolve the full type info of the model, most importantly the type arguments, by inspecting the union type.
-            const modelType = model.options.find(type => type.name === simpleTypeName)
+            const modelType = model.options.find(type => simpleModelName(type.name) === simpleTypeName)
             if (modelType === undefined) {
                 throw new Error(`Union type object specified its type as '${typeValue}',` +
                     " but that's not one of the members of the union type it's supposed to be." +
@@ -261,7 +274,7 @@ export class Rpc4aTypeAdapter {
 
     private alignRecordWithKeyValues(obj: object, type: RpcType, adapter: TypedValueAdapter): object {
         if (type.name !== RpcTypeNames.Rec) {
-            throw new Error(`Item is invalid: it's an object type but it's expected type of '${type.name}'` +
+            throw new Error(`Item is invalid: it's an object type but its expected type of '${type.name}'` +
                 ` Is not a defined object or array type. Item: ${JSON.stringify(obj)}`)
         }
         // The RpcTypes are always trustworthy, we don't validate them. We know it has exactly two elements.

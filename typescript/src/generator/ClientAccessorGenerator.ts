@@ -1,5 +1,5 @@
 import {CodeBuilder} from "./CodeBuilder";
-import {isBuiltinType, typescriptRpcType} from "./TypescriptRpcType";
+import {isBuiltinType, modelName, typescriptRpcType} from "./TypescriptRpcType";
 import {Rpc4TsClientGenerationOptions} from "./ClientGenerator";
 import {ApiDefinition, RpcParameter, RpcType, RpcTypeNames, stripDefaultTypeValues} from "../runtime/ApiDefinition";
 
@@ -19,6 +19,7 @@ export function generateAccessor(api: ApiDefinition, options: Rpc4TsClientGenera
         .addImport(["Rpc4aTypeAdapter"], libraryPath("impl/Rpc4aTypeAdapter"))
         .addImport(getReferencedGeneratedTypeNames(api), `./${api.name}Models`)
         .addImport(["UserProtocolRuntimeModels"], `./${api.name}RuntimeModels`)
+        .addImport(["Dayjs"], `dayjs`)
 
     builder.addClass(`${api.name}Api`, (clazz) => {
         clazz.addProperty({name: "private readonly client", type: "RpcClient"})
@@ -96,7 +97,7 @@ function addReferencedGeneratedTypeNames(type: RpcType, addTo: Set<string>) {
         addReferencedGeneratedTypeNames(type.inlinedType, addTo)
     } else {
         if (!isBuiltinType(type)) {
-            addTo.add(type.name)
+            addTo.add(modelName(type.name))
         }
         for (const typeArgument of type.typeArguments) {
             addReferencedGeneratedTypeNames(typeArgument, addTo)

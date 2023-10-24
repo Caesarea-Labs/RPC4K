@@ -126,6 +126,7 @@ export namespace RpcTypeNames {
     export const Arr = "array"
     export const Rec = "record"
     export const Void = "void"
+    export const Time = "date"
 }
 
 
