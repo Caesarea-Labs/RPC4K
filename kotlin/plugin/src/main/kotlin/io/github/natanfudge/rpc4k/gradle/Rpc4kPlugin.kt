@@ -21,10 +21,8 @@ class Rpc4KPlugin : Plugin<Project> {
             } else {
                 TODO("add ksp plugin and runtime")
             }
-            println("Top after")
 
             if (extension.typescriptDir != null) {
-                println("Dir after")
                 plugins.apply("com.github.node-gradle.node")
 
                 tasks.create<NpxTask>("generateTypescriptClient") {
