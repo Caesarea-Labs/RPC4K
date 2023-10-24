@@ -1,21 +1,20 @@
 # 1. High Priority - Do now
 
 
-### Setup CLI interface for Typescript generator
-
-Make the generator npm script accepts a path of the definition file and the desired output path of the typescript files, in addition to config options, 
-and then generate stuff.
-
 ### Create Gradle Plugin
 
 Create a gradle plugin that allows you to specify the root dir of your typescript project and invokes the npm script that generates typescript files for you with the relevant paths whenever the KSP output changes. 
 
 ### Publish
 
-Configure publishing for the following artifacts:
+1. Configure publishing for the following artifacts:
 
-- RPC4K Runtime + Gradle Plugin (one artifact)
-- Typescript generator + runtime (one artifact)
+   - RPC4K Runtime + ksp  (one artifact)
+   - RPC4k Gradle plugin (gradle portal)
+   - Typescript generator + runtime (one artifact)
+
+2. Adjust Gradle plugin to work with published libraries
+3. Create test kotlin project and test typescript project that use published libraries
 
 
 # 2. Low Priority - Do later
@@ -288,6 +287,11 @@ This would allow the server to support many formats while the client can choose 
 ### Split generated javascript sources to .d.ts and .js
 This would make it easier to look at the code for users. 
 
+### Allow multiple source sets for a kotlin source
+Currently, we only allow using the `main` source set. We should allow rpc4k to work with an arbitrary amount of source sets.
+This requires work in the gradle plugin - apply `ksp` configuration on multiple source sets that are relevant, and generate typescript
+generation tasks for each source set separately. 
+
 # 5. Alpha
 
 Once all of the above tasks are done, I should release an official alpha for the library. 
@@ -395,6 +399,9 @@ Currently, we have a multi-format approach to adapting to and from a simple java
 
 ### Using ISO-Strings for dates is not performant on binary formats
 We should have some way to make serialization format specific, so that iso strings are used in json and numbers are used in binary formats like protobuf.
+
+### KSP seems to keep running my processor no matter what
+This may get fixed by switching to a compiler plugin. 
 
 # 8. May be supported by Kotlin in the future
 ### Real union types 

@@ -43,6 +43,8 @@
     "README.md"
   ],
   "dependencies": {
+    "@commander-js/extra-typings": "^11.1.0",
+    "commander": "^11.1.0",
     "dayjs": "^1.11.10"
   }
 }

@@ -12,3 +12,4 @@ plugins {
 rootProject.name = "RPC4K"
 include(":testapp")
 include(":lib")
+includeBuild("plugin")

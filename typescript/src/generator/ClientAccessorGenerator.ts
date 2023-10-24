@@ -3,7 +3,11 @@ import {isBuiltinType, modelName, typescriptRpcType} from "./TypescriptRpcType";
 import {Rpc4TsClientGenerationOptions} from "./ClientGenerator";
 import {ApiDefinition, RpcParameter, RpcType, RpcTypeNames, stripDefaultTypeValues} from "../runtime/ApiDefinition";
 
-export function generateAccessor(api: ApiDefinition, options: Rpc4TsClientGenerationOptions): string {
+/**
+ * @param api definition with default values
+ * @param rawApi definition without default values
+ */
+export function generateAccessor(api: ApiDefinition,rawApi: ApiDefinition, options: Rpc4TsClientGenerationOptions): string {
     const builder = new CodeBuilder()
 
     function libraryPath(path: string): string {
@@ -17,9 +21,13 @@ export function generateAccessor(api: ApiDefinition, options: Rpc4TsClientGenera
         .addImport(["SerializationFormat"], libraryPath("SerializationFormat"))
         .addImport(["GeneratedCodeUtils"], libraryPath("impl/GeneratedCodeUtils"))
         .addImport(["Rpc4aTypeAdapter"], libraryPath("impl/Rpc4aTypeAdapter"))
-        .addImport(getReferencedGeneratedTypeNames(api), `./${api.name}Models`)
-        .addImport(["UserProtocolRuntimeModels"], `./${api.name}RuntimeModels`)
+        .addImport(getReferencedGeneratedTypeNames(api), `./rpc4ts_${api.name}Models`)
+        // .addImport(["UserProtocolRuntimeModels"], `./${api.name}RuntimeModels`)
         .addImport(["Dayjs"], `dayjs`)
+
+    const runtimeModelsName  = `${api.name}RuntimeModels`
+
+    builder._addLineOfCode(`const ${runtimeModelsName} = \`${JSON.stringify(rawApi.models)}\``)
 
     builder.addClass(`${api.name}Api`, (clazz) => {
         clazz.addProperty({name: "private readonly client", type: "RpcClient"})
@@ -27,7 +35,7 @@ export function generateAccessor(api: ApiDefinition, options: Rpc4TsClientGenera
             .addProperty({
                 name: "private readonly adapter",
                 type: "Rpc4aTypeAdapter",
-                initializer: "GeneratedCodeUtils.createTypeAdapter(UserProtocolRuntimeModels)"
+                initializer: `GeneratedCodeUtils.createTypeAdapter(${runtimeModelsName})`
             })
             .addConstructor([["client", "RpcClient"], ["format", "SerializationFormat"]], constructor => {
                 constructor.addAssignment("this.client", "client")

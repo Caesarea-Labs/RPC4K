@@ -1,0 +1,1528 @@
+{
+    "name": "UserProtocol",
+    "methods": [
+        {
+            "name": "createLobby",
+            "parameters": [
+                {
+                    "name": "createdBy",
+                    "type": {
+                        "name": "PlayerId",
+                        "packageName": "com.example"
+                    }
+                },
+                {
+                    "name": "otherThing",
+                    "type": {
+                        "name": "string",
+                        "packageName": "kotlin"
+                    }
+                }
+            ],
+            "returnType": {
+                "name": "CreateLobbyResponse",
+                "packageName": "com.example"
+            }
+        },
+        {
+            "name": "killSomeone",
+            "parameters": [
+                {
+                    "name": "killer",
+                    "type": {
+                        "name": "i32",
+                        "packageName": "kotlin"
+                    }
+                },
+                {
+                    "name": "shit",
+                    "type": {
+                        "name": "PlayerId",
+                        "packageName": "com.example"
+                    }
+                },
+                {
+                    "name": "bar",
+                    "type": {
+                        "name": "void",
+                        "packageName": "kotlin"
+                    }
+                }
+            ],
+            "returnType": {
+                "name": "i32",
+                "packageName": "kotlin"
+            }
+        },
+        {
+            "name": "someShit",
+            "parameters": [
+                {
+                    "name": "x",
+                    "type": {
+                        "name": "i32",
+                        "packageName": "kotlin"
+                    }
+                },
+                {
+                    "name": "y",
+                    "type": {
+                        "name": "i32",
+                        "packageName": "kotlin"
+                    }
+                }
+            ],
+            "returnType": {
+                "name": "string",
+                "packageName": "kotlin"
+            }
+        },
+        {
+            "name": "moreTypes",
+            "parameters": [
+                {
+                    "name": "list",
+                    "type": {
+                        "name": "array",
+                        "packageName": "kotlin.collections",
+                        "typeArguments": [
+                            {
+                                "name": "PlayerId",
+                                "packageName": "com.example"
+                            }
+                        ]
+                    }
+                },
+                {
+                    "name": "double",
+                    "type": {
+                        "name": "array",
+                        "packageName": "kotlin.collections",
+                        "typeArguments": [
+                            {
+                                "name": "array",
+                                "packageName": "kotlin.collections",
+                                "typeArguments": [
+                                    {
+                                        "name": "string",
+                                        "packageName": "kotlin"
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                },
+                {
+                    "name": "pair",
+                    "type": {
+                        "name": "tuple",
+                        "packageName": "kotlin",
+                        "typeArguments": [
+                            {
+                                "name": "i32",
+                                "packageName": "kotlin"
+                            },
+                            {
+                                "name": "i64",
+                                "packageName": "kotlin"
+                            }
+                        ]
+                    }
+                },
+                {
+                    "name": "triple",
+                    "type": {
+                        "name": "tuple",
+                        "packageName": "kotlin",
+                        "typeArguments": [
+                            {
+                                "name": "void",
+                                "packageName": "kotlin"
+                            },
+                            {
+                                "name": "PlayerId",
+                                "packageName": "com.example"
+                            },
+                            {
+                                "name": "string",
+                                "packageName": "kotlin"
+                            }
+                        ]
+                    }
+                },
+                {
+                    "name": "entry",
+                    "type": {
+                        "name": "tuple",
+                        "packageName": "kotlin.collections",
+                        "typeArguments": [
+                            {
+                                "name": "i32",
+                                "packageName": "kotlin"
+                            },
+                            {
+                                "name": "i32",
+                                "packageName": "kotlin"
+                            }
+                        ]
+                    }
+                }
+            ],
+            "returnType": {
+                "name": "record",
+                "packageName": "kotlin.collections",
+                "typeArguments": [
+                    {
+                        "name": "i64",
+                        "packageName": "kotlin"
+                    },
+                    {
+                        "name": "record",
+                        "packageName": "kotlin.collections",
+                        "typeArguments": [
+                            {
+                                "name": "InlineId",
+                                "packageName": "com.example",
+                                "inlinedType": {
+                                    "name": "i64",
+                                    "packageName": "kotlin"
+                                }
+                            },
+                            {
+                                "name": "f64",
+                                "packageName": "kotlin"
+                            }
+                        ]
+                    }
+                ]
+            }
+        },
+        {
+            "name": "test",
+            "parameters": [
+                {
+                    "name": "pair",
+                    "type": {
+                        "name": "tuple",
+                        "packageName": "kotlin",
+                        "typeArguments": [
+                            {
+                                "name": "i32",
+                                "packageName": "kotlin"
+                            },
+                            {
+                                "name": "i64",
+                                "packageName": "kotlin"
+                            }
+                        ]
+                    }
+                }
+            ],
+            "returnType": {
+                "name": "tuple",
+                "packageName": "kotlin",
+                "typeArguments": [
+                    {
+                        "name": "tuple",
+                        "packageName": "kotlin",
+                        "typeArguments": [
+                            {
+                                "name": "i32",
+                                "packageName": "kotlin"
+                            },
+                            {
+                                "name": "i32",
+                                "packageName": "kotlin"
+                            },
+                            {
+                                "name": "string",
+                                "packageName": "kotlin"
+                            }
+                        ]
+                    },
+                    {
+                        "name": "f64",
+                        "packageName": "kotlin"
+                    }
+                ]
+            }
+        },
+        {
+            "name": "nullable",
+            "parameters": [
+                {
+                    "name": "mayNull",
+                    "type": {
+                        "name": "array",
+                        "packageName": "kotlin.collections",
+                        "isNullable": true,
+                        "typeArguments": [
+                            {
+                                "name": "PlayerId",
+                                "packageName": "com.example"
+                            }
+                        ]
+                    }
+                },
+                {
+                    "name": "mayNull2",
+                    "type": {
+                        "name": "array",
+                        "packageName": "kotlin.collections",
+                        "typeArguments": [
+                            {
+                                "name": "PlayerId",
+                                "packageName": "com.example",
+                                "isNullable": true
+                            }
+                        ]
+                    }
+                }
+            ],
+            "returnType": {
+                "name": "void",
+                "packageName": "kotlin"
+            }
+        },
+        {
+            "name": "heavyNullable",
+            "parameters": [
+                {
+                    "name": "mode",
+                    "type": {
+                        "name": "UserProtocol.HeavyNullableTestMode",
+                        "packageName": "com.example"
+                    }
+                }
+            ],
+            "returnType": {
+                "name": "GenericThing",
+                "packageName": "com.example",
+                "isNullable": true,
+                "typeArguments": [
+                    {
+                        "name": "array",
+                        "packageName": "kotlin.collections",
+                        "isNullable": true,
+                        "typeArguments": [
+                            {
+                                "name": "string",
+                                "packageName": "kotlin",
+                                "isNullable": true
+                            }
+                        ]
+                    },
+                    {
+                        "name": "array",
+                        "packageName": "kotlin.collections",
+                        "isNullable": true,
+                        "typeArguments": [
+                            {
+                                "name": "string",
+                                "packageName": "kotlin"
+                            }
+                        ]
+                    },
+                    {
+                        "name": "array",
+                        "packageName": "kotlin.collections",
+                        "typeArguments": [
+                            {
+                                "name": "string",
+                                "packageName": "kotlin",
+                                "isNullable": true
+                            }
+                        ]
+                    }
+                ]
+            }
+        },
+        {
+            "name": "genericTest",
+            "parameters": [
+                {
+                    "name": "thing",
+                    "type": {
+                        "name": "string",
+                        "packageName": "kotlin"
+                    }
+                }
+            ],
+            "returnType": {
+                "name": "GenericThing",
+                "packageName": "com.example",
+                "typeArguments": [
+                    {
+                        "name": "string",
+                        "packageName": "kotlin"
+                    },
+                    {
+                        "name": "i32",
+                        "packageName": "kotlin"
+                    },
+                    {
+                        "name": "i64",
+                        "packageName": "kotlin"
+                    }
+                ]
+            }
+        },
+        {
+            "name": "errorTest",
+            "parameters": [
+            ],
+            "returnType": {
+                "name": "void",
+                "packageName": "kotlin"
+            }
+        },
+        {
+            "name": "requirementTest",
+            "parameters": [
+            ],
+            "returnType": {
+                "name": "void",
+                "packageName": "kotlin"
+            }
+        },
+        {
+            "name": "noArgTest",
+            "parameters": [
+            ],
+            "returnType": {
+                "name": "void",
+                "packageName": "kotlin"
+            }
+        },
+        {
+            "name": "requirementFail",
+            "parameters": [
+                {
+                    "name": "value",
+                    "type": {
+                        "name": "i32",
+                        "packageName": "kotlin"
+                    }
+                }
+            ],
+            "returnType": {
+                "name": "void",
+                "packageName": "kotlin"
+            }
+        },
+        {
+            "name": "withNullsTest",
+            "parameters": [
+                {
+                    "name": "withNulls",
+                    "type": {
+                        "name": "WithNulls",
+                        "packageName": "com.example",
+                        "typeArguments": [
+                            {
+                                "name": "string",
+                                "packageName": "kotlin"
+                            }
+                        ]
+                    }
+                }
+            ],
+            "returnType": {
+                "name": "WithNulls",
+                "packageName": "com.example",
+                "typeArguments": [
+                    {
+                        "name": "i32",
+                        "packageName": "kotlin"
+                    }
+                ]
+            }
+        },
+        {
+            "name": "enumArgsTest",
+            "parameters": [
+                {
+                    "name": "enumArgs",
+                    "type": {
+                        "name": "EnumArgs",
+                        "packageName": "com.example"
+                    }
+                }
+            ],
+            "returnType": {
+                "name": "EnumArgs",
+                "packageName": "com.example"
+            }
+        },
+        {
+            "name": "directObjectTest",
+            "parameters": [
+                {
+                    "name": "obj",
+                    "type": {
+                        "name": "TheObject",
+                        "packageName": "com.example"
+                    }
+                }
+            ],
+            "returnType": {
+                "name": "TheObject",
+                "packageName": "com.example"
+            }
+        },
+        {
+            "name": "polymorphicTest",
+            "parameters": [
+                {
+                    "name": "obj",
+                    "type": {
+                        "name": "PolymorphicThing",
+                        "packageName": "com.example"
+                    }
+                }
+            ],
+            "returnType": {
+                "name": "PolymorphicThing",
+                "packageName": "com.example"
+            }
+        },
+        {
+            "name": "directPolymorphicAccess",
+            "parameters": [
+                {
+                    "name": "obj",
+                    "type": {
+                        "name": "PolymorphicThing.Option1",
+                        "packageName": "com.example"
+                    }
+                }
+            ],
+            "returnType": {
+                "name": "PolymorphicThing.Option1",
+                "packageName": "com.example"
+            }
+        },
+        {
+            "name": "polymorphicClassTest",
+            "parameters": [
+                {
+                    "name": "obj",
+                    "type": {
+                        "name": "PolymorphicClass",
+                        "packageName": "com.example"
+                    }
+                }
+            ],
+            "returnType": {
+                "name": "PolymorphicClass",
+                "packageName": "com.example"
+            }
+        },
+        {
+            "name": "everyBuiltinType",
+            "parameters": [
+                {
+                    "name": "obj",
+                    "type": {
+                        "name": "EveryBuiltinType",
+                        "packageName": "com.example"
+                    }
+                }
+            ],
+            "returnType": {
+                "name": "EveryBuiltinType",
+                "packageName": "com.example"
+            }
+        },
+        {
+            "name": "everyBuiltinTypeParams",
+            "parameters": [
+                {
+                    "name": "a",
+                    "type": {
+                        "name": "bool",
+                        "packageName": "kotlin"
+                    }
+                },
+                {
+                    "name": "b",
+                    "type": {
+                        "name": "i8",
+                        "packageName": "kotlin"
+                    }
+                },
+                {
+                    "name": "c",
+                    "type": {
+                        "name": "i16",
+                        "packageName": "kotlin"
+                    }
+                },
+                {
+                    "name": "d",
+                    "type": {
+                        "name": "i32",
+                        "packageName": "kotlin"
+                    }
+                },
+                {
+                    "name": "e",
+                    "type": {
+                        "name": "i64",
+                        "packageName": "kotlin"
+                    }
+                },
+                {
+                    "name": "f",
+                    "type": {
+                        "name": "char",
+                        "packageName": "kotlin"
+                    }
+                },
+                {
+                    "name": "g",
+                    "type": {
+                        "name": "string",
+                        "packageName": "kotlin"
+                    }
+                },
+                {
+                    "name": "h",
+                    "type": {
+                        "name": "array",
+                        "packageName": "kotlin",
+                        "typeArguments": [
+                            {
+                                "name": "i8",
+                                "packageName": "kotlin"
+                            }
+                        ]
+                    }
+                },
+                {
+                    "name": "i",
+                    "type": {
+                        "name": "array",
+                        "packageName": "kotlin",
+                        "typeArguments": [
+                            {
+                                "name": "i16",
+                                "packageName": "kotlin"
+                            }
+                        ]
+                    }
+                },
+                {
+                    "name": "j",
+                    "type": {
+                        "name": "array",
+                        "packageName": "kotlin",
+                        "typeArguments": [
+                            {
+                                "name": "i32",
+                                "packageName": "kotlin"
+                            }
+                        ]
+                    }
+                },
+                {
+                    "name": "k",
+                    "type": {
+                        "name": "array",
+                        "packageName": "kotlin",
+                        "typeArguments": [
+                            {
+                                "name": "i64",
+                                "packageName": "kotlin"
+                            }
+                        ]
+                    }
+                },
+                {
+                    "name": "l",
+                    "type": {
+                        "name": "array",
+                        "packageName": "kotlin",
+                        "typeArguments": [
+                            {
+                                "name": "char",
+                                "packageName": "kotlin"
+                            }
+                        ]
+                    }
+                },
+                {
+                    "name": "m",
+                    "type": {
+                        "name": "array",
+                        "packageName": "kotlin.collections",
+                        "typeArguments": [
+                            {
+                                "name": "i32",
+                                "packageName": "kotlin"
+                            }
+                        ]
+                    }
+                },
+                {
+                    "name": "n",
+                    "type": {
+                        "name": "record",
+                        "packageName": "kotlin.collections",
+                        "typeArguments": [
+                            {
+                                "name": "i32",
+                                "packageName": "kotlin"
+                            },
+                            {
+                                "name": "i32",
+                                "packageName": "kotlin"
+                            }
+                        ]
+                    }
+                },
+                {
+                    "name": "o",
+                    "type": {
+                        "name": "array",
+                        "packageName": "kotlin.collections",
+                        "typeArguments": [
+                            {
+                                "name": "i32",
+                                "packageName": "kotlin"
+                            }
+                        ]
+                    }
+                },
+                {
+                    "name": "p",
+                    "type": {
+                        "name": "tuple",
+                        "packageName": "kotlin",
+                        "typeArguments": [
+                            {
+                                "name": "i32",
+                                "packageName": "kotlin"
+                            },
+                            {
+                                "name": "i32",
+                                "packageName": "kotlin"
+                            }
+                        ]
+                    }
+                },
+                {
+                    "name": "q",
+                    "type": {
+                        "name": "tuple",
+                        "packageName": "kotlin",
+                        "typeArguments": [
+                            {
+                                "name": "i32",
+                                "packageName": "kotlin"
+                            },
+                            {
+                                "name": "i32",
+                                "packageName": "kotlin"
+                            },
+                            {
+                                "name": "i32",
+                                "packageName": "kotlin"
+                            }
+                        ]
+                    }
+                },
+                {
+                    "name": "r",
+                    "type": {
+                        "name": "void",
+                        "packageName": "kotlin"
+                    }
+                },
+                {
+                    "name": "s",
+                    "type": {
+                        "name": "array",
+                        "packageName": "kotlin",
+                        "typeArguments": [
+                            {
+                                "name": "i32",
+                                "packageName": "kotlin"
+                            }
+                        ]
+                    }
+                },
+                {
+                    "name": "t",
+                    "type": {
+                        "name": "array",
+                        "packageName": "kotlin",
+                        "typeArguments": [
+                            {
+                                "name": "i8",
+                                "packageName": "kotlin"
+                            }
+                        ]
+                    }
+                },
+                {
+                    "name": "u",
+                    "type": {
+                        "name": "array",
+                        "packageName": "kotlin",
+                        "typeArguments": [
+                            {
+                                "name": "i16",
+                                "packageName": "kotlin"
+                            }
+                        ]
+                    }
+                },
+                {
+                    "name": "v",
+                    "type": {
+                        "name": "array",
+                        "packageName": "kotlin",
+                        "typeArguments": [
+                            {
+                                "name": "i32",
+                                "packageName": "kotlin"
+                            }
+                        ]
+                    }
+                },
+                {
+                    "name": "w",
+                    "type": {
+                        "name": "array",
+                        "packageName": "kotlin",
+                        "typeArguments": [
+                            {
+                                "name": "i64",
+                                "packageName": "kotlin"
+                            }
+                        ]
+                    }
+                },
+                {
+                    "name": "x",
+                    "type": {
+                        "name": "i8",
+                        "packageName": "kotlin"
+                    }
+                },
+                {
+                    "name": "y",
+                    "type": {
+                        "name": "i16",
+                        "packageName": "kotlin"
+                    }
+                },
+                {
+                    "name": "z",
+                    "type": {
+                        "name": "i32",
+                        "packageName": "kotlin"
+                    }
+                },
+                {
+                    "name": "a2",
+                    "type": {
+                        "name": "i64",
+                        "packageName": "kotlin"
+                    }
+                },
+                {
+                    "name": "b2",
+                    "type": {
+                        "name": "f32",
+                        "packageName": "kotlin"
+                    }
+                },
+                {
+                    "name": "c2",
+                    "type": {
+                        "name": "f64",
+                        "packageName": "kotlin"
+                    }
+                },
+                {
+                    "name": "d2",
+                    "type": {
+                        "name": "tuple",
+                        "packageName": "kotlin.collections",
+                        "typeArguments": [
+                            {
+                                "name": "i32",
+                                "packageName": "kotlin"
+                            },
+                            {
+                                "name": "i32",
+                                "packageName": "kotlin"
+                            }
+                        ]
+                    }
+                },
+                {
+                    "name": "e2",
+                    "type": {
+                        "name": "date",
+                        "packageName": "java.time"
+                    }
+                },
+                {
+                    "name": "f2",
+                    "type": {
+                        "name": "date",
+                        "packageName": "java.time"
+                    }
+                }
+            ],
+            "returnType": {
+                "name": "tuple",
+                "packageName": "kotlin",
+                "typeArguments": [
+                    {
+                        "name": "i32",
+                        "packageName": "kotlin"
+                    },
+                    {
+                        "name": "i32",
+                        "packageName": "kotlin"
+                    },
+                    {
+                        "name": "i32",
+                        "packageName": "kotlin"
+                    }
+                ]
+            }
+        },
+        {
+            "name": "someBuiltinTypes",
+            "parameters": [
+                {
+                    "name": "types",
+                    "type": {
+                        "name": "SomeBuiltinTypes",
+                        "packageName": "com.example"
+                    }
+                }
+            ],
+            "returnType": {
+                "name": "SomeBuiltinTypes",
+                "packageName": "com.example"
+            }
+        },
+        {
+            "name": "returningDataEnum",
+            "parameters": [
+                {
+                    "name": "args",
+                    "type": {
+                        "name": "EnumArgs",
+                        "packageName": "com.example"
+                    }
+                }
+            ],
+            "returnType": {
+                "name": "EnumArgs",
+                "packageName": "com.example"
+            }
+        }
+    ],
+    "models": [
+        {
+            "type": "union",
+            "name": "PolymorphicClass",
+            "options": [
+                {
+                    "name": "PolymorphicClass.Option3",
+                    "packageName": "com.example"
+                },
+                {
+                    "name": "PolymorphicClass.Option4",
+                    "packageName": "com.example"
+                }
+            ]
+        },
+        {
+            "type": "struct",
+            "name": "WithNulls",
+            "typeParameters": [
+                "T"
+            ],
+            "properties": [
+                {
+                    "name": "x",
+                    "type": {
+                        "name": "array",
+                        "packageName": "kotlin.collections",
+                        "typeArguments": [
+                            {
+                                "name": "T",
+                                "packageName": "com.example",
+                                "isTypeParameter": true,
+                                "isNullable": true
+                            }
+                        ]
+                    }
+                },
+                {
+                    "name": "y",
+                    "type": {
+                        "name": "string",
+                        "packageName": "kotlin",
+                        "isNullable": true
+                    }
+                }
+            ]
+        },
+        {
+            "type": "struct",
+            "name": "EveryBuiltinType",
+            "properties": [
+                {
+                    "name": "a",
+                    "type": {
+                        "name": "bool",
+                        "packageName": "kotlin"
+                    }
+                },
+                {
+                    "name": "b",
+                    "type": {
+                        "name": "i8",
+                        "packageName": "kotlin"
+                    }
+                },
+                {
+                    "name": "c",
+                    "type": {
+                        "name": "i16",
+                        "packageName": "kotlin"
+                    }
+                },
+                {
+                    "name": "d",
+                    "type": {
+                        "name": "i32",
+                        "packageName": "kotlin"
+                    }
+                },
+                {
+                    "name": "e",
+                    "type": {
+                        "name": "i64",
+                        "packageName": "kotlin"
+                    }
+                },
+                {
+                    "name": "f",
+                    "type": {
+                        "name": "char",
+                        "packageName": "kotlin"
+                    }
+                },
+                {
+                    "name": "g",
+                    "type": {
+                        "name": "string",
+                        "packageName": "kotlin"
+                    }
+                },
+                {
+                    "name": "h",
+                    "type": {
+                        "name": "array",
+                        "packageName": "kotlin",
+                        "typeArguments": [
+                            {
+                                "name": "i8",
+                                "packageName": "kotlin"
+                            }
+                        ]
+                    }
+                },
+                {
+                    "name": "i",
+                    "type": {
+                        "name": "array",
+                        "packageName": "kotlin",
+                        "typeArguments": [
+                            {
+                                "name": "i16",
+                                "packageName": "kotlin"
+                            }
+                        ]
+                    }
+                },
+                {
+                    "name": "j",
+                    "type": {
+                        "name": "array",
+                        "packageName": "kotlin",
+                        "typeArguments": [
+                            {
+                                "name": "i32",
+                                "packageName": "kotlin"
+                            }
+                        ]
+                    }
+                },
+                {
+                    "name": "k",
+                    "type": {
+                        "name": "array",
+                        "packageName": "kotlin",
+                        "typeArguments": [
+                            {
+                                "name": "i64",
+                                "packageName": "kotlin"
+                            }
+                        ]
+                    }
+                },
+                {
+                    "name": "l",
+                    "type": {
+                        "name": "array",
+                        "packageName": "kotlin",
+                        "typeArguments": [
+                            {
+                                "name": "char",
+                                "packageName": "kotlin"
+                            }
+                        ]
+                    }
+                },
+                {
+                    "name": "m",
+                    "type": {
+                        "name": "array",
+                        "packageName": "kotlin.collections",
+                        "typeArguments": [
+                            {
+                                "name": "i32",
+                                "packageName": "kotlin"
+                            }
+                        ]
+                    }
+                },
+                {
+                    "name": "n",
+                    "type": {
+                        "name": "record",
+                        "packageName": "kotlin.collections",
+                        "typeArguments": [
+                            {
+                                "name": "i32",
+                                "packageName": "kotlin"
+                            },
+                            {
+                                "name": "i32",
+                                "packageName": "kotlin"
+                            }
+                        ]
+                    }
+                },
+                {
+                    "name": "o",
+                    "type": {
+                        "name": "array",
+                        "packageName": "kotlin.collections",
+                        "typeArguments": [
+                            {
+                                "name": "i32",
+                                "packageName": "kotlin"
+                            }
+                        ]
+                    }
+                },
+                {
+                    "name": "p",
+                    "type": {
+                        "name": "tuple",
+                        "packageName": "kotlin",
+                        "typeArguments": [
+                            {
+                                "name": "i32",
+                                "packageName": "kotlin"
+                            },
+                            {
+                                "name": "i32",
+                                "packageName": "kotlin"
+                            }
+                        ]
+                    }
+                },
+                {
+                    "name": "q",
+                    "type": {
+                        "name": "tuple",
+                        "packageName": "kotlin",
+                        "typeArguments": [
+                            {
+                                "name": "i32",
+                                "packageName": "kotlin"
+                            },
+                            {
+                                "name": "i32",
+                                "packageName": "kotlin"
+                            },
+                            {
+                                "name": "i32",
+                                "packageName": "kotlin"
+                            }
+                        ]
+                    }
+                },
+                {
+                    "name": "r",
+                    "type": {
+                        "name": "void",
+                        "packageName": "kotlin"
+                    }
+                },
+                {
+                    "name": "s",
+                    "type": {
+                        "name": "array",
+                        "packageName": "kotlin",
+                        "typeArguments": [
+                            {
+                                "name": "i32",
+                                "packageName": "kotlin"
+                            }
+                        ]
+                    }
+                },
+                {
+                    "name": "t",
+                    "type": {
+                        "name": "array",
+                        "packageName": "kotlin",
+                        "typeArguments": [
+                            {
+                                "name": "i8",
+                                "packageName": "kotlin"
+                            }
+                        ]
+                    }
+                },
+                {
+                    "name": "u",
+                    "type": {
+                        "name": "array",
+                        "packageName": "kotlin",
+                        "typeArguments": [
+                            {
+                                "name": "i16",
+                                "packageName": "kotlin"
+                            }
+                        ]
+                    }
+                },
+                {
+                    "name": "v",
+                    "type": {
+                        "name": "array",
+                        "packageName": "kotlin",
+                        "typeArguments": [
+                            {
+                                "name": "i32",
+                                "packageName": "kotlin"
+                            }
+                        ]
+                    }
+                },
+                {
+                    "name": "w",
+                    "type": {
+                        "name": "array",
+                        "packageName": "kotlin",
+                        "typeArguments": [
+                            {
+                                "name": "i64",
+                                "packageName": "kotlin"
+                            }
+                        ]
+                    }
+                },
+                {
+                    "name": "x",
+                    "type": {
+                        "name": "i8",
+                        "packageName": "kotlin"
+                    }
+                },
+                {
+                    "name": "y",
+                    "type": {
+                        "name": "i16",
+                        "packageName": "kotlin"
+                    }
+                },
+                {
+                    "name": "z",
+                    "type": {
+                        "name": "i32",
+                        "packageName": "kotlin"
+                    }
+                },
+                {
+                    "name": "a2",
+                    "type": {
+                        "name": "i64",
+                        "packageName": "kotlin"
+                    }
+                },
+                {
+                    "name": "b2",
+                    "type": {
+                        "name": "f32",
+                        "packageName": "kotlin"
+                    }
+                },
+                {
+                    "name": "c2",
+                    "type": {
+                        "name": "f64",
+                        "packageName": "kotlin"
+                    }
+                },
+                {
+                    "name": "d2",
+                    "type": {
+                        "name": "tuple",
+                        "packageName": "kotlin.collections",
+                        "typeArguments": [
+                            {
+                                "name": "i32",
+                                "packageName": "kotlin"
+                            },
+                            {
+                                "name": "i32",
+                                "packageName": "kotlin"
+                            }
+                        ]
+                    }
+                },
+                {
+                    "name": "e2",
+                    "type": {
+                        "name": "date",
+                        "packageName": "java.time"
+                    }
+                },
+                {
+                    "name": "f2",
+                    "type": {
+                        "name": "date",
+                        "packageName": "java.time"
+                    }
+                }
+            ]
+        },
+        {
+            "type": "struct",
+            "name": "GenericThing",
+            "typeParameters": [
+                "T1",
+                "T2",
+                "T3"
+            ],
+            "properties": [
+                {
+                    "name": "x",
+                    "type": {
+                        "name": "T1",
+                        "packageName": "com.example",
+                        "isTypeParameter": true
+                    }
+                },
+                {
+                    "name": "y",
+                    "type": {
+                        "name": "T2",
+                        "packageName": "com.example",
+                        "isTypeParameter": true
+                    }
+                },
+                {
+                    "name": "z",
+                    "type": {
+                        "name": "T3",
+                        "packageName": "com.example",
+                        "isTypeParameter": true
+                    }
+                },
+                {
+                    "name": "w",
+                    "type": {
+                        "name": "array",
+                        "packageName": "kotlin.collections",
+                        "typeArguments": [
+                            {
+                                "name": "T3",
+                                "packageName": "com.example",
+                                "isTypeParameter": true
+                            }
+                        ]
+                    }
+                }
+            ]
+        },
+        {
+            "type": "enum",
+            "name": "UserProtocol.HeavyNullableTestMode",
+            "options": [
+                "EntirelyNull",
+                "NullList",
+                "NullString"
+            ]
+        },
+        {
+            "type": "enum",
+            "name": "EnumArgs",
+            "options": [
+                "Option1",
+                "Option5"
+            ]
+        },
+        {
+            "type": "struct",
+            "name": "PolymorphicClass.Option3",
+            "properties": [
+                {
+                    "name": "type",
+                    "type": {
+                        "name": "string",
+                        "packageName": "kotlin"
+                    }
+                }
+            ]
+        },
+        {
+            "type": "union",
+            "name": "PolymorphicThing",
+            "options": [
+                {
+                    "name": "PolymorphicThing.Option1",
+                    "packageName": "com.example"
+                },
+                {
+                    "name": "PolymorphicThing.Option2",
+                    "packageName": "com.example"
+                }
+            ]
+        },
+        {
+            "type": "struct",
+            "name": "CreateLobbyResponse",
+            "properties": [
+                {
+                    "name": "id",
+                    "type": {
+                        "name": "i64",
+                        "packageName": "kotlin"
+                    }
+                }
+            ]
+        },
+        {
+            "type": "struct",
+            "name": "PlayerId",
+            "properties": [
+                {
+                    "name": "num",
+                    "type": {
+                        "name": "i64",
+                        "packageName": "kotlin"
+                    }
+                }
+            ]
+        },
+        {
+            "type": "struct",
+            "name": "PolymorphicThing.Option1",
+            "properties": [
+                {
+                    "name": "x",
+                    "type": {
+                        "name": "i32",
+                        "packageName": "kotlin"
+                    }
+                },
+                {
+                    "name": "type",
+                    "type": {
+                        "name": "string",
+                        "packageName": "kotlin"
+                    }
+                }
+            ]
+        },
+        {
+            "type": "struct",
+            "name": "TheObject",
+            "properties": [
+            ]
+        },
+        {
+            "type": "struct",
+            "name": "PolymorphicThing.Option2",
+            "properties": [
+                {
+                    "name": "type",
+                    "type": {
+                        "name": "string",
+                        "packageName": "kotlin"
+                    }
+                }
+            ]
+        },
+        {
+            "type": "struct",
+            "name": "PolymorphicClass.Option4",
+            "properties": [
+                {
+                    "name": "x",
+                    "type": {
+                        "name": "i32",
+                        "packageName": "kotlin"
+                    }
+                },
+                {
+                    "name": "type",
+                    "type": {
+                        "name": "string",
+                        "packageName": "kotlin"
+                    }
+                }
+            ]
+        },
+        {
+            "type": "struct",
+            "name": "SomeBuiltinTypes",
+            "properties": [
+                {
+                    "name": "p",
+                    "type": {
+                        "name": "tuple",
+                        "packageName": "kotlin",
+                        "typeArguments": [
+                            {
+                                "name": "i32",
+                                "packageName": "kotlin"
+                            },
+                            {
+                                "name": "i32",
+                                "packageName": "kotlin"
+                            }
+                        ]
+                    }
+                }
+            ]
+        }
+    ]
+}

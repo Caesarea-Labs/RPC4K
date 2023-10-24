@@ -43,7 +43,8 @@ object KspToApiDefinition {
      * as [RpcModel]s
      */
     private fun getRpcModels(kspClass: KSClassDeclaration): List<RpcModel> {
-        return kspClass.getReferencedClasses().map { toRpcModel(it) }
+        // Sort to get deterministic results (this helps with incremental stuff)
+        return kspClass.getReferencedClasses().sortedBy { it.nonNullQualifiedName() } .map { toRpcModel(it) }
     }
 
     /**

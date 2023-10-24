@@ -81,6 +81,7 @@ open class UserProtocol {
         return Triple(1, 2, "3") to 4.0
     }
 
+
     open suspend fun nullable(mayNull: List<PlayerId>?, mayNull2: List<PlayerId?>) {
 
     }

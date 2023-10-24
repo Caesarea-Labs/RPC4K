@@ -1,12 +1,12 @@
 import {FetchRpcClient} from "../src/runtime/components/FetchRpcClient";
 import {JsonFormat} from "../src/runtime/components/JsonFormat";
-import {UserProtocolApi} from "./generated/UserProtocolApi";
+import {UserProtocolApi} from "./generated/rpc4ts_UserProtocolApi";
 import {
     EveryBuiltinType,
     GenericThing, PolymorphicClassOption4,
     PolymorphicThing,
     PolymorphicThingOption1
-} from "./generated/UserProtocolModels";
+} from "./generated/rpc4ts_UserProtocolModels";
 import {RpcResponseError} from "../src/runtime/RpcClientError";
 import JestMatchers = jest.JestMatchers;
 import dayjs from "dayjs";
