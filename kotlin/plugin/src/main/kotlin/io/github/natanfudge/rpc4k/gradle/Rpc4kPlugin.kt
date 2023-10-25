@@ -4,10 +4,15 @@ import com.github.gradle.node.npm.task.NpxTask
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.kotlin.dsl.create
+import org.gradle.kotlin.dsl.get
 import java.io.File
 import java.nio.file.Path
 import java.nio.file.Paths
 import kotlin.io.path.absolutePathString
+
+
+private const val DevGeneratorDir = "typescript/generator/src/"
+private const val DevGeneratorMain = "index.ts"
 
 class Rpc4KPlugin : Plugin<Project> {
     override fun apply(project: Project): Unit = with(project) {
@@ -19,33 +24,36 @@ class Rpc4KPlugin : Plugin<Project> {
             if (extension.dev) {
                 dependencies.add("implementation", project(":lib"))
             } else {
-                TODO("add ksp plugin and runtime")
+                dependencies.add("implementation", "io.github.natanfudge:rpc4k:${getRpc4kVersion()}")
             }
 
             if (extension.typescriptDir != null) {
                 plugins.apply("com.github.node-gradle.node")
 
                 tasks.create<NpxTask>("generateTypescriptClient") {
+                    dependsOn("kspKotlin")
+                    tasks["classes"].dependsOn(this)
+
                     val jsonPath = project.layout.buildDirectory.dir("generated/ksp/main/resources/rpc4k").get().asFile.absolutePath
                     val resultPath = toPath(extension.typescriptDir)!!.absolutePathString()
                     inputs.dir(jsonPath)
                     outputs.dir(resultPath)
+                    inputs.properties(mapOf("dev" to extension.dev, "typescriptDir" to extension.typescriptDir))
 
                     val rpc4tsArgs = mutableListOf("-i$jsonPath", "-o$resultPath")
                     if (extension.dev) rpc4tsArgs.add("-d")
 
                     // NiceToHave: support multiple source sets
-                    tasks.getByName("kspKotlin").finalizedBy(this)
 
                     if (extension.dev) {
                         command.set("ts-node")
-                        val projectRoot =  project.rootDir.parentFile.resolve("typescript/lib/src/")
+                        val projectRoot =  project.rootDir.parentFile.resolve(DevGeneratorDir)
                         inputs.dir(projectRoot)
-                        val generatorPath = projectRoot.resolve("generator/GeneratorMain.ts").absolutePath
+                        val generatorPath = projectRoot.resolve(DevGeneratorMain).absolutePath
                         args.set(listOf(generatorPath) + rpc4tsArgs)
                     } else {
-                        // TODO: add an input property that depends on the version of the rpc4ts- generator
-                        TODO("invoke rpc4ts-generator")
+                        command.set("rpc4ts-gen")
+                        args.set(rpc4tsArgs)
                     }
                 }
             }
@@ -76,3 +84,5 @@ private fun toPath(value: Any?): Path? = when (value) {
     is String -> Paths.get(value)
     else -> null
 }
+
+private fun getRpc4kVersion() =  Rpc4KPlugin::class.java.getResourceAsStream("/rpc4k_version.txt")!!.readAllBytes().decodeToString()

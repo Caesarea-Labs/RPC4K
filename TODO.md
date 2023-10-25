@@ -3,19 +3,12 @@
 
 ### Create Gradle Plugin
 
-Create a gradle plugin that allows you to specify the root dir of your typescript project and invokes the npm script that generates typescript files for you with the relevant paths whenever the KSP output changes. 
-
-### Publish
-
-1. Configure publishing for the following artifacts:
-
-   - RPC4K Runtime + ksp  (one artifact)
-   - RPC4k Gradle plugin (gradle portal)
-   - Typescript generator + runtime (one artifact)
-
-2. Adjust Gradle plugin to work with published libraries
-3. Create test kotlin project and test typescript project that use published libraries
-
+- Once the gradle plugin is approved, set up testprodapp:
+- Figure out how to apply the ksp plugin in the gradle plugin
+- Apply plugin and point typescript dir to typescript/testprodapp/src/generated
+- Copy ApiProtocol to testprodapp
+- Setup a test server for testprodapp
+- Test typescript testprodapp with the kotlin testprodapp server 
 
 # 2. Low Priority - Do later
 
@@ -123,6 +116,9 @@ Add the kotlin compiler flag that forces everything to be public or internal, an
 ### Document API
 
 Every `public` function or class should have detailed javadocs explaining it. 
+
+### Lower visibility of debug prints
+warn -> info, info -> debug, etc. 
 
 # 3a. The compiler plugin
 # 3. Blocked - Requires compiler plugin

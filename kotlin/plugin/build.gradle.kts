@@ -37,3 +37,13 @@ gradlePlugin {
 kotlin {
     compilerOptions.freeCompilerArgs.add("-Xcontext-receivers")
 }
+
+tasks.withType<ProcessResources> {
+    val versionProp = "version" to version
+    inputs.property("version", version)
+    from(sourceSets.main.get().resources.srcDirs) {
+        include ("rpc4k_version.txt")
+        expand(versionProp)
+    }
+    duplicatesStrategy = DuplicatesStrategy.INCLUDE
+}
