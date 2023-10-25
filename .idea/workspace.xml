@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="9ca8770c-8d9e-44a0-b1e9-2417666ce2c1" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/.idea/RPC4K.iml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/typescript/lib/typescript.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/.gitignore" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/codeStyles/Project.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/codeStyles/codeStyleConfig.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/compiler.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/gradle.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/jarRepositories.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/kotlinc.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/modules.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/runConfigurations/Run_Tests.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/runConfigurations/Setup_Client_Testing.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/runConfigurations/Test_Generated_Client.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/uiDesigner.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/kotlin/plugin/build.gradle.kts" beforeDir="false" afterPath="$PROJECT_DIR$/kotlin/plugin/build.gradle.kts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/typescript/.eslintrc.cjs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/typescript/LICENSE" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/typescript/README.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/typescript/jest.config.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/typescript/package-lock.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/typescript/package.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/typescript/src/generator/ClientAccessorGenerator.ts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/typescript/src/generator/ClientGenerator.ts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/typescript/src/generator/CodeBuilder.ts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/typescript/src/generator/GeneratorMain.ts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/typescript/src/generator/ModelGenerator.ts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/typescript/src/generator/TypescriptRpcType.ts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/typescript/src/runtime/ApiDefinition.ts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/typescript/src/runtime/Rpc.ts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/typescript/src/runtime/RpcClient.ts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/typescript/src/runtime/RpcClientError.ts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/typescript/src/runtime/SerializationFormat.ts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/typescript/src/runtime/components/FetchRpcClient.ts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/typescript/src/runtime/components/JsonFormat.ts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/typescript/src/runtime/impl/ApiDefinitionsDefaults.ts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/typescript/src/runtime/impl/GeneratedCodeUtils.ts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/typescript/src/runtime/impl/Rpc4aTypeAdapter.ts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/typescript/src/runtime/impl/Util.ts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/typescript/src/runtime/impl/serialization/core/AbstractEncoder.ts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/typescript/src/runtime/impl/serialization/core/Decoder.ts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/typescript/src/runtime/impl/serialization/core/Encoder.ts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/typescript/src/runtime/impl/serialization/core/SerialDescriptor.ts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/typescript/src/runtime/impl/serialization/core/SerialKind.ts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/typescript/src/runtime/impl/serialization/core/SerializationException.ts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/typescript/src/runtime/impl/serialization/core/SerializersModule.ts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/typescript/src/runtime/impl/serialization/core/TsSerializer.ts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/typescript/src/runtime/impl/serialization/json/JsonToStringWriter.ts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/typescript/src/runtime/impl/serialization/json/JsonWriter.ts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/typescript/test/CodegenedClientTest.test.ts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/typescript/test/codegen.test.ts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/typescript/tsconfig.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/typescript/tsconfig.module.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/typescript/typescript.iml" beforeDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="ExternalProjectsData">
+    <projectState path="$PROJECT_DIR$/kotlin">
+      <ProjectState />
+    </projectState>
+    <projectState path="$PROJECT_DIR$/kotlin/plugin">
+      <ProjectState />
+    </projectState>
+  </component>
+  <component name="ExternalProjectsManager">
+    <system id="GRADLE">
+      <state>
+        <projects_view>
+          <tree_state>
+            <expand />
+            <select />
+          </tree_state>
+        </projects_view>
+      </state>
+    </system>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="ProjectColorInfo"><![CDATA[{
+  "customColor": "",
+  "associatedIndex": 2
+}]]></component>
+  <component name="ProjectId" id="2XFJSSMKWQCXxDQnmpEmmpUqvQe" />
+  <component name="ProjectViewState">
+    <option name="autoscrollFromSource" value="true" />
+    <option name="compactDirectories" value="true" />
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+    <option name="showModules" value="false" />
+  </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
+    "WebServerToolWindowFactoryState": "false",
+    "android.gradle.sync.needed": "true",
+    "git-widget-placeholder": "main",
+    "ignore.virus.scanning.warn.message": "true",
+    "last_opened_file_path": "C:/Users/natan/Desktop/RPC4K/kotlin/settings.gradle.kts",
+    "nodejs_package_manager_path": "npm",
+    "vue.rearranger.settings.migration": "true"
+  }
+}]]></component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="9ca8770c-8d9e-44a0-b1e9-2417666ce2c1" name="Changes" comment="" />
+      <created>1698218896217</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1698218896217</updated>
+      <workItem from="1698218899431" duration="117000" />
+    </task>
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+</project>

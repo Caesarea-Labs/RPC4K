@@ -8,7 +8,7 @@ plugins {
 
 rpc4k {
     dev = true
-    typescriptDir = rootDir.parentFile.resolve("typescript/test/generated")
+    typescriptDir = rootDir.parentFile.resolve("typescript/lib/test/generated")
 }
 
 version = "1.0-SNAPSHOT"

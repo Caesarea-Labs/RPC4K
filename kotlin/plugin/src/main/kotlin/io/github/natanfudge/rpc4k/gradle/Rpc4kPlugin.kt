@@ -39,7 +39,7 @@ class Rpc4KPlugin : Plugin<Project> {
 
                     if (extension.dev) {
                         command.set("ts-node")
-                        val projectRoot =  project.rootDir.parentFile.resolve("typescript/src/")
+                        val projectRoot =  project.rootDir.parentFile.resolve("typescript/lib/src/")
                         inputs.dir(projectRoot)
                         val generatorPath = projectRoot.resolve("generator/GeneratorMain.ts").absolutePath
                         args.set(listOf(generatorPath) + rpc4tsArgs)

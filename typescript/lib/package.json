@@ -1,0 +1,51 @@
+{
+  "name": "rpc4ts-runtime",
+  "version": "0.0.7",
+  "main": "dist/index.js",
+  "typings": "dist/index.d.ts",
+  "module": "dist/index.js",
+  "license": "MIT",
+  "keywords": [],
+  "scripts": {
+    "pretest": "echo \"Running pretest script\"",
+    "generateClient": "ts-node src/generator/GeneratorMain.ts",
+    "build": "tsup --dts",
+    "build:main": "tsc -p tsconfig.json",
+    "build:module": "tsc -p tsconfig.module.json",
+    "test": "run-s build test:*",
+    "watch:build": "tsc -p tsconfig.json -w",
+    "pub": "tsup --dts && npm version patch --force && npm publish"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "bin": "src/generator/GeneratorMain.ts",
+  "devDependencies": {
+    "@types/jest": "^29.5.5",
+    "@types/node": "^20.8.4",
+    "@typescript-eslint/eslint-plugin": "^6.7.5",
+    "@typescript-eslint/parser": "^6.7.5",
+    "eslint": "^8.51.0",
+    "eslint-plugin-eslint-comments": "^3.2.0",
+    "eslint-plugin-import": "^2.28.1",
+    "jest": "^29.7.0",
+    "npm-run-all": "^4.1.5",
+    "ts-jest": "^29.1.1",
+    "ts-node": "^10.9.1",
+    "tsup": "^7.2.0",
+    "typescript": "^5.2.2"
+  },
+  "files": [
+    "dist",
+    "!**/*.spec.*",
+    "!**/*.json",
+    "CHANGELOG.md",
+    "LICENSE",
+    "README.md"
+  ],
+  "dependencies": {
+    "@commander-js/extra-typings": "^11.1.0",
+    "commander": "^11.1.0",
+    "dayjs": "^1.11.10"
+  }
+}

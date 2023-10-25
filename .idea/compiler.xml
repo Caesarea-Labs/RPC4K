@@ -1,10 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="CompilerConfiguration">
-    <bytecodeTargetLevel target="16">
-      <module name="asdf" target="17" />
-      <module name="asdf.main" target="17" />
-      <module name="asdf.test" target="17" />
+    <bytecodeTargetLevel>
+      <module name="kotlin.RPC4K" target="16" />
+      <module name="kotlin.RPC4K.main" target="16" />
+      <module name="kotlin.RPC4K.test" target="16" />
+      <module name="plugin" target="19" />
+      <module name="plugin.main" target="19" />
+      <module name="plugin.test" target="19" />
+      <module name="RPC4K.lib" target="16" />
+      <module name="RPC4K.lib.main" target="16" />
+      <module name="RPC4K.lib.test" target="16" />
+      <module name="RPC4K.testapp" target="16" />
+      <module name="RPC4K.testapp.main" target="16" />
+      <module name="RPC4K.testapp.test" target="16" />
     </bytecodeTargetLevel>
   </component>
 </project>

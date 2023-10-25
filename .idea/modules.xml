@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/typescript/typescript.iml" filepath="$PROJECT_DIR$/typescript/typescript.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/RPC4K.iml" filepath="$PROJECT_DIR$/.idea/RPC4K.iml" />
     </modules>
   </component>
 </project>
