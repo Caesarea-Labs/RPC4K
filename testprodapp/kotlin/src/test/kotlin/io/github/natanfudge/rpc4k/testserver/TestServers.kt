@@ -7,9 +7,6 @@ import io.github.natanfudge.rpc4k.runtime.api.components.JsonFormat
 import io.github.natanfudge.rpc4k.runtime.api.components.ManagedKtorRpcServer
 import io.github.natanfudge.rpc4k.test.BasicApi
 import io.ktor.server.netty.*
-import kotlinx.serialization.encodeToString
-import kotlinx.serialization.json.Json
-import org.junit.jupiter.api.Tag
 import kotlin.test.Test
 
 class TestServers {

@@ -1,12 +1,16 @@
+buildscript {
+    // Sets up the plugin with local paths
+    System.setProperty("rpc4k.dev", "true")
+}
 plugins {
-    alias(libs.plugins.ksp)
     id("io.github.natanfudge.rpc4k")
 }
 
 rpc4k {
-    dev = true
-    typescriptDir = rootDir.parentFile.resolve("typescript/runtime/test/generated")
+    typescriptDir = rootDir.parentFile.resolve("typescript/runtime/src/generated")
 }
+
+
 
 version = "1.0-SNAPSHOT"
 
@@ -24,9 +28,8 @@ tasks.test {
 
 dependencies {
     implementation(kotlin("stdlib"))
-    "ksp"(project(":lib"))
     testImplementation(kotlin("test"))
-    testImplementation(Testing.Strikt.core)
+    testImplementation(libs.strikt)
     testImplementation(libs.okhttp.core)
     testImplementation(libs.ktor.netty)
     testImplementation(libs.logback)

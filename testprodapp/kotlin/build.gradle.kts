@@ -1,12 +1,12 @@
 
 plugins {
-    alias(libs.plugins.ksp)
-    id("io.github.natanfudge.rpc4k")
+   alias(libs.plugins.kotlin)
+    alias(libs.plugins.serialization)
+    id("io.github.natanfudge.rpc4k") version "0.0.3"
 }
 
 rpc4k {
-    dev = false
-    typescriptDir = rootDir.parentFile.resolve("typescript/testprodapp/src/generated")
+    typescriptDir = rootDir.parentFile.resolve("typescript/src/generated")
 }
 
 version = "1.0-SNAPSHOT"
@@ -14,12 +14,14 @@ version = "1.0-SNAPSHOT"
 tasks.test {
     useJUnitPlatform()
 }
-
+repositories {
+    mavenCentral()
+}
 
 dependencies {
     implementation(kotlin("stdlib"))
     testImplementation(kotlin("test"))
-    testImplementation(Testing.Strikt.core)
+    testImplementation(libs.strikt)
     testImplementation(libs.okhttp.core)
     testImplementation(libs.ktor.netty)
     testImplementation(libs.logback)

@@ -22,7 +22,8 @@
   },
   "bin": "src/generator/GeneratorMain.ts",
   "dependencies": {
-    "rpc4ts-runtime": "latest"
+    "rpc4ts-runtime": "latest",
+    "dayjs": "^1.11.10"
   },
   "devDependencies": {
     "@types/jest": "^29.5.5",

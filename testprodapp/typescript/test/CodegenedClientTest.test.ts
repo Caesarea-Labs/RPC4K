@@ -1,6 +1,9 @@
 // noinspection DuplicatedCode
 
-import {UserProtocolApi} from "./generated/rpc4ts_UserProtocolApi";
+
+
+
+import {UserProtocolApi} from "../src/generated/rpc4ts_UserProtocolApi";
 import {FetchRpcClient, JsonFormat, RpcResponseError} from "rpc4ts-runtime";
 import {
     EveryBuiltinType,
@@ -8,10 +11,9 @@ import {
     PolymorphicClassOption4,
     PolymorphicThing,
     PolymorphicThingOption1
-} from "./generated/rpc4ts_UserProtocolModels";
+} from "../src/generated/rpc4ts_UserProtocolModels";
 import dayjs from "dayjs";
 import JestMatchers = jest.JestMatchers;
-
 
 test("Codegened Client works in all cases", async () => {
     const client = new UserProtocolApi(new FetchRpcClient("http://localhost:8080"), JsonFormat)

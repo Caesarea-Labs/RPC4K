@@ -18,15 +18,19 @@ class Rpc4KPlugin : Plugin<Project> {
     override fun apply(project: Project): Unit = with(project) {
         plugins.apply("com.google.devtools.ksp")
 
+//        System.setProperty("rpc4k.dev", "true") is invoke in the dev project to know when to use local paths
+        val dev = System.getProperty("rpc4k.dev") == "true"
+
+        val artifact = if (dev) project(":lib") else "io.github.natanfudge:rpc4k:${getRpc4kVersion()}"
+
+        // Depend on runtime
+        dependencies.add("implementation", artifact)
+        // Apply KSP processor
+        dependencies.add("ksp", artifact)
+
         val extension = extensions.create<Rpc4kExtension>("rpc4k")
 
         afterEvaluate {
-            if (extension.dev) {
-                dependencies.add("implementation", project(":lib"))
-            } else {
-                dependencies.add("implementation", "io.github.natanfudge:rpc4k:${getRpc4kVersion()}")
-            }
-
             if (extension.typescriptDir != null) {
                 plugins.apply("com.github.node-gradle.node")
 
@@ -34,20 +38,19 @@ class Rpc4KPlugin : Plugin<Project> {
                     dependsOn("kspKotlin")
                     tasks["classes"].dependsOn(this)
 
+                    // NiceToHave: support multiple source sets
                     val jsonPath = project.layout.buildDirectory.dir("generated/ksp/main/resources/rpc4k").get().asFile.absolutePath
                     val resultPath = toPath(extension.typescriptDir)!!.absolutePathString()
                     inputs.dir(jsonPath)
                     outputs.dir(resultPath)
-                    inputs.properties(mapOf("dev" to extension.dev, "typescriptDir" to extension.typescriptDir))
+                    inputs.properties(mapOf("dev" to dev, "typescriptDir" to extension.typescriptDir))
 
                     val rpc4tsArgs = mutableListOf("-i$jsonPath", "-o$resultPath")
-                    if (extension.dev) rpc4tsArgs.add("-d")
+                    if (dev) rpc4tsArgs.add("-d")
 
-                    // NiceToHave: support multiple source sets
-
-                    if (extension.dev) {
+                    if (dev) {
                         command.set("ts-node")
-                        val projectRoot =  project.rootDir.parentFile.resolve(DevGeneratorDir)
+                        val projectRoot = project.rootDir.parentFile.resolve(DevGeneratorDir)
                         inputs.dir(projectRoot)
                         val generatorPath = projectRoot.resolve(DevGeneratorMain).absolutePath
                         args.set(listOf(generatorPath) + rpc4tsArgs)
@@ -58,13 +61,15 @@ class Rpc4KPlugin : Plugin<Project> {
                 }
             }
         }
-
     }
 }
 
+
 open class Rpc4kExtension {
     /**
-     * A path to a directory in a typescript project where the generated source should exist.
+     * You may set this value to generate the generateTypescriptClient task that allows generating typescript sources from
+     * annotated @Api classes.
+     * Set this to a path to a directory in a typescript project where the generated source should exist.
      */
     var typescriptDir: Any? = null
         set(value) {
@@ -72,10 +77,6 @@ open class Rpc4kExtension {
             field = value
         }
 
-    /**
-     * Should only be set to true in RPC4k itself
-     */
-    var dev = false
 }
 
 private fun toPath(value: Any?): Path? = when (value) {
@@ -85,4 +86,4 @@ private fun toPath(value: Any?): Path? = when (value) {
     else -> null
 }
 
-private fun getRpc4kVersion() =  Rpc4KPlugin::class.java.getResourceAsStream("/rpc4k_version.txt")!!.readAllBytes().decodeToString()
+private fun getRpc4kVersion() = Rpc4KPlugin::class.java.getResourceAsStream("/rpc4k_version.txt")!!.readAllBytes().decodeToString()

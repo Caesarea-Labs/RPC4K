@@ -32,6 +32,8 @@ if (fs.existsSync(options.output)) {
     }
 }
 
+console.log(`Generating typescript to ${options.output}`)
+
 
 if (fs.statSync(options.input).isDirectory()) {
     for (const file of fs.readdirSync(options.input)) {

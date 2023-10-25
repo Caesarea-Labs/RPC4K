@@ -5,79 +5,42 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="9ca8770c-8d9e-44a0-b1e9-2417666ce2c1" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/jarRepositories.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/kotlinc.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/modules/plugin/plugin.main.iml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/runConfigurations/Publish_Generator.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/kotlin/plugin/src/main/resources/rpc4k_version.txt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/typescript/generator/src/index.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/typescript/runtime/.eslintrc.cjs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/typescript/runtime/LICENSE" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/typescript/runtime/README.md" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/typescript/runtime/jest.config.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/typescript/runtime/package-lock.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/typescript/runtime/package.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/typescript/runtime/test/CodegenedClientTest.test.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/typescript/runtime/test/codegen.test.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/typescript/runtime/tsconfig.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/typescript/runtime/tsconfig.module.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/typescript/runtime/tsup.config.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/typescript/testprodapp/test/CodegenedClientTest.test.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/compiler.xml" beforeDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/gradle.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/gradle.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/jarRepositories.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/jarRepositories.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/modules.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/TODO.md" beforeDir="false" afterPath="$PROJECT_DIR$/TODO.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/kotlin/gradle/libs.versions.toml" beforeDir="false" afterPath="$PROJECT_DIR$/kotlin/gradle/libs.versions.toml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/kotlin/lib/build.gradle.kts" beforeDir="false" afterPath="$PROJECT_DIR$/kotlin/lib/build.gradle.kts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/kotlin/plugin/build.gradle.kts" beforeDir="false" afterPath="$PROJECT_DIR$/kotlin/plugin/build.gradle.kts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/kotlin/plugin/src/main/kotlin/io/github/natanfudge/rpc4k/gradle/Rpc4kPlugin.kt" beforeDir="false" afterPath="$PROJECT_DIR$/kotlin/plugin/src/main/kotlin/io/github/natanfudge/rpc4k/gradle/Rpc4kPlugin.kt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/kotlin/testapp/build.gradle.kts" beforeDir="false" afterPath="$PROJECT_DIR$/kotlin/testapp/build.gradle.kts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/typescript/lib/.eslintrc.cjs" beforeDir="false" afterPath="$PROJECT_DIR$/typescript/generator/.eslintrc.cjs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/typescript/lib/LICENSE" beforeDir="false" afterPath="$PROJECT_DIR$/typescript/generator/LICENSE" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/typescript/lib/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/typescript/generator/README.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/typescript/lib/jest.config.js" beforeDir="false" afterPath="$PROJECT_DIR$/typescript/generator/jest.config.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/typescript/lib/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/typescript/generator/package-lock.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/typescript/lib/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/typescript/generator/package.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/typescript/lib/src/generator/ClientAccessorGenerator.ts" beforeDir="false" afterPath="$PROJECT_DIR$/typescript/generator/src/ClientAccessorGenerator.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/typescript/lib/src/generator/ClientGenerator.ts" beforeDir="false" afterPath="$PROJECT_DIR$/typescript/generator/src/ClientGenerator.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/typescript/lib/src/generator/CodeBuilder.ts" beforeDir="false" afterPath="$PROJECT_DIR$/typescript/generator/src/CodeBuilder.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/typescript/lib/src/generator/GeneratorMain.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/typescript/lib/src/generator/ModelGenerator.ts" beforeDir="false" afterPath="$PROJECT_DIR$/typescript/generator/src/ModelGenerator.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/typescript/lib/src/generator/TypescriptRpcType.ts" beforeDir="false" afterPath="$PROJECT_DIR$/typescript/runtime/src/runtime/impl/TypescriptRpcType.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/typescript/lib/src/index.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/typescript/lib/src/runtime/RpcClient.ts" beforeDir="false" afterPath="$PROJECT_DIR$/typescript/runtime/src/runtime/RpcClient.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/typescript/lib/src/runtime/RpcClientError.ts" beforeDir="false" afterPath="$PROJECT_DIR$/typescript/runtime/src/runtime/RpcClientError.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/typescript/lib/src/runtime/SerializationFormat.ts" beforeDir="false" afterPath="$PROJECT_DIR$/typescript/runtime/src/runtime/SerializationFormat.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/typescript/lib/src/runtime/components/FetchRpcClient.ts" beforeDir="false" afterPath="$PROJECT_DIR$/typescript/runtime/src/runtime/components/FetchRpcClient.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/typescript/lib/src/runtime/components/JsonFormat.ts" beforeDir="false" afterPath="$PROJECT_DIR$/typescript/runtime/src/runtime/components/JsonFormat.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/typescript/lib/src/runtime/components/index.ts" beforeDir="false" afterPath="$PROJECT_DIR$/typescript/runtime/src/runtime/components/index.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/typescript/lib/src/runtime/impl/ApiDefinition.ts" beforeDir="false" afterPath="$PROJECT_DIR$/typescript/runtime/src/runtime/impl/ApiDefinition.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/typescript/lib/src/runtime/impl/ApiDefinitionsDefaults.ts" beforeDir="false" afterPath="$PROJECT_DIR$/typescript/generator/src/ApiDefinitionsDefaults.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/typescript/lib/src/runtime/impl/GeneratedCodeUtils.ts" beforeDir="false" afterPath="$PROJECT_DIR$/typescript/runtime/src/runtime/impl/GeneratedCodeUtils.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/typescript/lib/src/runtime/impl/Rpc.ts" beforeDir="false" afterPath="$PROJECT_DIR$/typescript/runtime/src/runtime/impl/Rpc.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/typescript/lib/src/runtime/impl/Rpc4aTypeAdapter.ts" beforeDir="false" afterPath="$PROJECT_DIR$/typescript/runtime/src/runtime/impl/Rpc4aTypeAdapter.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/typescript/lib/src/runtime/impl/RpcTypeUtils.ts" beforeDir="false" afterPath="$PROJECT_DIR$/typescript/runtime/src/runtime/impl/RpcTypeUtils.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/typescript/lib/src/runtime/impl/Util.ts" beforeDir="false" afterPath="$PROJECT_DIR$/typescript/runtime/src/runtime/impl/Util.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/typescript/lib/src/runtime/impl/serialization/core/AbstractEncoder.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/typescript/lib/src/runtime/impl/serialization/core/Decoder.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/typescript/lib/src/runtime/impl/serialization/core/Encoder.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/typescript/lib/src/runtime/impl/serialization/core/SerialDescriptor.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/typescript/lib/src/runtime/impl/serialization/core/SerialKind.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/typescript/lib/src/runtime/impl/serialization/core/SerializationException.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/typescript/lib/src/runtime/impl/serialization/core/SerializersModule.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/typescript/lib/src/runtime/impl/serialization/core/TsSerializer.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/typescript/lib/src/runtime/impl/serialization/json/JsonToStringWriter.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/typescript/lib/src/runtime/impl/serialization/json/JsonWriter.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/typescript/lib/src/runtime/index.ts" beforeDir="false" afterPath="$PROJECT_DIR$/typescript/runtime/src/runtime/index.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/typescript/lib/test/CodegenedClientTest.test.ts" beforeDir="false" afterPath="$PROJECT_DIR$/typescript/generator/test/CodegenedClientTest.test.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/typescript/lib/test/codegen.test.ts" beforeDir="false" afterPath="$PROJECT_DIR$/typescript/generator/test/codegen.test.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/typescript/lib/tsconfig.json" beforeDir="false" afterPath="$PROJECT_DIR$/typescript/generator/tsconfig.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/typescript/lib/tsconfig.module.json" beforeDir="false" afterPath="$PROJECT_DIR$/typescript/generator/tsconfig.module.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/typescript/lib/tsup.config.ts" beforeDir="false" afterPath="$PROJECT_DIR$/typescript/generator/tsup.config.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/typescript/lib/typescript.iml" beforeDir="false" afterPath="$PROJECT_DIR$/typescript/runtime/typescript.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/typescript/testprodapp/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/typescript/testprodapp/package-lock.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/typescript/testprodapp/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/typescript/testprodapp/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/kotlin/testprodapp/build.gradle.kts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/kotlin/testprodapp/src/main/java/com/example/Rpc4kTest.kt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/kotlin/testprodapp/src/main/java/com/example/SomeClass.kt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/kotlin/testprodapp/src/main/java/com/example/TestValidClasses.kt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/kotlin/testprodapp/src/test/kotlin/io/github/natanfudge/rpc4k/test/KtorServerTest.kt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/kotlin/testprodapp/src/test/kotlin/io/github/natanfudge/rpc4k/test/ModelToTypescriptTest.kt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/kotlin/testprodapp/src/test/kotlin/io/github/natanfudge/rpc4k/test/SimpleKtorServerTest.kt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/kotlin/testprodapp/src/test/kotlin/io/github/natanfudge/rpc4k/test/TestUserProtocol.kt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/kotlin/testprodapp/src/test/kotlin/io/github/natanfudge/rpc4k/test/util/ClientServerExtension.kt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/kotlin/testprodapp/src/test/kotlin/io/github/natanfudge/rpc4k/test/util/KtorServerExtension.kt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/kotlin/testprodapp/src/test/kotlin/io/github/natanfudge/rpc4k/testserver/TestServers.kt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/kotlin/testprodapp/src/test/resources/UserProtocol.Models.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/typescript/generator/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/typescript/generator/package-lock.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/typescript/generator/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/typescript/generator/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/typescript/generator/src/index.ts" beforeDir="false" afterPath="$PROJECT_DIR$/typescript/generator/src/index.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/typescript/testprodapp/.eslintrc.cjs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/typescript/testprodapp/LICENSE" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/typescript/testprodapp/README.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/typescript/testprodapp/jest.config.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/typescript/testprodapp/package-lock.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/typescript/testprodapp/package.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/typescript/testprodapp/src/Test.ts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/typescript/testprodapp/test/CodegenedClientTest.test.ts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/typescript/testprodapp/tsconfig.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/typescript/testprodapp/tsconfig.module.json" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -89,6 +52,12 @@
       <ProjectState />
     </projectState>
     <projectState path="$PROJECT_DIR$/kotlin/plugin">
+      <ProjectState />
+    </projectState>
+    <projectState path="$PROJECT_DIR$/kotlin/testprodapp">
+      <ProjectState />
+    </projectState>
+    <projectState path="$PROJECT_DIR$/testprodapp/kotlin">
       <ProjectState />
     </projectState>
   </component>
@@ -133,15 +102,15 @@
     "WebServerToolWindowFactoryState": "false",
     "git-widget-placeholder": "main",
     "ignore.virus.scanning.warn.message": "true",
-    "last_opened_file_path": "C:/Users/natan/Desktop/RPC4K/typescript/testprodapp/test",
+    "last_opened_file_path": "C:/Users/natan/Desktop/RPC4K/testprodapp/kotlin/settings.gradle.kts",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
     "node.js.selected.package.tslint": "(autodetect)",
-    "nodejs.jest.jest_package": "C:/Users/natan/Desktop/RPC4K/typescript/testprodapp/node_modules/jest",
+    "nodejs.jest.jest_package": "C:/Users/natan/Desktop/RPC4K/testprodapp/typescript/node_modules/jest",
     "nodejs_package_manager_path": "npm",
     "settings.editor.selected.configurable": "preferences.lookFeel",
-    "ts.external.directory.path": "C:\\Users\\natan\\Desktop\\RPC4K\\typescript\\runtime\\node_modules\\typescript\\lib",
+    "ts.external.directory.path": "C:\\Users\\natan\\Desktop\\RPC4K\\testprodapp\\typescript\\node_modules\\typescript\\lib",
     "vue.rearranger.settings.migration": "true"
   }
 }]]></component>
@@ -152,11 +121,96 @@
       <recent name="C:\Users\natan\Desktop\RPC4K\typescript\testprodapp" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\natan\Desktop\RPC4K" />
       <recent name="C:\Users\natan\Desktop\RPC4K\typescript\runtime\src\runtime\impl" />
       <recent name="C:\Users\natan\Desktop\RPC4K\typescript\generator\src" />
     </key>
   </component>
-  <component name="RunManager" selected="npm.Publish TS Generator">
+  <component name="RunManager" selected="Jest.Codegened Client works in all cases (1)">
+    <configuration name="TestServers.userProtocol" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
+      <ExternalSystemSettings>
+        <option name="executionName" />
+        <option name="externalProjectPath" value="$PROJECT_DIR$/testprodapp/kotlin" />
+        <option name="externalSystemIdString" value="GRADLE" />
+        <option name="scriptParameters" value="" />
+        <option name="taskDescriptions">
+          <list />
+        </option>
+        <option name="taskNames">
+          <list>
+            <option value=":test" />
+            <option value="--tests" />
+            <option value="&quot;io.github.natanfudge.rpc4k.testserver.TestServers.userProtocol&quot;" />
+          </list>
+        </option>
+        <option name="vmOptions" />
+      </ExternalSystemSettings>
+      <ExternalSystemDebugServerProcess>false</ExternalSystemDebugServerProcess>
+      <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
+      <DebugAllEnabled>false</DebugAllEnabled>
+      <RunAsTest>true</RunAsTest>
+      <method v="2" />
+    </configuration>
+    <configuration name="TestUserProtocol" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
+      <ExternalSystemSettings>
+        <option name="executionName" />
+        <option name="externalProjectPath" value="$PROJECT_DIR$/kotlin" />
+        <option name="externalSystemIdString" value="GRADLE" />
+        <option name="scriptParameters" value="" />
+        <option name="taskDescriptions">
+          <list />
+        </option>
+        <option name="taskNames">
+          <list>
+            <option value=":testapp:test" />
+            <option value="--tests" />
+            <option value="&quot;io.github.natanfudge.rpc4k.test.TestUserProtocol&quot;" />
+          </list>
+        </option>
+        <option name="vmOptions" />
+      </ExternalSystemSettings>
+      <ExternalSystemDebugServerProcess>false</ExternalSystemDebugServerProcess>
+      <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
+      <DebugAllEnabled>false</DebugAllEnabled>
+      <RunAsTest>true</RunAsTest>
+      <method v="2" />
+    </configuration>
+    <configuration name="TestUserProtocol.testUsage" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
+      <ExternalSystemSettings>
+        <option name="executionName" />
+        <option name="externalProjectPath" value="$PROJECT_DIR$/kotlin" />
+        <option name="externalSystemIdString" value="GRADLE" />
+        <option name="scriptParameters" value="" />
+        <option name="taskDescriptions">
+          <list />
+        </option>
+        <option name="taskNames">
+          <list>
+            <option value=":testapp:test" />
+            <option value="--tests" />
+            <option value="&quot;io.github.natanfudge.rpc4k.test.TestUserProtocol.testUsage&quot;" />
+          </list>
+        </option>
+        <option name="vmOptions" />
+      </ExternalSystemSettings>
+      <ExternalSystemDebugServerProcess>false</ExternalSystemDebugServerProcess>
+      <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
+      <DebugAllEnabled>false</DebugAllEnabled>
+      <RunAsTest>true</RunAsTest>
+      <method v="2" />
+    </configuration>
+    <configuration name="Codegened Client works in all cases (1)" type="JavaScriptTestRunnerJest" temporary="true" nameIsGenerated="true">
+      <node-interpreter value="project" />
+      <jest-package value="$PROJECT_DIR$/testprodapp/typescript/node_modules/jest" />
+      <working-dir value="$PROJECT_DIR$/testprodapp/typescript" />
+      <envs />
+      <scope-kind value="TEST" />
+      <test-file value="$PROJECT_DIR$/testprodapp/typescript/test/CodegenedClientTest.test.ts" />
+      <test-names>
+        <test-name value="Codegened Client works in all cases" />
+      </test-names>
+      <method v="2" />
+    </configuration>
     <configuration name="Codegened Client works in all cases" type="JavaScriptTestRunnerJest" temporary="true" nameIsGenerated="true">
       <node-interpreter value="project" />
       <jest-package value="$PROJECT_DIR$/typescript/testprodapp/node_modules/jest" />
@@ -169,52 +223,23 @@
       </test-names>
       <method v="2" />
     </configuration>
-    <configuration name="generateClient" type="js.build_tools.npm" temporary="true" nameIsGenerated="true">
-      <package-json value="$PROJECT_DIR$/typescript/generator/package.json" />
-      <command value="run" />
-      <scripts>
-        <script value="generateClient" />
-      </scripts>
-      <node-interpreter value="project" />
-      <envs />
-      <method v="2" />
-    </configuration>
-    <configuration name="update-runtime (1)" type="js.build_tools.npm" temporary="true" nameIsGenerated="true">
-      <package-json value="$PROJECT_DIR$/typescript/testprodapp/package.json" />
-      <command value="run" />
-      <scripts>
-        <script value="update-runtime" />
-      </scripts>
-      <node-interpreter value="project" />
-      <envs />
-      <method v="2" />
-    </configuration>
-    <configuration name="update-runtime" type="js.build_tools.npm" temporary="true" nameIsGenerated="true">
-      <package-json value="$PROJECT_DIR$/typescript/generator/package.json" />
-      <command value="run" />
-      <scripts>
-        <script value="update-runtime" />
-      </scripts>
-      <node-interpreter value="project" />
-      <envs />
-      <method v="2" />
-    </configuration>
     <list>
       <item itemvalue="Gradle.Run Test Server" />
+      <item itemvalue="Gradle.TestServers.userProtocol" />
+      <item itemvalue="Gradle.TestUserProtocol" />
+      <item itemvalue="Gradle.TestUserProtocol.testUsage" />
+      <item itemvalue="Jest.Codegened Client works in all cases (1)" />
       <item itemvalue="Jest.Codegened Client works in all cases" />
       <item itemvalue="npm.Publish TS Generator" />
       <item itemvalue="npm.Publish TS Runtime" />
-      <item itemvalue="npm.update-runtime (1)" />
-      <item itemvalue="npm.generateClient" />
-      <item itemvalue="npm.update-runtime" />
     </list>
     <recent_temporary>
       <list>
-        <item itemvalue="npm.update-runtime (1)" />
-        <item itemvalue="npm.Publish TS Runtime" />
+        <item itemvalue="Jest.Codegened Client works in all cases (1)" />
+        <item itemvalue="Gradle.TestServers.userProtocol" />
+        <item itemvalue="Gradle.TestUserProtocol" />
+        <item itemvalue="Gradle.TestUserProtocol.testUsage" />
         <item itemvalue="Jest.Codegened Client works in all cases" />
-        <item itemvalue="Gradle.Run Test Server" />
-        <item itemvalue="npm.Publish TS Generator" />
       </list>
     </recent_temporary>
   </component>
@@ -228,7 +253,8 @@
       <updated>1698218896217</updated>
       <workItem from="1698218899431" duration="421000" />
       <workItem from="1698222552870" duration="2118000" />
-      <workItem from="1698224687392" duration="3842000" />
+      <workItem from="1698224687392" duration="7577000" />
+      <workItem from="1698239361843" duration="386000" />
     </task>
     <servers />
   </component>

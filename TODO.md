@@ -1,14 +1,3 @@
-# 1. High Priority - Do now
-
-
-### Create Gradle Plugin
-
-- Once the gradle plugin is approved, set up testprodapp:
-- Figure out how to apply the ksp plugin in the gradle plugin
-- Apply plugin and point typescript dir to typescript/testprodapp/src/generated
-- Copy ApiProtocol to testprodapp
-- Setup a test server for testprodapp
-- Test typescript testprodapp with the kotlin testprodapp server 
 
 # 2. Low Priority - Do later
 
