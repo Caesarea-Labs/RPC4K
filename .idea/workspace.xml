@@ -5,42 +5,34 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="9ca8770c-8d9e-44a0-b1e9-2417666ce2c1" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/gradle.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/gradle.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/jarRepositories.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/jarRepositories.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/TODO.md" beforeDir="false" afterPath="$PROJECT_DIR$/TODO.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/kotlin/gradle/libs.versions.toml" beforeDir="false" afterPath="$PROJECT_DIR$/kotlin/gradle/libs.versions.toml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/kotlin/lib/build.gradle.kts" beforeDir="false" afterPath="$PROJECT_DIR$/kotlin/lib/build.gradle.kts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/kotlin/plugin/build.gradle.kts" beforeDir="false" afterPath="$PROJECT_DIR$/kotlin/plugin/build.gradle.kts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/kotlin/plugin/src/main/kotlin/io/github/natanfudge/rpc4k/gradle/Rpc4kPlugin.kt" beforeDir="false" afterPath="$PROJECT_DIR$/kotlin/plugin/src/main/kotlin/io/github/natanfudge/rpc4k/gradle/Rpc4kPlugin.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/kotlin/testapp/build.gradle.kts" beforeDir="false" afterPath="$PROJECT_DIR$/kotlin/testapp/build.gradle.kts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/kotlin/testprodapp/build.gradle.kts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/kotlin/testprodapp/src/main/java/com/example/Rpc4kTest.kt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/kotlin/testprodapp/src/main/java/com/example/SomeClass.kt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/kotlin/testprodapp/src/main/java/com/example/TestValidClasses.kt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/kotlin/testprodapp/src/test/kotlin/io/github/natanfudge/rpc4k/test/KtorServerTest.kt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/kotlin/testprodapp/src/test/kotlin/io/github/natanfudge/rpc4k/test/ModelToTypescriptTest.kt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/kotlin/testprodapp/src/test/kotlin/io/github/natanfudge/rpc4k/test/SimpleKtorServerTest.kt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/kotlin/testprodapp/src/test/kotlin/io/github/natanfudge/rpc4k/test/TestUserProtocol.kt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/kotlin/testprodapp/src/test/kotlin/io/github/natanfudge/rpc4k/test/util/ClientServerExtension.kt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/kotlin/testprodapp/src/test/kotlin/io/github/natanfudge/rpc4k/test/util/KtorServerExtension.kt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/kotlin/testprodapp/src/test/kotlin/io/github/natanfudge/rpc4k/testserver/TestServers.kt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/kotlin/testprodapp/src/test/resources/UserProtocol.Models.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/typescript/generator/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/typescript/generator/package-lock.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/typescript/generator/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/typescript/generator/package.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/typescript/generator/src/index.ts" beforeDir="false" afterPath="$PROJECT_DIR$/typescript/generator/src/index.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/typescript/testprodapp/.eslintrc.cjs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/typescript/testprodapp/LICENSE" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/typescript/testprodapp/README.md" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/typescript/testprodapp/jest.config.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/typescript/testprodapp/package-lock.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/typescript/testprodapp/package.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/typescript/testprodapp/src/Test.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/typescript/testprodapp/test/CodegenedClientTest.test.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/typescript/testprodapp/tsconfig.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/typescript/testprodapp/tsconfig.module.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/testprodapp/kotlin/build.gradle.kts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/testprodapp/kotlin/gradle/wrapper/gradle-wrapper.jar" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/testprodapp/kotlin/gradle/wrapper/gradle-wrapper.properties" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/testprodapp/kotlin/gradlew" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/testprodapp/kotlin/gradlew.bat" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/testprodapp/kotlin/settings.gradle.kts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/testprodapp/kotlin/src/main/java/com/example/Rpc4kTest.kt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/testprodapp/kotlin/src/main/java/com/example/SomeClass.kt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/testprodapp/kotlin/src/main/java/com/example/TestValidClasses.kt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/testprodapp/kotlin/src/test/kotlin/io/github/natanfudge/rpc4k/test/KtorServerTest.kt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/testprodapp/kotlin/src/test/kotlin/io/github/natanfudge/rpc4k/test/ModelToTypescriptTest.kt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/testprodapp/kotlin/src/test/kotlin/io/github/natanfudge/rpc4k/test/SimpleKtorServerTest.kt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/testprodapp/kotlin/src/test/kotlin/io/github/natanfudge/rpc4k/test/TestUserProtocol.kt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/testprodapp/kotlin/src/test/kotlin/io/github/natanfudge/rpc4k/test/util/ClientServerExtension.kt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/testprodapp/kotlin/src/test/kotlin/io/github/natanfudge/rpc4k/test/util/KtorServerExtension.kt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/testprodapp/kotlin/src/test/kotlin/io/github/natanfudge/rpc4k/testserver/TestServers.kt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/testprodapp/kotlin/src/test/resources/UserProtocol.Models.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/testprodapp/typescript/.eslintrc.cjs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/testprodapp/typescript/LICENSE" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/testprodapp/typescript/README.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/testprodapp/typescript/jest.config.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/testprodapp/typescript/package-lock.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/testprodapp/typescript/package.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/testprodapp/typescript/src/Test.ts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/testprodapp/typescript/test/CodegenedClientTest.test.ts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/testprodapp/typescript/tsconfig.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/testprodapp/typescript/tsconfig.module.json" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -100,6 +92,7 @@
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "SHARE_PROJECT_CONFIGURATION_FILES": "true",
     "WebServerToolWindowFactoryState": "false",
+    "android.gradle.sync.needed": "true",
     "git-widget-placeholder": "main",
     "ignore.virus.scanning.warn.message": "true",
     "last_opened_file_path": "C:/Users/natan/Desktop/RPC4K/testprodapp/kotlin/settings.gradle.kts",
@@ -254,7 +247,8 @@
       <workItem from="1698218899431" duration="421000" />
       <workItem from="1698222552870" duration="2118000" />
       <workItem from="1698224687392" duration="7577000" />
-      <workItem from="1698239361843" duration="386000" />
+      <workItem from="1698239361843" duration="444000" />
+      <workItem from="1698242839385" duration="8000" />
     </task>
     <servers />
   </component>
