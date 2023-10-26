@@ -2,7 +2,10 @@
 
 package io.github.natanfudge.rpc4k.processor.utils
 
+import com.google.devtools.ksp.symbol.KSClassifierReference
 import com.google.devtools.ksp.symbol.KSType
+import com.google.devtools.ksp.symbol.KSTypeAlias
+import com.google.devtools.ksp.symbol.KSTypeReference
 import com.squareup.kotlinpoet.ksp.toClassName
 import io.github.natanfudge.rpc4k.processor.KotlinTypeReference
 import io.github.natanfudge.rpc4k.runtime.implementation.TuplePairSerializer
@@ -62,6 +65,8 @@ internal fun KSType.isSerializable() = isBuiltinSerializableType() || isAnnotate
 
 private fun KSType.isAnnotatedBySerializable() =
     declaration.annotations.any { it.annotationType.resolve().declaration.nonNullQualifiedName() == serializableClassName }
+
+
 
 fun KotlinTypeReference.isBuiltinSerializableType() = qualifiedName in builtinSerializableTypes
 

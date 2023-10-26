@@ -69,6 +69,20 @@ fun KSFunctionDeclaration.nonNullReturnType() =
     returnType
         ?: error("There's no reason why the return type of a function would be null. If you encounter this error, open a bug report ASAP! This happened for '$this'.")
 
+/**
+ * Handles type aliases as well
+ */
+fun KSTypeReference.resolveToUnderlying(): KSType {
+    var candidate = resolve()
+    var declaration = candidate.declaration
+    while (declaration is KSTypeAlias) {
+        candidate = declaration.type.resolve()
+        declaration = candidate.declaration
+    }
+    return candidate
+}
+
+
 fun CodeGenerator.writeFile(
     contents: String,
     dependencies: Dependencies,

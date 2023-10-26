@@ -30,10 +30,10 @@ sealed interface RpcServerEngine {
 
 
 
-interface RpcServer {
-    suspend fun <T> send(format: SerializationFormat, response: T, serializer: KSerializer<T>)
-    suspend fun sendError(message: String, errorType: RpcError)
-}
+//interface RpcServer {
+//    suspend fun <T> send(format: SerializationFormat, response: T, serializer: KSerializer<T>)
+//    suspend fun sendError(message: String, errorType: RpcError)
+//}
 
 /**
  * SECURITY NOTE - the message will be sent to clients. Make sure to not leak sensitive info.

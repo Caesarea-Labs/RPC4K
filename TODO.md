@@ -1,3 +1,6 @@
+### Check if underlying type is serializable instead of type alias
+See: https://kotlinlang.slack.com/archives/C013BA8EQSE/p1698328057459909
+Relevant function: KsType.isAnnotatedBySerializable()
 
 # 2. Low Priority - Do later
 

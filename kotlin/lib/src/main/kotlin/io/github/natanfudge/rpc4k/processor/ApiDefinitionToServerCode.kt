@@ -4,7 +4,6 @@ import com.squareup.kotlinpoet.*
 import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy
 import io.github.natanfudge.rpc4k.processor.utils.poet.*
 import io.github.natanfudge.rpc4k.runtime.api.GeneratedServerHelper
-import io.github.natanfudge.rpc4k.runtime.api.RpcServerEngine
 import io.github.natanfudge.rpc4k.runtime.api.RpcServerSetup
 import io.github.natanfudge.rpc4k.runtime.implementation.GeneratedCodeUtils
 

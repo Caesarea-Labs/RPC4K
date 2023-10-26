@@ -31,6 +31,8 @@ open class SimpleProtocol {
     }
 }
 
+typealias AliasTest = CreateLobbyResponse
+
 @Api(true)
 open class UserProtocol {
 
@@ -210,6 +212,10 @@ open class UserProtocol {
 
     open suspend fun returningDataEnum(args: EnumArgs): EnumArgs {
         return args
+    }
+
+    open suspend fun aliasTest(aliasTest: AliasTest): AliasTest {
+        return aliasTest
     }
 
 }

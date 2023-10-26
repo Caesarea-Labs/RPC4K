@@ -159,7 +159,8 @@ class ApiClassValidator(private val env: SymbolProcessorEnvironment) {
     }
 
     private fun checkIsSerializable(type: KSTypeReference, target: KSNode = type, typeArgument: Boolean = false): Boolean {
-        val resolved = type.resolve()
+        val resolved = type.resolveToUnderlying()
+
         val selfSerializable = target.checkRequirement(env, resolved.isSerializable()) {
             "Type used in API method '${resolved.declaration.qualifiedName!!.asString()}' must be Serializable".appendIf(typeArgument) { " (in type argument of $target)" }
         }
