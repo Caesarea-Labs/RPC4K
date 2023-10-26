@@ -61,7 +61,7 @@ sealed interface ClassBasedKotlinSerializer : KotlinSerializer {
 internal fun KSType.isSerializable() = isBuiltinSerializableType() || isAnnotatedBySerializable()
 
 private fun KSType.isAnnotatedBySerializable() =
-    declaration.annotations.any { it.annotationType.resolve().toClassName().canonicalName == serializableClassName }
+    declaration.annotations.any { it.annotationType.resolve().declaration.nonNullQualifiedName() == serializableClassName }
 
 fun KotlinTypeReference.isBuiltinSerializableType() = qualifiedName in builtinSerializableTypes
 

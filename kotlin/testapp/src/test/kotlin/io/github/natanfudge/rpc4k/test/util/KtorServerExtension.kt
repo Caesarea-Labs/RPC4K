@@ -1,20 +1,18 @@
 package io.github.natanfudge.rpc4k.test.util
 
-import io.github.natanfudge.rpc4k.runtime.api.GeneratedServerHandler
-import io.github.natanfudge.rpc4k.runtime.api.components.KtorSingleRouteRpcServer
-import io.github.natanfudge.rpc4k.runtime.api.components.ManagedKtorRpcServer
-import io.ktor.server.netty.*
+import io.github.natanfudge.rpc4k.runtime.api.RpcServerEngine
+import io.github.natanfudge.rpc4k.runtime.api.RpcServerSetup
+import io.github.natanfudge.rpc4k.runtime.api.createServer
+import org.junit.jupiter.api.extension.AfterAllCallback
+import org.junit.jupiter.api.extension.BeforeAllCallback
+import org.junit.jupiter.api.extension.Extension
 import org.junit.jupiter.api.extension.ExtensionContext
 
 @JvmInline
 value class Port(val value: Int)
 
-class KtorServerExtension(private val handler: (KtorSingleRouteRpcServer) -> GeneratedServerHandler) : ServerExtension {
-    override val port: Int = PortPool.get()
-    private val server by lazy {
-        ManagedKtorRpcServer(Netty, port, handler)
-    }
-
+class MultiCallServerExtension(setup: RpcServerSetup<*,RpcServerEngine.MultiCall>) : Extension, BeforeAllCallback, AfterAllCallback {
+    private val server = setup.createServer()
     override fun beforeAll(context: ExtensionContext?) {
         server.start(wait = false)
     }
@@ -22,16 +20,23 @@ class KtorServerExtension(private val handler: (KtorSingleRouteRpcServer) -> Gen
     override fun afterAll(context: ExtensionContext?) {
         server.stop()
     }
+
 }
 
+//class KtorServerExtension(private val handler: (KtorSingleRouteRpcServer) -> GeneratedServerHelper) : ServerExtension {
+//    override val port: Int = PortPool.get()
+//    private val server by lazy {
+//        KtorManagedRpcServer(Netty, port, handler)
+//    }
+//
+//    override fun beforeAll(context: ExtensionContext?) {
+//        server.start(wait = false)
+//    }
+//
+//    override fun afterAll(context: ExtensionContext?) {
+//        server.stop()
+//    }
+//}
 
 
-object PortPool {
-    private var current = 8080
 
-    @Synchronized
-    fun get(): Int {
-        if (current == 8200) error("Too many ports are being requested")
-        return current++
-    }
-}

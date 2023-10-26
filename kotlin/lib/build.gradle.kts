@@ -30,7 +30,7 @@ dependencies {
 
     implementation(libs.okhttp.core)
     implementation(libs.okhttp.sse)
-    implementation(libs.ktor.host)
+    implementation(libs.ktor.netty)
     implementation(libs.ktor.logging)
 
     testImplementation(libs.kotlin.test)

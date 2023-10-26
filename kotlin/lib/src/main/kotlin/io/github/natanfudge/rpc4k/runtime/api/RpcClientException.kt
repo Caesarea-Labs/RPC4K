@@ -1,11 +1,11 @@
 package io.github.natanfudge.rpc4k.runtime.api
-import io.github.natanfudge.rpc4k.runtime.implementation.RpcServerException
+import io.github.natanfudge.rpc4k.runtime.implementation.InvalidRpcRequestException
 
 
 
 /**
  * Thrown when an RPC encountered a problem.
- * This should be caught by users of RPC4K clients, in contrast to [RpcServerException] which is an implementation detail
+ * This should be caught by users of RPC4K clients, in contrast to [InvalidRpcRequestException] which is an implementation detail
  */
 open class RpcClientException(message: String, val request: Rpc, val format: SerializationFormat, val client: RpcClient) : RuntimeException(message)
 

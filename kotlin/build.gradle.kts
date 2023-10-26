@@ -34,14 +34,12 @@ nexusPublishing {
 }
 
 project(":lib").afterEvaluate {
-    tasks.create("uploadLibrary") {
+    tasks.create("uploadRpc4k") {
         group = "upload"
-        dependsOn(project(":lib").tasks["publishToSonatype"], rootProject.tasks["closeAndReleaseSonatypeStagingRepository"])
+        dependsOn(
+            project(":lib").tasks["publishToSonatype"],
+            rootProject.tasks["closeAndReleaseSonatypeStagingRepository"],
+            gradle.includedBuild("plugin").task(":publishPlugins")
+        )
     }
 }
-//afterEvaluate {
-//    tasks.create("uploadLibrary") {
-//        group = "upload"
-//        dependsOn(rootProject.tasks["publishToSonatype"], rootProject.tasks["closeAndReleaseSonatypeStagingRepository"])
-//    }
-//}

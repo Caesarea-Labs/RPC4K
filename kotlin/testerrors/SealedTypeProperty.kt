@@ -9,7 +9,7 @@ class SealedTypeProperty {
 }
 
 @Serializable
-sealed interface SealedType> {
+sealed interface SealedType {
     @Serializable
     class GenericSubclass(val type: String) : GenericSealed
 }

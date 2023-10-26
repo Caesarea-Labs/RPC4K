@@ -2,12 +2,11 @@ package io.github.natanfudge.rpc4k.runtime.implementation
 
 import io.github.natanfudge.rpc4k.runtime.api.*
 import kotlinx.serialization.*
-import kotlinx.serialization.descriptors.SerialDescriptor
-import kotlinx.serialization.json.Json
-import kotlinx.serialization.modules.SerializersModule
-import kotlinx.serialization.modules.polymorphic
-import org.slf4j.LoggerFactory
-import kotlin.reflect.KClass
+
+sealed interface GeneratedHandlerResult<T> {
+    data class Success<T>(val value: T): GeneratedHandlerResult<T>
+    data class Error(val message: String, val type: RpcError)
+}
 
 /**
  * These functions are used by generated code and code that interacts with them
@@ -35,6 +34,24 @@ object GeneratedCodeUtils {
         return format.decode(responseSerializer, result)
     }
 
+
+//    /**
+//     * Catches rpc exceptions and sends the correct error back to the client
+//     */
+//    suspend inline fun withCatching(server: RpcServer, handler: () -> Unit) {
+//        try {
+//            handler()
+//        } catch (e: RpcServerException) {
+//            Rpc4K.Logger.warn("Invalid request", e)
+//            // RpcServerException messages are trustworthy
+//            server.sendError(e.message, RpcError.InvalidRequest)
+//        } catch (e: Throwable) {
+//            Rpc4K.Logger.error("Failed to handle request", e)
+//            // Don't send arbitrary throwable messages because it could leak data
+//            server.sendError("Server failed to process request", RpcError.InternalError)
+//        }
+//    }
+
     /**
      * Sends a value, not caring about the result
      */
@@ -45,41 +62,62 @@ object GeneratedCodeUtils {
 
 
 
-    /**
-     * Catches rpc exceptions and sends the correct error back to the client
-     */
-    suspend inline fun withCatching(server: RpcServer, handler: () -> Unit) {
-        try {
-            handler()
-        } catch (e: RpcServerException) {
-            Rpc4K.Logger.warn("Invalid request", e)
-            // RpcServerException messages are trustworthy
-            server.sendError(e.message, RpcError.InvalidRequest)
-        } catch (e: Throwable) {
-            Rpc4K.Logger.error("Failed to handle request", e)
-            // Don't send arbitrary throwable messages because it could leak data
-            server.sendError("Server failed to process request", RpcError.InternalError)
-        }
-    }
+//    //    internal abstract fun errorResponse(message: String, errorType: RpcError): O
+//    fun <I,O>respond(input: I): O {
+//        val bytes = read(input)
+//
+//        try {
+//            return handleImplementation(input)
+//        } catch (e: InvalidRpcRequestException) {
+//            Rpc4K.Logger.warn("Invalid request", e)
+//            // RpcServerException messages are trustworthy
+//            return errorResponse(e.message, RpcError.InvalidRequest)
+//        } catch (e: Throwable) {
+//            Rpc4K.Logger.error("Failed to handle request", e)
+//            // Don't send arbitrary throwable messages because it could leak data
+//            return errorResponse("Server failed to process request", RpcError.InternalError)
+//        }
+//    }
 
+//    /**
+//     * Uses the [server] to respond with the specified data
+//     */
+//    suspend fun <T> respond(
+//        format: SerializationFormat,
+//        server: RpcServer,
+//        request: ByteArray,
+//        argDeserializers: List<KSerializer<*>>,
+//        resultSerializer: KSerializer<T>,
+//        respondMethod: suspend (args: List<*>) -> T
+//    ) {
+//        val parsed = try {
+//            Rpc.fromByteArray(request, format, argDeserializers)
+//        } catch (e: SerializationException) {
+//            throw InvalidRpcRequestException("Malformed request arguments: ${e.message}", e)
+//        }
+//        val result = respondMethod(parsed.arguments)
+//        server.send(format, result, resultSerializer)
+//    }
     /**
      * Uses the [server] to respond with the specified data
      */
     suspend fun <T> respond(
-        format: SerializationFormat,
-        server: RpcServer,
+        setup: RpcServerSetup<*,*>,
+//        config: RpcSettings,
+//        server: RpcServer,
         request: ByteArray,
         argDeserializers: List<KSerializer<*>>,
         resultSerializer: KSerializer<T>,
         respondMethod: suspend (args: List<*>) -> T
-    ) {
+    ): ByteArray {
         val parsed = try {
-            Rpc.fromByteArray(request, format, argDeserializers)
+            Rpc.fromByteArray(request, setup.format, argDeserializers)
         } catch (e: SerializationException) {
-            throw RpcServerException("Malformed request arguments: ${e.message}", e)
+            throw InvalidRpcRequestException("Malformed request arguments: ${e.message}", e)
         }
-        val result = respondMethod(parsed.arguments)
-        server.send(format, result, resultSerializer)
+
+        return setup.format.encode(resultSerializer, respondMethod(parsed.arguments))
     }
+
 }
 

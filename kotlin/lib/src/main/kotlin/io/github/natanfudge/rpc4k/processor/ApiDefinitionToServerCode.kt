@@ -3,10 +3,9 @@ package io.github.natanfudge.rpc4k.processor
 import com.squareup.kotlinpoet.*
 import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy
 import io.github.natanfudge.rpc4k.processor.utils.poet.*
-import io.github.natanfudge.rpc4k.runtime.api.GeneratedServerHandler
-import io.github.natanfudge.rpc4k.runtime.api.GeneratedServerHandlerFactory
-import io.github.natanfudge.rpc4k.runtime.api.RpcServer
-import io.github.natanfudge.rpc4k.runtime.api.SerializationFormat
+import io.github.natanfudge.rpc4k.runtime.api.GeneratedServerHelper
+import io.github.natanfudge.rpc4k.runtime.api.RpcServerEngine
+import io.github.natanfudge.rpc4k.runtime.api.RpcServerSetup
 import io.github.natanfudge.rpc4k.runtime.implementation.GeneratedCodeUtils
 
 /**
@@ -26,39 +25,40 @@ import io.github.natanfudge.rpc4k.runtime.implementation.GeneratedCodeUtils
  * ```
  * into
  * ```
- * class MyApiServerImpl(private val api: MyApi, private val format: SerializationFormat, private val server: RpcServer): GeneratedServerHandler {
- *     override suspend fun handle(request: ByteArray, method: String) {
- *         GeneratedCodeUtils.handle(server) {
- *             when (method) {
- *                 "getDogs" -> GeneratedCodeUtils.respond(
- *                     format,
- *                     server,
- *                     request,
- *                     listOf(Int.serializer(), String.serializer()),
- *                     ListSerializer(Dog.serializer())
- *                 ) {
- *                     api.getDogs(it[0] as Int, it[1] as String)
- *                 }
+ * public fun BasicApi.Companion.server(): BasicApiServerImpl = BasicApiServerImpl()
  *
- *                 "putDog" -> GeneratedCodeUtils.respond(format, server, request, listOf(Dog.serializer()), Unit.serializer()) {
- *                     api.putDog(it[0] as Dog)
- *                 }
- *             }
+ * @Suppress("UNCHECKED_CAST")
+ * public class BasicApiServerImpl: GeneratedServerHelper<BasicApi> {
+ *     override suspend fun handle(request: ByteArray, method: String, setup: RpcSetup<BasicApi, *>): ByteArray? = when (method) {
+ *         "getDogs" -> respond(setup, request, listOf(Int.serializer(), String.serializer()), ListSerializer(Dog.serializer())
+ *         ) {
+ *             setup.handler.getDogs(it[0] as Int, it[1] as String)
  *         }
+ *
+ *         "putDog" -> respond(setup, request, listOf(Dog.serializer()),
+ *             VoidUnitSerializer()
+ *         ) {
+ *             setup.handler.putDog(it[0] as Dog)
+ *         }
+ *
+ *         else -> null
  *     }
  * }
- *
  * ```
  *
  * Which makes running client code much easier.
  */
 object ApiDefinitionToServerCode {
-    private const val ApiPropertyName = "api"
-    private const val FormatPropertyName = "format"
-    private const val ServerPropertyName = "server"
+    private const val SetupParamName: String = "setup"
+    private const val UserHandlerPropertyName = "handler"
+    private val wildcardType = WildcardTypeName.producerOf(ANY.copy(nullable = true))
+
+    //    private const val ApiPropertyName = "api"
+//    private const val FormatPropertyName = "format"
+//    private const val ServerPropertyName = "server"
     private const val RequestParamName = "request"
     private const val MethodParamName = "method"
-    private val handleUtilsMethod = GeneratedCodeUtils::class.methodName("withCatching")
+//    private val handleUtilsMethod = GeneratedCodeUtils::class.methodName("withCatching")
     private val respondUtilsMethod = GeneratedCodeUtils::class.methodName("respond")
 
     fun convert(apiDefinition: ApiDefinition): FileSpec {
@@ -74,14 +74,14 @@ object ApiDefinitionToServerCode {
                 // I know what I'm doing, Kotlin!
                 addAnnotation(AnnotationSpec.builder(Suppress::class).addMember("%S", "UNCHECKED_CAST").build())
 
-                addType(factoryCompanionObject(apiDefinition, generatedClassName = className))
+//                addType(factoryCompanionObject(apiDefinition, generatedClassName = className))
 
-                addSuperinterface(GeneratedServerHandler::class)
-                addPrimaryConstructor {
-                    addConstructorProperty(ApiPropertyName, type = apiDefinition.name.className, KModifier.PRIVATE)
-                    addConstructorProperty(FormatPropertyName, type = SerializationFormat::class, KModifier.PRIVATE)
-                    addConstructorProperty(ServerPropertyName, type = RpcServer::class, KModifier.PRIVATE)
-                }
+                addSuperinterface(GeneratedServerHelper::class.asClassName().parameterizedBy(apiDefinition.name.className))
+//                addPrimaryConstructor {
+//                    addConstructorProperty(ApiPropertyName, type = apiDefinition.name.className, KModifier.PRIVATE)
+//                    addConstructorProperty(FormatPropertyName, type = SerializationFormat::class, KModifier.PRIVATE)
+//                    addConstructorProperty(ServerPropertyName, type = RpcServer::class, KModifier.PRIVATE)
+//                }
                 addFunction(handleMethod(apiDefinition))
             }
         }
@@ -98,18 +98,18 @@ object ApiDefinitionToServerCode {
      *     }
      * ```
      */
-    private fun factoryCompanionObject(api: ApiDefinition, generatedClassName: String) = companionObject(GeneratedCodeUtils.FactoryName) {
-        val userClassName = api.name.className
-        addSuperinterface(GeneratedServerHandlerFactory::class.asClassName().parameterizedBy(userClassName))
-        addFunction("build") {
-            addModifiers(KModifier.OVERRIDE)
-            addParameter(ApiPropertyName, userClassName)
-            addParameter(FormatPropertyName, SerializationFormat::class)
-            addParameter(ServerPropertyName, RpcServer::class)
-            returns(GeneratedServerHandler::class)
-            addStatement("return $generatedClassName($ApiPropertyName, $FormatPropertyName, $ServerPropertyName)")
-        }
-    }
+//    private fun factoryCompanionObject(api: ApiDefinition, generatedClassName: String) = companionObject(GeneratedCodeUtils.FactoryName) {
+//        val userClassName = api.name.className
+//        addSuperinterface(GeneratedServerHandlerFactory::class.asClassName().parameterizedBy(userClassName))
+//        addFunction("build") {
+//            addModifiers(KModifier.OVERRIDE)
+//            addParameter(ApiPropertyName, userClassName)
+//            addParameter(FormatPropertyName, SerializationFormat::class)
+//            addParameter(ServerPropertyName, RpcServer::class)
+//            returns(GeneratedServerHelper::class)
+//            addStatement("return $generatedClassName($ApiPropertyName, $FormatPropertyName, $ServerPropertyName)")
+//        }
+//    }
 
     /**
      * Making the generated class available with an extension function makes it more resilient to name changes
@@ -121,43 +121,75 @@ object ApiDefinitionToServerCode {
      */
     private fun serverConstructorExtension(api: ApiDefinition, generatedClassName: String) =
         extensionFunction(api.name.className.companion(), "server") {
-            addParameter(ApiPropertyName, api.name.className)
-            addParameter(FormatPropertyName, SerializationFormat::class)
-            addParameter(ServerPropertyName, RpcServer::class)
+//            addParameter(ApiPropertyName, api.name.className)
+//            addParameter(FormatPropertyName, SerializationFormat::class)
+//            addParameter(ServerPropertyName, RpcServer::class)
             returns(ClassName(GeneratedCodeUtils.Package, generatedClassName))
-            addStatement("return $generatedClassName($ApiPropertyName, $FormatPropertyName, $ServerPropertyName)")
+            addStatement("return $generatedClassName()")
         }
 
+    /**
+     * Generates:
+     * ```
+     *     override suspend fun handle(request: ByteArray, method: String, setup: RpcSetup<BasicApi, *>): ByteArray? = when (method) {
+     *         "getDogs" -> respond(setup, request, listOf(Int.serializer(), String.serializer()), ListSerializer(Dog.serializer())
+     *         ) {
+     *             setup.handler.getDogs(it[0] as Int, it[1] as String)
+     *         }
+     *
+     *         "putDog" -> respond(setup, request, listOf(Dog.serializer()),
+     *             VoidUnitSerializer()
+     *         ) {
+     *             setup.handler.putDog(it[0] as Dog)
+     *         }
+     *
+     *         else -> null
+     *     }
+     * ```
+     */
     private fun handleMethod(api: ApiDefinition): FunSpec = funSpec("handle") {
         // This overrides GeneratedServerHandler
         addModifiers(KModifier.OVERRIDE, KModifier.SUSPEND)
 
         addParameter(RequestParamName, ByteArray::class)
         addParameter(MethodParamName, String::class)
+        addParameter(SetupParamName,
+            RpcServerSetup::class.asClassName().parameterizedBy(api.name.className, wildcardType)
+        )
 
-        addControlFlow("%M($ServerPropertyName)", handleUtilsMethod) {
-            addControlFlow("when($MethodParamName)") {
+        returns(BYTE_ARRAY.copy(nullable = true))
+
+//        addControlFlow("%M($ServerPropertyName)", handleUtilsMethod) {
+            addControlFlow("return when($MethodParamName)") {
                 for (method in api.methods) {
                     addEndpointHandler(method)
                 }
+                addCode("else -> null\n")
             }
-        }
+//        }
     }
 
+    /**
+     * Generates:
+     * ```
+     * respond(setup, request, listOf(Int.serializer(), String.serializer()), ListSerializer(Dog.serializer())) {
+     *     setup.handler.getDogs(it[0] as Int, it[1] as String)
+     * }
+     * ```
+     */
     private fun FunSpec.Builder.addEndpointHandler(rpc: RpcDefinition) {
         addCode("%S -> ".formatWith(rpc.name))
 
 
         val arguments = listOf(
-            FormatPropertyName,
-            ServerPropertyName,
+            SetupParamName,
             RequestParamName,
             ApiDefinitionConverters.listOfSerializers(rpc),
             rpc.returnType.toSerializerString()
         )
 
         addControlFlow(respondUtilsMethod.withArgumentList(arguments)) {
-            addStatement("$ApiPropertyName.${rpc.name}".formatString().withMethodArguments(endpointArguments(rpc)))
+            addStatement("$SetupParamName.$UserHandlerPropertyName.${rpc.name}".withMethodArguments(endpointArguments(rpc)))
         }
     }
 

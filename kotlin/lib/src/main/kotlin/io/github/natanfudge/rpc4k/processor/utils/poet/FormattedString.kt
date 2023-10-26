@@ -47,6 +47,7 @@ internal fun MemberName.withArgumentList(arguments: List<Any>): FormattedString 
 }
 
 internal fun FormattedString.withMethodArguments(arguments: List<FormattedString>): FormattedString = this + "(" + arguments.join() + ")"
+internal fun String.withMethodArguments(arguments: List<FormattedString>): FormattedString = formatString().withMethodArguments(arguments)
 
 internal fun MemberName.withFormatStringArguments(arguments: List<FormattedString>): FormattedString = "%M(".formatWith(this) + arguments.join() + ")"
 
