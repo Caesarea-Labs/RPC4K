@@ -1,4 +1,4 @@
-package io.github.natanfudge.rpc4k.test.util
+package io.github.natanfudge.rpc4k.runtime.implementation
 
 import io.github.natanfudge.rpc4k.runtime.api.RpcServerEngine
 import io.github.natanfudge.rpc4k.runtime.api.RpcServerSetup

@@ -1,7 +1,7 @@
 @file:OptIn(ExperimentalSerializationApi::class)
 @file:Suppress("UNCHECKED_CAST", "FunctionName")
 
-package io.github.natanfudge.rpc4k.runtime.implementation
+package io.github.natanfudge.rpc4k.runtime.implementation.serializers
 
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.KSerializer

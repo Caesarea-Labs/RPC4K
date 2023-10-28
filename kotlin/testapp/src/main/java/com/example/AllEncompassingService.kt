@@ -11,6 +11,16 @@ import kotlinx.serialization.Contextual
 import kotlinx.serialization.Serializable
 import java.time.Instant
 import java.time.ZonedDateTime
+import java.util.Locale
+import java.util.UUID
+
+
+//TODO: bug: UUID was allowed to be referenced somehow even though it is not serializable (probably because it had @Serializable(with) attached,
+// need to see what i can do with that)
+//TODO: add UUIDs to the format? I think i128 would work.
+
+//@Serializable data class LyingSerializable(@Contextual val locale: Locale)
+
 
 @Serializable
 data class PlayerId(val num: Long)
@@ -34,8 +44,7 @@ open class SimpleProtocol {
 typealias AliasTest = CreateLobbyResponse
 
 @Api(true)
-open class UserProtocol {
-
+open class AllEncompassingService(val value: Int  = 1) {
     companion object {
         fun distraction1() {}
         val distraction2: String = ""
@@ -202,6 +211,7 @@ open class UserProtocol {
         d2: Map.Entry<Int, Int>,
         e2: Instant,
         f2: ZonedDateTime,
+        g2: UUID
     ): Triple<Int, Int, Int> {
         return q
     }
@@ -218,7 +228,25 @@ open class UserProtocol {
         return aliasTest
     }
 
+    open suspend fun aliasReferenceTest(ref: TypeAliasReference): TypeAliasReference {
+        return ref
+    }
+
+    open suspend fun genericsReferenceTest(ref: SomeGeneric): SomeGeneric {
+        return ref
+    }
+
 }
+
+@Serializable
+data class OnlyReferencedThroughGenerics(val x: Int)
+typealias SomeGeneric = List<OnlyReferencedThroughGenerics>
+
+
+@Serializable
+data class OnlyTypeAliased(val str: String)
+
+typealias TypeAliasReference = OnlyTypeAliased
 
 @Serializable
 data class SomeBuiltinTypes(@Contextual val p: Pair<Int, Int>)
@@ -257,7 +285,8 @@ class EveryBuiltinType(
     val c2: Double,
     @Contextual val d2: Map.Entry<Int, Int>,
     @Contextual val e2: Instant,
-    @Contextual val f2: ZonedDateTime
+    @Contextual val f2: ZonedDateTime,
+    @Contextual val g2: UUID
 ) {
     override fun equals(other: Any?): Boolean {
         if (this === other) return true

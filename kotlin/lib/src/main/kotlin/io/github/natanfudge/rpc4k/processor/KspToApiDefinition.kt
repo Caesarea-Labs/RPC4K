@@ -5,15 +5,13 @@ import com.google.devtools.ksp.getDeclaredProperties
 import com.google.devtools.ksp.symbol.*
 import com.google.devtools.ksp.symbol.ClassKind.*
 import io.github.natanfudge.rpc4k.processor.utils.*
+import io.github.natanfudge.rpc4k.runtime.implementation.KotlinClassName
 
 object KspToApiDefinition {
     fun toApiDefinition(kspClass: KSClassDeclaration): ApiDefinition {
-        val (packageName, className) = kspClass.getPackageAndClassName()
         return ApiDefinition(
             // Doesn't quite fit, but good enough to represent the name as an KotlinTypeReference
-            name = KotlinTypeReference(
-                packageName = packageName, simpleName = className
-            ),
+            name = kspClass.getKotlinName(),
             methods = kspClass.getPublicApiFunctions().map { toRpc(it) }.toList(),
             getRpcModels(kspClass)
         )
@@ -98,8 +96,7 @@ object KspToApiDefinition {
      *
      */
     private fun sealedSubclassToRpcType(sealedSubclass: KSClassDeclaration): KotlinTypeReference {
-        val (packageName, className) = sealedSubclass.getPackageAndClassName()
-        return KotlinTypeReference(packageName = packageName, simpleName = className)
+        return KotlinTypeReference(sealedSubclass.getKotlinName())
     }
 
     /**
@@ -150,12 +147,12 @@ object KspToApiDefinition {
      * Get `com.foo.bar.MyClass<Int,String>` as an [KotlinTypeReference]
      * */
     private fun toKotlinTypeReference(type: KSTypeReference): KotlinTypeReference {
-        val resolved = type.resolve()
+        val resolved = type.resolveToUnderlying()
         val declaration = resolved.declaration
-        val (packageName, className) = declaration.getPackageAndClassName()
+        val kotlinName = declaration.getKotlinName()
         val isTypeParameter = declaration is KSTypeParameter
         return KotlinTypeReference(
-            packageName = packageName, simpleName = if (isTypeParameter) declaration.getSimpleName() else className,
+            kotlinName.copy(simple = if (isTypeParameter) declaration.getSimpleName() else kotlinName.simple),
             typeArguments = resolved.arguments.map { toKotlinTypeReference(it.nonNullType()) },
             isNullable = resolved.isMarkedNullable,
             isTypeParameter = isTypeParameter,

@@ -27,6 +27,7 @@ tasks.test {
 
 
 dependencies {
+    implementation(project(":lib"))
     implementation(kotlin("stdlib"))
     testImplementation(kotlin("test"))
     testImplementation(libs.strikt)

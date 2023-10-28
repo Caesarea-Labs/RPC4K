@@ -1,7 +1,7 @@
 package io.github.natanfudge.rpc4k.test
 
 import io.github.natanfudge.rpc4k.runtime.api.Api
-import io.github.natanfudge.rpc4k.test.util.rpcExtension
+import io.github.natanfudge.rpc4k.runtime.api.testing.rpcExtension
 import kotlinx.coroutines.runBlocking
 import kotlinx.serialization.Serializable
 import org.junit.jupiter.api.extension.RegisterExtension

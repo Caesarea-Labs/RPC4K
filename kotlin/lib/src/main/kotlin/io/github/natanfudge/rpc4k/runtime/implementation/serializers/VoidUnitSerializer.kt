@@ -1,6 +1,6 @@
 @file:Suppress("FunctionName")
 
-package io.github.natanfudge.rpc4k.runtime.implementation
+package io.github.natanfudge.rpc4k.runtime.implementation.serializers
 
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.builtins.serializer
@@ -8,12 +8,13 @@ import kotlinx.serialization.descriptors.SerialDescriptor
 import kotlinx.serialization.encoding.Decoder
 import kotlinx.serialization.encoding.Encoder
 
+
+//fun VoidUnitSerializer(): KSerializer<Unit> = VoidUnitSerializerInstance
+
 /**
  * The RPC4All spec defines the value of the void/unit type as a "void" string.
  */
-fun VoidUnitSerializer(): KSerializer<Unit> = VoidUnitSerializerInstance
-
-private object VoidUnitSerializerInstance : KSerializer<Unit> {
+ object VoidUnitSerializer : KSerializer<Unit> {
     override val descriptor: SerialDescriptor = String.serializer().descriptor
 
     override fun deserialize(decoder: Decoder) {

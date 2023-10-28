@@ -6,6 +6,7 @@ import io.github.natanfudge.rpc4k.processor.utils.poet.*
 import io.github.natanfudge.rpc4k.runtime.api.GeneratedServerHelper
 import io.github.natanfudge.rpc4k.runtime.api.RpcServerSetup
 import io.github.natanfudge.rpc4k.runtime.implementation.GeneratedCodeUtils
+import io.github.natanfudge.rpc4k.runtime.implementation.kotlinPoet
 
 /**
  * Converts
@@ -61,7 +62,7 @@ object ApiDefinitionToServerCode {
     private val respondUtilsMethod = GeneratedCodeUtils::class.methodName("respond")
 
     fun convert(apiDefinition: ApiDefinition): FileSpec {
-        val className = "${apiDefinition.name.simpleName}${GeneratedCodeUtils.ServerSuffix}"
+        val className = "${apiDefinition.name.simple}${GeneratedCodeUtils.ServerSuffix}"
         return fileSpec(GeneratedCodeUtils.Package, className) {
             // KotlinPoet doesn't handle extension methods well
             addImport("kotlinx.serialization.builtins", "serializer")
@@ -75,7 +76,7 @@ object ApiDefinitionToServerCode {
 
 //                addType(factoryCompanionObject(apiDefinition, generatedClassName = className))
 
-                addSuperinterface(GeneratedServerHelper::class.asClassName().parameterizedBy(apiDefinition.name.className))
+                addSuperinterface(GeneratedServerHelper::class.asClassName().parameterizedBy(apiDefinition.name.kotlinPoet))
 //                addPrimaryConstructor {
 //                    addConstructorProperty(ApiPropertyName, type = apiDefinition.name.className, KModifier.PRIVATE)
 //                    addConstructorProperty(FormatPropertyName, type = SerializationFormat::class, KModifier.PRIVATE)
@@ -119,7 +120,7 @@ object ApiDefinitionToServerCode {
      *   ```
      */
     private fun serverConstructorExtension(api: ApiDefinition, generatedClassName: String) =
-        extensionFunction(api.name.className.companion(), "server") {
+        extensionFunction(api.name.kotlinPoet.companion(), "server") {
 //            addParameter(ApiPropertyName, api.name.className)
 //            addParameter(FormatPropertyName, SerializationFormat::class)
 //            addParameter(ServerPropertyName, RpcServer::class)
@@ -153,7 +154,7 @@ object ApiDefinitionToServerCode {
         addParameter(RequestParamName, ByteArray::class)
         addParameter(MethodParamName, String::class)
         addParameter(SetupParamName,
-            RpcServerSetup::class.asClassName().parameterizedBy(api.name.className, wildcardType)
+            RpcServerSetup::class.asClassName().parameterizedBy(api.name.kotlinPoet, wildcardType)
         )
 
         returns(BYTE_ARRAY.copy(nullable = true))

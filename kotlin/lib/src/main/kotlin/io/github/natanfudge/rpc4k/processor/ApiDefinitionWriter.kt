@@ -15,7 +15,7 @@ object ApiDefinitionWriter {
 
     fun writeRpcJsons(definition: ApiDefinition, codeGenerator: CodeGenerator, containingFile: KSFile) {
         val models = json.encodeToString(definition)
-        codeGenerator.writeFile(models, Dependencies(aggregating = false, containingFile),"rpc4k/" + definition.name.simpleName, extensionName = "rpc.json")
+        codeGenerator.writeFile(models, Dependencies(aggregating = false, containingFile),"rpc4k/" + definition.name.simple, extensionName = "rpc.json")
     }
 
 //    fun writeRpcJson(definition: ApiDefinition, codeGenerator: CodeGenerator, containingFile: KSFile) {

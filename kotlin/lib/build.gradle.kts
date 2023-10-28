@@ -24,6 +24,7 @@ dependencies {
     implementation(libs.symbol.processing.api)
     implementation(libs.kotlinpoet.core)
     implementation(libs.kotlinpoet.ksp)
+    implementation(libs.junit)
 
     api(libs.coroutines.core)
     api(libs.serialization.json)
@@ -44,6 +45,7 @@ java {
     withSourcesJar()
     withJavadocJar()
 }
+
 
 
 

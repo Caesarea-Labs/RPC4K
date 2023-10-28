@@ -1,7 +1,7 @@
 package io.github.natanfudge.rpc4k.runtime.api.components
 
-import io.github.natanfudge.rpc4k.runtime.api.Rpc4kSerializersModule
 import io.github.natanfudge.rpc4k.runtime.api.SerializationFormat
+import io.github.natanfudge.rpc4k.runtime.implementation.serializers.Rpc4kSerializersModule
 import kotlinx.serialization.DeserializationStrategy
 import kotlinx.serialization.SerializationStrategy
 import kotlinx.serialization.json.Json

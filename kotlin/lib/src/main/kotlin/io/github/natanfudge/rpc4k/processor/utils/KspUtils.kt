@@ -8,6 +8,7 @@ import com.google.devtools.ksp.processing.Dependencies
 import com.google.devtools.ksp.processing.Resolver
 import com.google.devtools.ksp.processing.SymbolProcessorEnvironment
 import com.google.devtools.ksp.symbol.*
+import io.github.natanfudge.rpc4k.runtime.implementation.KotlinClassName
 import kotlin.reflect.KClass
 
 /**
@@ -26,11 +27,20 @@ internal fun KSClassDeclaration.getPublicApiFunctions() = getDeclaredFunctions()
 /**
  * Extract from `com.foo.bar.Inner$Thing` the pair `[com.foo.bar, inner.Thing]`
  */
-fun KSDeclaration.getPackageAndClassName(): Pair<String, String> {
+//fun KSDeclaration.getPackageAndClassName(): Pair<String, String> {
+//    val qualifiedName = nonNullQualifiedName()
+//    val packageName = packageName.asString()
+//    val className = qualifiedName.removePrefix("$packageName.")
+//    return packageName to className
+//}
+/**
+ * Extract from `com.foo.bar.Inner$Thing` the pair `[com.foo.bar, inner.Thing]`
+ */
+fun KSDeclaration.getKotlinName(): KotlinClassName {
     val qualifiedName = nonNullQualifiedName()
     val packageName = packageName.asString()
     val className = qualifiedName.removePrefix("$packageName.")
-    return packageName to className
+    return KotlinClassName(pkg = packageName, simple = className)
 }
 
 /**
@@ -43,6 +53,7 @@ fun KSDeclaration.getSimpleName(): String = if (this is KSClassDeclaration) {
 } else {
     getTopLevelSimpleName()
 }
+
 /**
  * Extract from `com.foo.bar.Inner$Thing` , `Thing`
  */
@@ -59,15 +70,21 @@ internal inline fun KSNode.checkRequirement(environment: SymbolProcessorEnvironm
 
 fun KSTypeArgument.nonNullType() =
     type
-        ?: error("There's no reason why a type of a type argument would be null. If you encounter this error, open a bug report ASAP! This happened for '$this'.")
+        ?: error(
+            "There's no reason why a type of a type argument would be null. If you encounter this error, open a bug report ASAP! This happened for '$this'."
+        )
 
 fun KSDeclaration.nonNullQualifiedName() =
     qualifiedName?.asString()
-        ?: error("There's no reason why the qualified name of a type would be null. If you encounter this error, open a bug report ASAP! This happened for '$this'.")
+        ?: error(
+            "There's no reason why the qualified name of a type would be null. If you encounter this error, open a bug report ASAP! This happened for '$this'."
+        )
 
 fun KSFunctionDeclaration.nonNullReturnType() =
     returnType
-        ?: error("There's no reason why the return type of a function would be null. If you encounter this error, open a bug report ASAP! This happened for '$this'.")
+        ?: error(
+            "There's no reason why the return type of a function would be null. If you encounter this error, open a bug report ASAP! This happened for '$this'."
+        )
 
 /**
  * Handles type aliases as well
@@ -99,14 +116,16 @@ fun CodeGenerator.writeFile(
  * ```
  *
  * It will return everything referenced by `SomeClass` and other such referenced classes.
+ *
+ * @param filter Allows denying certain classes, which will make it so things they have referenced will not get visited.
  */
-fun KSClassDeclaration.getReferencedClasses(): Set<KSClassDeclaration> {
+fun KSClassDeclaration.getReferencedClasses(filter: (KSTypeReference) -> Boolean = { true }): Set<KSClassDeclaration> {
     val types = hashSetOf<KSClassDeclaration>()
     // Add things referenced in methods
     for (method in getPublicApiFunctions()) {
-        addReferencedTypes(method.nonNullReturnType(), types)
+        addReferencedTypes(method.nonNullReturnType(), types, filter)
         for (arg in method.parameters) {
-            addReferencedTypes(arg.type, types)
+            addReferencedTypes(arg.type, types, filter)
         }
     }
 
@@ -124,26 +143,30 @@ fun KSClassDeclaration.getReferencedClasses(): Set<KSClassDeclaration> {
  * ```
  * It will return everything referenced by `SomeClass`, including `SomeOtherClass` and `AnotherClass`.
  */
-private fun addReferencedTypes(type: KSTypeReference, addTo: MutableSet<KSClassDeclaration>) {
-    val resolved = type.resolve()
+private fun addReferencedTypes(type: KSTypeReference, addTo: MutableSet<KSClassDeclaration>, filter: (KSTypeReference) -> Boolean) {
+    if (!filter(type)) return
+    val resolved = type.resolveToUnderlying()
+    for (typeArg in resolved.arguments) {
+        if (typeArg.type != null) addReferencedTypes(typeArg.type!!, addTo, filter)
+    }
     val declaration = resolved.declaration
     // We really don't want to iterate over builtin types, and we need to be careful to only process everything once or this will be infinite recursion.
     if (!resolved.isBuiltinSerializableType() && declaration !in addTo && declaration is KSClassDeclaration) {
         for (arg in resolved.arguments) {
-            addReferencedTypes(arg.nonNullType(), addTo)
+            addReferencedTypes(arg.nonNullType(), addTo, filter)
         }
-        addReferencedTypes(declaration, addTo)
+        addReferencedTypes(declaration, addTo, filter)
     }
 }
 
-private fun addReferencedTypes(declaration: KSClassDeclaration, addTo: MutableSet<KSClassDeclaration>) {
+private fun addReferencedTypes(declaration: KSClassDeclaration, addTo: MutableSet<KSClassDeclaration>, filter: (KSTypeReference) -> Boolean) {
     addTo.add(declaration)
     // Include types referenced in properties of models as well
     for (property in declaration.getAllProperties()) {
-        addReferencedTypes(property.type, addTo)
+        addReferencedTypes(property.type, addTo, filter)
     }
     // Add sealed subclasses as well
     for (sealedSubClass in declaration.getSealedSubclasses()) {
-        addReferencedTypes(sealedSubClass, addTo)
+        addReferencedTypes(sealedSubClass, addTo, filter)
     }
 }

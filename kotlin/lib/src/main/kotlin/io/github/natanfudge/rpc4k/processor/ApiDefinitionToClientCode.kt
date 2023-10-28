@@ -7,6 +7,7 @@ import io.github.natanfudge.rpc4k.runtime.api.GeneratedClientImplFactory
 import io.github.natanfudge.rpc4k.runtime.api.RpcClient
 import io.github.natanfudge.rpc4k.runtime.api.SerializationFormat
 import io.github.natanfudge.rpc4k.runtime.implementation.GeneratedCodeUtils
+import io.github.natanfudge.rpc4k.runtime.implementation.kotlinPoet
 
 /**
  * Converts
@@ -56,7 +57,7 @@ object ApiDefinitionToClientCode {
      * extend the user class. We need to know if the user class is an interface or not to properly extend/implement it.
      */
     fun convert(apiDefinition: ApiDefinition, userClassIsInterface: Boolean): FileSpec {
-        val className = "${apiDefinition.name.simpleName}${GeneratedCodeUtils.ClientSuffix}"
+        val className = "${apiDefinition.name.simple}${GeneratedCodeUtils.ClientSuffix}"
         return fileSpec(GeneratedCodeUtils.Package, className) {
             // KotlinPoet doesn't handle extension methods well
             addImport("kotlinx.serialization.builtins", "serializer")
@@ -73,7 +74,7 @@ object ApiDefinitionToClientCode {
                     addConstructorProperty(ClientPropertyName, type = RpcClient::class, KModifier.PRIVATE)
                     addConstructorProperty(FormatPropertyName, type = SerializationFormat::class, KModifier.PRIVATE)
                 }
-                val userClassName = apiDefinition.name.className
+                val userClassName = apiDefinition.name.kotlinPoet
                 if (userClassIsInterface) addSuperinterface(userClassName) else superclass(userClassName)
                 for (method in apiDefinition.methods) addFunction(convertMethod(method))
             }
@@ -94,12 +95,12 @@ object ApiDefinitionToClientCode {
      */
 //    context(JvmContext)
     private fun factoryCompanionObject(api: ApiDefinition, generatedClassName: String) = companionObject(GeneratedCodeUtils.FactoryName) {
-        addSuperinterface(GeneratedClientImplFactory::class.asClassName().parameterizedBy(api.name.typeName))
+        addSuperinterface(GeneratedClientImplFactory::class.asClassName().parameterizedBy(api.name.kotlinPoet))
         addFunction("build") {
             addModifiers(KModifier.OVERRIDE)
             addParameter(ClientPropertyName, RpcClient::class)
             addParameter(FormatPropertyName, SerializationFormat::class)
-            returns(api.name.typeName)
+            returns(api.name.kotlinPoet)
             addStatement("return $generatedClassName($ClientPropertyName, $FormatPropertyName)")
         }
     }
@@ -115,7 +116,7 @@ object ApiDefinitionToClientCode {
      */
 //    context(JvmContext)
     private fun clientConstructorExtension(api: ApiDefinition, generatedClassName: String) =
-        extensionFunction(api.name.className.companion(), "client") {
+        extensionFunction(api.name.kotlinPoet.companion(), "client") {
             addParameter(ClientPropertyName, RpcClient::class)
             addParameter(FormatPropertyName, SerializationFormat::class)
             returns(ClassName(GeneratedCodeUtils.Package, generatedClassName))

@@ -4,9 +4,9 @@ import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.FunSpec
 import com.squareup.kotlinpoet.MemberName
 import io.github.natanfudge.rpc4k.processor.KotlinTypeReference
-import io.github.natanfudge.rpc4k.processor.utils.ClassBasedKotlinSerializer
 import io.github.natanfudge.rpc4k.processor.utils.KotlinSerializer
 import io.github.natanfudge.rpc4k.processor.utils.getKSerializer
+import io.github.natanfudge.rpc4k.runtime.implementation.kotlinPoet
 
 /**
  * Represents a string like `"%T.serializer()"` formatted with a value like `Int`.
@@ -57,14 +57,19 @@ internal fun KotlinTypeReference.toSerializerString(): FormattedString {
 
 private fun KotlinSerializer.toSerializerString(): FormattedString  {
     val withoutNullable = when(this) {
-        is ClassBasedKotlinSerializer ->"%T.serializer".formatWith(ClassName.bestGuess(className)).withMethodSerializerArguments(typeArguments)
-        is KotlinSerializer.BuiltinToplevel -> MemberName("kotlinx.serialization.builtins", functionName)
-            .withSerializerArguments(typeArguments)
-
-        // See TuplePairSerializer and similar
-        is KotlinSerializer.Rpc4KTopLevel -> MemberName("io.github.natanfudge.rpc4k.runtime.implementation", functionName)
-            .withSerializerArguments(typeArguments)
+        is KotlinSerializer.CompanionExtension -> "%T.serializer".formatWith(className.kotlinPoet).withMethodSerializerArguments(typeArguments)
+        is KotlinSerializer.Object -> "%T".formatWith(name.kotlinPoet)
+        is KotlinSerializer.TopLevelFunction -> name.kotlinPoet.withSerializerArguments(typeArguments)
     }
+//    val withoutNullable = when(this) {
+//        is ClassBasedKotlinSerializer ->"%T.serializer".formatWith(ClassName.bestGuess(className)).withMethodSerializerArguments(typeArguments)
+//        is KotlinSerializer.BuiltinToplevel -> MemberName("kotlinx.serialization.builtins", functionName)
+//            .withSerializerArguments(typeArguments)
+//
+//        // See TuplePairSerializer and similar
+//        is KotlinSerializer.Rpc4KTopLevel -> MemberName("io.github.natanfudge.rpc4k.runtime.implementation", functionName)
+//            .withSerializerArguments(typeArguments)
+//    }
     // Add .nullable if needed
     return if (isNullable) {
         withoutNullable + ".nullable"

@@ -28,6 +28,7 @@ class Rpc4KPlugin : Plugin<Project> {
         // Apply KSP processor
         dependencies.add("ksp", artifact)
 
+
         val extension = extensions.create<Rpc4kExtension>("rpc4k")
 
         afterEvaluate {

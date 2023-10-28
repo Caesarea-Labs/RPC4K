@@ -1,6 +1,6 @@
 @file:Suppress("FunctionName")
 
-package io.github.natanfudge.rpc4k.runtime.implementation
+package io.github.natanfudge.rpc4k.runtime.implementation.serializers
 
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.builtins.serializer
@@ -10,16 +10,15 @@ import kotlinx.serialization.encoding.Encoder
 import java.time.Instant
 import java.time.ZonedDateTime
 
-/**
- * We serialized instant as an iso string
- */
-fun InstantSerializer(): KSerializer<Instant> = InstantIsoSerializer
-/**
- * We serialized ZonedDateTime as an iso string
- */
-fun ZonedDateTimeSerializer(): KSerializer<ZonedDateTime> = ZonedDateTimeIsoSerializer
 
-private object InstantIsoSerializer : KSerializer<Instant> {
+//fun InstantSerializer(): KSerializer<Instant> = InstantIsoSerializer
+//
+//fun ZonedDateTimeSerializer(): KSerializer<ZonedDateTime> = ZonedDateTimeIsoSerializer
+
+/**
+ * We serialize instant as an iso string
+ */
+ object InstantIsoSerializer : KSerializer<Instant> {
     override val descriptor: SerialDescriptor = String.serializer().descriptor
 
     override fun deserialize(decoder: Decoder): Instant = Instant.parse(decoder.decodeString())
@@ -28,8 +27,10 @@ private object InstantIsoSerializer : KSerializer<Instant> {
 }
 
 
-
-private object ZonedDateTimeIsoSerializer : KSerializer<ZonedDateTime> {
+/**
+ * We serialize ZonedDateTime as an iso string
+ */
+ object ZonedDateTimeIsoSerializer : KSerializer<ZonedDateTime> {
     override val descriptor: SerialDescriptor = String.serializer().descriptor
 
     override fun deserialize(decoder: Decoder): ZonedDateTime = ZonedDateTime.parse(decoder.decodeString())

@@ -23,12 +23,24 @@ class ApiClassValidator(private val env: SymbolProcessorEnvironment) {
             valid = checkClassIsSuspendOpen(apiClass) && valid
         }
 
+        var unserializableReferencedClass = false
+
+        val referencedClasses = apiClass.getReferencedClasses {
+            val type = it.resolveToUnderlying()
+            // Type parameters get a pass since they might get expanded into something serializable
+            if (type.declaration is KSTypeParameter) return@getReferencedClasses true
+            val serializable = type.isSerializable()
+            if (!serializable) unserializableReferencedClass = true
+            it.checkRequirement(env, serializable) {
+                "Referenced type '${type.declaration.nonNullQualifiedName()}' is not a @Serializable class or a builtin serializable type."
+            }
+        }
+
         // Make sure to invoke all the checks so the user will get all the errors at once
-        val referencedClasses = apiClass.getReferencedClasses()
         val noSealedClasses = checkNoGenericSealedClasses(referencedClasses)
         val hasContextualWhenNeeded = checkContextualAnnotationOnCertainPropertyTypes(referencedClasses)
         val notUsingReservedPropertyName = checkNoTypePropertyOnSealedSubclasses(referencedClasses)
-        return valid && noSealedClasses && hasContextualWhenNeeded && notUsingReservedPropertyName
+        return valid && noSealedClasses && hasContextualWhenNeeded && notUsingReservedPropertyName && !unserializableReferencedClass
     }
 
     /**
@@ -116,6 +128,15 @@ class ApiClassValidator(private val env: SymbolProcessorEnvironment) {
      * because the @ApiClient class serves as an interface for the generated client implementation.
      */
     private fun checkClassIsSuspendOpen(apiClass: KSClassDeclaration): Boolean {
+        apiClass.primaryConstructor?.let { ctr ->
+            ctr.parameters.evaluateAll {
+                it.checkRequirement(env, it.hasDefault) {
+                    // The generated client class extends the user's class, and having required parameters for the user's class would make it impossible
+                    // to simply extend it (we would need to specify some value)
+                    "@Api client class must have default values for its primary constructor"
+                }
+            }
+        }
         val classOpen = checkIsSuspendOpen(apiClass, method = false)
         // Make sure to evaluate all the checks
         return apiClass.getPublicApiFunctions().evaluateAll { checkIsSuspendOpen(it, method = true) } && classOpen
@@ -130,15 +151,15 @@ class ApiClassValidator(private val env: SymbolProcessorEnvironment) {
         return when {
             // Make the error messages as descriptive as possible
             !isOpen && !isSuspending -> node.checkRequirement(env, false) {
-                "$messagePrefix@ApiClient class must be suspending and open for inheritance"
+                "$messagePrefix@Api client class must be suspending and open for inheritance"
             }
 
             !isOpen -> node.checkRequirement(env, false) {
-                "$messagePrefix@ApiClient class must be open for inheritance"
+                "$messagePrefix@Api client class must be open for inheritance"
             }
 
             !isSuspending -> node.checkRequirement(env, false) {
-                "$messagePrefix@ApiClient class must be suspending"
+                "$messagePrefix@Api client class must be suspending"
             }
 
             else -> true
@@ -172,7 +193,7 @@ class ApiClassValidator(private val env: SymbolProcessorEnvironment) {
 /**
  * Checks [condition] for ALL elements of this, even though this is slower, to give the user all the possible errors.
  */
-private fun <T> Iterable<T>.evaluateAll(condition: (T) -> Boolean): Boolean {
+private inline fun <T> Iterable<T>.evaluateAll(condition: (T) -> Boolean): Boolean {
     var failed = false
     for (item in this) {
         if (!condition(item)) failed = true
@@ -183,7 +204,7 @@ private fun <T> Iterable<T>.evaluateAll(condition: (T) -> Boolean): Boolean {
 /**
  * Checks [condition] for ALL elements of this, even though this is slower, to give the user all the possible errors.
  */
-private fun <T> Sequence<T>.evaluateAll(condition: (T) -> Boolean): Boolean {
+private inline fun <T> Sequence<T>.evaluateAll(condition: (T) -> Boolean): Boolean {
     var failed = false
     for (item in this) {
         if (!condition(item)) failed = true

@@ -4,7 +4,7 @@ package io.github.natanfudge.rpc4k.test
 
 import com.example.*
 import io.github.natanfudge.rpc4k.runtime.api.RpcResponseException
-import io.github.natanfudge.rpc4k.test.util.rpcExtension
+import io.github.natanfudge.rpc4k.runtime.api.testing.rpcExtension
 import kotlinx.coroutines.runBlocking
 import org.junit.jupiter.api.extension.RegisterExtension
 import strikt.api.expectThat
@@ -12,14 +12,15 @@ import strikt.api.expectThrows
 import strikt.assertions.isEqualTo
 import java.time.Instant
 import java.time.ZonedDateTime
+import java.util.*
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
-class TestUserProtocol {
+class AllEncompassingTest {
     companion object {
         @JvmField
         @RegisterExtension
-        val userExtension = rpcExtension(UserProtocol())
+        val userExtension = rpcExtension(AllEncompassingService())
 
         @JvmField
         @RegisterExtension
@@ -56,9 +57,9 @@ class TestUserProtocol {
     @Test
     fun testNullableTypes(): Unit = runBlocking {
         val protocol = userExtension.api
-        expectThat(protocol.heavyNullable(UserProtocol.HeavyNullableTestMode.EntirelyNull)).isEqualTo(null)
-        expectThat(protocol.heavyNullable(UserProtocol.HeavyNullableTestMode.NullList)).isEqualTo(GenericThing(null, null, listOf()))
-        expectThat(protocol.heavyNullable(UserProtocol.HeavyNullableTestMode.NullString)).isEqualTo(
+        expectThat(protocol.heavyNullable(AllEncompassingService.HeavyNullableTestMode.EntirelyNull)).isEqualTo(null)
+        expectThat(protocol.heavyNullable(AllEncompassingService.HeavyNullableTestMode.NullList)).isEqualTo(GenericThing(null, null, listOf()))
+        expectThat(protocol.heavyNullable(AllEncompassingService.HeavyNullableTestMode.NullString)).isEqualTo(
             GenericThing(
                 listOf(null, "test"),
                 null,
@@ -107,7 +108,8 @@ class TestUserProtocol {
             byteArrayOf(7), ShortArray(8), IntArray(9), longArrayOf(10), charArrayOf('@'),
             listOf(11), mapOf(12 to 13), setOf(14), 15 to 16, Triple(17, 18, 19), Unit,
             arrayOf(20), ubyteArrayOf(21u), ushortArrayOf(22u), uintArrayOf(23u), ULongArray(24),
-            25u, 26u, 27u, 28u, 29f, 30.0, mapOf(31 to 32).entries.first(), Instant.now(), ZonedDateTime.now()
+            25u, 26u, 27u, 28u, 29f, 30.0, mapOf(31 to 32).entries.first(), Instant.now(), ZonedDateTime.now(),
+            UUID.randomUUID()
 
         )
         expectThat(protocol.everyBuiltinType(everything)).isEqualTo(everything)
@@ -117,7 +119,8 @@ class TestUserProtocol {
                 byteArrayOf(7), ShortArray(8), IntArray(9), longArrayOf(10), charArrayOf('@'),
                 listOf(11), mapOf(12 to 13), setOf(14), 15 to 16, Triple(17, 18, 19), Unit,
                 arrayOf(20), ubyteArrayOf(21u), ushortArrayOf(22u), uintArrayOf(23u), ULongArray(24),
-                25u, 26u, 27u, 28u, 29f, 30.0, mapOf(31 to 32).entries.first(), Instant.now(), ZonedDateTime.now()
+                25u, 26u, 27u, 28u, 29f, 30.0, mapOf(31 to 32).entries.first(), Instant.now(), ZonedDateTime.now(),
+                UUID.randomUUID()
             )
         ).isEqualTo(Triple(17, 18, 19))
     }

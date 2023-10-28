@@ -1,20 +1,18 @@
-package io.github.natanfudge.rpc4k.test.util
+package io.github.natanfudge.rpc4k.runtime.api.testing
 
 import io.github.natanfudge.rpc4k.runtime.api.*
 import io.github.natanfudge.rpc4k.runtime.api.components.JsonFormat
 import io.github.natanfudge.rpc4k.runtime.api.components.KtorManagedRpcServer
 import io.github.natanfudge.rpc4k.runtime.api.components.OkHttpRpcClient
 import io.github.natanfudge.rpc4k.runtime.implementation.GeneratedCodeUtils
+import io.github.natanfudge.rpc4k.runtime.implementation.MultiCallServerExtension
 import io.github.natanfudge.rpc4k.runtime.implementation.PortPool
-import io.ktor.server.netty.*
 import okhttp3.OkHttpClient
 import org.junit.jupiter.api.extension.AfterAllCallback
 import org.junit.jupiter.api.extension.BeforeAllCallback
 import org.junit.jupiter.api.extension.Extension
 import org.junit.jupiter.api.extension.ExtensionContext
 import kotlin.reflect.full.companionObjectInstance
-
-//io.github.natanfudge.rpc4k.test.util.KtorServerExtension@37a64f9d
 
 fun <API> rpcExtension(
     serverHandler: API,
@@ -40,30 +38,18 @@ inline fun <reified API> rpcExtension(
     return rpcExtension(serverHandler, port, generatedServer(), apiClientFactory(), format, server, client)
 }
 
-//@Suppress("UNCHECKED_CAST")
-//inline fun <reified API> apiServerFactory(): GeneratedServerHandlerFactory<API> {
-//    return Class.forName(GeneratedCodeUtils.Package + "." + API::class.simpleName + GeneratedCodeUtils.ServerSuffix)
-//        .kotlin.companionObjectInstance as GeneratedServerHandlerFactory<API>
-//}
-//
 @Suppress("UNCHECKED_CAST")
-inline fun <reified API> apiClientFactory(): GeneratedClientImplFactory<API> {
+@PublishedApi internal inline fun <reified API> apiClientFactory(): GeneratedClientImplFactory<API> {
     return Class.forName(GeneratedCodeUtils.Package + "." + API::class.simpleName + GeneratedCodeUtils.ClientSuffix)
         .kotlin.companionObjectInstance as GeneratedClientImplFactory<API>
 }
 
 @Suppress("UNCHECKED_CAST")
-inline fun <reified API> generatedServer(): GeneratedServerHelper<API> {
+@PublishedApi internal inline fun <reified API> generatedServer(): GeneratedServerHelper<API> {
     return Class.forName(GeneratedCodeUtils.Package + "." + API::class.simpleName + GeneratedCodeUtils.ServerSuffix)
         .constructors[0].newInstance() as GeneratedServerHelper<API>
-//        .kotlin.companionObjectInstance as GeneratedServerHandlerFactory<API>
 }
 
-//@Suppress("UNCHECKED_CAST")
-//inline fun <reified API> generatedClient(): GeneratedClientImplFactory<API> {
-//    return Class.forName(GeneratedCodeUtils.Package + "." + API::class.simpleName + GeneratedCodeUtils.ClientSuffix)
-//        .kotlin.companionObjectInstance as GeneratedClientImplFactory<API>
-//}
 
 
 class ClientServerExtension<API>(serverSetup: RpcServerSetup<API, RpcServerEngine.MultiCall>, val api: API) : Extension, BeforeAllCallback,
@@ -78,20 +64,6 @@ class ClientServerExtension<API>(serverSetup: RpcServerSetup<API, RpcServerEngin
     }
 }
 
-///**
-// * Something that creates a [ServerExtension], generally there's one [ServerExtensionFactory] per [ServerExtension]
-// * This interface is useful because it's often easier to specify a [ServerExtensionFactory] than an instance of a [ServerExtension] because [ServerExtension]
-// * often have many parameters.
-// */
-//interface ServerExtensionFactory<API> {
-//    fun build(api: API, generatedClass: GeneratedServerHelper<API>, format: SerializationFormat): ServerExtension
-//
-//    class Ktor<Api> : ServerExtensionFactory<Api> {
-//        override fun build(api: Api, generatedClassFactory: GeneratedServerHelper<Api>, format: SerializationFormat): ServerExtension {
-//            return KtorServerExtension { generatedClassFactory.build(api, format, it) }
-//        }
-//    }
-//}
 
 /**
  * Something that creates a [RpcClient], generally there's one [RpcClientFactory] per [RpcClient]
@@ -105,10 +77,3 @@ interface RpcClientFactory<API> {
         override fun build(url: String): RpcClient = OkHttpRpcClient(url, client)
     }
 }
-
-///**
-// * Server that binds to the JUnit API to set itself up before tests and tear itself down after tests
-// */
-//interface ServerExtension : Extension, BeforeAllCallback, AfterAllCallback {
-//    val port: Int
-//}

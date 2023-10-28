@@ -1,6 +1,6 @@
 package io.github.natanfudge.rpc4k.testserver
 
-import com.example.UserProtocol
+import com.example.AllEncompassingService
 import io.github.natanfudge.rpc4k.generated.server
 import io.github.natanfudge.rpc4k.runtime.api.RpcServerSetup
 import io.github.natanfudge.rpc4k.runtime.api.createServer
@@ -15,6 +15,6 @@ class TestServers {
 
     @Test
     fun userProtocol() {
-        RpcServerSetup.managedKtor(UserProtocol(), UserProtocol.server()).createServer().start(wait = true)
+        RpcServerSetup.managedKtor(AllEncompassingService(), AllEncompassingService.server()).createServer().start(wait = true)
     }
 }
