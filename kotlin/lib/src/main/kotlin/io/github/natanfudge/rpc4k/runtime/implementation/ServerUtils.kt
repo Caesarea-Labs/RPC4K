@@ -3,7 +3,7 @@ package io.github.natanfudge.rpc4k.runtime.implementation
 import io.github.natanfudge.rpc4k.runtime.api.*
 
 // This handles reading and responding for both types of engines
-internal suspend fun <RpcDef, I, O, Engine: RpcServerEngine.SingleCall<I,O>> RpcServerSetup<RpcDef, Engine>.handleImpl(input: I, output: O?): O? {
+internal suspend fun <RpcDef, I, O, Engine : RpcServerEngine.SingleCall<I, O>> RpcServerSetup<RpcDef, Engine>.handleImpl(input: I, output: O?): O? {
     val bytes = engine.read(input)
 
     try {
@@ -23,12 +23,13 @@ internal suspend fun <RpcDef, I, O, Engine: RpcServerEngine.SingleCall<I,O>> Rpc
 }
 
 // Generically handle the methods of both the Writing and Returning server types
-private suspend fun<I,O> RpcServerEngine.SingleCall<I,O>.genericResponder(input: ByteArray, output: O?): O? = when(this){
+private suspend fun <I, O> RpcServerEngine.SingleCall<I, O>.genericResponder(input: ByteArray, output: O?): O? = when (this) {
     is RpcServerEngine.SingleCall.Returning -> respond(input)
-    is RpcServerEngine.SingleCall.Writing -> write(input,output!!).let { null }
+    is RpcServerEngine.SingleCall.Writing -> write(input, output!!).let { null }
 }
 
-private suspend fun<I,O> RpcServerEngine.SingleCall<I,O>.genericErrorResponder(message: String, errorType: RpcError, output: O?): O? = when(this){
+private suspend fun <I, O> RpcServerEngine.SingleCall<I, O>.genericErrorResponder(message: String, errorType: RpcError,
+                                                                                  output: O?): O? = when (this) {
     is RpcServerEngine.SingleCall.Returning -> respondError(message, errorType)
     is RpcServerEngine.SingleCall.Writing -> writeError(message, errorType, output!!).let { null }
 }

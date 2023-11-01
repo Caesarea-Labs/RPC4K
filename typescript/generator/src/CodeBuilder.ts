@@ -56,6 +56,15 @@ export class CodeBuilder {
         }
     }
 
+    addTypeAlias({name, typeParameters, type}: {
+        name: string,
+        typeParameters?: string[],
+        type: string
+    }): CodeBuilder {
+        const prefix = `export type ${name}${this.typeParametersString(typeParameters)} = `
+        return this._addLineOfCode(prefix + type)
+    }
+
     typeParametersString(params: string[] | undefined): string {
         if (params === undefined || params.length === 0) return ""
         return `<${params.join(", ")}>`
@@ -147,8 +156,6 @@ export class CodeBuilder {
 }
 
 
-
-
 export class InterfaceBuilder {
     protected codegen: CodeBuilder
 
@@ -158,7 +165,7 @@ export class InterfaceBuilder {
 
     addProperty({name, type, optional, initializer}: { name: string, type: string, optional?: boolean, initializer?: string }): InterfaceBuilder {
         const optionalString = optional === true ? "?" : ""
-        const initializerString = initializer === undefined? "": ` = ${initializer}`
+        const initializerString = initializer === undefined ? "" : ` = ${initializer}`
         this.codegen._addLineOfCode(`${name}${optionalString}: ${type}${initializerString}`)
         return this
     }

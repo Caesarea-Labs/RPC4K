@@ -1,39 +1,32 @@
 package io.github.natanfudge.rpc4k.runtime.api
 
 import io.github.natanfudge.rpc4k.runtime.implementation.InvalidRpcRequestException
-import kotlinx.serialization.KSerializer
 
 
 sealed interface RpcServerEngine {
-    sealed interface SingleCall<I, O>: RpcServerEngine {
+    sealed interface SingleCall<I, O> : RpcServerEngine {
         suspend fun read(input: I): ByteArray
-        interface Returning<I, O>: SingleCall<I,O> {
+        interface Returning<I, O> : SingleCall<I, O> {
             suspend fun respond(bytes: ByteArray): O
             suspend fun respondError(message: String, errorType: RpcError): O
         }
-        interface Writing<I,O>: SingleCall<I,O> {
+
+        interface Writing<I, O> : SingleCall<I, O> {
             suspend fun write(bytes: ByteArray, output: O)
             suspend fun writeError(message: String, errorType: RpcError, output: O)
         }
     }
-    interface MultiCall: RpcServerEngine {
+
+    interface MultiCall : RpcServerEngine {
         interface Instance {
             fun start(wait: Boolean)
             fun stop()
         }
-        fun create(setup: RpcServerSetup<*,*>): Instance
-//        fun Instance.startServer(wait: Boolean)
-//        fun Instance.stopServer()
+
+        fun create(setup: RpcServerSetup<*, *>): Instance
     }
 }
 
-
-
-
-//interface RpcServer {
-//    suspend fun <T> send(format: SerializationFormat, response: T, serializer: KSerializer<T>)
-//    suspend fun sendError(message: String, errorType: RpcError)
-//}
 
 /**
  * SECURITY NOTE - the message will be sent to clients. Make sure to not leak sensitive info.

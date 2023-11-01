@@ -2,7 +2,7 @@ import {RpcClient} from "../RpcClient";
 import {SerializationFormat} from "../SerializationFormat";
 import {Rpc} from "./Rpc";
 import {Rpc4aTypeAdapter} from "./Rpc4aTypeAdapter";
-import {fillDefaultModelValues} from "../../../../generator/src/ApiDefinitionsDefaults";
+import {fillDefaultModelValues} from "../../../generator/src/ApiDefinitionsDefaults";
 import {PartialRpcType, RpcModel} from "./ApiDefinition";
 import {createRpcType, RpcTypes} from "./RpcTypeUtils";
 

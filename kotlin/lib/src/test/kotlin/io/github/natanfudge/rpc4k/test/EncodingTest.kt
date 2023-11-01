@@ -4,7 +4,6 @@ import io.github.natanfudge.rpc4k.runtime.api.Rpc
 import io.github.natanfudge.rpc4k.runtime.api.components.JsonFormat
 import kotlinx.serialization.builtins.serializer
 import strikt.api.expectThat
-import strikt.api.expectThrows
 import strikt.assertions.isEqualTo
 import kotlin.random.Random
 import kotlin.test.Test

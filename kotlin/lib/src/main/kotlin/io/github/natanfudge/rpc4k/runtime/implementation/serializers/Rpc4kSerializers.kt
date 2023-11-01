@@ -1,13 +1,10 @@
 package io.github.natanfudge.rpc4k.runtime.implementation.serializers
 
-import com.squareup.kotlinpoet.ClassName
-import com.squareup.kotlinpoet.MemberName
 import io.github.natanfudge.rpc4k.runtime.implementation.KotlinClassName
 import io.github.natanfudge.rpc4k.runtime.implementation.KotlinMethodName
 import io.github.natanfudge.rpc4k.runtime.implementation.KotlinName
 import io.github.natanfudge.rpc4k.runtime.implementation.kotlinName
 import kotlinx.serialization.KSerializer
-import kotlinx.serialization.Serializable
 import kotlinx.serialization.modules.SerializersModule
 import kotlin.reflect.KClass
 
@@ -24,7 +21,7 @@ internal val Rpc4kSerializers: List<Rpc4kSerializer<*>> = Rpc4kSerializersModule
     builtinSerializerMethod(Triple::class, "TupleTripleSerializer") {
         TupleTripleSerializer(it[0], it[1], it[2])
     }
-    builtinSerializerMethod(Map.Entry::class,"TupleMapEntrySerializer") {
+    builtinSerializerMethod(Map.Entry::class, "TupleMapEntrySerializer") {
         TupleMapEntrySerializer(it[0], it[1])
     }
 }.build()
@@ -77,11 +74,10 @@ class Rpc4kSerializersModuleBuilder {
     }
 }
 
-private  fun < T : Any> Rpc4kSerializersModuleBuilder.builtinSerializerMethod(
+private fun <T : Any> Rpc4kSerializersModuleBuilder.builtinSerializerMethod(
     clazz: KClass<T>,
-    name: String,  provider: (typeArgumentsSerializers: List<KSerializer<*>>) -> KSerializer<*>
+    name: String, provider: (typeArgumentsSerializers: List<KSerializer<*>>) -> KSerializer<*>
 ) = method(clazz, name, "io.github.natanfudge.rpc4k.runtime.implementation.serializers", provider)
-
 
 
 @PublishedApi

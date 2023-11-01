@@ -23,7 +23,7 @@ value class InlineId(val num: Long)
 data class CreateLobbyResponse(val id: Long)
 
 @Api(true)
-open class SimpleProtocol {
+open class SimpleProtocol2 {
     companion object;
 
     open suspend fun bar(thing: Int): Int {

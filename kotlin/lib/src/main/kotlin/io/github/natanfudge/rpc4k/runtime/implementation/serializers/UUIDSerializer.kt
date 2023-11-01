@@ -5,36 +5,20 @@ import kotlinx.serialization.builtins.serializer
 import kotlinx.serialization.descriptors.SerialDescriptor
 import kotlinx.serialization.encoding.Decoder
 import kotlinx.serialization.encoding.Encoder
-import java.util.UUID
+import java.util.*
 
-///**
-// * The RPC4All spec defines the value of the void/unit type as a "void" string.
-// */
-//fun VoidUnitSerializer(): KSerializer<Unit> = VoidUnitSerializerInstance
-//
-//private object VoidUnitSerializerInstance : KSerializer<Unit> {
-//    override val descriptor: SerialDescriptor = String.serializer().descriptor
-//
-//    override fun deserialize(decoder: Decoder) {
-//        // Need to do this call or some formats fail
-//        decoder.decodeString()
-//    }
-//
-//    override fun serialize(encoder: Encoder, value: Unit) {
-//        encoder.encodeString("void")
-//    }
-//}
 
-object UUIDSerializer: KSerializer<UUID> {
-    override val descriptor: SerialDescriptor
-        get() = TODO("Not yet implemented")
+/**
+ * 128 bit ints are represented normally as a string.
+ */
+object UUIDSerializer : KSerializer<UUID> {
+    override val descriptor: SerialDescriptor = String.serializer().descriptor
 
     override fun deserialize(decoder: Decoder): UUID {
-        TODO("Not yet implemented")
+        return UUID.fromString(decoder.decodeString())
     }
 
     override fun serialize(encoder: Encoder, value: UUID) {
-        TODO("Not yet implemented")
+        encoder.encodeString(value.toString())
     }
-
 }

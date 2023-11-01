@@ -1,0 +1,7 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="Publish TS" type="Multirun" separateTabs="false" reuseTabsWithFailures="false" startOneByOne="false" markFailedProcess="true" hideSuccessProcess="false" delayTime="0.0">
+    <runConfiguration name="Publish TS Generator" type="npm" />
+    <runConfiguration name="Publish TS Runtime" type="npm" />
+    <method v="2" />
+  </configuration>
+</component>

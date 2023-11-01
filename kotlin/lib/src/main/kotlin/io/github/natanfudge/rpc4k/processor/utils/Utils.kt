@@ -1,7 +1,5 @@
 package io.github.natanfudge.rpc4k.processor.utils
 
-import io.github.natanfudge.rpc4k.processor.RpcModel
-
 inline fun String.appendIf(condition: Boolean, toAppend: () -> String) = if (condition) this + toAppend() else this
 
 inline fun <T, V> Iterable<T>.findDuplicate(byValue: (T) -> V): V? {
@@ -15,3 +13,5 @@ inline fun <T, V> Iterable<T>.findDuplicate(byValue: (T) -> V): V? {
     }
     return null
 }
+
+inline fun <T> List<T>.appendIf(condition: Boolean, element: () -> T) = if (condition) this + element() else this

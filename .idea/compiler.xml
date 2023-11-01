@@ -10,9 +10,6 @@
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
-      <module name="kotlin" target="19" />
-      <module name="kotlin.main" target="19" />
-      <module name="kotlin.test" target="19" />
       <module name="testprodapp" target="19" />
       <module name="testprodapp.main" target="19" />
       <module name="testprodapp.test" target="19" />

@@ -39,17 +39,18 @@ inline fun <reified API> rpcExtension(
 }
 
 @Suppress("UNCHECKED_CAST")
-@PublishedApi internal inline fun <reified API> apiClientFactory(): GeneratedClientImplFactory<API> {
+@PublishedApi
+internal inline fun <reified API> apiClientFactory(): GeneratedClientImplFactory<API> {
     return Class.forName(GeneratedCodeUtils.Package + "." + API::class.simpleName + GeneratedCodeUtils.ClientSuffix)
         .kotlin.companionObjectInstance as GeneratedClientImplFactory<API>
 }
 
 @Suppress("UNCHECKED_CAST")
-@PublishedApi internal inline fun <reified API> generatedServer(): GeneratedServerHelper<API> {
+@PublishedApi
+internal inline fun <reified API> generatedServer(): GeneratedServerHelper<API> {
     return Class.forName(GeneratedCodeUtils.Package + "." + API::class.simpleName + GeneratedCodeUtils.ServerSuffix)
         .constructors[0].newInstance() as GeneratedServerHelper<API>
 }
-
 
 
 class ClientServerExtension<API>(serverSetup: RpcServerSetup<API, RpcServerEngine.MultiCall>, val api: API) : Extension, BeforeAllCallback,

@@ -3,11 +3,6 @@ package io.github.natanfudge.rpc4k.runtime.implementation
 import io.github.natanfudge.rpc4k.runtime.api.*
 import kotlinx.serialization.*
 
-sealed interface GeneratedHandlerResult<T> {
-    data class Success<T>(val value: T): GeneratedHandlerResult<T>
-    data class Error(val message: String, val type: RpcError)
-}
-
 /**
  * These functions are used by generated code and code that interacts with them
  */
@@ -25,7 +20,7 @@ object GeneratedCodeUtils {
         client: RpcClient,
         format: SerializationFormat,
         methodName: String,
-        args: List<*>,
+        args: List<Any?>,
         argSerializers: List<KSerializer<*>>,
         responseSerializer: KSerializer<T>
     ): T {
@@ -59,7 +54,6 @@ object GeneratedCodeUtils {
         val rpc = Rpc(methodName, args)
         client.send(rpc, format, argSerializers)
     }
-
 
 
 //    //    internal abstract fun errorResponse(message: String, errorType: RpcError): O
@@ -102,7 +96,7 @@ object GeneratedCodeUtils {
      * Uses the [server] to respond with the specified data
      */
     suspend fun <T> respond(
-        setup: RpcServerSetup<*,*>,
+        setup: RpcServerSetup<*, *>,
 //        config: RpcSettings,
 //        server: RpcServer,
         request: ByteArray,

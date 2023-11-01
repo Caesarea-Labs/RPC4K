@@ -1,7 +1,7 @@
 plugins {
     alias(libs.plugins.kotlin)
     alias(libs.plugins.serialization)
-    alias (libs.plugins.nexus.publish)
+    alias(libs.plugins.nexus.publish)
 }
 allprojects {
     apply(plugin = "org.jetbrains.kotlin.jvm")
@@ -14,11 +14,6 @@ allprojects {
     kotlin {
         jvmToolchain(17)
         compilerOptions.freeCompilerArgs.add("-Xcontext-receivers")
-    }
-    java {
-        toolchain {
-            languageVersion = JavaLanguageVersion.of(16)
-        }
     }
 }
 

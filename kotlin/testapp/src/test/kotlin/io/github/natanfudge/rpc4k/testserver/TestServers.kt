@@ -1,3 +1,5 @@
+@file:Suppress("TestFunctionName")
+
 package io.github.natanfudge.rpc4k.testserver
 
 import com.example.AllEncompassingService
@@ -14,7 +16,7 @@ class TestServers {
     }
 
     @Test
-    fun userProtocol() {
+    fun allEncompassingService() {
         RpcServerSetup.managedKtor(AllEncompassingService(), AllEncompassingService.server()).createServer().start(wait = true)
     }
 }

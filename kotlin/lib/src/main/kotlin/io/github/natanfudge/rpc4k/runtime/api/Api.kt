@@ -6,12 +6,5 @@ package io.github.natanfudge.rpc4k.runtime.api
  */
 @Target(AnnotationTarget.CLASS)
 @Retention(AnnotationRetention.SOURCE)
-annotation class Api(val generateClient: Boolean = false)
-
-///**
-// * Generates a class that may act as an RPC server.
-// */
-//@Target(AnnotationTarget.CLASS)
-//@Retention(AnnotationRetention.SOURCE)
-//annotation class ApiServer
+annotation class Api(@Suppress("unused") val generateClient: Boolean = false)
 

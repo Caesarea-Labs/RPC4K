@@ -1,24 +1,26 @@
-import {FetchRpcClient} from "../src/runtime/components/FetchRpcClient";
-import {JsonFormat} from "../src/runtime/components/JsonFormat";
-import {UserProtocolApi} from "./generated/rpc4ts_UserProtocolApi";
-import {
-    EveryBuiltinType,
-    GenericThing, PolymorphicClassOption4,
-    PolymorphicThing,
-    PolymorphicThingOption1
-} from "./generated/rpc4ts_UserProtocolModels";
-import {RpcResponseError} from "../src/runtime/RpcClientError";
+import {FetchRpcClient} from "../src/components";
+import {JsonFormat} from "../src/components";
+import {RpcResponseError} from "../src/RpcClientError";
 import JestMatchers = jest.JestMatchers;
 import dayjs from "dayjs";
+import {AllEncompassingServiceApi} from "./generated/rpc4ts_AllEncompassingServiceApi";
+import {
+    EveryBuiltinType,
+    GenericThing,
+    PolymorphicClassOption4,
+    PolymorphicThing,
+    PolymorphicThingOption1
+} from "./generated/rpc4ts_AllEncompassingServiceModels";
+
 
 test("Codegened Client works", async () => {
-    const client = new UserProtocolApi(new FetchRpcClient("http://localhost:8080"), JsonFormat)
+    const client = new AllEncompassingServiceApi(new FetchRpcClient("http://localhost:8080"), JsonFormat)
     const res = await client.createLobby({num: 2}, "asdf")
     expect(res).toEqual({id: 6})
 })
 
 test("Codegened Client works in more cases", async () => {
-    const client = new UserProtocolApi(new FetchRpcClient("http://localhost:8080"), JsonFormat)
+    const client = new AllEncompassingServiceApi(new FetchRpcClient("http://localhost:8080"), JsonFormat)
     const res = await client.test([1, 2])
     expect(res).toEqual([[1, 2, "3"], 4])
 })
@@ -26,7 +28,7 @@ test("Codegened Client works in more cases", async () => {
 
 
 test("Codegened Client works in all cases", async () => {
-    const client = new UserProtocolApi(new FetchRpcClient("http://localhost:8080"), JsonFormat)
+    const client = new AllEncompassingServiceApi(new FetchRpcClient("http://localhost:8080"), JsonFormat)
     const res = await client.test([1, 2])
     expect(res).toEqual([[1, 2, "3"], 4])
 
@@ -91,9 +93,11 @@ test("Codegened Client works in all cases", async () => {
         h: [7], i: [8], j: [9], k: [10], l: ['@'],
         m: [11], n: { 12: 13 }, o:[14], p: [ 15, 16 ], q: [17, 18, 19],
         r: undefined, s: [21], t: [22], u: [23], v: [24], w: [25], x: 26, y: 27, z: 28, a2: 29.0, b2: 30.0,c2:31, d2: [32, 33],
-        e2: dayjs(), f2: dayjs()
+        e2: dayjs(), f2: dayjs(),g2: "ffffffff-ffff-ffff-ffff-ffffffffffff", h2: dayjs.duration(34, "seconds")
     };
-    expect(await client.everyBuiltinType(everything)).toEqual(everything);
+    const everythingBack = await client.everyBuiltinType(everything)
+    // Turn the duration into an iso string because equality doesn't work well on the object itself
+    expect({...everythingBack, h2: everythingBack.h2.toISOString()}).toEqual({...everything, h2: everything.h2.toISOString()});
 
     expect(
         await client.everyBuiltinTypeParams(
@@ -101,11 +105,15 @@ test("Codegened Client works in all cases", async () => {
                 [7], [8], [9], [10], ['@'],
                 [11], { 12: 13 }, [14], [15, 16], [17, 18, 19],
                 undefined, [21], [22], [23], [24], [25],
-            26, 27, 28, 29.0, 30.0, 31, [32,33], dayjs(), dayjs()
+            26, 27, 28, 29.0, 30.0, 31, [32,33], dayjs(), dayjs(), "ffffffff-ffff-ffff-ffff-ffffffffffff",
+            dayjs.duration(34, "seconds")
         )
     ).toEqual([17, 18, 19]);
 
     expect(await client.returningDataEnum("Option1")).toEqual("Option1")
+
+    expect(await client.inlineHolder({value: 2})).toEqual({value: 2})
+    expect(await client.typeField({type: "wef"})).toEqual({type: "wef"})
 })
 
 async function expectThrows<T extends Error>(code: () => Promise<void>, error: Constructable2<T>): Promise<JestMatchers<T>> {

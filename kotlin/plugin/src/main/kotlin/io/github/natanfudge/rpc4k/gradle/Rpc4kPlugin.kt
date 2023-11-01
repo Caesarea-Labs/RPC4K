@@ -54,6 +54,7 @@ class Rpc4KPlugin : Plugin<Project> {
                         val projectRoot = project.rootDir.parentFile.resolve(DevGeneratorDir)
                         inputs.dir(projectRoot)
                         val generatorPath = projectRoot.resolve(DevGeneratorMain).absolutePath
+                        println("Running $rpc4tsArgs")
                         args.set(listOf(generatorPath) + rpc4tsArgs)
                     } else {
                         command.set("rpc4ts-gen")

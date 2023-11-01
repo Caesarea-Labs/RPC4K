@@ -15,6 +15,7 @@ class PrimaryConstructorBuilder {
     fun addConstructorProperty(name: String, type: TypeName, vararg modifiers: KModifier) {
         properties.add(ConstructorProperty(name, type, modifiers.toList()))
     }
+
     fun addConstructorProperty(name: String, type: KClass<*>, vararg modifiers: KModifier) {
         properties.add(ConstructorProperty(name, type.asTypeName(), modifiers.toList()))
     }

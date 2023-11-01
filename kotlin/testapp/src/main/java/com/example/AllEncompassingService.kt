@@ -1,5 +1,5 @@
 @file:OptIn(ExperimentalUnsignedTypes::class)
-@file:Suppress("EqualsOrHashCode")
+@file:Suppress("EqualsOrHashCode", "unused", "MayBeConstant")
 
 package com.example
 
@@ -11,8 +11,8 @@ import kotlinx.serialization.Contextual
 import kotlinx.serialization.Serializable
 import java.time.Instant
 import java.time.ZonedDateTime
-import java.util.Locale
-import java.util.UUID
+import java.util.*
+import kotlin.time.Duration
 
 
 //TODO: bug: UUID was allowed to be referenced somehow even though it is not serializable (probably because it had @Serializable(with) attached,
@@ -20,6 +20,13 @@ import java.util.UUID
 //TODO: add UUIDs to the format? I think i128 would work.
 
 //@Serializable data class LyingSerializable(@Contextual val locale: Locale)
+
+@Serializable
+@JvmInline
+value class GenericInline<T>(val num: T)
+
+@Serializable
+data class InlineHolder2(val value: InlineId)
 
 
 @Serializable
@@ -44,7 +51,7 @@ open class SimpleProtocol {
 typealias AliasTest = CreateLobbyResponse
 
 @Api(true)
-open class AllEncompassingService(val value: Int  = 1) {
+open class AllEncompassingService(val value: Int = 1) {
     companion object {
         fun distraction1() {}
         val distraction2: String = ""
@@ -58,7 +65,7 @@ open class AllEncompassingService(val value: Int  = 1) {
 
 
     open suspend fun createLobby(createdBy: PlayerId, otherThing: String): CreateLobbyResponse {
-        println("Handled createlobby! $createdBy")
+        println("Handled createLobby! $createdBy")
         return CreateLobbyResponse(createdBy.num + otherThing.length)
     }
 
@@ -211,7 +218,8 @@ open class AllEncompassingService(val value: Int  = 1) {
         d2: Map.Entry<Int, Int>,
         e2: Instant,
         f2: ZonedDateTime,
-        g2: UUID
+        g2: UUID,
+        h2: Duration
     ): Triple<Int, Int, Int> {
         return q
     }
@@ -236,7 +244,25 @@ open class AllEncompassingService(val value: Int  = 1) {
         return ref
     }
 
+    open suspend fun genericInline(inline: GenericInline<Int>): GenericInline<Int> {
+        return inline
+    }
+
+    open suspend fun inlineHolder(inline: InlineHolder2): InlineHolder2 {
+        return inline
+    }
+
+    open suspend fun typeField(type: TypeField): TypeField {
+        return type
+    }
+
+    open suspend fun noArgsYesReturn(): Int {
+        return 2
+    }
 }
+
+@Serializable
+data class TypeField(val type: String)
 
 @Serializable
 data class OnlyReferencedThroughGenerics(val x: Int)
@@ -286,7 +312,8 @@ class EveryBuiltinType(
     @Contextual val d2: Map.Entry<Int, Int>,
     @Contextual val e2: Instant,
     @Contextual val f2: ZonedDateTime,
-    @Contextual val g2: UUID
+    @Contextual val g2: UUID,
+    val h2: Duration
 ) {
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
@@ -326,6 +353,8 @@ class EveryBuiltinType(
         if (d2 != other.d2) return false
         if (e2 != other.e2) return false
         if (f2 != other.f2) return false
+        if (g2 != other.g2) return false
+        if (h2 != other.h2) return false
 
         return true
     }

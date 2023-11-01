@@ -14,11 +14,10 @@ import kotlinx.serialization.encoding.Encoder
 import kotlinx.serialization.encoding.encodeCollection
 
 
-
 /**
  * Serializes a pair as an array of two elements
  */
-fun <K, V> TuplePairSerializer(keySerializer: KSerializer<K>, valueSerializer: KSerializer<V>): KSerializer<Pair<K,V>> = TupleSerializer(
+fun <K, V> TuplePairSerializer(keySerializer: KSerializer<K>, valueSerializer: KSerializer<V>): KSerializer<Pair<K, V>> = TupleSerializer(
     listOf(keySerializer, valueSerializer), { listOf(it.first, it.second) }, { it[0] as K to it[1] as V }
 )
 
@@ -28,7 +27,7 @@ fun <K, V> TuplePairSerializer(keySerializer: KSerializer<K>, valueSerializer: K
  */
 fun <T1, T2, T3> TupleTripleSerializer(
     firstSerializer: KSerializer<T1>, secondSerializer: KSerializer<T2>, thirdSerializer: KSerializer<T3>
-): KSerializer<Triple<T1,T2,T3>> = TupleSerializer(
+): KSerializer<Triple<T1, T2, T3>> = TupleSerializer(
     listOf(firstSerializer, secondSerializer, thirdSerializer),
     { listOf(it.first, it.second, it.third) },
     { Triple(it[0] as T1, it[1] as T2, it[2] as T3) }
@@ -38,13 +37,13 @@ fun <T1, T2, T3> TupleTripleSerializer(
 /**
  * Serializes a map entry the same way as a pair - array of two elements
  */
-fun <K, V> TupleMapEntrySerializer(keySerializer: KSerializer<K>, valueSerializer: KSerializer<V>): KSerializer<Map.Entry<K,V>> = TupleSerializer(
-    listOf(keySerializer, valueSerializer), { listOf(it.key, it.value) }, { MapEntryImpl(it[0] as K, it[1] as V ) }
+fun <K, V> TupleMapEntrySerializer(keySerializer: KSerializer<K>, valueSerializer: KSerializer<V>): KSerializer<Map.Entry<K, V>> = TupleSerializer(
+    listOf(keySerializer, valueSerializer), { listOf(it.key, it.value) }, { MapEntryImpl(it[0] as K, it[1] as V) }
 )
 
-private class MapEntryImpl<K,V>(override val key: K, override val value: V): Map.Entry<K,V> {
+private class MapEntryImpl<K, V>(override val key: K, override val value: V) : Map.Entry<K, V> {
     override fun equals(other: Any?): Boolean {
-        return other is Map.Entry<*,*> && other.key == key && other.value == value
+        return other is Map.Entry<*, *> && other.key == key && other.value == value
     }
 
     override fun toString(): String {
@@ -57,7 +56,6 @@ private class MapEntryImpl<K,V>(override val key: K, override val value: V): Map
         return result
     }
 }
-
 
 
 /**

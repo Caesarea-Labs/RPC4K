@@ -1,6 +1,7 @@
 import {CodeBuilder} from "./CodeBuilder";
 import {Rpc4TsClientGenerationOptions} from "./ClientGenerator";
-import {ApiDefinition, isBuiltinType, modelName, RpcType, RpcTypeNames, stripDefaultTypeValues, typescriptRpcType} from "rpc4ts-runtime";
+import {ApiDefinition, RpcType, RpcTypeNames, stripDefaultTypeValues} from "rpc4ts-runtime";
+import {isBuiltinType, modelName, typescriptRpcType} from "./Rpc4tsType";
 
 /**
  * @param api definition with default values
@@ -10,7 +11,7 @@ export function generateAccessor(api: ApiDefinition,rawApi: ApiDefinition, optio
     const builder = new CodeBuilder()
 
     function libraryPath(path: string): string {
-        if (options.localLibPaths) return `../../src/runtime/${path}`
+        if (options.localLibPaths) return `../../src/${path}`
         else return "rpc4ts-runtime"
     }
 
@@ -21,6 +22,7 @@ export function generateAccessor(api: ApiDefinition,rawApi: ApiDefinition, optio
         .addImport(getReferencedGeneratedTypeNames(api), `./rpc4ts_${api.name}Models`)
         // .addImport(["UserProtocolRuntimeModels"], `./${api.name}RuntimeModels`)
         .addImport(["Dayjs"], `dayjs`)
+        .addImport(["Duration"], `dayjs/plugin/duration`)
 
     const runtimeModelsName  = `${api.name}RuntimeModels`
 
@@ -98,14 +100,14 @@ function getReferencedGeneratedTypeNames(api: ApiDefinition): string[] {
 }
 
 function addReferencedGeneratedTypeNames(type: RpcType, addTo: Set<string>) {
-    if (type.inlinedType !== undefined) {
-        addReferencedGeneratedTypeNames(type.inlinedType, addTo)
-    } else {
+    // if (type.inlinedType !== undefined) {
+    //     addReferencedGeneratedTypeNames(type.inlinedType, addTo)
+    // } else {
         if (!isBuiltinType(type)) {
             addTo.add(modelName(type.name))
         }
         for (const typeArgument of type.typeArguments) {
             addReferencedGeneratedTypeNames(typeArgument, addTo)
         }
-    }
+    // }
 }

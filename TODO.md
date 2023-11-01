@@ -1,6 +1,31 @@
-### Check if underlying type is serializable instead of type alias
-See: https://kotlinlang.slack.com/archives/C013BA8EQSE/p1698328057459909
-Relevant function: KsType.isAnnotatedBySerializable()
+### Duration type
+
+
+### Support optional parameters and properties
+
+Kotlin methods and properties with a default value should be considered optional:
+
+```kotlin
+fun someFunc(x: Int = 2)
+
+class SomeData(val y: Int = 3)
+```
+
+The parameter `x` should have `isOptional` set to `true` in the `RpcParameter` , and the property `y` should have `optional` set to `true` in the `RpcModel.Struct.Property`.
+
+~~Currently we can't know if something has a default value because ksp doesn't expose it (for properties at least). With a compiler plugin it should be simple to determine something has a default value.~~ I think this is possible by accessing the primaryConstructor.
+
+Typescript should interpret optional parameter and properties with the `?` property/parameter operator. In json, we can simply omit optional properties (or specify `undefined` in javascript)
+
+Note that there is some additional complexity to explicitly opting to use the default value in kotlin parameters, but it should be solvable with a compiler plugin.
+
+We this is supported we can allow not encoding defaults in Kotlinx.serialization formats.
+
+### Support types that implement from acceptable types
+For these types, we support having them in serializable classes directly, but not their descendants:
+- Map -> MutableMap, etc not supported
+- List -> MutableList, etc not supported
+- Set-> MutableSet, etc not supported
 
 # 2. Low Priority - Do later
 
@@ -71,6 +96,11 @@ class MyApiImpl(val config: RpcConfig)
 And then pass that instead to `GenerateCodeUtils`, to make it easier to add new fields to the config - we won't need to change the generated code. 
 
 
+### Support Streaming
+I should support an appropriate conversion for the return type of Flow<T>
+
+
+
 
 ### Allow call contexts
 
@@ -97,9 +127,34 @@ And the context will be made available for every call.
 
 The generated kotlin client code shouldn't include this context. 
 
+
+### Allow mocking the server on clients
+Say you have a server like so:
+```kotlin
+@Api class MyService {
+    fun doSomething() {
+        // ...
+    }
+}
+```
+
+On the clients, this will be generated:
+```typescript
+class MyServiceApi {
+    doSomething(request: RobotAction): Promise<void> {
+        return // ...
+    }
+}
+```
+
+I need to investigate if I can somehow mock the doSomething call with something local (implemented by ts client manually), to be able to run server functions without a real server. 
+
 ### Remove unused code and cleanup
 
 There's a bunch of leftover stuff, I should exterminate it and maybe do some restructuring in the files. 
+
+### Rethink the way we type things
+There's something not consistent with the way we type things, including interfacing with KSP and KotlinPoet.
 
 ### Enable public api mode
 
@@ -111,6 +166,11 @@ Every `public` function or class should have detailed javadocs explaining it.
 
 ### Lower visibility of debug prints
 warn -> info, info -> debug, etc. 
+
+
+### Publish with CD
+Publish with github actions. 
+
 
 # 3a. The compiler plugin
 # 3. Blocked - Requires compiler plugin
@@ -155,32 +215,13 @@ These classes use a custom serializer to fit with the Rpc4a standard. However, u
 will serialize using the builtin serializers. Right now we simply require @Contextual to be used, but with a compiler plugin we should force 
 serialization with our specific serializer using @Serializable (with = OurSerializer()) on every property of these types. 
 
-### Support optional parameters and properties
-
-Kotlin methods and properties with a default value should be considered optional:
-
-```kotlin
-fun someFunc(x: Int = 2)
-
-class SomeData(val y: Int = 3)
-```
-
-The parameter `x` should have `isOptional` set to `true` in the `RpcParameter` , and the property `y` should have `optional` set to `true` in the `RpcModel.Struct.Property`. 
-
-Currently we can't know if something has a default value because ksp doesn't expose it (for properties at least). With a compiler plugin it should be simple to determine something has a default value. 
-
-Typescript should interpret optional parameter and properties with the `?` property/parameter operator. In json, we can simply omit optional properties (or specify `undefined` in javascript)
-
-Note that there is some additional complexity to explicitly opting to use the default value in kotlin parameters, but it should be solvable with a compiler plugin. 
-
-We this is supported we can allow not encoding defaults in Kotlinx.serialization formats. 
-
 # 4. Nice to have - Will be done much later
 ### Modularize RPC4All
 RPC4k interfaces with many foreign libraries that are not required for the core logic:
 - Ktor
 - OkHttp
 - Json Format
+- JUnit
 RPC4K should have separate modules for each dependency, to prevent pulling in unnecessary dependencies.  
 
 Additionally:
@@ -280,12 +321,19 @@ Currently, we only allow using the `main` source set. We should allow rpc4k to w
 This requires work in the gradle plugin - apply `ksp` configuration on multiple source sets that are relevant, and generate typescript
 generation tasks for each source set separately. 
 
+### Graph QL-like calls
+It should be possible to expand the protocol to allow complex calls that for example retrieve some object that contains an id,
+then use that id to make another request, without doing any extra round-trips. 
+
 # 5. Alpha
 
 Once all of the above tasks are done, I should release an official alpha for the library. 
 
 ### Write RPC4All spec
 Write a full document detailing everything that RPC4All expects in its networking format and its code generation format 
+
+### Review API
+Go over all APIs and see if they are in the correct location and make sense. 
 
 ### Write documentation
 
@@ -341,6 +389,11 @@ The Typescript function should have an 'overriding' gutter that references the K
 The Kotlin function should have an 'implementors' gutter that references the same function in all clients that have generated code off the api.
 
 Considering this is done with an IDEA plugin, I don't think it requires support from the RPC format. It should be possible to search for a kotlin/typescript class of the appropriate name and attach a reference to it, like how some plugins add "go-to" from json to real classes.  
+
+
+### Show KSP errors in-editor as compile errors
+We should go over all the validations done in the KSP plugin, and do the same validation in an IDEA plugin, and then mark invalid code
+with red compiler errors, to improve user experience. 
 
 # 7. Performance Concerns
 

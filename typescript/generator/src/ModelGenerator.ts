@@ -1,18 +1,20 @@
 import {CodeBuilder} from "./CodeBuilder";
 import {
-    modelName,
     RpcEnumModel,
+    RpcInlineModel,
     RpcModel,
     RpcModelKind,
     RpcStructModel,
-    RpcTypeDiscriminator, RpcUnionModel,
+    RpcTypeDiscriminator,
+    RpcUnionModel,
     simpleModelName,
-    typescriptRpcType
 } from "rpc4ts-runtime";
+import {modelName, typescriptRpcType} from "./Rpc4tsType";
 
 export function generateModels(models: RpcModel[]): string {
     const builder = new CodeBuilder()
         .addImport(["Dayjs"], `dayjs`)
+        .addImport(["Duration"], `dayjs/plugin/duration`)
 
     for (const model of models) {
         switch (model.type) {
@@ -25,6 +27,8 @@ export function generateModels(models: RpcModel[]): string {
             case RpcModelKind.union:
                 addUnion(builder, model)
                 break;
+            case RpcModelKind.inline:
+                addInlineType(builder, model)
 
         }
     }
@@ -38,10 +42,15 @@ function addStruct(code: CodeBuilder, struct: RpcStructModel) {
             interfaceBuilder.addProperty(
                 {
                     // "type" is a reserved, and we use the simple model name to make the code more ergonomic
-                    name, optional: isOptional, type: name === RpcTypeDiscriminator ? `"${simpleModelName(struct.name)}"` : typescriptRpcType(type)
+                    name, optional: isOptional, type: typescriptRpcType(type)
                 }
             )
         })
+
+        // Add type discriminator if needed with a string type that can only be a specific value that is the model name
+        if (struct.hasTypeDiscriminator) {
+            interfaceBuilder.addProperty({name: RpcTypeDiscriminator, optional: false, type: `"${simpleModelName(struct.name)}"`})
+        }
     })
 }
 
@@ -54,6 +63,15 @@ function addUnion(code: CodeBuilder, struct: RpcUnionModel) {
         name: modelName(struct.name),
         types: struct.options.map(option => typescriptRpcType(option)),
         typeParameters: struct.typeParameters
+    })
+}
+
+
+function addInlineType(code: CodeBuilder, model: RpcInlineModel) {
+    code.addTypeAlias({
+        name: modelName(model.name),
+        type: typescriptRpcType(model.inlinedType),
+        typeParameters: model.typeParameters
     })
 }
 

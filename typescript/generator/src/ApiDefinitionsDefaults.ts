@@ -1,12 +1,5 @@
-import {
-    ApiDefinition,
-    PartialRpcType,
-    RpcDefinition,
-    RpcModel,
-    RpcModelKind,
-    RpcType
-} from "../../runtime/src/runtime/impl/ApiDefinition";
-import {createRpcType} from "../../runtime/src/runtime/impl/RpcTypeUtils";
+import {ApiDefinition, createRpcType, RpcDefinition, RpcModel, RpcModelKind} from "rpc4ts-runtime";
+
 
 export function fillDefaultApiDefinitionValues(partialDefinition: ApiDefinition): ApiDefinition {
     // No simpler way to do this other than iterate through the entire object i think
@@ -41,6 +34,16 @@ export function fillDefaultModelValues(partialModel: RpcModel): RpcModel {
                 ...other
             }
         }
+        case RpcModelKind.inline : {
+            const {inlinedType, typeParameters, ...other} = partialModel
+            return {
+                inlinedType: createRpcType(inlinedType),
+                // Default for typeParameters is []
+                typeParameters: typeParameters ?? [],
+                ...other
+            }
+        }
+
     }
 }
 

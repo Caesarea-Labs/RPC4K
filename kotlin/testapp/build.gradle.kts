@@ -7,7 +7,7 @@ plugins {
 }
 
 rpc4k {
-    typescriptDir = rootDir.parentFile.resolve("typescript/runtime/src/generated")
+    typescriptDir = rootDir.parentFile.resolve("typescript/runtime/test/generated")
 }
 
 

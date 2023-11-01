@@ -1,4 +1,5 @@
 @file:OptIn(ExperimentalUnsignedTypes::class)
+@file:Suppress("SpellCheckingInspection")
 
 package io.github.natanfudge.rpc4k.test
 
@@ -15,6 +16,7 @@ import java.time.ZonedDateTime
 import java.util.*
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.time.Duration.Companion.milliseconds
 
 class AllEncompassingTest {
     companion object {
@@ -109,7 +111,7 @@ class AllEncompassingTest {
             listOf(11), mapOf(12 to 13), setOf(14), 15 to 16, Triple(17, 18, 19), Unit,
             arrayOf(20), ubyteArrayOf(21u), ushortArrayOf(22u), uintArrayOf(23u), ULongArray(24),
             25u, 26u, 27u, 28u, 29f, 30.0, mapOf(31 to 32).entries.first(), Instant.now(), ZonedDateTime.now(),
-            UUID.randomUUID()
+            UUID.randomUUID(), 33.milliseconds
 
         )
         expectThat(protocol.everyBuiltinType(everything)).isEqualTo(everything)
@@ -120,9 +122,14 @@ class AllEncompassingTest {
                 listOf(11), mapOf(12 to 13), setOf(14), 15 to 16, Triple(17, 18, 19), Unit,
                 arrayOf(20), ubyteArrayOf(21u), ushortArrayOf(22u), uintArrayOf(23u), ULongArray(24),
                 25u, 26u, 27u, 28u, 29f, 30.0, mapOf(31 to 32).entries.first(), Instant.now(), ZonedDateTime.now(),
-                UUID.randomUUID()
+                UUID.randomUUID(), 20.milliseconds
             )
         ).isEqualTo(Triple(17, 18, 19))
+
+        expectThat(protocol.genericInline(GenericInline(2))).isEqualTo(GenericInline(2))
+        val inlineHolder = InlineHolder2(InlineId(2))
+        expectThat(protocol.inlineHolder(inlineHolder)).isEqualTo(inlineHolder)
+        expectThat(protocol.typeField(TypeField("wef"))).isEqualTo(TypeField("wef"))
     }
 
 }

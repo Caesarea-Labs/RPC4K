@@ -1,6 +1,6 @@
 package io.github.natanfudge.rpc4k.test
 
-import com.example.SimpleProtocol
+import com.example.SimpleProtocol2
 import io.github.natanfudge.rpc4k.test.util.rpcExtension
 import kotlinx.coroutines.runBlocking
 import org.junit.jupiter.api.Assertions.assertEquals
@@ -11,7 +11,7 @@ class SimpleKtorServerTest {
     companion object {
         @JvmField
         @RegisterExtension
-        val extension = rpcExtension(SimpleProtocol())
+        val extension = rpcExtension(SimpleProtocol2())
     }
 
 

@@ -46,7 +46,7 @@ class DirectProcessorTest {
             }.compile()
 
             expectThat(result.exitCode)
-                .describedAs {"Exit code for error file $errorFile"}
+                .describedAs { "Exit code for error file $errorFile" }
                 .isEqualTo(KotlinCompilation.ExitCode.COMPILATION_ERROR)
         }
 

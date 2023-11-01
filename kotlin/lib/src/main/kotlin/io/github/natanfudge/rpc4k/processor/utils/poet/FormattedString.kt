@@ -1,6 +1,5 @@
 package io.github.natanfudge.rpc4k.processor.utils.poet
 
-import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.FunSpec
 import com.squareup.kotlinpoet.MemberName
 import io.github.natanfudge.rpc4k.processor.KotlinTypeReference
@@ -55,8 +54,8 @@ internal fun KotlinTypeReference.toSerializerString(): FormattedString {
     return getKSerializer().toSerializerString()
 }
 
-private fun KotlinSerializer.toSerializerString(): FormattedString  {
-    val withoutNullable = when(this) {
+private fun KotlinSerializer.toSerializerString(): FormattedString {
+    val withoutNullable = when (this) {
         is KotlinSerializer.CompanionExtension -> "%T.serializer".formatWith(className.kotlinPoet).withMethodSerializerArguments(typeArguments)
         is KotlinSerializer.Object -> "%T".formatWith(name.kotlinPoet)
         is KotlinSerializer.TopLevelFunction -> name.kotlinPoet.withSerializerArguments(typeArguments)

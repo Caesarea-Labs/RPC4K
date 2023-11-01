@@ -1,8 +1,6 @@
 package io.github.natanfudge.rpc4k.runtime.implementation
 
 
-
-
 internal fun Int.Companion.read3BytesFrom(array: ByteArray, pos: Int): Int {
     return array[pos].withSignificance(0) + array[pos + 1].withSignificance(1) + array[pos + 2].withSignificance(2)
 }

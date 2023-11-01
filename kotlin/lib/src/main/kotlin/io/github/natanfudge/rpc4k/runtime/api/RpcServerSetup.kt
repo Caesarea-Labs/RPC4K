@@ -14,8 +14,11 @@ class RpcServerSetup<T, Engine : RpcServerEngine>(
 ) {
     companion object {
         //TODO: i want to get rid of this, not a very great api
-        fun <T>managedKtor(handler: T, generatedHelper: GeneratedServerHelper<T>, format: SerializationFormat = JsonFormat()): RpcServerSetup<T,KtorManagedRpcServer> {
-            return RpcServerSetup(handler,generatedHelper,KtorManagedRpcServer(), format)
+        fun <T> managedKtor(
+            handler: T, generatedHelper: GeneratedServerHelper<T>, format: SerializationFormat = JsonFormat(),
+            ktorServer: KtorManagedRpcServer = KtorManagedRpcServer()
+        ): RpcServerSetup<T, KtorManagedRpcServer> {
+            return RpcServerSetup(handler, generatedHelper, ktorServer, format)
         }
     }
 }
@@ -25,7 +28,7 @@ fun <OldEngine : RpcServerEngine, NewEngine : RpcServerEngine, H> RpcServerSetup
 
 
 //TODO: add a simple .startServer utility
-fun <Engine : RpcServerEngine.MultiCall> RpcServerSetup<*,Engine>.createServer(): RpcServerEngine.MultiCall.Instance = engine.create(this)
+fun <Engine : RpcServerEngine.MultiCall> RpcServerSetup<*, Engine>.createServer(): RpcServerEngine.MultiCall.Instance = engine.create(this)
 
 suspend fun <RpcDef, I, O, Engine : RpcServerEngine.SingleCall.Writing<I, O>> RpcServerSetup<RpcDef, Engine>.handle(input: I, output: O) {
     handleImpl(input, output)

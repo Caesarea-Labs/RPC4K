@@ -37,4 +37,4 @@ internal inline fun FunSpec.Builder.addControlFlow(format: FormattedString, cont
 
 internal fun KClass<*>.methodName(method: String) = MemberName(this.asClassName(), method)
 
-internal fun ClassName.companion() = ClassName(packageName,simpleName,"Companion")
+internal fun ClassName.companion() = ClassName(packageName, simpleName, "Companion")

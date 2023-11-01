@@ -1,6 +1,6 @@
 package io.github.natanfudge.rpc4k.runtime.api
-import io.github.natanfudge.rpc4k.runtime.implementation.InvalidRpcRequestException
 
+import io.github.natanfudge.rpc4k.runtime.implementation.InvalidRpcRequestException
 
 
 /**
@@ -16,4 +16,3 @@ class RpcResponseException(message: String, request: Rpc, format: SerializationF
     RpcClientException(message, request, format, client)
 
 
-//TODO: write an rpc4All spec

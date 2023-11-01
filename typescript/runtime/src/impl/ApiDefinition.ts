@@ -10,12 +10,13 @@ export interface RpcDefinition {
     returnType: RpcType;
 }
 
-export type RpcModel = RpcEnumModel | RpcStructModel | RpcUnionModel
+export type RpcModel = RpcEnumModel | RpcStructModel | RpcUnionModel | RpcInlineModel
 
 export enum RpcModelKind {
     enum = "enum",
     struct = "struct",
     union = "union",
+    inline = "inline"
 }
 
 export interface RpcEnumModel {
@@ -27,6 +28,9 @@ export interface RpcEnumModel {
 export interface RpcStructModel {
     type: RpcModelKind.struct;
     name: string;
+    // BLOCKED: get rid of this when we can coerce kotlinx.serialization to use simple names
+    packageName: string;
+    hasTypeDiscriminator: boolean
     typeParameters: string[];
     properties: RpcStructProperty[];
 }
@@ -43,6 +47,12 @@ export interface RpcUnionModel {
     typeParameters: string[]
     options: RpcType[];
 }
+export interface RpcInlineModel {
+    type: RpcModelKind.inline;
+    name: string;
+    typeParameters: string[]
+    inlinedType: RpcType
+}
 
 
 export interface RpcParameter {
@@ -53,7 +63,7 @@ export interface RpcParameter {
 
 export interface RpcType {
     name: string;
-    packageName?: string;
+    // packageName?: string;
     isTypeParameter: boolean;
     isNullable: boolean;
     typeArguments: RpcType[];

@@ -12,8 +12,7 @@ function createRpcTypeFromObject(partialType: PartialRpcTypeObject): RpcType {
         // Default values are false
         isTypeParameter: partialType.isTypeParameter ?? false,
         isNullable: partialType.isNullable ?? false,
-        name: partialType.name,
-        packageName: partialType.packageName
+        name: partialType.name
     }
 }
 
@@ -24,19 +23,21 @@ export function stripDefaultTypeValues(type: RpcType): PartialRpcType {
         typeArguments: type.typeArguments.length === 0 ? undefined : type.typeArguments.map(arg => stripDefaultTypeValues(arg)),
         inlinedType: type.inlinedType === undefined ? undefined : stripDefaultTypeValues(type.inlinedType),
         isTypeParameter: !type.isTypeParameter ? undefined : type.isTypeParameter,
-        isNullable: !type.isNullable ? undefined : type.isNullable,
-        packageName: type.packageName
+        isNullable: !type.isNullable ? undefined : type.isNullable
     }
 }
 
 export namespace RpcTypeNames {
     export const Tuple = "tuple"
     export const Arr = "array"
+    export const Dur = "duration"
     export const Rec = "record"
     export const Void = "void"
     export const Time = "date"
+    export const Str = "string"
 }
 export const RpcTypeDiscriminator = "type"
 export namespace RpcTypes {
     export const Void: RpcType = createRpcType({name: RpcTypeNames.Void})
+    export const Str: RpcType = createRpcType({name: RpcTypeNames.Str})
 }

@@ -16,11 +16,17 @@ import kotlin.reflect.KClass
  */
 @Suppress("UNCHECKED_CAST")
 fun Resolver.getClassesWithAnnotation(annotation: KClass<*>): Sequence<KSClassDeclaration> = getSymbolsWithAnnotation(annotation.qualifiedName!!)
-        as Sequence<KSClassDeclaration>
+    as Sequence<KSClassDeclaration>
 
 
 internal fun KSClassDeclaration.getPublicApiFunctions() = getDeclaredFunctions()
     .filter { !it.isConstructor() && it.isPublic() }
+
+/**
+ * Only checks the short name of annotations for performance, may not work well with annotation name conflicts.
+ */
+fun KSAnnotated.hasAnnotation(annotation: KClass<*>) = annotations.any { it.shortName.asString() == annotation.simpleName }
+
 
 //fun KSDeclaration.getSimpleName() = simpleName.asString()
 

@@ -1,6 +1,9 @@
 package io.github.natanfudge.rpc4k.runtime.api.components
 
-import io.github.natanfudge.rpc4k.runtime.api.*
+import io.github.natanfudge.rpc4k.runtime.api.RpcServerEngine
+import io.github.natanfudge.rpc4k.runtime.api.RpcServerSetup
+import io.github.natanfudge.rpc4k.runtime.api.handle
+import io.github.natanfudge.rpc4k.runtime.api.withEngine
 import io.github.natanfudge.rpc4k.runtime.implementation.PortPool
 import io.ktor.server.application.*
 import io.ktor.server.engine.*
@@ -13,14 +16,15 @@ import io.ktor.server.routing.*
  * It sets up a single route at / to respond to rpc calls
  */
 class KtorManagedRpcServer(
-    private val engine: ApplicationEngineFactory<*, *> = Netty, val port: Int = PortPool.get()
+    private val engine: ApplicationEngineFactory<*, *> = Netty, val port: Int = PortPool.get(), private val config: Application.() -> Unit = {}
 ) : RpcServerEngine.MultiCall {
 
     // NiceToHave: use a custom implementation that setups multiple routes
     private val singleRoute = KtorSingleRouteRpcServer()
 
-    private fun Application.config(setup: RpcServerSetup<*, *>) {
+    private fun Application.configImpl(setup: RpcServerSetup<*, *>) {
         install(CallLogging)
+        config()
         routing {
             post("/") {
                 setup.withEngine(engine = singleRoute).handle(call, call)
@@ -30,7 +34,7 @@ class KtorManagedRpcServer(
 
     override fun create(setup: RpcServerSetup<*, *>) = object : RpcServerEngine.MultiCall.Instance {
         private val server = embeddedServer(engine, port = port) {
-            config(setup)
+            configImpl(setup)
         }
 
         override fun stop() {

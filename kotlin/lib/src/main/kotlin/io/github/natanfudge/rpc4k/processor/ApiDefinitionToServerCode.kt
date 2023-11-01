@@ -53,12 +53,9 @@ object ApiDefinitionToServerCode {
     private const val UserHandlerPropertyName = "handler"
     private val wildcardType = WildcardTypeName.producerOf(ANY.copy(nullable = true))
 
-    //    private const val ApiPropertyName = "api"
-//    private const val FormatPropertyName = "format"
-//    private const val ServerPropertyName = "server"
     private const val RequestParamName = "request"
     private const val MethodParamName = "method"
-//    private val handleUtilsMethod = GeneratedCodeUtils::class.methodName("withCatching")
+
     private val respondUtilsMethod = GeneratedCodeUtils::class.methodName("respond")
 
     fun convert(apiDefinition: ApiDefinition): FileSpec {
@@ -160,12 +157,12 @@ object ApiDefinitionToServerCode {
         returns(BYTE_ARRAY.copy(nullable = true))
 
 //        addControlFlow("%M($ServerPropertyName)", handleUtilsMethod) {
-            addControlFlow("return when($MethodParamName)") {
-                for (method in api.methods) {
-                    addEndpointHandler(method)
-                }
-                addCode("else -> null\n")
+        addControlFlow("return when($MethodParamName)") {
+            for (method in api.methods) {
+                addEndpointHandler(method)
             }
+            addCode("else -> null\n")
+        }
 //        }
     }
 

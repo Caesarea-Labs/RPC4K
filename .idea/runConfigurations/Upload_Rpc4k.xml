@@ -1,5 +1,5 @@
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="Test Server" type="GradleRunConfiguration" factoryName="Gradle">
+  <configuration default="false" name="Upload Rpc4k" type="GradleRunConfiguration" factoryName="Gradle">
     <ExternalSystemSettings>
       <option name="executionName" />
       <option name="externalProjectPath" value="$PROJECT_DIR$/kotlin" />
@@ -10,17 +10,15 @@
       </option>
       <option name="taskNames">
         <list>
-          <option value=":testapp:test" />
-          <option value="--tests" />
-          <option value="&quot;io.github.natanfudge.rpc4k.testserver.TestServers.allEncompassingService&quot;" />
+          <option value="uploadRpc4k" />
         </list>
       </option>
       <option name="vmOptions" />
     </ExternalSystemSettings>
-    <ExternalSystemDebugServerProcess>false</ExternalSystemDebugServerProcess>
+    <ExternalSystemDebugServerProcess>true</ExternalSystemDebugServerProcess>
     <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
     <DebugAllEnabled>false</DebugAllEnabled>
-    <RunAsTest>true</RunAsTest>
+    <RunAsTest>false</RunAsTest>
     <method v="2" />
   </configuration>
 </component>

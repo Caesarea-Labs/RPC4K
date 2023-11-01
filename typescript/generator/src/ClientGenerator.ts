@@ -5,7 +5,6 @@ import {ApiDefinition} from "rpc4ts-runtime";
 import {fillDefaultApiDefinitionValues} from "./ApiDefinitionsDefaults";
 
 
-
 export interface Rpc4TsClientGenerationOptions {
     /**
      * True only for tests in rpc4ts itself. Makes it so imports use a relative path instead of a package path.
@@ -16,10 +15,15 @@ export interface Rpc4TsClientGenerationOptions {
 export function generateClientModel(definitionJson: string, writeTo: string, options: Rpc4TsClientGenerationOptions) {
     const startTime = new Date().getTime()
     // This value doesn't contain default values
-    const rawApi = JSON.parse(definitionJson) as ApiDefinition
+    let rawApi: ApiDefinition
+    try {
+        rawApi = JSON.parse(definitionJson)
+    } catch (e) {
+        throw Error("Invalid json file provided for definition of API")
+    }
     const api = fillDefaultApiDefinitionValues(rawApi)
     const models = generateModels(api.models)
-    const accessor = generateAccessor(api,rawApi, options)
+    const accessor = generateAccessor(api, rawApi, options)
 
     fs.mkdirSync(writeTo, {recursive: true})
     fs.writeFileSync(writeTo + `/rpc4ts_${api.name}Models.ts`, models)

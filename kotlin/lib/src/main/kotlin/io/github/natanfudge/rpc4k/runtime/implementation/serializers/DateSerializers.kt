@@ -11,14 +11,11 @@ import java.time.Instant
 import java.time.ZonedDateTime
 
 
-//fun InstantSerializer(): KSerializer<Instant> = InstantIsoSerializer
-//
-//fun ZonedDateTimeSerializer(): KSerializer<ZonedDateTime> = ZonedDateTimeIsoSerializer
 
 /**
  * We serialize instant as an iso string
  */
- object InstantIsoSerializer : KSerializer<Instant> {
+object InstantIsoSerializer : KSerializer<Instant> {
     override val descriptor: SerialDescriptor = String.serializer().descriptor
 
     override fun deserialize(decoder: Decoder): Instant = Instant.parse(decoder.decodeString())
@@ -30,7 +27,7 @@ import java.time.ZonedDateTime
 /**
  * We serialize ZonedDateTime as an iso string
  */
- object ZonedDateTimeIsoSerializer : KSerializer<ZonedDateTime> {
+object ZonedDateTimeIsoSerializer : KSerializer<ZonedDateTime> {
     override val descriptor: SerialDescriptor = String.serializer().descriptor
 
     override fun deserialize(decoder: Decoder): ZonedDateTime = ZonedDateTime.parse(decoder.decodeString())

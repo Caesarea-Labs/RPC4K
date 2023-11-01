@@ -1,13 +1,10 @@
-import dayjs, {Dayjs} from "dayjs";
-import {RpcType} from "./ApiDefinition";
-import {RpcTypeNames} from "./RpcTypeUtils";
-import {removeBeforeLastExclusive} from "./Util";
 
+import {RpcType, RpcTypeNames} from "rpc4ts-runtime";
 
 
 export function typescriptRpcType(type: RpcType): string {
+    // if (type.inlinedType !== undefined) return typescriptRpcType(type.inlinedType)
     // Handle | null adding
-    if (type.inlinedType !== undefined) return typescriptRpcType(type.inlinedType)
     const nullableString = type.isNullable ? " | null" : ""
     // Handle other things
     return typescriptRpcTypeIgnoreOptional(type) + nullableString
@@ -41,7 +38,11 @@ function resolveBuiltinType(type: RpcType): string | undefined {
             return "number"
         case "char":
         case "string":
+        case "uuid":
             return "string"
+        case "duration":
+            // Durations are Dayjs.Duration in typescript
+            return "Duration"
         case  RpcTypeNames.Time:
             // Dates are Dayjs in typescript
             return "Dayjs"
@@ -64,7 +65,8 @@ function resolveBuiltinType(type: RpcType): string | undefined {
                 throw new Error(`Record type had an unexpected amount of type arguments: ${typeArgs.length}`)
             }
             const keyType = typescriptRpcType(typeArgs[0])
-            if (keyType !== "string" && keyType !== "number") {
+            const underlyingKeyType = typescriptRpcType(resolveToUnderlying(typeArgs[0]))
+            if (underlyingKeyType !== "string" && underlyingKeyType !== "number") {
                 // NiceToHave: Support complex keys in Typescript
                 throw new Error(`Unsupported map key type: ${keyType} in type: ${JSON.stringify(type)}`)
             }
@@ -83,17 +85,18 @@ function resolveBuiltinType(type: RpcType): string | undefined {
     }
 }
 
+function resolveToUnderlying(type: RpcType): RpcType {
+    if (type.inlinedType !== undefined) {
+        return resolveToUnderlying(type.inlinedType)
+    } else {
+        return type
+    }
+}
+
 /**
  * Converts the Rpc representation of a struct name to the typescript representation
  */
 export function modelName(name: string): string {
     // Treat "Foo.Bar" as "FooBar"
-    return  name.replace(/\./g, "")
-}
-/**
- * Converts the Rpc representation of a struct name of a form "Foo.Bar" to a form "Bar".
- */
-export function simpleModelName(name: string): string {
-    // Treat "Foo.Bar" as "Bar"
-    return removeBeforeLastExclusive(name, ".")
+    return name.replace(/\./g, "")
 }

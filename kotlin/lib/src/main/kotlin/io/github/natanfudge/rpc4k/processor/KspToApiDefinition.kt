@@ -5,7 +5,6 @@ import com.google.devtools.ksp.getDeclaredProperties
 import com.google.devtools.ksp.symbol.*
 import com.google.devtools.ksp.symbol.ClassKind.*
 import io.github.natanfudge.rpc4k.processor.utils.*
-import io.github.natanfudge.rpc4k.runtime.implementation.KotlinClassName
 
 object KspToApiDefinition {
     fun toApiDefinition(kspClass: KSClassDeclaration): ApiDefinition {
@@ -42,7 +41,7 @@ object KspToApiDefinition {
      */
     private fun getRpcModels(kspClass: KSClassDeclaration): List<RpcModel> {
         // Sort to get deterministic results (this helps with incremental stuff)
-        return kspClass.getReferencedClasses().sortedBy { it.nonNullQualifiedName() } .map { toRpcModel(it) }
+        return kspClass.getReferencedClasses().sortedBy { it.nonNullQualifiedName() }.map { toRpcModel(it) }
     }
 
     /**
@@ -51,7 +50,12 @@ object KspToApiDefinition {
     private fun toRpcModel(declaration: KSClassDeclaration): RpcModel = when (declaration.classKind) {
         INTERFACE -> toRpcUnionModel(declaration)
         // If it has sealed subclasses, it means it is a sealed type, and it should be treated as a union.
-        CLASS, OBJECT -> if (declaration.getSealedSubclasses().count() == 0) toRpcStructModel(declaration) else toRpcUnionModel(declaration)
+        CLASS, OBJECT -> when {
+            declaration.hasAnnotation(JvmInline::class) -> toRpcInlineModel(declaration)
+            declaration.getSealedSubclasses().count() == 0 -> toRpcStructModel(declaration)
+            else -> toRpcUnionModel(declaration)
+        }
+
         ENUM_CLASS -> toRpcEnumModel(declaration)
         ENUM_ENTRY -> error("Enum entries can't be serializable")
         ANNOTATION_CLASS -> error("Annotation classes can't be serializable")
@@ -70,11 +74,10 @@ object KspToApiDefinition {
      * generates the [RpcModel.Union] for it.
      */
     private fun toRpcUnionModel(declaration: KSClassDeclaration) = RpcModel.Union(
-            name = declaration.getSimpleName(),
-            options = declaration.getSealedSubclasses().map { sealedSubclassToRpcType(it) }.toList(),
-            declaration.typeParameters.map { it.name.asString() }
-        )
-
+        name = declaration.getSimpleName(),
+        options = declaration.getSealedSubclasses().map { sealedSubclassToRpcType(it) }.toList(),
+        declaration.typeParameters.map { it.name.asString() }
+    )
 
 
     /**
@@ -128,17 +131,29 @@ object KspToApiDefinition {
             RpcModel.Struct.Property(name = it.getSimpleName(), type = toKotlinTypeReference(it.type), isOptional = false /*it.hasDefault*/)
         }.toList()
 
+        val name = declaration.getKotlinName()
+
         return RpcModel.Struct(
-            name = declaration.getSimpleName(),
+            name = name.simple,
             typeParameters = declaration.typeParameters.map { it.name.asString() },
+            hasTypeDiscriminator = isPartOfTuple(declaration),
             // If the struct is part of a tuple kotlinx.serialization also inserts a String "type" property
-            properties = if (isPartOfTuple(declaration)) properties + (unionTypeDiscriminatorProperty) else properties,
+            properties = properties,
+            packageName = name.pkg
         )
     }
 
-    private val unionTypeDiscriminatorProperty = RpcModel.Struct.Property(
-        ApiDefinitionConverters.UnionTypeDiscriminator, KotlinTypeReference.string
-    )
+    private fun toRpcInlineModel(declaration: KSClassDeclaration): RpcModel.Inline {
+        return RpcModel.Inline(
+            name = declaration.getSimpleName(),
+            typeParameters = declaration.typeParameters.map { it.name.asString() },
+            inlinedType = toKotlinTypeReference(declaration.getDeclaredProperties().single().type)
+        )
+    }
+
+//    private val unionTypeDiscriminatorProperty = RpcModel.Struct.Property(
+//        ApiDefinitionConverters.UnionTypeDiscriminator, KotlinTypeReference.string
+//    )
 
     private fun isPartOfTuple(declaration: KSClassDeclaration) = declaration.getAllSuperTypes()
         .any { Modifier.SEALED in it.declaration.modifiers }
@@ -165,7 +180,6 @@ object KspToApiDefinition {
         if (this !is KSClassDeclaration || Modifier.VALUE !in this.modifiers || this.getDeclaredProperties().count() != 1) return null
         return toKotlinTypeReference(getDeclaredProperties().single().type)
     }
-
 
 
 }

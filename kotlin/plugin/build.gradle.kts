@@ -5,7 +5,7 @@ plugins {
 }
 
 group = "io.github.natanfudge"
-version = libs.versions.rpc4k.plugin.get()
+version = libs.versions.rpc4k.get()
 
 repositories {
     mavenCentral()
@@ -38,14 +38,14 @@ kotlin {
     compilerOptions.freeCompilerArgs.add("-Xcontext-receivers")
 }
 
-fun rpc4kRuntimeVersion() = libs.versions.rpc4k.runtime.get()
+fun rpc4kRuntimeVersion() = libs.versions.rpc4k.get()
 
 
 tasks.withType<ProcessResources> {
     val versionProp = "version" to rpc4kRuntimeVersion()
     inputs.property("version", rpc4kRuntimeVersion())
     from(sourceSets.main.get().resources.srcDirs) {
-        include ("rpc4k_version.txt")
+        include("rpc4k_version.txt")
         expand(versionProp)
     }
     duplicatesStrategy = DuplicatesStrategy.INCLUDE

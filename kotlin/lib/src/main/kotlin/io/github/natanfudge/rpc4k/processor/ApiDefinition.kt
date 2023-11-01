@@ -3,15 +3,15 @@ package io.github.natanfudge.rpc4k.processor
 import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy
 import com.squareup.kotlinpoet.TypeName
 import io.github.natanfudge.rpc4k.processor.utils.appendIf
-import io.github.natanfudge.rpc4k.runtime.implementation.*
+import io.github.natanfudge.rpc4k.runtime.implementation.KotlinClassName
+import io.github.natanfudge.rpc4k.runtime.implementation.SimpleNameOnlyKotlinNameSerializer
+import io.github.natanfudge.rpc4k.runtime.implementation.isUnit
+import io.github.natanfudge.rpc4k.runtime.implementation.kotlinPoet
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
-import kotlinx.serialization.builtins.serializer
-import kotlinx.serialization.descriptors.SerialDescriptor
 import kotlinx.serialization.encoding.Decoder
 import kotlinx.serialization.encoding.Encoder
-
 
 
 @Serializable
@@ -38,12 +38,23 @@ data class RpcParameter(val name: String, val type: KotlinTypeReference)
 @Serializable
 sealed interface RpcModel {
     val name: String
+    val typeParameters: List<String>
+
+    @Serializable
+    @SerialName("inline")
+    data class Inline(override val name: String, override val typeParameters: List<String> = listOf(), val inlinedType: KotlinTypeReference) :
+        RpcModel
 
 
     @Serializable
     @SerialName("struct")
     data class Struct(
-        override val name: String, val typeParameters: List<String> = listOf(), val properties: List<Property>,
+        val hasTypeDiscriminator: Boolean,
+        override val name: String,
+        // BLOCKED: Get rid of this, i don't want it in the final spec
+        val packageName: String,
+        override val typeParameters: List<String> = listOf(),
+        val properties: List<Property>,
     ) : RpcModel {
         /**
          * @param isOptional BLOCKED: Support optional parameters and properties
@@ -54,7 +65,9 @@ sealed interface RpcModel {
 
     @Serializable
     @SerialName("enum")
-    data class Enum(override val name: String, val options: List<String>) : RpcModel
+    data class Enum(override val name: String, val options: List<String>) : RpcModel {
+        override val typeParameters: List<String> = listOf()
+    }
 
     /**
      * Important note: Languages implementing this MUST add a `type: ` field to the structs referenced by `options` so the other side
@@ -63,7 +76,8 @@ sealed interface RpcModel {
      */
     @Serializable
     @SerialName("union")
-    data class Union(override val name: String, val options: List<KotlinTypeReference>, val typeParameters: List<String> = listOf()) : RpcModel
+    data class Union(override val name: String, val options: List<KotlinTypeReference>, override val typeParameters: List<String> = listOf()) :
+        RpcModel
 }
 
 
@@ -103,7 +117,6 @@ data class KotlinTypeReference(
 @Serializable
 data class RpcType(
     val name: String,
-    val packageName: String,
     val isTypeParameter: Boolean = false,
     val isNullable: Boolean = false,
     val typeArguments: List<RpcType> = listOf(),
@@ -112,7 +125,8 @@ data class RpcType(
 
     init {
         // Kotlin doesn't have higher-kinded types yet
-        if (isTypeParameter) check(typeArguments.isEmpty()) { "It doesn't make sense for type parameter <$name> to have type parameters: <${typeArguments.joinToString()}>" }
+        if (isTypeParameter) check(typeArguments.isEmpty()
+        ) { "It doesn't make sense for type parameter <$name> to have type parameters: <${typeArguments.joinToString()}>" }
         if (isTypeParameter) check(inlinedType == null) { "It doesn't make sense for type parameter <$name> to be an inlined type: $inlinedType" }
     }
 
@@ -120,7 +134,7 @@ data class RpcType(
         val string = if (isTypeParameter) {
             name
         } else {
-            "$packageName.$name"
+            name
                 .appendIf(typeArguments.isNotEmpty()) { "<${typeArguments.joinToString()}>" }
                 .appendIf(inlinedType != null) { "(Inlining $inlinedType)" }
         }
@@ -133,6 +147,7 @@ data class RpcType(
         const val I16 = "i16"
         const val I32 = "i32"
         const val I64 = "i64"
+        const val UUID = "uuid"
         const val F32 = "f32"
         const val F64 = "f64"
         const val Char = "char"
@@ -141,12 +156,13 @@ data class RpcType(
         const val Array = "array"
         const val Record = "record"
         const val Tuple = "tuple"
+        const val Date = "date"
+        const val Duration = "duration"
     }
 }
 
 
 const val GeneratedModelsPackage = "io.github.natanfudge.generated.models"
-
 
 
 /**
@@ -169,12 +185,17 @@ private fun RpcType.toKotlinTypeReference(packageName: String): KotlinTypeRefere
     throw UnsupportedOperationException("Generate Kotlin clients from non-kotlin servers")
 }
 
+//TODo: implement typescript durations using dayjs.Duration
+
 private fun KotlinTypeReference.toRpcType() = when (name.pkg) {
     "kotlin" -> toBuiltinRpcType()
     "kotlin.collections" -> toBuiltinCollectionType()
+    "kotlin.time" -> toDurationType()
     "java.time" -> toDateType()
+    "java.util" -> toUUID()
     else -> toUserType()
 }
+
 
 //TODO: UUID -> i128
 
@@ -205,7 +226,7 @@ private fun KotlinTypeReference.toBuiltinRpcType(): RpcType {
         "ByteArray", "ShortArray", "IntArray", "LongArray", "CharArray", "UByteArray", "UShortArray", "UIntArray", "ULongArray" -> {
             // Primitive array types
             val typeArgumentName = when (name.simple) {
-                // We expand Xarray into an array of the respective type X
+                // We expand XArray into an array of the respective type X
                 // Unsigned types are treated the same as the normal types
                 "ByteArray", "UByteArray" -> RpcType.I8
                 "ShortArray", "UShortArray" -> RpcType.I16
@@ -214,7 +235,7 @@ private fun KotlinTypeReference.toBuiltinRpcType(): RpcType {
                 "CharArray" -> RpcType.Char
                 else -> error("Impossible class name $poetName")
             }
-            val typeArgument = RpcType(name = typeArgumentName, packageName = name.pkg)
+            val typeArgument = RpcType(name = typeArgumentName)
             buildRpcType(name = RpcType.Array, typeArguments = listOf(typeArgument))
         }
 
@@ -226,7 +247,7 @@ private fun KotlinTypeReference.toBuiltinRpcType(): RpcType {
 
         else -> error(
             "Unexpected kotlin builtin type: ${poetName}." +
-                    " Was a custom class declared in kotlin.*? This is probably a bug in RPC4K."
+                " Was a custom class declared in kotlin.*? This is probably a bug in RPC4K."
         )
     }
 }
@@ -238,7 +259,7 @@ private fun KotlinTypeReference.toBuiltinCollectionType(): RpcType {
         "Map.Entry" -> RpcType.Tuple
         else -> error(
             "Unexpected kotlin builtin collection type: ${poetName}." +
-                    " Was a custom class declared in kotlin.collections.*? This is probably a bug in RPC4K."
+                " Was a custom class declared in kotlin.collections.*? This is probably a bug in RPC4K."
         )
     }
 
@@ -249,17 +270,32 @@ private fun KotlinTypeReference.toBuiltinCollectionType(): RpcType {
 private fun KotlinTypeReference.buildRpcType(
     name: String,
     isNullable: Boolean = this.isNullable,
-    typeArguments: List<RpcType> = this.typeArguments.map { it.toRpcType() },
-    packageName: String = this.name.pkg
+    typeArguments: List<RpcType> = this.typeArguments.map { it.toRpcType() }
 ): RpcType {
-    return RpcType(name = name, packageName = packageName, isNullable = isNullable, typeArguments = typeArguments)
+    return RpcType(name = name, isNullable = isNullable, typeArguments = typeArguments)
 }
 
 private fun KotlinTypeReference.toDateType(): RpcType {
     if (name.simple == "ZonedDateTime" || name.simple == "Instant") {
-        return buildRpcType(name = "date", typeArguments = listOf())
+        return buildRpcType(name = RpcType.Date, typeArguments = listOf())
     } else {
         error("Unexpected kotlin date type: ${name.simple}. These shouldn't be accepted by the compiler.")
+    }
+}
+
+private fun KotlinTypeReference.toUUID(): RpcType {
+    if (name.simple == "UUID") {
+        return buildRpcType(name = RpcType.UUID, typeArguments = listOf())
+    } else {
+        error("Unexpected kotlin java.util type: ${name.simple}. These shouldn't be accepted by the compiler.")
+    }
+}
+
+private fun KotlinTypeReference.toDurationType(): RpcType {
+    if (name.simple == "Duration") {
+        return buildRpcType(name = RpcType.Duration, typeArguments = listOf())
+    } else {
+        error("Unexpected kotlin kotlin.time type: ${name.simple}. These shouldn't be accepted by the compiler.")
     }
 }
 
@@ -267,7 +303,6 @@ private fun KotlinTypeReference.toDateType(): RpcType {
 private fun KotlinTypeReference.toUserType(): RpcType {
     return RpcType(
         name = name.simple,
-        packageName = name.pkg,
         isNullable = isNullable,
         isTypeParameter = isTypeParameter,
         typeArguments = typeArguments.map { it.toRpcType() },

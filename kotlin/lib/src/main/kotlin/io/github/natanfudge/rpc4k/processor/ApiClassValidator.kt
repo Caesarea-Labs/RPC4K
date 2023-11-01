@@ -82,7 +82,7 @@ class ApiClassValidator(private val env: SymbolProcessorEnvironment) {
         }
     }
 
-    private fun KSAnnotated.annotatedByContextual() = annotations.any { it.shortName.asString() == Contextual::class.simpleName }
+    private fun KSAnnotated.annotatedByContextual() = hasAnnotation(Contextual::class)
 
     private val typesWithCustomSerializers = setOf(
         "kotlin.Pair",
@@ -183,7 +183,8 @@ class ApiClassValidator(private val env: SymbolProcessorEnvironment) {
         val resolved = type.resolveToUnderlying()
 
         val selfSerializable = target.checkRequirement(env, resolved.isSerializable()) {
-            "Type used in API method '${resolved.declaration.qualifiedName!!.asString()}' must be Serializable".appendIf(typeArgument) { " (in type argument of $target)" }
+            "Type used in API method '${resolved.declaration.qualifiedName!!.asString()}' must be Serializable".appendIf(typeArgument
+            ) { " (in type argument of $target)" }
         }
         // Make sure to evaluate all the checks
         return resolved.arguments.evaluateAll { checkIsSerializable(it.nonNullType(), target = target, typeArgument = true) } && selfSerializable

@@ -7,4 +7,4 @@ import io.github.natanfudge.rpc4k.runtime.api.serverRequirement
  * May be thrown by an RPC server handler to signal an invalid request.
  * @see [serverRequirement]
  */
- class InvalidRpcRequestException(override val message: String, cause: Throwable? = null) : RuntimeException(message,cause)
+class InvalidRpcRequestException(override val message: String, cause: Throwable? = null) : RuntimeException(message, cause)

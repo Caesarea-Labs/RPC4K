@@ -10,6 +10,7 @@ import io.github.natanfudge.rpc4k.runtime.implementation.kotlinName
 import io.github.natanfudge.rpc4k.runtime.implementation.serializers.Rpc4kSerializer
 import io.github.natanfudge.rpc4k.runtime.implementation.serializers.Rpc4kSerializers
 import kotlinx.serialization.Serializable
+import kotlin.time.Duration
 
 /**
  * Easier representation of a KSerializer that differentiates between different types.
@@ -18,19 +19,6 @@ sealed interface KotlinSerializer {
     val isNullable: Boolean
     val typeArguments: List<KotlinSerializer>
 
-
-//    /**
-//     * Serializers of the form
-//     */
-//    data class User(override val className: String, override val typeArguments: List<KotlinSerializer>, override val isNullable: Boolean) :
-//        ClassBasedKotlinSerializer
-//
-//
-//
-//    data class BuiltinExtension(override val className: String, override val isNullable: Boolean) : ClassBasedKotlinSerializer {
-//        // The builtin ones don't accept any params
-//        override val typeArguments: List<KotlinSerializer> = listOf()
-//    }
     /**
      * Serializers like `String.serializer()`, `Int.serializer()`
      * also:  `MyClass.serializer()` where `MyClass` is annotated by `@Serializable`
@@ -56,31 +44,7 @@ sealed interface KotlinSerializer {
     data class Object(val name: KotlinClassName, override val isNullable: Boolean) : KotlinSerializer {
         override val typeArguments: List<KotlinSerializer> = listOf()
     }
-
-//    /**
-//     * Serializers like `ListSerializer()`, `SetSerializer()`
-//     */
-//    data class BuiltinToplevel(
-//        val functionName: String, override val typeArguments: List<KotlinSerializer>, override val isNullable: Boolean
-//    ) : KotlinSerializer
-//
-//    /**
-//     * Serializers like [TuplePairSerializer], [TupleTripleSerializer]
-//     */
-//    data class Rpc4KTopLevel(
-//        val functionName: String, override val typeArguments: List<KotlinSerializer>, override val isNullable: Boolean
-//    ) : KotlinSerializer
-//
-//    data class Rpc4K
 }
-
-
-///**
-// * [KotlinSerializer.User] and [KotlinSerializer.BuiltinExtension], basically.
-// */
-//sealed interface ClassBasedKotlinSerializer : KotlinSerializer {
-//    val className: String
-//}
 
 
 internal fun KSType.isSerializable() = isBuiltinSerializableType() || isAnnotatedBySerializable()
@@ -89,11 +53,11 @@ private fun KSType.isAnnotatedBySerializable() =
     declaration.annotations.any { it.annotationType.resolve().declaration.nonNullQualifiedName() == serializableClassName }
 
 
-//fun KotlinTypeReference.isBuiltinSerializableType() = name in builtinSerializableKotlinNames
-
 fun KSType.isBuiltinSerializableType() = declaration.qualifiedName?.asString() in builtinSerializableClasses
 
-private val rpc4kSerializerMap = Rpc4kSerializers.associateBy { it.kClass.kotlinName }
+private val rpc4kSerializerMap = Rpc4kSerializers.associateBy {
+    it.kClass.kotlinName
+}
 
 internal fun KotlinTypeReference.getKSerializer(): KotlinSerializer {
     val rpc4kSerializer = rpc4kSerializerMap[name]
@@ -116,23 +80,6 @@ internal fun KotlinTypeReference.getKSerializer(): KotlinSerializer {
         )
     }
 
-
-//    return if (isBuiltinSerializableType()) {
-//        // Serializers like MapSerializer
-//        when (qualifiedName) {
-//
-//            // Unit has a special serializer
-//            Unit::class.qualifiedName -> rpc4kSerializerMethod("VoidUnitSerializer")
-//            ZonedDateTime::class.qualifiedName -> rpc4kSerializerMethod("ZonedDateTimeSerializer")
-//            Instant::class.qualifiedName -> rpc4kSerializerMethod("InstantSerializer")
-//            in classesWithSeparateKxsBuiltinSerializerMethod -> kxsTopLevelSerializerMethod()
-//            in classesWithTupleSerializerMethod -> tupleRpc4kSerializerMethod()
-//            //TODO: maybe we can join this branch with another case
-//            else -> builtinExtensionSerializerMethod()
-//        }
-//    } else {
-//        userClassSerializer()
-//    }
 }
 
 
@@ -150,57 +97,9 @@ private fun KotlinTypeReference.kxsTopLevelSerializerMethod(): KotlinSerializer 
         typeArguments = typeArguments.map { it.getKSerializer() }
     )
 }
-//
-///**
-// * Gets serializers like ListSerializer, SetSerializer, etc
-// */
-//private fun KotlinTypeReference.tupleRpc4kSerializerMethod(): KotlinSerializer {
-//    // Map.Entry needs special handling to get the correct serializer
-//    val name = simpleName.let { if (it == "Map.Entry") "MapEntry" else it }
-//    // For example, for the name Map.Entry we get MapEntrySerializer
-//    return rpc4kSerializerMethod("Tuple${name}Serializer")
-//}
-//
-///**
-// * Gets serializers like ListSerializer, SetSerializer, etc
-// */
-//private fun KotlinTypeReference.rpc4kSerializerMethod(name: String): KotlinSerializer {
-//    // For example, for the name Map.Entry we get MapEntrySerializer
-//    return KotlinSerializer.Rpc4KTopLevel(
-//        functionName = name,
-//        typeArguments = typeArguments.getKSerializers(),
-//        isNullable
-//    )
-//}
-//
-//private fun KotlinTypeReference.builtinExtensionSerializerMethod(): KotlinSerializer.CompanionExtension {
-//    return KotlinSerializer.CompanionExtension(className = poetName, isNullable, typeArguments = listOf())
-//}
 
-
-//private fun KotlinTypeReference.userClassSerializer() = KotlinSerializer.User(
-//    className = qualifiedName,
-//    typeArguments = typeArguments.getKSerializers(),
-//    isNullable
-//)
 
 private fun List<KotlinTypeReference>.getKSerializers() = map { it.getKSerializer() }
-
-
-/**
- * Gets serializers like ListSerializer, SetSerializer, etc
- */
-//private fun RpcType.topLevelSerializerMethod(): FormattedString {
-//    // Map.Entry needs special handling to get the correct serializer
-//    val name = simpleName.let { if (it == "Map.Entry") "MapEntry" else it }
-//    // For example, for the name Map.Entry we get MapEntrySerializer
-//    val serializerMethod = MemberName("kotlinx.serialization.builtins", "${name}Serializer")
-//    return serializerMethod.withSerializerArguments(typeArguments)
-//}
-
-//private fun RpcType.builtinExtensionSerializerMethod(): FormattedString {
-//    return "%T.serializer()".formatWith(className)
-//}
 
 
 /**
@@ -212,14 +111,6 @@ private val classesWithSeparateKxsBuiltinSerializerMethod = listOf(
     ByteArray::class, ShortArray::class, IntArray::class, LongArray::class, CharArray::class,
     Array::class, UByteArray::class, UShortArray::class, UIntArray::class, ULongArray::class
 ).map { it.kotlinName }.toHashSet()
-
-//private val classesWithTupleSerializerMethod = listOf(Pair::class, Map.Entry::class, Triple::class).map { it.qualifiedName }.toHashSet()
-
-
-// Nullability is handled separately
-//private fun RpcType.userClassSerializer() = "%T.serializer".formatWith(className)
-//    .withMethodSerializerArguments(typeArguments)
-
 
 private val serializableClassName = Serializable::class.qualifiedName
 
@@ -259,6 +150,7 @@ private val builtinSerializableClasses = (listOf(
     UShort::class,
     UInt::class,
     ULong::class,
+    Duration::class,
 // Add classes that rpc4k supports as well
 ) + Rpc4kSerializers.map { it.kClass }).map { it.qualifiedName!! }.toHashSet()
 

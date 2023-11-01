@@ -62,7 +62,6 @@ object ApiDefinitionToClientCode {
             // KotlinPoet doesn't handle extension methods well
             addImport("kotlinx.serialization.builtins", "serializer")
             addImport("kotlinx.serialization.builtins", "nullable")
-//            addImport("io.github.natanfudge.rpc4k.runtime.implementation", "wrapSerializers")
 
 
             addFunction(clientConstructorExtension(apiDefinition, className))

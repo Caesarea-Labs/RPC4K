@@ -8,7 +8,7 @@ plugins {
     id("maven-publish")
 }
 
-fun rpc4kRuntimeVersion() = libs.versions.rpc4k.runtime.get()
+fun rpc4kRuntimeVersion() = libs.versions.rpc4k.get()
 
 val projectGroup = "io.github.natanfudge"
 val projectId = "rpc4k"

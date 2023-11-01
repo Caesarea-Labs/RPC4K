@@ -23,7 +23,7 @@ class TestUserProtocol {
 
         @JvmField
         @RegisterExtension
-        val simpleExtension = rpcExtension(SimpleProtocol())
+        val simpleExtension = rpcExtension(SimpleProtocol2())
     }
 
     @Test

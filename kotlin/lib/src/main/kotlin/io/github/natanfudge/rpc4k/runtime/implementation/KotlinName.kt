@@ -2,6 +2,7 @@ package io.github.natanfudge.rpc4k.runtime.implementation
 
 import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.MemberName
+import com.squareup.kotlinpoet.asClassName
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.builtins.serializer
@@ -15,11 +16,9 @@ sealed interface KotlinName {
     val pkg: String
 }
 
-@Serializable
 data class KotlinClassName(override val simple: String, override val pkg: String) : KotlinName {
-    override fun toString(): String  = "$pkg.$simple"
+    override fun toString(): String = "$pkg.$simple"
 }
-
 
 
 @Serializable
@@ -33,10 +32,8 @@ val KotlinClassName.isUnit get() = simple == "Unit" && pkg == "kotlin"
 
 val KClass<*>.kotlinName: KotlinClassName
     get() {
-        val simple = simpleName ?: error("Could not get kotlinName of unnamed class $this")
-        val qualified = qualifiedName ?: error("Could not get kotlinName of unnamed class $this")
-        val pkg = qualified.substringBeforeLast(simple)
-        return KotlinClassName(simple = simple, pkg = pkg)
+        val className = asClassName()
+        return KotlinClassName(simple = className.simpleNames.joinToString("."), pkg = className.packageName)
     }
 
 
