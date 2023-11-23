@@ -110,6 +110,8 @@ object GeneratedCodeUtils {
             throw InvalidRpcRequestException("Malformed request arguments: ${e.message}", e)
         }
 
+        println("Running ${parsed.method}()")
+
         return setup.format.encode(resultSerializer, respondMethod(parsed.arguments))
     }
 

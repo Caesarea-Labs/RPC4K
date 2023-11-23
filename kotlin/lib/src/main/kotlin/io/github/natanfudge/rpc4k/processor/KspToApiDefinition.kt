@@ -2,11 +2,16 @@ package io.github.natanfudge.rpc4k.processor
 
 import com.google.devtools.ksp.getAllSuperTypes
 import com.google.devtools.ksp.getDeclaredProperties
+import com.google.devtools.ksp.processing.Resolver
 import com.google.devtools.ksp.symbol.*
 import com.google.devtools.ksp.symbol.ClassKind.*
 import io.github.natanfudge.rpc4k.processor.utils.*
+import kotlinx.serialization.SerialName
+import kotlin.reflect.KFunction
+import kotlin.reflect.KParameter
+import kotlin.reflect.jvm.isAccessible
 
-object KspToApiDefinition {
+class KspToApiDefinition(private val resolver: Resolver) {
     fun toApiDefinition(kspClass: KSClassDeclaration): ApiDefinition {
         return ApiDefinition(
             // Doesn't quite fit, but good enough to represent the name as an KotlinTypeReference
@@ -24,12 +29,14 @@ object KspToApiDefinition {
         )
     }
 
-    private fun toRpcParameter(argument: KSValueParameter): RpcParameter {
+    private fun toRpcParameter(parameter: KSValueParameter): RpcParameter {
         return RpcParameter(
-            name = argument.name?.getShortName() ?: error("Only named parameters are expected at the moment"),
-            type = toKotlinTypeReference(argument.type)
+            name = parameter.name?.getShortName() ?: error("Only named parameters are expected at the moment"),
+            type = toKotlinTypeReference(parameter.type),
         )
     }
+
+
 
 
     /**
@@ -41,7 +48,7 @@ object KspToApiDefinition {
      */
     private fun getRpcModels(kspClass: KSClassDeclaration): List<RpcModel> {
         // Sort to get deterministic results (this helps with incremental stuff)
-        return kspClass.getReferencedClasses().sortedBy { it.nonNullQualifiedName() }.map { toRpcModel(it) }
+        return kspClass.getReferencedClasses(resolver).sortedBy { it.nonNullQualifiedName() }.map { toRpcModel(it) }
     }
 
     /**
@@ -52,7 +59,7 @@ object KspToApiDefinition {
         // If it has sealed subclasses, it means it is a sealed type, and it should be treated as a union.
         CLASS, OBJECT -> when {
             declaration.hasAnnotation(JvmInline::class) -> toRpcInlineModel(declaration)
-            declaration.getSealedSubclasses().count() == 0 -> toRpcStructModel(declaration)
+            declaration.fastGetSealedSubclasses(resolver).count() == 0 -> toRpcStructModel(declaration)
             else -> toRpcUnionModel(declaration)
         }
 
@@ -75,7 +82,7 @@ object KspToApiDefinition {
      */
     private fun toRpcUnionModel(declaration: KSClassDeclaration) = RpcModel.Union(
         name = declaration.getSimpleName(),
-        options = declaration.getSealedSubclasses().map { sealedSubclassToRpcType(it) }.toList(),
+        options = declaration.fastGetSealedSubclasses(resolver).map { sealedSubclassToRpcType(it) }.toList(),
         declaration.typeParameters.map { it.name.asString() }
     )
 
@@ -181,6 +188,13 @@ object KspToApiDefinition {
         return toKotlinTypeReference(getDeclaredProperties().single().type)
     }
 
+
+//NiceToHave: Respect @SerialName
+//    /** Use the class's name normally, but respect `@SerialName` */
+//    private fun KSDeclaration.getFinalName(): String {
+//        val serialNameAnnotation = annotations.find { it.shortName.asString() == serialNameClass } ?: return getSimpleName()
+//        return serialNameAnnotation.arguments[0].value as String
+//    }
 
 }
 

@@ -26,14 +26,13 @@ data class ApiDefinition(
     val models: List<RpcModel>
 )
 
-/**
- * the [keepo 123][name]
- */
+
 @Serializable
 data class RpcDefinition(val name: String, val parameters: List<RpcParameter>, val returnType: KotlinTypeReference)
 
 @Serializable
-data class RpcParameter(val name: String, val type: KotlinTypeReference)
+//NiceToHave: support optional parameters
+data class RpcParameter(val name: String, val type: KotlinTypeReference, /*val isOptional: Boolean*//* = false*/)
 
 @Serializable
 sealed interface RpcModel {
@@ -60,7 +59,8 @@ sealed interface RpcModel {
          * @param isOptional BLOCKED: Support optional parameters and properties
          */
         @Serializable
-        data class Property(val name: String, val type: KotlinTypeReference, val isOptional: Boolean = false)
+        //TODO: specify default isOptional
+        data class Property(val name: String, val type: KotlinTypeReference, val isOptional: Boolean/* = false*/)
     }
 
     @Serializable

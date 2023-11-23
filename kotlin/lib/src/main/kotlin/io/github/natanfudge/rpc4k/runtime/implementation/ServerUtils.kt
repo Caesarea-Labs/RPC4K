@@ -4,9 +4,9 @@ import io.github.natanfudge.rpc4k.runtime.api.*
 
 // This handles reading and responding for both types of engines
 internal suspend fun <RpcDef, I, O, Engine : RpcServerEngine.SingleCall<I, O>> RpcServerSetup<RpcDef, Engine>.handleImpl(input: I, output: O?): O? {
-    val bytes = engine.read(input)
-
     try {
+        val bytes = engine.read(input)
+
         val method = Rpc.peekMethodName(bytes)
         val response = generatedHelper.handle(bytes, method, this)
             ?: return engine.genericErrorResponder("Non existent procedure $method", RpcError.InvalidRequest, output)

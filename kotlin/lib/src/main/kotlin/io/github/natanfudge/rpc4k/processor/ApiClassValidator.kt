@@ -3,6 +3,7 @@ package io.github.natanfudge.rpc4k.processor
 import com.google.devtools.ksp.getAllSuperTypes
 import com.google.devtools.ksp.getDeclaredProperties
 import com.google.devtools.ksp.isOpen
+import com.google.devtools.ksp.processing.Resolver
 import com.google.devtools.ksp.processing.SymbolProcessorEnvironment
 import com.google.devtools.ksp.symbol.*
 import com.google.devtools.ksp.validate
@@ -14,7 +15,7 @@ private const val TypeDiscriminatorField = "type"
 /**
  * The methods of this class evaluate all checks to reveal all errors, not just stop at one.
  */
-class ApiClassValidator(private val env: SymbolProcessorEnvironment) {
+class ApiClassValidator(private val env: SymbolProcessorEnvironment, private val resolver: Resolver) {
     fun validate(apiClass: KSClassDeclaration): Boolean {
         if (!apiClass.validate()) return false
         var valid = checkApiClassIsValid(apiClass)
@@ -25,7 +26,7 @@ class ApiClassValidator(private val env: SymbolProcessorEnvironment) {
 
         var unserializableReferencedClass = false
 
-        val referencedClasses = apiClass.getReferencedClasses {
+        val referencedClasses = apiClass.getReferencedClasses(resolver) {
             val type = it.resolveToUnderlying()
             // Type parameters get a pass since they might get expanded into something serializable
             if (type.declaration is KSTypeParameter) return@getReferencedClasses true
@@ -112,7 +113,7 @@ class ApiClassValidator(private val env: SymbolProcessorEnvironment) {
      */
     private fun checkNoGenericSealedClasses(referencedClasses: Set<KSClassDeclaration>): Boolean {
         return referencedClasses.evaluateAll {
-            it.checkRequirement(env, it.typeParameters.isEmpty() || it.getSealedSubclasses().toList().isEmpty()) {
+            it.checkRequirement(env, it.typeParameters.isEmpty() || it.fastGetSealedSubclasses(resolver).toList().isEmpty()) {
                 "Generic sealed classes are not supported in RPC4K. The concept doesn't fit well with other languages and kotlinx.serialization breaks with them anyway."
             }
         }

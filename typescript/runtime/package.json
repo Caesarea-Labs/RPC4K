@@ -1,6 +1,6 @@
 {
   "name": "rpc4ts-runtime",
-  "version": "0.0.21",
+  "version": "0.0.24",
   "main": "dist/index.js",
   "typings": "dist/index.d.ts",
   "module": "dist/index.js",

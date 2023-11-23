@@ -1,6 +1,7 @@
 package io.github.natanfudge.rpc4k.runtime.implementation.serializers
 
 import kotlinx.serialization.KSerializer
+import kotlinx.serialization.SerializationException
 import kotlinx.serialization.builtins.serializer
 import kotlinx.serialization.descriptors.SerialDescriptor
 import kotlinx.serialization.encoding.Decoder
@@ -15,7 +16,12 @@ object UUIDSerializer : KSerializer<UUID> {
     override val descriptor: SerialDescriptor = String.serializer().descriptor
 
     override fun deserialize(decoder: Decoder): UUID {
-        return UUID.fromString(decoder.decodeString())
+        val str = decoder.decodeString()
+        return try {
+            UUID.fromString(str)
+        } catch (e: IllegalArgumentException) {
+            throw SerializationException("Invalid UUID string '$str'", e)
+        }
     }
 
     override fun serialize(encoder: Encoder, value: UUID) {

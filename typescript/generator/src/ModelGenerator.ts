@@ -55,7 +55,11 @@ function addStruct(code: CodeBuilder, struct: RpcStructModel) {
 }
 
 function addEnum(code: CodeBuilder, enumModel: RpcEnumModel) {
-    code.addUnionType({name: modelName(enumModel.name), types: enumModel.options.map(option => `"${modelName(option)}"`)})
+    const name = modelName(enumModel.name)
+    const options = enumModel.options.map(option => `"${modelName(option)}"`)
+    code.addUnionType({name: name, types: options})
+        // Add a list of values of an enum to make it easier to use
+        .addConst(name + "Values", `[${options.join(", ")}]`)
 }
 
 function addUnion(code: CodeBuilder, struct: RpcUnionModel) {

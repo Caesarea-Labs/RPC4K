@@ -1,13 +1,13 @@
-### Duration type
 
 
-### Support optional parameters and properties
 
-Kotlin methods and properties with a default value should be considered optional:
+
+
+### Support optional properties
+
+Kotlin properties with a default value should be considered optional:
 
 ```kotlin
-fun someFunc(x: Int = 2)
-
 class SomeData(val y: Int = 3)
 ```
 
@@ -17,15 +17,24 @@ The parameter `x` should have `isOptional` set to `true` in the `RpcParameter` ,
 
 Typescript should interpret optional parameter and properties with the `?` property/parameter operator. In json, we can simply omit optional properties (or specify `undefined` in javascript)
 
-Note that there is some additional complexity to explicitly opting to use the default value in kotlin parameters, but it should be solvable with a compiler plugin.
-
 We this is supported we can allow not encoding defaults in Kotlinx.serialization formats.
+
+ 1. Test optional RPC parameters, and omitting values in various positions in the parameter list
+2. Test optional data class properties
 
 ### Support types that implement from acceptable types
 For these types, we support having them in serializable classes directly, but not their descendants:
 - Map -> MutableMap, etc not supported
 - List -> MutableList, etc not supported
 - Set-> MutableSet, etc not supported
+
+### Add a typescript api that makes testing easier
+Look at what i do in caesarea-poc and see what generic utils can be extracted. 
+
+
+### Deal with sealed inline classes
+This is currently bugged, see:
+https://github.com/Kotlin/kotlinx.serialization/issues/2374
 
 # 2. Low Priority - Do later
 
@@ -216,6 +225,16 @@ will serialize using the builtin serializers. Right now we simply require @Conte
 serialization with our specific serializer using @Serializable (with = OurSerializer()) on every property of these types. 
 
 # 4. Nice to have - Will be done much later
+### Respect @SerialName for code generation
+You should be able to use @SerialName on classes to force code generation with a certain struct name.
+Make sure that it works with polymorphic types.
+Also, you should be able to use @SerialName on fields to force specific struct field names.
+
+One of the main complications is the fact that if we say that a class named X will be 'serial named' Y, the resulting api definition
+will say that the class is named Y. While this is fine for typescript, in generated Kotlin code it will try to reference Y, 
+but only X actually exists in Kotlin-land. In order for this to work properly we need to separate between the representation 
+that generated clients use and the representation that kotlin uses. 
+
 ### Modularize RPC4All
 RPC4k interfaces with many foreign libraries that are not required for the core logic:
 - Ktor
@@ -290,6 +309,68 @@ And then the clients will know to use the normal http routing instead.
 
 Websocket is a problem. There's no definitive way to know what the "response" to a request is.
 However, this can be solved by providing a RequestId in each request, and then locking until a response with the same RequestId is returned.
+
+### Support optional parameters on RPCs
+
+Kotlin parameters in RPCs with a default value should be considered optional:
+
+```kotlin
+fun someFunc(y: Int = 3)
+```
+
+The client may then omit the value, and the value `3` will be used instead.
+Implementing this is quite complicated, because Kotlin doesn't support something of the form 'if X, use this value, otherwise, use the default value'.
+These are the options to implementing this then:
+1. Copy default value verbatim into generated code (requires compiler plugin)
+If '3' is defined as the default value, then generated code will look something like this:
+someFunc(y ?: 3)
+This is a very problematic solution because it requires analyzing actual code and might be very hard to make it work with complex expressions as the default value.
+2. Use reflection (JVM-only)
+Chatgpt provided this useful example:
+```kotlin
+fun foo(a: Int = 0, b: Int = 1, c: Int = 2, d: Int = 3, e: Int = 4) {
+    println("a: $a, b: $b, c: $c, d: $d, e: $e")
+}
+
+fun main() {
+    val values: List<Int?> = listOf(9, 8, null, 7, null)
+
+    // Get a reference to the foo function
+    val fooFunc: KFunction<Unit> = ::foo
+
+    // Prepare a map of arguments for the function call
+    val args = mutableMapOf<KParameter, Any?>()
+    fooFunc.parameters.forEachIndexed { index, param ->
+        values.getOrNull(index)?.let { value ->
+            if (value != null) args[param] = value
+        }
+    }
+
+    // Call the function with the arguments
+    fooFunc.callBy(args)
+}
+```
+I have not tested it, but according to the kdocs this should do what we want. 
+3. Generate every possible permutation (exponential generated code size)
+Chatgpt a rough outline:
+```kotlin
+fun callFooWithValues(values: List<Int?>) {
+    when {
+        // Check each combination of nulls and call foo accordingly
+        values[0] != null && values[1] != null && values[2] != null && values[3] != null && values[4] != null -> foo(values[0]!!, values[1]!!, values[2]!!, values[3]!!, values[4]!!)
+        values[0] != null && values[1] != null && values[2] != null && values[3] != null -> foo(a = values[0]!!, b = values[1]!!, c = values[2]!!, d = values[3]!!)
+        // ... (Other combinations)
+        values[0] == null && values[1] == null && values[2] == null && values[3] == null && values[4] != null -> foo(e = values[4]!!)
+        // ... (Rest of the combinations)
+        else -> foo()
+    }
+}
+```
+
+This requires 2^n of these lines, where n is the number of optional values.
+
+
+As you can see, these solutions are all problematic. My favorite is to do option 3 and limit the amount of optional parameters. 
 
 ### Gradual Feature Adoption
 
@@ -394,6 +475,9 @@ Considering this is done with an IDEA plugin, I don't think it requires support 
 ### Show KSP errors in-editor as compile errors
 We should go over all the validations done in the KSP plugin, and do the same validation in an IDEA plugin, and then mark invalid code
 with red compiler errors, to improve user experience. 
+
+### Allow cross-language refactoring
+ When refactoring a server class name, it should be possible to also execute the same refactoring on the client to update models there. 
 
 # 7. Performance Concerns
 

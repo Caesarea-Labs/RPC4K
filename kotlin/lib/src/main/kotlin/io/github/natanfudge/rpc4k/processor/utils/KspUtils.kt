@@ -1,5 +1,6 @@
 package io.github.natanfudge.rpc4k.processor.utils
 
+import com.google.devtools.ksp.getAllSuperTypes
 import com.google.devtools.ksp.getDeclaredFunctions
 import com.google.devtools.ksp.isConstructor
 import com.google.devtools.ksp.isPublic
@@ -16,7 +17,7 @@ import kotlin.reflect.KClass
  */
 @Suppress("UNCHECKED_CAST")
 fun Resolver.getClassesWithAnnotation(annotation: KClass<*>): Sequence<KSClassDeclaration> = getSymbolsWithAnnotation(annotation.qualifiedName!!)
-    as Sequence<KSClassDeclaration>
+        as Sequence<KSClassDeclaration>
 
 
 internal fun KSClassDeclaration.getPublicApiFunctions() = getDeclaredFunctions()
@@ -28,17 +29,6 @@ internal fun KSClassDeclaration.getPublicApiFunctions() = getDeclaredFunctions()
 fun KSAnnotated.hasAnnotation(annotation: KClass<*>) = annotations.any { it.shortName.asString() == annotation.simpleName }
 
 
-//fun KSDeclaration.getSimpleName() = simpleName.asString()
-
-/**
- * Extract from `com.foo.bar.Inner$Thing` the pair `[com.foo.bar, inner.Thing]`
- */
-//fun KSDeclaration.getPackageAndClassName(): Pair<String, String> {
-//    val qualifiedName = nonNullQualifiedName()
-//    val packageName = packageName.asString()
-//    val className = qualifiedName.removePrefix("$packageName.")
-//    return packageName to className
-//}
 /**
  * Extract from `com.foo.bar.Inner$Thing` the pair `[com.foo.bar, inner.Thing]`
  */
@@ -125,13 +115,13 @@ fun CodeGenerator.writeFile(
  *
  * @param filter Allows denying certain classes, which will make it so things they have referenced will not get visited.
  */
-fun KSClassDeclaration.getReferencedClasses(filter: (KSTypeReference) -> Boolean = { true }): Set<KSClassDeclaration> {
+fun KSClassDeclaration.getReferencedClasses(resolver: Resolver, filter: (KSTypeReference) -> Boolean = { true }): Set<KSClassDeclaration> {
     val types = hashSetOf<KSClassDeclaration>()
     // Add things referenced in methods
     for (method in getPublicApiFunctions()) {
-        addReferencedTypes(method.nonNullReturnType(), types, filter)
+        addReferencedTypes(method.nonNullReturnType(), types, resolver, filter)
         for (arg in method.parameters) {
-            addReferencedTypes(arg.type, types, filter)
+            addReferencedTypes(arg.type, types, resolver, filter)
         }
     }
 
@@ -139,7 +129,6 @@ fun KSClassDeclaration.getReferencedClasses(filter: (KSTypeReference) -> Boolean
 }
 
 
-//TODO: test recursive references
 /**
  * When you have a reference like
  * ```
@@ -149,30 +138,84 @@ fun KSClassDeclaration.getReferencedClasses(filter: (KSTypeReference) -> Boolean
  * ```
  * It will return everything referenced by `SomeClass`, including `SomeOtherClass` and `AnotherClass`.
  */
-private fun addReferencedTypes(type: KSTypeReference, addTo: MutableSet<KSClassDeclaration>, filter: (KSTypeReference) -> Boolean) {
+private fun addReferencedTypes(
+    type: KSTypeReference,
+    addTo: MutableSet<KSClassDeclaration>,
+    resolver: Resolver,
+    filter: (KSTypeReference) -> Boolean
+) {
     if (!filter(type)) return
     val resolved = type.resolveToUnderlying()
     for (typeArg in resolved.arguments) {
-        if (typeArg.type != null) addReferencedTypes(typeArg.type!!, addTo, filter)
+        if (typeArg.type != null) addReferencedTypes(typeArg.type!!, addTo, resolver, filter)
     }
     val declaration = resolved.declaration
     // We really don't want to iterate over builtin types, and we need to be careful to only process everything once or this will be infinite recursion.
     if (!resolved.isBuiltinSerializableType() && declaration !in addTo && declaration is KSClassDeclaration) {
         for (arg in resolved.arguments) {
-            addReferencedTypes(arg.nonNullType(), addTo, filter)
+            addReferencedTypes(arg.nonNullType(), addTo, resolver, filter)
         }
-        addReferencedTypes(declaration, addTo, filter)
+        addReferencedTypes(declaration, addTo, resolver, filter)
     }
 }
 
-private fun addReferencedTypes(declaration: KSClassDeclaration, addTo: MutableSet<KSClassDeclaration>, filter: (KSTypeReference) -> Boolean) {
+private fun addReferencedTypes(
+    declaration: KSClassDeclaration,
+    addTo: MutableSet<KSClassDeclaration>,
+    resolver: Resolver,
+    filter: (KSTypeReference) -> Boolean
+) {
     addTo.add(declaration)
     // Include types referenced in properties of models as well
     for (property in declaration.getAllProperties()) {
-        addReferencedTypes(property.type, addTo, filter)
+        addReferencedTypes(property.type, addTo, resolver, filter)
     }
     // Add sealed subclasses as well
-    for (sealedSubClass in declaration.getSealedSubclasses()) {
-        addReferencedTypes(sealedSubClass, addTo, filter)
+    for (sealedSubClass in declaration.fastGetSealedSubclasses(resolver)) {
+        addReferencedTypes(sealedSubClass, addTo, resolver, filter)
+    }
+}
+
+
+/**
+ * For some reason, when you call getSealedSubclasses it invalidates the ksp caches and basically forces ksp to reprocess everything every time.
+ * This is a known limitation and may be fixed in KSP 2.
+ * This version does not cause the cache to be invalidated.
+ *
+ * //TODO: make sure this approach doesn't take too much time and actually prevents invalidation
+ */
+fun KSClassDeclaration.fastGetSealedSubclasses(resolver: Resolver): Sequence<KSClassDeclaration> {
+    if (Modifier.SEALED !in modifiers) return emptySequence()
+    val packageName = containingFile?.packageName ?: return emptySequence()
+
+    val filesInSamePackage = resolver.getAllFiles().filter { it.packageName == packageName }
+    return filesInSamePackage.flatMap { file ->
+        file.getAllDeclarations().filterIsInstance<KSClassDeclaration>()
+            .filter { superType -> superType.getAllSuperTypes().any { it.declaration == this } }
+    }
+}
+
+/**
+ * Includes inner classes as well
+ */
+private fun KSFile.getAllDeclarations(): Sequence<KSDeclaration> {
+    return sequence {
+        for (declaration in declarations) {
+            yield(declaration)
+            if (declaration is KSClassDeclaration) {
+                yieldAll(declaration.getAllDeclarations())
+            }
+        }
+    }
+}
+
+private fun KSClassDeclaration.getAllDeclarations(): Sequence<KSDeclaration> {
+    return sequence {
+        for (declaration in declarations) {
+            yield(declaration)
+            if (declaration is KSClassDeclaration) {
+                yieldAll(declaration.getAllDeclarations())
+            }
+        }
     }
 }

@@ -4,6 +4,7 @@ import dayjs, {isDayjs} from "dayjs";
 import {RpcTypeDiscriminator, RpcTypeNames, RpcTypes} from "./RpcTypeUtils";
 import {simpleModelName} from "./ModelName";
 import duration from "dayjs/plugin/duration";
+import exp from "constants";
 
 dayjs.extend(duration)
 
@@ -72,6 +73,10 @@ const DefaultJavascriptToSpecAdapter: TypedValueAdapter = (context) => {
     return context.value
 }
 const DefaultSpecToJavascriptAdapter: TypedValueAdapter = ({key, value, parentModel, model, polymorphic, type}) => {
+    if (value === null) {
+        if (!type.isNullable) throw new Error(`Unexpected null value with non-nullable type: ${JSON.stringify(type)} with key: ${key}`)
+        return null
+    }
     // Typescript defines all values typed "void" will be either undefined or null.
     if (type.name === RpcTypeNames.Void) return undefined
 
@@ -241,7 +246,7 @@ class RpcTypeAdapterImpl {
             const isTypeDiscriminator = model.hasTypeDiscriminator && key === RpcTypeDiscriminator
 
             // SLOW: O(n) search on every object property
-            const propertyType= isTypeDiscriminator ? RpcTypes.Str
+            const propertyType = isTypeDiscriminator ? RpcTypes.Str
                 : model.properties.find(property => property.name === key)?.type
 
             // Don't transform the type discriminator if it exists
@@ -308,7 +313,18 @@ function expandModelTypeParameters(matchingModel: RpcModel, parameterValues: Rec
 }
 
 function expandTypeParameters(type: RpcType, parameterValues: Record<string, RpcType>): RpcType {
-    if (type.isTypeParameter) return parameterValues[type.name] ?? type
+    if (type.isTypeParameter) {
+        const expandedType = parameterValues[type.name] ?? type
+        return {
+            ...expandedType,
+            // Make sure to keep nullability if it exists.
+            // Note how this distinguishes nullability in a case like this:
+            // type X<T> = T | null
+            // type Y = X<string | null>
+            // Y is nullable both because the expanded type (string | null) is nullable and because the original type (T | null) is nullable.
+            isNullable: type.isNullable || expandedType.isNullable
+        }
+    }
     return {
         name: type.name,
         // When type is a type parameter we return early

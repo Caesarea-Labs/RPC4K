@@ -5,103 +5,29 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="9ca8770c-8d9e-44a0-b1e9-2417666ce2c1" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/runConfigurations/Publish_TS.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/runConfigurations/Upload_Rpc4k.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/typescript/generator/src/Rpc4tsType.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/typescript/runtime/src/impl/ModelName.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/compiler.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/gradle.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/gradle.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/runConfigurations/Publish_TS_Generator.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/runConfigurations/Publish_TS_Runtime.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/runConfigurations/Test_Server.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/runConfigurations/Test_Server.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/TODO.md" beforeDir="false" afterPath="$PROJECT_DIR$/TODO.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/exampleapp/kotlin/src/main/java/com/example/Rpc4kTest.kt" beforeDir="false" afterPath="$PROJECT_DIR$/exampleapp/kotlin/src/main/java/com/example/Rpc4kTest.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/exampleapp/kotlin/src/test/kotlin/io/github/natanfudge/rpc4k/test/SimpleKtorServerTest.kt" beforeDir="false" afterPath="$PROJECT_DIR$/exampleapp/kotlin/src/test/kotlin/io/github/natanfudge/rpc4k/test/SimpleKtorServerTest.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/exampleapp/kotlin/src/test/kotlin/io/github/natanfudge/rpc4k/test/TestUserProtocol.kt" beforeDir="false" afterPath="$PROJECT_DIR$/exampleapp/kotlin/src/test/kotlin/io/github/natanfudge/rpc4k/test/TestUserProtocol.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/kotlin/build.gradle.kts" beforeDir="false" afterPath="$PROJECT_DIR$/kotlin/build.gradle.kts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/kotlin/gradle/libs.versions.toml" beforeDir="false" afterPath="$PROJECT_DIR$/kotlin/gradle/libs.versions.toml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/kotlin/lib/build.gradle.kts" beforeDir="false" afterPath="$PROJECT_DIR$/kotlin/lib/build.gradle.kts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/kotlin/lib/src/main/kotlin/io/github/natanfudge/rpc4k/processor/ApiClassValidator.kt" beforeDir="false" afterPath="$PROJECT_DIR$/kotlin/lib/src/main/kotlin/io/github/natanfudge/rpc4k/processor/ApiClassValidator.kt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/kotlin/lib/src/main/kotlin/io/github/natanfudge/rpc4k/processor/ApiDefinition.kt" beforeDir="false" afterPath="$PROJECT_DIR$/kotlin/lib/src/main/kotlin/io/github/natanfudge/rpc4k/processor/ApiDefinition.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/kotlin/lib/src/main/kotlin/io/github/natanfudge/rpc4k/processor/ApiDefinitionConverters.kt" beforeDir="false" afterPath="$PROJECT_DIR$/kotlin/lib/src/main/kotlin/io/github/natanfudge/rpc4k/processor/ApiDefinitionConverters.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/kotlin/lib/src/main/kotlin/io/github/natanfudge/rpc4k/processor/ApiDefinitionToClientCode.kt" beforeDir="false" afterPath="$PROJECT_DIR$/kotlin/lib/src/main/kotlin/io/github/natanfudge/rpc4k/processor/ApiDefinitionToClientCode.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/kotlin/lib/src/main/kotlin/io/github/natanfudge/rpc4k/processor/ApiDefinitionToServerCode.kt" beforeDir="false" afterPath="$PROJECT_DIR$/kotlin/lib/src/main/kotlin/io/github/natanfudge/rpc4k/processor/ApiDefinitionToServerCode.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/kotlin/lib/src/main/kotlin/io/github/natanfudge/rpc4k/processor/ApiDefinitionWriter.kt" beforeDir="false" afterPath="$PROJECT_DIR$/kotlin/lib/src/main/kotlin/io/github/natanfudge/rpc4k/processor/ApiDefinitionWriter.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/kotlin/lib/src/main/kotlin/io/github/natanfudge/rpc4k/processor/KotlinService.kt" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/kotlin/lib/src/main/kotlin/io/github/natanfudge/rpc4k/processor/KspToApiDefinition.kt" beforeDir="false" afterPath="$PROJECT_DIR$/kotlin/lib/src/main/kotlin/io/github/natanfudge/rpc4k/processor/KspToApiDefinition.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/kotlin/lib/src/main/kotlin/io/github/natanfudge/rpc4k/processor/Rpc4kProcessorProvider.kt" beforeDir="false" afterPath="$PROJECT_DIR$/kotlin/lib/src/main/kotlin/io/github/natanfudge/rpc4k/processor/Rpc4kProcessorProvider.kt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/kotlin/lib/src/main/kotlin/io/github/natanfudge/rpc4k/processor/utils/KspUtils.kt" beforeDir="false" afterPath="$PROJECT_DIR$/kotlin/lib/src/main/kotlin/io/github/natanfudge/rpc4k/processor/utils/KspUtils.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/kotlin/lib/src/main/kotlin/io/github/natanfudge/rpc4k/processor/utils/SerializationUtils.kt" beforeDir="false" afterPath="$PROJECT_DIR$/kotlin/lib/src/main/kotlin/io/github/natanfudge/rpc4k/processor/utils/SerializationUtils.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/kotlin/lib/src/main/kotlin/io/github/natanfudge/rpc4k/processor/utils/Utils.kt" beforeDir="false" afterPath="$PROJECT_DIR$/kotlin/lib/src/main/kotlin/io/github/natanfudge/rpc4k/processor/utils/Utils.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/kotlin/lib/src/main/kotlin/io/github/natanfudge/rpc4k/processor/utils/poet/FormattedString.kt" beforeDir="false" afterPath="$PROJECT_DIR$/kotlin/lib/src/main/kotlin/io/github/natanfudge/rpc4k/processor/utils/poet/FormattedString.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/kotlin/lib/src/main/kotlin/io/github/natanfudge/rpc4k/processor/utils/poet/PoetUtils.kt" beforeDir="false" afterPath="$PROJECT_DIR$/kotlin/lib/src/main/kotlin/io/github/natanfudge/rpc4k/processor/utils/poet/PoetUtils.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/kotlin/lib/src/main/kotlin/io/github/natanfudge/rpc4k/processor/utils/poet/PrimaryConstructorBuilder.kt" beforeDir="false" afterPath="$PROJECT_DIR$/kotlin/lib/src/main/kotlin/io/github/natanfudge/rpc4k/processor/utils/poet/PrimaryConstructorBuilder.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/kotlin/lib/src/main/kotlin/io/github/natanfudge/rpc4k/runtime/api/Api.kt" beforeDir="false" afterPath="$PROJECT_DIR$/kotlin/lib/src/main/kotlin/io/github/natanfudge/rpc4k/runtime/api/Api.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/kotlin/lib/src/main/kotlin/io/github/natanfudge/rpc4k/runtime/api/GeneratedInterfaces.kt" beforeDir="false" afterPath="$PROJECT_DIR$/kotlin/lib/src/main/kotlin/io/github/natanfudge/rpc4k/runtime/api/GeneratedInterfaces.kt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/kotlin/lib/src/main/kotlin/io/github/natanfudge/rpc4k/runtime/api/Rpc.kt" beforeDir="false" afterPath="$PROJECT_DIR$/kotlin/lib/src/main/kotlin/io/github/natanfudge/rpc4k/runtime/api/Rpc.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/kotlin/lib/src/main/kotlin/io/github/natanfudge/rpc4k/runtime/api/RpcClientException.kt" beforeDir="false" afterPath="$PROJECT_DIR$/kotlin/lib/src/main/kotlin/io/github/natanfudge/rpc4k/runtime/api/RpcClientException.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/kotlin/lib/src/main/kotlin/io/github/natanfudge/rpc4k/runtime/api/RpcServer.kt" beforeDir="false" afterPath="$PROJECT_DIR$/kotlin/lib/src/main/kotlin/io/github/natanfudge/rpc4k/runtime/api/RpcServer.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/kotlin/lib/src/main/kotlin/io/github/natanfudge/rpc4k/runtime/api/RpcServerSetup.kt" beforeDir="false" afterPath="$PROJECT_DIR$/kotlin/lib/src/main/kotlin/io/github/natanfudge/rpc4k/runtime/api/RpcServerSetup.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/kotlin/lib/src/main/kotlin/io/github/natanfudge/rpc4k/runtime/api/RpcSettings.kt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/kotlin/lib/src/main/kotlin/io/github/natanfudge/rpc4k/runtime/api/components/JsonFormat.kt" beforeDir="false" afterPath="$PROJECT_DIR$/kotlin/lib/src/main/kotlin/io/github/natanfudge/rpc4k/runtime/api/components/JsonFormat.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/kotlin/lib/src/main/kotlin/io/github/natanfudge/rpc4k/runtime/api/components/KtorManagedRpcServer.kt" beforeDir="false" afterPath="$PROJECT_DIR$/kotlin/lib/src/main/kotlin/io/github/natanfudge/rpc4k/runtime/api/components/KtorManagedRpcServer.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/kotlin/lib/src/main/kotlin/io/github/natanfudge/rpc4k/runtime/api/testing/RpcExtension.kt" beforeDir="false" afterPath="$PROJECT_DIR$/kotlin/lib/src/main/kotlin/io/github/natanfudge/rpc4k/runtime/api/testing/RpcExtension.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/kotlin/lib/src/main/kotlin/io/github/natanfudge/rpc4k/runtime/implementation/ByteUtils.kt" beforeDir="false" afterPath="$PROJECT_DIR$/kotlin/lib/src/main/kotlin/io/github/natanfudge/rpc4k/runtime/implementation/ByteUtils.kt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/kotlin/lib/src/main/kotlin/io/github/natanfudge/rpc4k/runtime/implementation/GeneratedCodeUtils.kt" beforeDir="false" afterPath="$PROJECT_DIR$/kotlin/lib/src/main/kotlin/io/github/natanfudge/rpc4k/runtime/implementation/GeneratedCodeUtils.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/kotlin/lib/src/main/kotlin/io/github/natanfudge/rpc4k/runtime/implementation/InvalidRpcRequestException.kt" beforeDir="false" afterPath="$PROJECT_DIR$/kotlin/lib/src/main/kotlin/io/github/natanfudge/rpc4k/runtime/implementation/InvalidRpcRequestException.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/kotlin/lib/src/main/kotlin/io/github/natanfudge/rpc4k/runtime/implementation/KotlinName.kt" beforeDir="false" afterPath="$PROJECT_DIR$/kotlin/lib/src/main/kotlin/io/github/natanfudge/rpc4k/runtime/implementation/KotlinName.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/kotlin/lib/src/main/kotlin/io/github/natanfudge/rpc4k/runtime/implementation/MultiCallServerExtension.kt" beforeDir="false" afterPath="$PROJECT_DIR$/kotlin/lib/src/main/kotlin/io/github/natanfudge/rpc4k/runtime/implementation/MultiCallServerExtension.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/kotlin/lib/src/main/kotlin/io/github/natanfudge/rpc4k/runtime/implementation/RpcImpl.kt" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/kotlin/lib/src/main/kotlin/io/github/natanfudge/rpc4k/runtime/implementation/ServerUtils.kt" beforeDir="false" afterPath="$PROJECT_DIR$/kotlin/lib/src/main/kotlin/io/github/natanfudge/rpc4k/runtime/implementation/ServerUtils.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/kotlin/lib/src/main/kotlin/io/github/natanfudge/rpc4k/runtime/implementation/serializers/DateSerializers.kt" beforeDir="false" afterPath="$PROJECT_DIR$/kotlin/lib/src/main/kotlin/io/github/natanfudge/rpc4k/runtime/implementation/serializers/DateSerializers.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/kotlin/lib/src/main/kotlin/io/github/natanfudge/rpc4k/runtime/implementation/serializers/HeterogeneousListSerializers.kt" beforeDir="false" afterPath="$PROJECT_DIR$/kotlin/lib/src/main/kotlin/io/github/natanfudge/rpc4k/runtime/implementation/serializers/HeterogeneousListSerializers.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/kotlin/lib/src/main/kotlin/io/github/natanfudge/rpc4k/runtime/implementation/serializers/Rpc4kSerializers.kt" beforeDir="false" afterPath="$PROJECT_DIR$/kotlin/lib/src/main/kotlin/io/github/natanfudge/rpc4k/runtime/implementation/serializers/Rpc4kSerializers.kt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/kotlin/lib/src/main/kotlin/io/github/natanfudge/rpc4k/runtime/implementation/serializers/UUIDSerializer.kt" beforeDir="false" afterPath="$PROJECT_DIR$/kotlin/lib/src/main/kotlin/io/github/natanfudge/rpc4k/runtime/implementation/serializers/UUIDSerializer.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/kotlin/lib/src/main/kotlin/io/github/natanfudge/rpc4k/runtime/implementation/serializers/VoidUnitSerializer.kt" beforeDir="false" afterPath="$PROJECT_DIR$/kotlin/lib/src/main/kotlin/io/github/natanfudge/rpc4k/runtime/implementation/serializers/VoidUnitSerializer.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/kotlin/lib/src/test/kotlin/io/github/natanfudge/rpc4k/test/DirectProcessorTest.kt" beforeDir="false" afterPath="$PROJECT_DIR$/kotlin/lib/src/test/kotlin/io/github/natanfudge/rpc4k/test/DirectProcessorTest.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/kotlin/lib/src/test/kotlin/io/github/natanfudge/rpc4k/test/EncodingTest.kt" beforeDir="false" afterPath="$PROJECT_DIR$/kotlin/lib/src/test/kotlin/io/github/natanfudge/rpc4k/test/EncodingTest.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/kotlin/plugin/build.gradle.kts" beforeDir="false" afterPath="$PROJECT_DIR$/kotlin/plugin/build.gradle.kts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/kotlin/plugin/src/main/kotlin/io/github/natanfudge/rpc4k/gradle/Rpc4kPlugin.kt" beforeDir="false" afterPath="$PROJECT_DIR$/kotlin/plugin/src/main/kotlin/io/github/natanfudge/rpc4k/gradle/Rpc4kPlugin.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/kotlin/settings.gradle.kts" beforeDir="false" afterPath="$PROJECT_DIR$/kotlin/settings.gradle.kts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/kotlin/testapp/build.gradle.kts" beforeDir="false" afterPath="$PROJECT_DIR$/kotlin/testapp/build.gradle.kts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/kotlin/testapp/src/main/java/com/example/AllEncompassingService.kt" beforeDir="false" afterPath="$PROJECT_DIR$/kotlin/testapp/src/main/java/com/example/AllEncompassingService.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/kotlin/testapp/src/main/java/com/example/SomeClass.kt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/kotlin/testapp/src/main/java/com/example/TestValidClasses.kt" beforeDir="false" afterPath="$PROJECT_DIR$/kotlin/testapp/src/main/java/com/example/TestValidClasses.kt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/kotlin/testapp/src/test/kotlin/io/github/natanfudge/rpc4k/test/AllEncompassingTest.kt" beforeDir="false" afterPath="$PROJECT_DIR$/kotlin/testapp/src/test/kotlin/io/github/natanfudge/rpc4k/test/AllEncompassingTest.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/kotlin/testapp/src/test/kotlin/io/github/natanfudge/rpc4k/test/ModelToTypescriptTest.kt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/kotlin/testapp/src/test/kotlin/io/github/natanfudge/rpc4k/testserver/TestServers.kt" beforeDir="false" afterPath="$PROJECT_DIR$/kotlin/testapp/src/test/kotlin/io/github/natanfudge/rpc4k/testserver/TestServers.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/kotlin/versions.properties" beforeDir="false" afterPath="$PROJECT_DIR$/kotlin/versions.properties" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/package-lock.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/typescript/generator/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/typescript/generator/package-lock.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/typescript/generator/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/typescript/generator/package.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/typescript/generator/src/ApiDefinitionsDefaults.ts" beforeDir="false" afterPath="$PROJECT_DIR$/typescript/generator/src/ApiDefinitionsDefaults.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/typescript/generator/src/ClientAccessorGenerator.ts" beforeDir="false" afterPath="$PROJECT_DIR$/typescript/generator/src/ClientAccessorGenerator.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/typescript/generator/src/ClientGenerator.ts" beforeDir="false" afterPath="$PROJECT_DIR$/typescript/generator/src/ClientGenerator.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/typescript/generator/src/CodeBuilder.ts" beforeDir="false" afterPath="$PROJECT_DIR$/typescript/generator/src/CodeBuilder.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/typescript/generator/src/ModelGenerator.ts" beforeDir="false" afterPath="$PROJECT_DIR$/typescript/generator/src/ModelGenerator.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/typescript/generator/src/index.ts" beforeDir="false" afterPath="$PROJECT_DIR$/typescript/generator/src/index.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/typescript/generator/test/CodegenedClientTest.test.ts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/typescript/runtime/index.ts" beforeDir="false" afterPath="$PROJECT_DIR$/typescript/runtime/index.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/typescript/runtime/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/typescript/runtime/package-lock.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/typescript/runtime/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/typescript/runtime/package.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/typescript/runtime/src/runtime/RpcClient.ts" beforeDir="false" afterPath="$PROJECT_DIR$/typescript/runtime/src/RpcClient.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/typescript/runtime/src/runtime/RpcClientError.ts" beforeDir="false" afterPath="$PROJECT_DIR$/typescript/runtime/src/RpcClientError.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/typescript/runtime/src/runtime/SerializationFormat.ts" beforeDir="false" afterPath="$PROJECT_DIR$/typescript/runtime/src/SerializationFormat.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/typescript/runtime/src/runtime/components/FetchRpcClient.ts" beforeDir="false" afterPath="$PROJECT_DIR$/typescript/runtime/src/components/FetchRpcClient.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/typescript/runtime/src/runtime/components/JsonFormat.ts" beforeDir="false" afterPath="$PROJECT_DIR$/typescript/runtime/src/components/JsonFormat.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/typescript/runtime/src/runtime/components/index.ts" beforeDir="false" afterPath="$PROJECT_DIR$/typescript/runtime/src/components/index.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/typescript/runtime/src/runtime/impl/ApiDefinition.ts" beforeDir="false" afterPath="$PROJECT_DIR$/typescript/runtime/src/impl/ApiDefinition.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/typescript/runtime/src/runtime/impl/GeneratedCodeUtils.ts" beforeDir="false" afterPath="$PROJECT_DIR$/typescript/runtime/src/impl/GeneratedCodeUtils.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/typescript/runtime/src/runtime/impl/Rpc.ts" beforeDir="false" afterPath="$PROJECT_DIR$/typescript/runtime/src/impl/Rpc.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/typescript/runtime/src/runtime/impl/Rpc4aTypeAdapter.ts" beforeDir="false" afterPath="$PROJECT_DIR$/typescript/runtime/src/impl/Rpc4aTypeAdapter.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/typescript/runtime/src/runtime/impl/RpcTypeUtils.ts" beforeDir="false" afterPath="$PROJECT_DIR$/typescript/runtime/src/impl/RpcTypeUtils.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/typescript/runtime/src/runtime/impl/TypescriptRpcType.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/typescript/runtime/src/runtime/impl/Util.ts" beforeDir="false" afterPath="$PROJECT_DIR$/typescript/runtime/src/impl/Util.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/typescript/runtime/src/runtime/index.ts" beforeDir="false" afterPath="$PROJECT_DIR$/typescript/runtime/index.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/typescript/runtime/src/components/FetchRpcClient.ts" beforeDir="false" afterPath="$PROJECT_DIR$/typescript/runtime/src/components/FetchRpcClient.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/typescript/runtime/src/impl/Rpc4aTypeAdapter.ts" beforeDir="false" afterPath="$PROJECT_DIR$/typescript/runtime/src/impl/Rpc4aTypeAdapter.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/typescript/runtime/test/CodegenedClientTest.test.ts" beforeDir="false" afterPath="$PROJECT_DIR$/typescript/runtime/test/CodegenedClientTest.test.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/typescript/runtime/test/codegen.test.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/typescript/runtime/tsup.config.ts" beforeDir="false" afterPath="$PROJECT_DIR$/typescript/runtime/tsup.config.ts" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -129,6 +55,9 @@
     <system id="GRADLE">
       <state>
         <task path="$PROJECT_DIR$/kotlin">
+          <activation />
+        </task>
+        <task path="$PROJECT_DIR$/kotlin/lib">
           <activation />
         </task>
         <projects_view>
@@ -165,29 +94,29 @@
     <option name="showLibraryContents" value="true" />
     <option name="showModules" value="false" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "RunOnceActivity.OpenProjectViewOnStart": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
-    "WebServerToolWindowFactoryState": "false",
-    "git-widget-placeholder": "main",
-    "ignore.virus.scanning.warn.message": "true",
-    "last_opened_file_path": "C:/Users/natan/Desktop/RPC4K/exampleapp/kotlin/build.gradle.kts",
-    "node.js.detected.package.eslint": "true",
-    "node.js.detected.package.tslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "nodejs.jest.jest_package": "C:/Users/natan/Desktop/RPC4K/typescript/runtime/node_modules/jest",
-    "nodejs_package_manager_path": "npm",
-    "project.structure.last.edited": "Project",
-    "project.structure.proportion": "0.0",
-    "project.structure.side.proportion": "0.2",
-    "settings.editor.selected.configurable": "preferences.lookFeel",
-    "ts.external.directory.path": "C:\\Users\\natan\\Desktop\\RPC4K\\typescript\\runtime\\node_modules\\typescript\\lib",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
+    &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
+    &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/Users/natan/Desktop/RPC4K/exampleapp/kotlin/build.gradle.kts&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs.jest.jest_package&quot;: &quot;C:/Users/natan/Desktop/RPC4K/typescript/runtime/node_modules/jest&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;project.structure.last.edited&quot;: &quot;Project&quot;,
+    &quot;project.structure.proportion&quot;: &quot;0.0&quot;,
+    &quot;project.structure.side.proportion&quot;: &quot;0.2&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.lookFeel&quot;,
+    &quot;ts.external.directory.path&quot;: &quot;C:\\Users\\natan\\Desktop\\RPC4K\\typescript\\runtime\\node_modules\\typescript\\lib&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
-}]]></component>
+}</component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="C:\Users\natan\Desktop\RPC4K\kotlin\testerrors" />
@@ -203,29 +132,7 @@
       <recent name="C:\Users\natan\Desktop\RPC4K\typescript\runtime\src\runtime\impl" />
     </key>
   </component>
-  <component name="RunManager" selected="Gradle.Upload Rpc4k">
-    <configuration name="kotlin [:plugin:generateMetadataFileForPluginMavenPublication]" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
-      <ExternalSystemSettings>
-        <option name="executionName" />
-        <option name="externalProjectPath" value="$PROJECT_DIR$/kotlin" />
-        <option name="externalSystemIdString" value="GRADLE" />
-        <option name="scriptParameters" />
-        <option name="taskDescriptions">
-          <list />
-        </option>
-        <option name="taskNames">
-          <list>
-            <option value=":plugin:generateMetadataFileForPluginMavenPublication" />
-          </list>
-        </option>
-        <option name="vmOptions" />
-      </ExternalSystemSettings>
-      <ExternalSystemDebugServerProcess>true</ExternalSystemDebugServerProcess>
-      <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
-      <DebugAllEnabled>false</DebugAllEnabled>
-      <RunAsTest>false</RunAsTest>
-      <method v="2" />
-    </configuration>
+  <component name="RunManager" selected="Kotlin.KspToApiDefinitionKt">
     <configuration name="Codegened Client works in all cases" type="JavaScriptTestRunnerJest" temporary="true" nameIsGenerated="true">
       <node-interpreter value="project" />
       <jest-package value="$PROJECT_DIR$/typescript/runtime/node_modules/jest" />
@@ -238,54 +145,65 @@
       </test-names>
       <method v="2" />
     </configuration>
-    <configuration name="Publish TS Generator" type="js.build_tools.npm" temporary="true">
-      <package-json value="$PROJECT_DIR$/typescript/generator/package.json" />
-      <command value="run" />
-      <scripts>
-        <script value="pub" />
-      </scripts>
+    <configuration name="Test enum values" type="JavaScriptTestRunnerJest" temporary="true" nameIsGenerated="true">
       <node-interpreter value="project" />
+      <jest-package value="$PROJECT_DIR$/typescript/runtime/node_modules/jest" />
+      <working-dir value="$PROJECT_DIR$/typescript/runtime" />
       <envs />
+      <scope-kind value="TEST" />
+      <test-file value="$PROJECT_DIR$/typescript/runtime/test/CodegenedClientTest.test.ts" />
+      <test-names>
+        <test-name value="Test enum values" />
+      </test-names>
       <method v="2" />
     </configuration>
-    <configuration name="Publish TS Runtime" type="js.build_tools.npm" temporary="true">
-      <package-json value="$PROJECT_DIR$/typescript/runtime/package.json" />
-      <command value="run" />
-      <scripts>
-        <script value="pub" />
-      </scripts>
-      <node-interpreter value="project" />
-      <envs />
-      <method v="2" />
+    <configuration name="KspToApiDefinitionKt" type="JetRunConfigurationType" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="io.github.natanfudge.rpc4k.processor.KspToApiDefinitionKt" />
+      <module name="RPC4K.lib.main" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
     </configuration>
-    <configuration name="build" type="js.build_tools.npm" temporary="true" nameIsGenerated="true">
-      <package-json value="$PROJECT_DIR$/typescript/runtime/package.json" />
-      <command value="run" />
-      <scripts>
-        <script value="build" />
-      </scripts>
-      <node-interpreter value="project" />
-      <envs />
+    <configuration name="TestrandomKt" type="JetRunConfigurationType" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="io.github.natanfudge.rpc4k.test.TestrandomKt" />
+      <module name="RPC4K.testapp.test" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="TeststuffKt" type="JetRunConfigurationType" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="com.example.TeststuffKt" />
+      <module name="RPC4K.testapp.main" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration default="true" type="aws.lambda" factoryName="Remote">
+      <option name="credentialProviderId" />
+      <option name="regionId" />
+      <option name="functionName" />
+      <option name="input" />
+      <option name="inputIsFile" value="false" />
       <method v="2" />
     </configuration>
     <list>
       <item itemvalue="Gradle.Test Server" />
       <item itemvalue="Gradle.Kotlin Tests" />
       <item itemvalue="Gradle.Upload Rpc4k" />
-      <item itemvalue="Gradle.kotlin [:plugin:generateMetadataFileForPluginMavenPublication]" />
+      <item itemvalue="Jest.Test enum values" />
       <item itemvalue="Jest.Codegened Client works in all cases" />
+      <item itemvalue="Kotlin.KspToApiDefinitionKt" />
+      <item itemvalue="Kotlin.TestrandomKt" />
+      <item itemvalue="Kotlin.TeststuffKt" />
       <item itemvalue="Multirun.Publish TS" />
-      <item itemvalue="npm.build" />
-      <item itemvalue="npm.Publish TS Runtime" />
-      <item itemvalue="npm.Publish TS Generator" />
     </list>
     <recent_temporary>
       <list>
-        <item itemvalue="Gradle.kotlin [:plugin:generateMetadataFileForPluginMavenPublication]" />
-        <item itemvalue="npm.Publish TS Generator" />
-        <item itemvalue="npm.Publish TS Runtime" />
+        <item itemvalue="Kotlin.KspToApiDefinitionKt" />
+        <item itemvalue="Jest.Test enum values" />
+        <item itemvalue="Kotlin.TeststuffKt" />
+        <item itemvalue="Kotlin.TestrandomKt" />
         <item itemvalue="Jest.Codegened Client works in all cases" />
-        <item itemvalue="npm.build" />
       </list>
     </recent_temporary>
   </component>
@@ -322,7 +240,18 @@
       <workItem from="1698657726095" duration="7295000" />
       <workItem from="1698666902530" duration="1975000" />
       <workItem from="1698669013698" duration="38000" />
-      <workItem from="1698826020552" duration="2401000" />
+      <workItem from="1698826020552" duration="3009000" />
+      <workItem from="1699427702803" duration="91000" />
+      <workItem from="1699432784333" duration="178000" />
+      <workItem from="1699624352736" duration="115000" />
+      <workItem from="1699777159138" duration="99000" />
+      <workItem from="1699789277872" duration="804000" />
+      <workItem from="1699793974952" duration="1983000" />
+      <workItem from="1699961927797" duration="2797000" />
+      <workItem from="1700001036655" duration="849000" />
+      <workItem from="1700030478949" duration="258000" />
+      <workItem from="1700463267415" duration="1324000" />
+      <workItem from="1700765450055" duration="6797000" />
     </task>
     <servers />
   </component>
@@ -334,8 +263,13 @@
       <breakpoints>
         <line-breakpoint enabled="true" type="javascript">
           <url>file://$PROJECT_DIR$/typescript/runtime/src/impl/Rpc4aTypeAdapter.ts</url>
-          <line>102</line>
-          <option name="timeStamp" value="7" />
+          <line>76</line>
+          <option name="timeStamp" value="6" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="kotlin-line">
+          <url>file://$PROJECT_DIR$/kotlin/lib/src/main/kotlin/io/github/natanfudge/rpc4k/runtime/implementation/serializers/HeterogeneousListSerializers.kt</url>
+          <line>122</line>
+          <option name="timeStamp" value="8" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>

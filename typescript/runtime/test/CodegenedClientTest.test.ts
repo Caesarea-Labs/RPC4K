@@ -5,12 +5,13 @@ import JestMatchers = jest.JestMatchers;
 import dayjs from "dayjs";
 import {AllEncompassingServiceApi} from "./generated/rpc4ts_AllEncompassingServiceApi";
 import {
+    EnumArgsValues,
     EveryBuiltinType,
     GenericThing,
-    PolymorphicClassOption4,
     PolymorphicThing,
     PolymorphicThingOption1
 } from "./generated/rpc4ts_AllEncompassingServiceModels";
+import {PolymorphicClassOption4} from "../src/generated/rpc4ts_AllEncompassingServiceModels";
 
 
 test("Codegened Client works", async () => {
@@ -25,7 +26,9 @@ test("Codegened Client works in more cases", async () => {
     expect(res).toEqual([[1, 2, "3"], 4])
 })
 
-
+test("Test enum values", () => {
+    expect(EnumArgsValues).toEqual(["Option1", "Option5"])
+})
 
 test("Codegened Client works in all cases", async () => {
     const client = new AllEncompassingServiceApi(new FetchRpcClient("http://localhost:8080"), JsonFormat)
@@ -114,6 +117,11 @@ test("Codegened Client works in all cases", async () => {
 
     expect(await client.inlineHolder({value: 2})).toEqual({value: 2})
     expect(await client.typeField({type: "wef"})).toEqual({type: "wef"})
+
+    expect(await client.nullDate(null)).toEqual(null)
+
+    //NiceToHave: Respect @SerialName
+    // expect(await client.serialName({}))
 })
 
 async function expectThrows<T extends Error>(code: () => Promise<void>, error: Constructable2<T>): Promise<JestMatchers<T>> {

@@ -18,11 +18,12 @@ import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.time.Duration.Companion.milliseconds
 
+
 class AllEncompassingTest {
     companion object {
         @JvmField
         @RegisterExtension
-        val userExtension = rpcExtension(AllEncompassingService())
+        val allEncompassingExtension = rpcExtension(AllEncompassingService())
 
         @JvmField
         @RegisterExtension
@@ -31,7 +32,7 @@ class AllEncompassingTest {
 
     @Test
     fun testUsage(): Unit = runBlocking {
-        val protocol = userExtension.api
+        val protocol = allEncompassingExtension.api
         val response = protocol.createLobby(PlayerId(123), "alo")
         assertEquals(CreateLobbyResponse(126), response)
         val response2 = protocol.killSomeone(111, PlayerId(5), Unit)
@@ -58,7 +59,7 @@ class AllEncompassingTest {
 
     @Test
     fun testNullableTypes(): Unit = runBlocking {
-        val protocol = userExtension.api
+        val protocol = allEncompassingExtension.api
         expectThat(protocol.heavyNullable(AllEncompassingService.HeavyNullableTestMode.EntirelyNull)).isEqualTo(null)
         expectThat(protocol.heavyNullable(AllEncompassingService.HeavyNullableTestMode.NullList)).isEqualTo(GenericThing(null, null, listOf()))
         expectThat(protocol.heavyNullable(AllEncompassingService.HeavyNullableTestMode.NullString)).isEqualTo(
@@ -80,18 +81,18 @@ class AllEncompassingTest {
     @Test
     fun testExceptions(): Unit = runBlocking {
         expectThrows<RpcResponseException> {
-            userExtension.api.errorTest()
+            allEncompassingExtension.api.errorTest()
         }.get { code == 500 }
 
         expectThrows<RpcResponseException> {
-            userExtension.api.requirementTest()
+            allEncompassingExtension.api.requirementTest()
         }.get { code == 400 }
     }
 
     @Test
     fun testExoticTypes(): Unit = runBlocking {
         val y = "Asdf"
-        val protocol = userExtension.api
+        val protocol = allEncompassingExtension.api
         expectThat(protocol.withNullsTest(WithNulls(listOf("2", null), y = y)))
             .isEqualTo(WithNulls(listOf(1, null), y))
 
@@ -130,6 +131,15 @@ class AllEncompassingTest {
         val inlineHolder = InlineHolder2(InlineId(2))
         expectThat(protocol.inlineHolder(inlineHolder)).isEqualTo(inlineHolder)
         expectThat(protocol.typeField(TypeField("wef"))).isEqualTo(TypeField("wef"))
+
+
+        expectThat(protocol.tree(Tree(2, listOf()))).isEqualTo(Tree(2, listOf()))
+
+//        This is currently bugged, see:
+//https://github.com/Kotlin/kotlinx.serialization/issues/2374
+//        expectThat(protocol.inlineSealedParent(InlineSealedChild(2))).isEqualTo(InlineSealedChild(2))
+//        expectThat(protocol.inlineSealedChild(InlineSealedChild(2))).isEqualTo(InlineSealedChild(2))
+//        expectThat(protocol.inlineSealedChildReturnParent(InlineSealedChild(2))).isEqualTo(InlineSealedChild(2))
     }
 
 }

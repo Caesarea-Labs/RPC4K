@@ -48,7 +48,7 @@ export class CodeBuilder {
         types: string[]
     }): CodeBuilder {
         const prefix = `export type ${name}${this.typeParametersString(typeParameters)} = `
-        const typesJoined = types.join(" | ")
+        const typesJoined = types.length === 0 ? "never" : types.join(" | ")
         if (this.isTooLong(prefix.length + typesJoined.length)) {
             return this._addLineOfCode(prefix + this.indentList(types).join(" |\n"))
         } else {
@@ -70,6 +70,10 @@ export class CodeBuilder {
         return `<${params.join(", ")}>`
     }
 
+    addConst(name: string, value: string): CodeBuilder {
+        return this._addLineOfCode(`export const ${name} = ${value}`)
+    }
+
     ///////////////////// Internal ////////////////
 
     _indent(): CodeBuilder {
@@ -89,12 +93,6 @@ export class CodeBuilder {
         this.code += ("\t".repeat(this.currentIndent) + code + "\n")
         return this
     }
-
-
-    // _addParameterListBlock(prefix: string, list: string[], blockBuilder: () => void): CodeBuilder {
-    //     return this._addBlock(prefix + this.parameterList(this.blockStart(prefix).length, list), blockBuilder)
-    // }
-
     _addFunction(prefix: string, parameters: [string, string][], returnType: string | undefined, body: (body: BodyBuilder) => void): CodeBuilder {
         const returnTypeString = returnType === undefined ? "" : `: ${returnType}`
         //TODO: implement optional parameters

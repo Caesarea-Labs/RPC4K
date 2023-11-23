@@ -15,7 +15,7 @@ export class FetchRpcClient implements RpcClient {
         const data = rpc.toByteArray(format);
         let response: Response
         try {
-            response = await fetch(this.url, {body: data, method: "POST"});
+            response = await fetch(this.url, {body: data, method: "POST", headers: {"content-type": "application/json"}});
         } catch (e) {
             throw new RpcFetchError(`Fetch failed`, rpc, format, this, e as TypeError)
         }

@@ -1,5 +1,6 @@
 package io.github.natanfudge.rpc4k.runtime.api
 
+import io.github.natanfudge.rpc4k.runtime.implementation.InvalidRpcRequestException
 import io.github.natanfudge.rpc4k.runtime.implementation.serializers.HeterogeneousListSerializer
 import kotlinx.serialization.KSerializer
 
@@ -31,6 +32,9 @@ data class Rpc(val method: String, val arguments: List<*>) {
             var pos = 0
             // Reads up until COLON_CODE,
             do {
+                if (pos == bytes.size) {
+                    throw InvalidRpcRequestException("Missing colon (:) separator in RPC: '${bytes.decodeToString()}'")
+                }
                 val currentByte = bytes[pos]
                 // Happens after array[pos] so we will already skip by the color itself
                 pos++

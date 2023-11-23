@@ -22,11 +22,11 @@ internal class Rpc4kProcessorProvider : SymbolProcessorProvider {
 
 internal class Rpc4kProcessor(private val env: SymbolProcessorEnvironment) : SymbolProcessor {
     private var processed = false
-    private val validator = ApiClassValidator(env)
 
     override fun process(resolver: Resolver): List<KSAnnotated> = with(env) {
         if (processed) return listOf()
         processed = true
+        val validator = ApiClassValidator(env, resolver)
 
         env.logger.info("Processing @Api")
         val time = measureTimeMillis {
@@ -35,7 +35,7 @@ internal class Rpc4kProcessor(private val env: SymbolProcessorEnvironment) : Sym
                 .toHashSet()
 
             for (symbol in apiClasses) {
-                generateRpc(symbol)
+                generateRpc(symbol, resolver)
             }
         }
         env.logger.warn("Generating RPC Classes took ${time}ms")
@@ -46,9 +46,9 @@ internal class Rpc4kProcessor(private val env: SymbolProcessorEnvironment) : Sym
 
 
     context(SymbolProcessorEnvironment)
-    private fun generateRpc(apiClass: KSClassDeclaration) {
+    private fun generateRpc(apiClass: KSClassDeclaration, resolver: Resolver) {
         val time = measureTimeMillis {
-            val api = KspToApiDefinition.toApiDefinition(apiClass)
+            val api = KspToApiDefinition(resolver).toApiDefinition(apiClass)
 
             val nameDuplicate = api.models.findDuplicate { it.name }
 

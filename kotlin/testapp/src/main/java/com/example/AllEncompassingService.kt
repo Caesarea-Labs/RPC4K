@@ -8,6 +8,7 @@ import com.example.EnumArgs.Option5
 import io.github.natanfudge.rpc4k.runtime.api.Api
 import io.github.natanfudge.rpc4k.runtime.api.serverRequirement
 import kotlinx.serialization.Contextual
+import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import java.time.Instant
 import java.time.ZonedDateTime
@@ -259,7 +260,38 @@ open class AllEncompassingService(val value: Int = 1) {
     open suspend fun noArgsYesReturn(): Int {
         return 2
     }
+
+    open suspend fun nullDate(date: Instant?): Instant?{
+        return date
+    }
+
+//    This is currently bugged, see:
+//https://github.com/Kotlin/kotlinx.serialization/issues/2374
+//    open suspend fun inlineSealedParent(obj: InlineSealedParent): InlineSealedParent {
+//        return obj
+//    }
+//
+//    open suspend fun inlineSealedChild(obj: InlineSealedChild): InlineSealedChild {
+//        return obj
+//    }
+//
+//    open suspend fun inlineSealedChildReturnParent(obj: InlineSealedChild): InlineSealedParent {
+//        return obj
+//    }
+
+    open suspend fun tree(tree: Tree<Int>): Tree<Int> {
+        return tree
+    }
+
+//NiceToHave: Respect @SerialName
+//    open suspend fun serialName(obj: SerialNameTest): SerialNameTest {
+//        return obj
+//    }
+
 }
+
+@Serializable
+data class Tree<T>(val item: T, val children: List<Tree<T>>)
 
 @Serializable
 data class TypeField(val type: String)
@@ -359,6 +391,9 @@ class EveryBuiltinType(
         return true
     }
 }
+@Serializable
+sealed interface InlineSealedParent
+@Serializable @JvmInline value class InlineSealedChild(val value: Int): InlineSealedParent
 
 
 @Serializable
@@ -395,3 +430,5 @@ data class GenericThing<T1, T2, T3>(val x: T1, val y: T2, val z: T3, val w: List
 
 @Serializable
 data class WithNulls<T>(val x: List<T?>, val y: String?)
+
+@Serializable @SerialName("ILoveJavascript") data class SerialNameTest(val x: Int)
