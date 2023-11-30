@@ -184,8 +184,8 @@ class ApiClassValidator(private val env: SymbolProcessorEnvironment, private val
         val resolved = type.resolveToUnderlying()
 
         val selfSerializable = target.checkRequirement(env, resolved.isSerializable()) {
-            "Type used in API method '${resolved.declaration.qualifiedName!!.asString()}' must be Serializable".appendIf(typeArgument
-            ) { " (in type argument of $target)" }
+            "Type used in API method '${resolved.declaration.qualifiedName!!.asString()}' must be Serializable"
+                .appendIf(typeArgument) { " (in type argument of $target)" }
         }
         // Make sure to evaluate all the checks
         return resolved.arguments.evaluateAll { checkIsSerializable(it.nonNullType(), target = target, typeArgument = true) } && selfSerializable

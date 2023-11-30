@@ -15,7 +15,7 @@ import kotlinx.serialization.encoding.Encoder
 
 
 @Serializable
-data class ApiDefinition(
+data class RpcApi(
     /**
      * We need the full name in kotlin , and only want the simple name in other languages accessing the generated file.
      *
@@ -59,8 +59,8 @@ sealed interface RpcModel {
          * @param isOptional BLOCKED: Support optional parameters and properties
          */
         @Serializable
-        //TODO: specify default isOptional
-        data class Property(val name: String, val type: KotlinTypeReference, val isOptional: Boolean/* = false*/)
+
+        data class Property(val name: String, val type: KotlinTypeReference,/* val isOptional: Boolean*//* = false*/)
     }
 
     @Serializable
@@ -254,8 +254,8 @@ private fun KotlinTypeReference.toBuiltinRpcType(): RpcType {
 
 private fun KotlinTypeReference.toBuiltinCollectionType(): RpcType {
     val name = when (name.simple) {
-        "List", "Set" -> RpcType.Array
-        "Map" -> RpcType.Record
+        "List", "Set", "MutableList", "MutableSet" -> RpcType.Array
+        "Map", "MutableMap" -> RpcType.Record
         "Map.Entry" -> RpcType.Tuple
         else -> error(
             "Unexpected kotlin builtin collection type: ${poetName}." +

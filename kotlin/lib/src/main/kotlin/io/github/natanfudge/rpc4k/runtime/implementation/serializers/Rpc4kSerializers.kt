@@ -24,6 +24,15 @@ internal val Rpc4kSerializers: List<Rpc4kSerializer<*>> = Rpc4kSerializersModule
     builtinSerializerMethod(Map.Entry::class, "TupleMapEntrySerializer") {
         TupleMapEntrySerializer(it[0], it[1])
     }
+//    builtinSerializerMethod(MutableMap::class, "MutableMapSerializer") {
+//        MutableMapSerializer(it[0], it[1])
+//    }
+//    builtinSerializerMethod(MutableList::class, "Mu") {
+//        MutableListSerializer(it[0], it[1], it[2])
+//    }
+//    builtinSerializerMethod(Map.Entry::class, "TupleMapEntrySerializer") {
+//        TupleMapEntrySerializer(it[0], it[1])
+//    }
 }.build()
 
 @Suppress("UNCHECKED_CAST")

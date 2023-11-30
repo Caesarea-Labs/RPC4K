@@ -1,15 +1,13 @@
 package io.github.natanfudge.rpc4k.processor.utils
 
-import com.google.devtools.ksp.getAllSuperTypes
-import com.google.devtools.ksp.getDeclaredFunctions
-import com.google.devtools.ksp.isConstructor
-import com.google.devtools.ksp.isPublic
+import com.google.devtools.ksp.*
 import com.google.devtools.ksp.processing.CodeGenerator
 import com.google.devtools.ksp.processing.Dependencies
 import com.google.devtools.ksp.processing.Resolver
 import com.google.devtools.ksp.processing.SymbolProcessorEnvironment
 import com.google.devtools.ksp.symbol.*
 import io.github.natanfudge.rpc4k.runtime.implementation.KotlinClassName
+import kotlinx.serialization.builtins.serializer
 import kotlin.reflect.KClass
 
 /**
@@ -184,35 +182,36 @@ private fun addReferencedTypes(
  *
  * //TODO: make sure this approach doesn't take too much time and actually prevents invalidation
  */
-fun KSClassDeclaration.fastGetSealedSubclasses(resolver: Resolver): Sequence<KSClassDeclaration> {
+@OptIn(KspExperimental::class) fun KSClassDeclaration.fastGetSealedSubclasses(resolver: Resolver): Sequence<KSClassDeclaration> {
     if (Modifier.SEALED !in modifiers) return emptySequence()
     val packageName = containingFile?.packageName ?: return emptySequence()
 
-    val filesInSamePackage = resolver.getAllFiles().filter { it.packageName == packageName }
-    return filesInSamePackage.flatMap { file ->
-        file.getAllDeclarations().filterIsInstance<KSClassDeclaration>()
-            .filter { superType -> superType.getAllSuperTypes().any { it.declaration == this } }
-    }
+    String.serializer()
+    val filesInSamePackage = resolver.getDeclarationsFromPackage(packageName.asString())
+    return filesInSamePackage.filterIsInstance<KSClassDeclaration>()
+        .flatMap { it.getAllDeclarations() }
+        .filterIsInstance<KSClassDeclaration>()
+        .filter { superType -> superType.getAllSuperTypes().any { it.declaration == this } }
 }
 
-/**
- * Includes inner classes as well
- */
-private fun KSFile.getAllDeclarations(): Sequence<KSDeclaration> {
-    return sequence {
-        for (declaration in declarations) {
-            yield(declaration)
-            if (declaration is KSClassDeclaration) {
-                yieldAll(declaration.getAllDeclarations())
-            }
-        }
-    }
-}
+///**
+// * Includes inner classes as well
+// */
+//private fun KSFile.getAllDeclarations(): Sequence<KSDeclaration> {
+//    return sequence {
+//        for (declaration in declarations) {
+//            yield(declaration)
+//            if (declaration is KSClassDeclaration) {
+//                yieldAll(declaration.getAllDeclarations())
+//            }
+//        }
+//    }
+//}
 
 private fun KSClassDeclaration.getAllDeclarations(): Sequence<KSDeclaration> {
     return sequence {
+        yield(this@getAllDeclarations)
         for (declaration in declarations) {
-            yield(declaration)
             if (declaration is KSClassDeclaration) {
                 yieldAll(declaration.getAllDeclarations())
             }

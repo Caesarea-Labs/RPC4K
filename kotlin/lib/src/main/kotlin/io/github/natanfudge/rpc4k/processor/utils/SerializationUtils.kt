@@ -87,10 +87,12 @@ internal fun KotlinTypeReference.getKSerializer(): KotlinSerializer {
  * Gets serializers like ListSerializer, SetSerializer, etc
  */
 private fun KotlinTypeReference.kxsTopLevelSerializerMethod(): KotlinSerializer {
+    // MutableX classes use the normal readonly serializers
+    val namePrefix = name.simple.removePrefix("Mutable")
     // For example, for the name Map.Entry we get MapEntrySerializer
     return KotlinSerializer.TopLevelFunction(
         name = KotlinMethodName(
-            simple = "${name.simple}Serializer",
+            simple = "${namePrefix}Serializer",
             pkg = "kotlinx.serialization.builtins"
         ),
         isNullable,
@@ -101,21 +103,24 @@ private fun KotlinTypeReference.kxsTopLevelSerializerMethod(): KotlinSerializer 
 
 private fun List<KotlinTypeReference>.getKSerializers() = map { it.getKSerializer() }
 
-
 /**
  * These classes don't have a T.serializer() for some reason but instead have a separate top-level method
  */
 @OptIn(ExperimentalUnsignedTypes::class)
-private val classesWithSeparateKxsBuiltinSerializerMethod = listOf(
+private val classesWithSeparateKxsBuiltinSerializerMethod: Set<KotlinClassName> = listOf(
     List::class, Set::class, Map::class,
     ByteArray::class, ShortArray::class, IntArray::class, LongArray::class, CharArray::class,
     Array::class, UByteArray::class, UShortArray::class, UIntArray::class, ULongArray::class
-).map { it.kotlinName }.toHashSet()
+).map { it.kotlinName }.toHashSet() +
+        listOf(KotlinClassName.MutableMap, KotlinClassName.MutableList, KotlinClassName.MutableSet)
 
 private val serializableClassName = Serializable::class.qualifiedName
 
+
+
+
 @ExperimentalUnsignedTypes
-private val builtinSerializableClasses = (listOf(
+private val builtinSerializableClasses: Set<String> = (listOf(
     Byte::class,
     Short::class,
     Int::class,
@@ -130,28 +135,18 @@ private val builtinSerializableClasses = (listOf(
     ULong::class,
     UByte::class,
     UShort::class,
-    Set::class,
-    List::class,
     Pair::class,
     Triple::class,
     Map.Entry::class,
-    Map::class,
-    ByteArray::class,
-    ShortArray::class,
-    IntArray::class,
-    LongArray::class,
-    CharArray::class,
-    Array::class,
-    UByteArray::class,
-    UShortArray::class,
-    UIntArray::class,
-    ULongArray::class,
     UByte::class,
     UShort::class,
     UInt::class,
     ULong::class,
-    Duration::class,
+    Duration::class
 // Add classes that rpc4k supports as well
-) + Rpc4kSerializers.map { it.kClass }).map { it.qualifiedName!! }.toHashSet()
+) + Rpc4kSerializers.map { it.kClass }).map { it.qualifiedName!! }.toHashSet() +
+        classesWithSeparateKxsBuiltinSerializerMethod.map { it.toString() }
+
+
 
 

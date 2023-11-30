@@ -135,6 +135,12 @@ class AllEncompassingTest {
 
         expectThat(protocol.tree(Tree(2, listOf()))).isEqualTo(Tree(2, listOf()))
 
+        val mutable = MutableThings(mutableMapOf("1" to 2), mutableListOf(3), mutableSetOf(4))
+        expectThat(protocol.mutableThings(mutable)).isEqualTo(mutable)
+        expectThat(protocol.mutableThingsAsParams(mutableMapOf(1 to 2), mutableListOf(3))).isEqualTo(mutableSetOf(1, 2, 3))
+
+//        expectThat(protocol.defaultValue(WithDefaultValue())).isEqualTo(WithDefaultValue())
+
 //        This is currently bugged, see:
 //https://github.com/Kotlin/kotlinx.serialization/issues/2374
 //        expectThat(protocol.inlineSealedParent(InlineSealedChild(2))).isEqualTo(InlineSealedChild(2))

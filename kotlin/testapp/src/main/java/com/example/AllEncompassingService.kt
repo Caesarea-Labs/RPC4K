@@ -283,10 +283,31 @@ open class AllEncompassingService(val value: Int = 1) {
         return tree
     }
 
+//    open suspend fun defaultValue(obj: WithDefaultValue): WithDefaultValue {
+//        return obj
+//    }
+//
+    open suspend fun mutableThings(obj: MutableThings): MutableThings {
+        return obj
+    }
+
+    open suspend fun mutableThingsAsParams(map: MutableMap<Int,Int>,  list: MutableList<Int>): MutableSet<Int> {
+        return mutableSetOf(1,2,3)
+    }
+
+    open suspend fun modelsInDifferentFiles(service: ServiceSealedInterfaceInOtherFile) : ServiceSealedInterfaceInOtherFile {
+        return service
+    }
+
 //NiceToHave: Respect @SerialName
 //    open suspend fun serialName(obj: SerialNameTest): SerialNameTest {
 //        return obj
 //    }
+
+}
+
+
+@Serializable sealed interface ServiceSealedInterfaceInOtherFile {
 
 }
 
@@ -425,10 +446,16 @@ sealed class PolymorphicClass {
 }
 
 
+
+
+@Serializable data class MutableThings(val map: MutableMap<String, Int>, val list: MutableList<Int>, val set: MutableSet<Int>)
+
 @Serializable
 data class GenericThing<T1, T2, T3>(val x: T1, val y: T2, val z: T3, val w: List<T3> = listOf())
 
 @Serializable
 data class WithNulls<T>(val x: List<T?>, val y: String?)
 
-@Serializable @SerialName("ILoveJavascript") data class SerialNameTest(val x: Int)
+//@Serializable @SerialName("ILoveJavascript") data class SerialNameTest(val x: Int)
+//@Serializable
+//data class WithDefaultValue(val value: Int = 2)

@@ -58,7 +58,7 @@ object ApiDefinitionToServerCode {
 
     private val respondUtilsMethod = GeneratedCodeUtils::class.methodName("respond")
 
-    fun convert(apiDefinition: ApiDefinition): FileSpec {
+    fun convert(apiDefinition: RpcApi): FileSpec {
         val className = "${apiDefinition.name.simple}${GeneratedCodeUtils.ServerSuffix}"
         return fileSpec(GeneratedCodeUtils.Package, className) {
             // KotlinPoet doesn't handle extension methods well
@@ -116,7 +116,7 @@ object ApiDefinitionToServerCode {
      *   fun MyApi.Companion.server(api: MyApi, format: SerializationFormat, server: RpcServer) = MyApiServerImpl(api, format, server)
      *   ```
      */
-    private fun serverConstructorExtension(api: ApiDefinition, generatedClassName: String) =
+    private fun serverConstructorExtension(api: RpcApi, generatedClassName: String) =
         extensionFunction(api.name.kotlinPoet.companion(), "server") {
 //            addParameter(ApiPropertyName, api.name.className)
 //            addParameter(FormatPropertyName, SerializationFormat::class)
@@ -144,7 +144,7 @@ object ApiDefinitionToServerCode {
      *     }
      * ```
      */
-    private fun handleMethod(api: ApiDefinition): FunSpec = funSpec("handle") {
+    private fun handleMethod(api: RpcApi): FunSpec = funSpec("handle") {
         // This overrides GeneratedServerHandler
         addModifiers(KModifier.OVERRIDE, KModifier.SUSPEND)
 

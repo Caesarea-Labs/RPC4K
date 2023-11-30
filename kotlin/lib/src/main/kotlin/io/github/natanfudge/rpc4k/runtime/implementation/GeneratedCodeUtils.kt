@@ -22,11 +22,11 @@ object GeneratedCodeUtils {
         methodName: String,
         args: List<Any?>,
         argSerializers: List<KSerializer<*>>,
-        responseSerializer: KSerializer<T>
+        responseSerializer: KSerializer<*>
     ): T {
         val rpc = Rpc(methodName, args)
         val result = client.send(rpc, format, argSerializers)
-        return format.decode(responseSerializer, result)
+        return format.decode(responseSerializer, result) as T
     }
 
 

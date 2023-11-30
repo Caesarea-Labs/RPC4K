@@ -6,14 +6,10 @@ import com.google.devtools.ksp.processing.Resolver
 import com.google.devtools.ksp.symbol.*
 import com.google.devtools.ksp.symbol.ClassKind.*
 import io.github.natanfudge.rpc4k.processor.utils.*
-import kotlinx.serialization.SerialName
-import kotlin.reflect.KFunction
-import kotlin.reflect.KParameter
-import kotlin.reflect.jvm.isAccessible
 
 class KspToApiDefinition(private val resolver: Resolver) {
-    fun toApiDefinition(kspClass: KSClassDeclaration): ApiDefinition {
-        return ApiDefinition(
+    fun toApiDefinition(kspClass: KSClassDeclaration): RpcApi {
+        return RpcApi(
             // Doesn't quite fit, but good enough to represent the name as an KotlinTypeReference
             name = kspClass.getKotlinName(),
             methods = kspClass.getPublicApiFunctions().map { toRpc(it) }.toList(),
@@ -135,7 +131,7 @@ class KspToApiDefinition(private val resolver: Resolver) {
     private fun toRpcStructModel(declaration: KSClassDeclaration): RpcModel.Struct {
         val properties = declaration.getDeclaredProperties().map {
             //NiceToHave: Support optional parameters and properties
-            RpcModel.Struct.Property(name = it.getSimpleName(), type = toKotlinTypeReference(it.type), isOptional = false /*it.hasDefault*/)
+            RpcModel.Struct.Property(name = it.getSimpleName(), type = toKotlinTypeReference(it.type)/*it.hasDefault*/)
         }.toList()
 
         val name = declaration.getKotlinName()

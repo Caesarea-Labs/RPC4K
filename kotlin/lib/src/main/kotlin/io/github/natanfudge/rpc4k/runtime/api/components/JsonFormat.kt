@@ -16,7 +16,7 @@ import kotlinx.serialization.modules.plus
 class JsonFormat(config: JsonBuilder.() -> Unit = {}) : SerializationFormat {
     private val json = Json {
         config()
-        // NiceToHave: Support optional parameters and properties
+//        // NiceToHave: Support optional parameters and properties
         encodeDefaults = true
         // This should be done by every format
         serializersModule = Rpc4kSerializersModule + serializersModule

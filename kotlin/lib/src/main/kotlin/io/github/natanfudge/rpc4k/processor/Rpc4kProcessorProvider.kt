@@ -1,5 +1,6 @@
 package io.github.natanfudge.rpc4k.processor
 
+import com.google.devtools.ksp.KspExperimental
 import com.google.devtools.ksp.processing.Resolver
 import com.google.devtools.ksp.processing.SymbolProcessor
 import com.google.devtools.ksp.processing.SymbolProcessorEnvironment
@@ -8,9 +9,7 @@ import com.google.devtools.ksp.symbol.ClassKind
 import com.google.devtools.ksp.symbol.KSAnnotated
 import com.google.devtools.ksp.symbol.KSClassDeclaration
 import com.squareup.kotlinpoet.ksp.writeTo
-import io.github.natanfudge.rpc4k.processor.utils.checkRequirement
-import io.github.natanfudge.rpc4k.processor.utils.findDuplicate
-import io.github.natanfudge.rpc4k.processor.utils.getClassesWithAnnotation
+import io.github.natanfudge.rpc4k.processor.utils.*
 import io.github.natanfudge.rpc4k.runtime.api.Api
 import kotlin.system.measureTimeMillis
 
@@ -23,12 +22,14 @@ internal class Rpc4kProcessorProvider : SymbolProcessorProvider {
 internal class Rpc4kProcessor(private val env: SymbolProcessorEnvironment) : SymbolProcessor {
     private var processed = false
 
+    @OptIn(KspExperimental::class)
     override fun process(resolver: Resolver): List<KSAnnotated> = with(env) {
         if (processed) return listOf()
         processed = true
         val validator = ApiClassValidator(env, resolver)
 
-        env.logger.info("Processing @Api")
+        env.logger.warn("Classes in example package: " + resolver.getDeclarationsFromPackage("com.example").toList())
+
         val time = measureTimeMillis {
             val apiClasses = resolver.getClassesWithAnnotation(Api::class)
                 .filter { validator.validate(it) }

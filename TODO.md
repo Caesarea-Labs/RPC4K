@@ -1,5 +1,67 @@
 
 
+### Support Streaming
+
+I should support an appropriate conversion for the return type of Flow<T>
+
+
+
+# 2. Low Priority - Do later
+
+### Rework Typescript deserialization mechanism
+#### A. Create a generic serialization and deserialization interface:
+Basically, continue work on the kotlinx.serialization clone.
+
+#### B - Generate classes in place of interfaces
+```typescript
+interface Foo {
+    x: number
+    y: string
+}
+```
+Becomes:
+
+```typescript
+class Foo {
+    readonly x: number
+    readonly y: string
+
+    constructor({x, y}: {x: number, y: string}) {
+        this.x = x
+        this.y = y
+    }
+}
+```
+
+`type` Discriminators are no longer necessary:
+
+```typescript
+interface Foo {
+    z: number
+    type: "Foo"
+}
+
+if(foo.type === "Foo") {
+    // ...
+}
+
+```
+Becomes:
+
+```typescript
+class Foo {
+    readonly z: number
+
+    constructor({z}: {z: number}) {
+        this.x = x
+    }
+}
+
+if(foo instanceof Foo) {
+    // ...
+}
+```
+
 
 
 
@@ -19,24 +81,60 @@ Typescript should interpret optional parameter and properties with the `?` prope
 
 We this is supported we can allow not encoding defaults in Kotlinx.serialization formats.
 
- 1. Test optional RPC parameters, and omitting values in various positions in the parameter list
+1. Test optional RPC parameters, and omitting values in various positions in the parameter list
 2. Test optional data class properties
 
-### Support types that implement from acceptable types
-For these types, we support having them in serializable classes directly, but not their descendants:
-- Map -> MutableMap, etc not supported
-- List -> MutableList, etc not supported
-- Set-> MutableSet, etc not supported
+The main problem with this is that there's no real good way to represent in clients objects that have optional properties. 
+On the one hand, the server promises that it will always give the property a value - at least the default value, which means the property should not be nullable.
+On the other hand, the client may construct the object without specifying the optional property value, which means the property should be nullable. 
 
-### Add a typescript api that makes testing easier
-Look at what i do in caesarea-poc and see what generic utils can be extracted. 
+One reasonable way to deal with this is to accept that the value will be nullable on the client:
+```kotlin
+data class Foo(val x: Int = 2)
+```
+Becomes
+```typescript
+interface Foo {
+    x?: number
+}
+```
 
+However, here is maybe a more apt solution: 
+```kotlin
+data class Foo(val x: Int = 2)
+```
+Becomes
 
-### Deal with sealed inline classes
-This is currently bugged, see:
-https://github.com/Kotlin/kotlinx.serialization/issues/2374
+```typescript
+class Foo {
+    _x: number | undefined
+    get x(): number {
+        GeneratedCodeUtils.checkDefined(this._x, "x", this)
+        return this._x!
+    }
 
-# 2. Low Priority - Do later
+    constructor({x}: { x?: number }) {
+        this._x = x
+    }
+}
+
+namespace GeneratedCodeUtils {
+    import Instance = WebAssembly.Instance;
+
+    function checkDefined(value: unknown, name: string, instance: object) {
+        if (value === undefined) {
+            const className = instance.constructor.name
+            throw new Error(`The property '${name}' was accessed on an instance of ${className} that was given no value.
+            When creating an instance ${className} without specifying a value to '${name}', the instance should be passed directly to the server as it knows what the default value is.
+            If you are creating an instance of ${className} yourself and want to access '${name}' later, you must give it an actual value. 
+            Here is the problematic ${className} instance: ${JSON.stringify(Instance)}`)
+        }
+    }
+}
+```
+
+The main issue is that we need to rework our deserialization mechanism to support classes. 
+
 
 ### Generate Doc Comments
 
@@ -103,10 +201,6 @@ class MyApiImpl(val config: RpcConfig)
 ```
 
 And then pass that instead to `GenerateCodeUtils`, to make it easier to add new fields to the config - we won't need to change the generated code. 
-
-
-### Support Streaming
-I should support an appropriate conversion for the return type of Flow<T>
 
 
 
@@ -225,6 +319,11 @@ will serialize using the builtin serializers. Right now we simply require @Conte
 serialization with our specific serializer using @Serializable (with = OurSerializer()) on every property of these types. 
 
 # 4. Nice to have - Will be done much later
+
+### Deal with sealed inline classes
+This is currently bugged, see:
+https://github.com/Kotlin/kotlinx.serialization/issues/2374
+
 ### Respect @SerialName for code generation
 You should be able to use @SerialName on classes to force code generation with a certain struct name.
 Make sure that it works with polymorphic types.

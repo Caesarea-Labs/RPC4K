@@ -56,7 +56,7 @@ object ApiDefinitionToClientCode {
      * @param userClassIsInterface When we are generating both a client and a server, it's useful to make the generated class
      * extend the user class. We need to know if the user class is an interface or not to properly extend/implement it.
      */
-    fun convert(apiDefinition: ApiDefinition, userClassIsInterface: Boolean): FileSpec {
+    fun convert(apiDefinition: RpcApi, userClassIsInterface: Boolean): FileSpec {
         val className = "${apiDefinition.name.simple}${GeneratedCodeUtils.ClientSuffix}"
         return fileSpec(GeneratedCodeUtils.Package, className) {
             // KotlinPoet doesn't handle extension methods well
@@ -93,7 +93,7 @@ object ApiDefinitionToClientCode {
      * ```
      */
 //    context(JvmContext)
-    private fun factoryCompanionObject(api: ApiDefinition, generatedClassName: String) = companionObject(GeneratedCodeUtils.FactoryName) {
+    private fun factoryCompanionObject(api: RpcApi, generatedClassName: String) = companionObject(GeneratedCodeUtils.FactoryName) {
         addSuperinterface(GeneratedClientImplFactory::class.asClassName().parameterizedBy(api.name.kotlinPoet))
         addFunction("build") {
             addModifiers(KModifier.OVERRIDE)
@@ -114,7 +114,7 @@ object ApiDefinitionToClientCode {
      *   ```
      */
 //    context(JvmContext)
-    private fun clientConstructorExtension(api: ApiDefinition, generatedClassName: String) =
+    private fun clientConstructorExtension(api: RpcApi, generatedClassName: String) =
         extensionFunction(api.name.kotlinPoet.companion(), "client") {
             addParameter(ClientPropertyName, RpcClient::class)
             addParameter(FormatPropertyName, SerializationFormat::class)
