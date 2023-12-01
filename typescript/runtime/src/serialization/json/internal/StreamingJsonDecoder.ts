@@ -14,6 +14,7 @@ import {JsonElementMarker} from "./JsonElementMarker";
 import {CompositeDecoder, DECODER_DECODE_DONE, DECODER_UNKNOWN_NAME} from "../../core/encoding/Decoding";
 import {isUnsignedNumber} from "./StreamingJsonEncoder";
 import {getJsonNameIndex, tryCoerceValue} from "./JsonNamesMap";
+import {SerializersModule} from "../../core/SerializersModule";
 
 export class StreamingJsonDecoder extends AbstractDecoder implements JsonDecoder, ChunkedDecoder {
     json: Json;

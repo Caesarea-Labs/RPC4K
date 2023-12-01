@@ -4,6 +4,7 @@
 import {SerialDescriptor} from "../SerialDescriptor";
 import {SerializationStrategy} from "../TsSerializer";
 import {CompositeEncoder} from "./Encoding";
+import {SerializersModule} from "../SerializersModule";
 
 
 export abstract class Encoder {

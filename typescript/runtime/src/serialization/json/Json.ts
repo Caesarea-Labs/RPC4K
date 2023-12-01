@@ -9,6 +9,7 @@ import {WriteModes, WriteModeValues} from "./internal/WriteMode";
 import {JsonConfiguration} from "./JsonConfiguration";
 import {StringJsonLexer} from "./internal/StringJsonLexer";
 import {StreamingJsonDecoder} from "./internal/StreamingJsonDecoder";
+import {SerializersModule} from "../core/SerializersModule";
 
 export class Json {
     configuration: JsonConfiguration

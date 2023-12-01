@@ -3,6 +3,7 @@
  */
 import {SerialDescriptor} from "../SerialDescriptor";
 import {DeserializationStrategy} from "../TsSerializer";
+import {SerializersModule} from "../SerializersModule";
 
 export abstract class Decoder {
     // Context of the current serialization process, including contextual and polymorphic serialization and,

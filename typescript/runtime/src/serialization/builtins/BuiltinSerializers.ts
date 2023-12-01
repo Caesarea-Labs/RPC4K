@@ -71,3 +71,4 @@ export const NumberSerializer: TsSerializer<number> = {
         return decoder.decodeNumber();
     }
 };
+

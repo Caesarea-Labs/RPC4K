@@ -15,6 +15,8 @@ import {INVALID, NULL} from "./AbstractJsonLexer";
 import {CompositeEncoder} from "../../core/encoding/Encoding";
 import {InvalidFloatingPointEncoded} from "./JsonExceptions";
 import {getJsonElementName} from "./JsonNamesMap";
+import {SerializersModule} from "../../core/SerializersModule";
+import {JsonConfiguration} from "../JsonConfiguration";
 
 export class StreamingJsonEncoder extends AbstractEncoder implements JsonEncoder {
     private composer: Composer;
@@ -22,7 +24,7 @@ export class StreamingJsonEncoder extends AbstractEncoder implements JsonEncoder
     private mode: WriteMode;
     private modeReuseCache: Array<JsonEncoder | null> | null;
     public serializersModule: SerializersModule;
-    private configuration: any; // Assuming configuration is of a certain type
+    private configuration: JsonConfiguration; // Assuming configuration is of a certain type
     private forceQuoting: boolean = false;
     private polymorphicDiscriminator: string | null = null;
 
