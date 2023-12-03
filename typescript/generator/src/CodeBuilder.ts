@@ -17,6 +17,7 @@ export class CodeBuilder {
         return this.code
     }
 
+    //TODO: introduce a new import architecture that doesn't import unnecessary stuff, i think use the same way that kotlinpoet does it
     addImport(identifiers: string[], path: string): CodeBuilder {
         const identifiersJoined = identifiers.join(", ")
         const unwrappedLine = `import {${identifiersJoined}} from "${path}"`
@@ -36,10 +37,13 @@ export class CodeBuilder {
         })._addLineOfCode("") // Add empty line
     }
 
-    addClass(name: string, classBuilder: (builder: ClassBuilder) => void): CodeBuilder {
-        return this._addBlock(`export class ${name}`, () => {
+    addClass({name, typeParameters}: {
+        name: string,
+        typeParameters?: string[]
+    }, classBuilder: (builder: ClassBuilder) => void): CodeBuilder {
+        return this._addBlock(`export class ${name}${this.typeParametersString(typeParameters)}`, () => {
             classBuilder(new ClassBuilder(this))
-        })
+        })._addLineOfCode("")// Add empty line
     }
 
     addUnionType({name, typeParameters, types}: {
@@ -74,6 +78,10 @@ export class CodeBuilder {
         return this._addLineOfCode(`export const ${name} = ${value}`)
     }
 
+    addTopLevelFunction(name: string, parameters: [string, string][], returnType: string | undefined, body: (body: BodyBuilder) => void): CodeBuilder {
+        return this._addFunction(`export function ${name}`, parameters, returnType,body)
+    }
+
     ///////////////////// Internal ////////////////
 
     _indent(): CodeBuilder {
@@ -93,13 +101,13 @@ export class CodeBuilder {
         this.code += ("\t".repeat(this.currentIndent) + code + "\n")
         return this
     }
-    _addFunction(prefix: string, parameters: [string, string][], returnType: string | undefined, body: (body: BodyBuilder) => void): CodeBuilder {
+    _addFunction(name: string, parameters: [string, string][], returnType: string | undefined, body: (body: BodyBuilder) => void): CodeBuilder {
         const returnTypeString = returnType === undefined ? "" : `: ${returnType}`
         //TODO: implement optional parameters
         const parametersString = this.parameterList(
-            this.blockStart(prefix).length + returnTypeString.length, parameters.map(([name, type]) => `${name}: ${type}`)
+            this.blockStart(name).length + returnTypeString.length, parameters.map(([name, type]) => `${name}: ${type}`)
         )
-        return this._addBlock(prefix + parametersString + returnTypeString, () => {
+        return this._addBlock(name + parametersString + returnTypeString, () => {
             body(new BodyBuilder(this))
         })
     }

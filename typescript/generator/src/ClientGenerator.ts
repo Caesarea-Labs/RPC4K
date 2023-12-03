@@ -3,6 +3,7 @@ import * as fs from "fs";
 import {generateAccessor} from "./ClientAccessorGenerator";
 import {ApiDefinition} from "rpc4ts-runtime";
 import {fillDefaultApiDefinitionValues} from "./ApiDefinitionsDefaults";
+import {generateSerializers} from "./SerializerGenerator";
 
 
 export interface Rpc4TsClientGenerationOptions {
@@ -24,10 +25,12 @@ export function generateClientModel(definitionJson: string, writeTo: string, opt
     const api = fillDefaultApiDefinitionValues(rawApi)
     const models = generateModels(api.models)
     const accessor = generateAccessor(api, rawApi, options)
+    const serializers = generateSerializers(api.models, options)
 
     fs.mkdirSync(writeTo, {recursive: true})
     fs.writeFileSync(writeTo + `/rpc4ts_${api.name}Models.ts`, models)
     fs.writeFileSync(writeTo + `/rpc4ts_${api.name}Api.ts`, accessor)
+    fs.writeFileSync(writeTo + `/rpc4ts_${api.name}Serializers.ts`, serializers)
     // const runtimeModelsName = `${api.name}RuntimeModels`
     // We write out a definition without the default values because it's easy to resolve them at runtime
     // fs.writeFileSync(writeTo + `${runtimeModelsName}.ts`, `export const ${runtimeModelsName} = \`${JSON.stringify(rawApi.models)}\``)

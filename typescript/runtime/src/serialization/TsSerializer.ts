@@ -1,9 +1,9 @@
 /*
  * Copyright 2017-2020 JetBrains s.r.o. Use of this source code is governed by the Apache 2.0 license.
  */
-import {SerialDescriptor} from "./SerialDescriptor";
-import {Encoder} from "./encoding/Encoder";
-import {Decoder} from "./encoding/Decoding";
+import {SerialDescriptor} from "./core/SerialDescriptor";
+import {Encoder} from "./core/encoding/Encoder";
+import {Decoder} from "./core/encoding/Decoding";
 
 /**
  * TSerializer is responsible for the representation of a serial form of a type T

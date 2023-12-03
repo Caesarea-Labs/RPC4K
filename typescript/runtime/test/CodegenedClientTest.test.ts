@@ -80,10 +80,10 @@ test("Codegened Client works in all cases", async () => {
     const thing: PolymorphicThing = {type: "Option2"}
     expect(await client.polymorphicTest(thing)).toEqual(thing);
 
-    const direct: PolymorphicThingOption1 = {type: "Option1", x: 2}
+    const direct: PolymorphicThingOption1 = {/*type: "Option1",*/ x: 2}
     expect(await client.directPolymorphicAccess(direct)).toEqual(direct);
 
-    const polymorphicClass: PolymorphicClassOption4 = {type: "Option4", x: 3}
+    const polymorphicClass: PolymorphicClassOption4 = {/*type: "Option4",*/ x: 3}
     expect(await client.polymorphicClassTest(polymorphicClass)).toEqual(polymorphicClass);
 
 

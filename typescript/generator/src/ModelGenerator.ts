@@ -35,22 +35,45 @@ export function generateModels(models: RpcModel[]): string {
     return builder.build()
 }
 
+/**
+ * Classes are used over interfaces because they allow greater control over what is constructed and exposed.
+ * In optional properties, we can allow clients to construct them without specifying the property value, but still expose the
+ * property as a non-nullable value assuming the server always gives it a value.
+ */
 function addStruct(code: CodeBuilder, struct: RpcStructModel) {
     const name = modelName(struct.name)
-    code.addInterface({name, typeParameters: struct.typeParameters}, interfaceBuilder => {
+    code.addClass({name, typeParameters: struct.typeParameters}, classBuilder => {
         struct.properties.forEach(({name, type, isOptional}) => {
-            interfaceBuilder.addProperty(
+            classBuilder.addProperty(
+                //TODO: handle isOptional properly
                 {
-                    // "type" is a reserved, and we use the simple model name to make the code more ergonomic
-                    name, optional: isOptional, type: typescriptRpcType(type)
+                    name: `readonly ${name}`, optional: isOptional, type: typescriptRpcType(type)
                 }
             )
         })
 
         // Add type discriminator if needed with a string type that can only be a specific value that is the model name
-        if (struct.hasTypeDiscriminator) {
-            interfaceBuilder.addProperty({name: RpcTypeDiscriminator, optional: false, type: `"${simpleModelName(struct.name)}"`})
-        }
+        // if (struct.hasTypeDiscriminator) {
+        //     classBuilder.addProperty({name: RpcTypeDiscriminator, optional: false, type: `"${simpleModelName(struct.name)}"`})
+        // }
+
+        const propertyNames = struct.properties.map(property => property.name).join(", ")
+        const propertyTypes = struct.properties.map(property => `${property.name}: ${typescriptRpcType(property.type)}`).join(", ")
+        // Only one parameter: the object argument
+        classBuilder.addConstructor([[`{${propertyNames}}`,`{${propertyTypes}}`]], ctrBuilder => {
+            struct.properties.forEach(({name, type, isOptional}) => {
+                //TODO: handle isOptional
+
+                ctrBuilder.addAssignment(`this.${name}`,`${name}`)
+
+                // classBuilder.addProperty(
+                //     {
+                //         // "type" is a reserved, and we use the simple model name to make the code more ergonomic
+                //         name: `readonly ${name}`, optional: isOptional, type: typescriptRpcType(type)
+                //     }
+                // )
+            })
+        })
     })
 }
 

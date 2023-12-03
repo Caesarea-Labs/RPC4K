@@ -9,6 +9,8 @@ import com.google.devtools.ksp.symbol.*
 import com.google.devtools.ksp.validate
 import io.github.natanfudge.rpc4k.processor.utils.*
 import kotlinx.serialization.Contextual
+import kotlinx.serialization.builtins.nullable
+import kotlinx.serialization.builtins.serializer
 
 private const val TypeDiscriminatorField = "type"
 

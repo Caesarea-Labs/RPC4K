@@ -9,7 +9,7 @@
 
 export type PartiallyPartial<T, K extends keyof T> = Partial<Pick<T, K>> & Omit<T, K>
 
-export function recordForEach<K extends keyof object, V>(record: Record<K, V>, iterator: (key: K, value: V) => void) {
+export function recordForEach<K extends keyof object, V>(record: Record<K, V>, iterator: (key: K, value: V, i: number) => void) {
     // @ts-ignore
     objectForEach(record, iterator)
 }
@@ -57,3 +57,8 @@ export function removeBeforeLastExclusive  (string: string, removeBefore: string
     }
 }
 // type X = Partial<any>
+
+export function recordToArray<V, Rec extends Record<keyof Rec, V>, K extends keyof Rec, R>(record: Record<K, V>,
+                                                                                           mapFn: (key: K, value: V, index: number) => R): R[] {
+    return Object.keys(record).map((key, index) => mapFn(key as K, record[key as K] as V, index))
+}

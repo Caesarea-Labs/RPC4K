@@ -28,7 +28,7 @@ export function generateAccessor(api: ApiDefinition,rawApi: ApiDefinition, optio
 
     builder._addLineOfCode(`const ${runtimeModelsName} = \`${JSON.stringify(rawApi.models)}\``)
 
-    builder.addClass(`${api.name}Api`, (clazz) => {
+    builder.addClass({name:`${api.name}Api`}, (clazz) => {
         clazz.addProperty({name: "private readonly client", type: "RpcClient"})
             .addProperty({name: "private readonly format", type: "SerializationFormat"})
             .addProperty({

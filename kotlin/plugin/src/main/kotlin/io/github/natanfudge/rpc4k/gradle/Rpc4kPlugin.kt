@@ -88,4 +88,5 @@ private fun toPath(value: Any?): Path? = when (value) {
     else -> null
 }
 
+
 private fun getRpc4kVersion() = Rpc4KPlugin::class.java.getResourceAsStream("/rpc4k_version.txt")!!.readAllBytes().decodeToString()

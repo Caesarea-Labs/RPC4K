@@ -8,7 +8,7 @@ import {Composer, createComposer} from "./Composer";
 import {JsonWriter} from "./JsonWriter";
 import {switchMode, WriteMode, WriteModes} from "./WriteMode";
 import {SerialDescriptor} from "../../core/SerialDescriptor";
-import {SerializationStrategy} from "../../core/TsSerializer";
+import {SerializationStrategy} from "../../TsSerializer";
 import {encodePolymorphically} from "./Polymorphic";
 import {Encoder} from "../../core/encoding/Encoder";
 import {INVALID, NULL} from "./AbstractJsonLexer";

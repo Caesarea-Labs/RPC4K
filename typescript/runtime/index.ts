@@ -8,6 +8,7 @@ export * from "./src/impl/ModelName"
 export * from "./src/impl/RpcTypeUtils"
 export * from "./src/impl/Rpc4aTypeAdapter"
 export * from "./src/impl/Rpc"
-export * from "./src/serialization/builtins/BuiltinSerializers"
+export * from "./src/serialization/BuiltinSerializers"
 export * from "./src/serialization/core/SerialDescriptor"
 export {buildClassSerialDescriptor} from "./src/serialization/descriptors/SerialDescriptors"
+export {PrimitiveSerialDescriptor} from "./src/serialization/builtins/PrimitiveSerialDescriptor";

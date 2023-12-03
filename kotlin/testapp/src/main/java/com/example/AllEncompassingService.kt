@@ -8,8 +8,12 @@ import com.example.EnumArgs.Option5
 import io.github.natanfudge.rpc4k.runtime.api.Api
 import io.github.natanfudge.rpc4k.runtime.api.serverRequirement
 import kotlinx.serialization.Contextual
+import kotlinx.serialization.KSerializer
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.descriptors.SerialDescriptor
+import kotlinx.serialization.encoding.Decoder
+import kotlinx.serialization.encoding.Encoder
 import java.time.Instant
 import java.time.ZonedDateTime
 import java.util.*
@@ -313,6 +317,24 @@ open class AllEncompassingService(val value: Int = 1) {
 
 @Serializable
 data class Tree<T>(val item: T, val children: List<Tree<T>>)
+//
+//fun main() {
+//    val
+//}
+//
+//class TreeSerializer<T>(private val elementSerializer: TreeSerializer<T>): KSerializer<T> {
+//    override val descriptor: SerialDescriptor
+//        get() = TODO("Not yet implemented")
+//
+//    override fun deserialize(decoder: Decoder): T {
+//        TODO("Not yet implemented")
+//    }
+//
+//    override fun serialize(encoder: Encoder, value: T) {
+//        TODO("Not yet implemented")
+//    }
+//
+//}
 
 @Serializable
 data class TypeField(val type: String)

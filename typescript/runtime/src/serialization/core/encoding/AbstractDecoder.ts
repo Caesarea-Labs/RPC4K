@@ -4,7 +4,7 @@
 import {CompositeDecoder, Decoder} from "./Decoding";
 import {SerializationException} from "../SerializationException";
 import {SerialDescriptor} from "../SerialDescriptor";
-import {DeserializationStrategy} from "../TsSerializer";
+import {DeserializationStrategy} from "../../TsSerializer";
 
 export abstract class AbstractDecoder extends Decoder implements CompositeDecoder {
     abstract decodeElementIndex(descriptor: SerialDescriptor): number

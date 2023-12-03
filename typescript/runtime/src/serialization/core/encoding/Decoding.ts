@@ -2,7 +2,7 @@
  * Copyright 2017-2020 JetBrains s.r.o. Use of this source code is governed by the Apache 2.0 license.
  */
 import {SerialDescriptor} from "../SerialDescriptor";
-import {DeserializationStrategy} from "../TsSerializer";
+import {DeserializationStrategy} from "../../TsSerializer";
 import {SerializersModule} from "../SerializersModule";
 
 export abstract class Decoder {

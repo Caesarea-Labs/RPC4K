@@ -9,7 +9,7 @@ import {JsonConfiguration} from "../JsonConfiguration";
 import {AbstractDecoder} from "../../core/encoding/AbstractDecoder";
 import {ChunkedDecoder} from "../../core/encoding/ChunkedDecoder";
 import {SerialDescriptor} from "../../core/SerialDescriptor";
-import {DeserializationStrategy} from "../../core/TsSerializer";
+import {DeserializationStrategy} from "../../TsSerializer";
 import {JsonElementMarker} from "./JsonElementMarker";
 import {CompositeDecoder, DECODER_DECODE_DONE, DECODER_UNKNOWN_NAME} from "../../core/encoding/Decoding";
 import {isUnsignedNumber} from "./StreamingJsonEncoder";

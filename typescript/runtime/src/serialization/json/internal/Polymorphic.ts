@@ -2,7 +2,7 @@
  * Copyright 2017-2020 JetBrains s.r.o. Use of this source code is governed by the Apache 2.0 license.
  */
 import {JsonEncoder} from "./JsonEncoder";
-import {DeserializationStrategy, SerializationStrategy} from "../../core/TsSerializer";
+import {DeserializationStrategy, SerializationStrategy} from "../../TsSerializer";
 import {SerialDescriptor} from "../../core/SerialDescriptor";
 import {Json} from "../Json";
 import {PolymorphicKind} from "../../core/SerialKind";

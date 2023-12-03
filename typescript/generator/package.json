@@ -1,11 +1,11 @@
 {
   "name": "rpc4ts-gen",
-  "version": "0.0.24",
+  "version": "0.1.0",
   "license": "MIT",
   "keywords": [],
   "scripts": {
     "pretest": "echo \"Running pretest script\"",
-    "generateClient": "ts-node src/index.ts -i ../../kotlin/testapp/build/generated/ksp/main/resources/rpc4k -o ../runtime/src/generated -d",
+    "generateClient": "ts-node src/index.ts -i ../../kotlin/testapp/build/generated/ksp/main/resources/rpc4k -o ../runtime/test/generated -d",
     "build": "tsup --dts",
     "build:main": "tsc -p tsconfig.json",
     "build:module": "tsc -p tsconfig.module.json",

@@ -3,7 +3,7 @@
  */
 import {Encoder} from "./Encoder";
 import {SerialDescriptor} from "../SerialDescriptor";
-import {SerializationStrategy} from "../TsSerializer";
+import {SerializationStrategy} from "../../TsSerializer";
 import {CompositeEncoder} from "./Encoding";
 import {SerializationException} from "../SerializationException";
 

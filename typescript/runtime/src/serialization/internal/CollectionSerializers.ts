@@ -1,9 +1,8 @@
 import {Encoder} from "../core/encoding/Encoder";
 import {CompositeDecoder, Decoder, DECODER_DECODE_DONE} from "../core/encoding/Decoding";
-import {TsSerializer} from "../core/TsSerializer";
+import {TsSerializer} from "../TsSerializer";
 import {SerialDescriptor} from "../core/SerialDescriptor";
 import {encodeCollection} from "../core/encoding/Encoding";
-import {ArrayDesc} from "./CollectionDescriptors";
 
 abstract class AbstractCollectionSerializer<Element, Collection, Builder> implements TsSerializer<Collection> {
     abstract descriptor: SerialDescriptor
@@ -83,7 +82,7 @@ abstract class CollectionLikeSerializer<Element, Collection, Builder> extends Ab
     }
 }
 
-abstract class CollectionSerializer<E, C extends E[], B> extends CollectionLikeSerializer<E, C, B> {
+export abstract class CollectionSerializer<E, C extends E[], B> extends CollectionLikeSerializer<E, C, B> {
     constructor(element: TsSerializer<E>) {
         super(element);
     }
@@ -101,39 +100,3 @@ abstract class CollectionSerializer<E, C extends E[], B> extends CollectionLikeS
     // }
 }
 
-export class ArraySerializer<E> extends CollectionSerializer<E, Array<E>, Array<E>> {
-    constructor(element: TsSerializer<E>) {
-        super(element);
-    }
-
-    get descriptor(): SerialDescriptor {
-        return new ArrayDesc(this.elementSerializer.descriptor);
-    }
-
-    builder(): Array<E> {
-        return [];
-    }
-
-    builderSize(builder: Array<E>): number {
-        return builder.length;
-    }
-
-    toResult(builder: Array<E>): Array<E> {
-        return builder;
-    }
-
-    toBuilder(collection: Array<E>): Array<E> {
-        // In TypeScript, arrays are always mutable, so we can return the original array
-        return collection;
-    }
-
-    checkCapacity(builder: Array<E>, size: number): void {
-        // JavaScript arrays do not have a method like 'ensureCapacity',
-        // as they are dynamically sized. This method could be left empty
-        // or implement logic if needed for specific cases.
-    }
-
-    insert(builder: Array<E>, index: number, element: E): void {
-        builder.splice(index, 0, element);
-    }
-}

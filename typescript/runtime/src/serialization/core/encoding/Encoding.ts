@@ -2,7 +2,7 @@
  * Copyright 2017-2020 JetBrains s.r.o. Use of this source code is governed by the Apache 2.0 license.
  */
 import {SerialDescriptor} from "../SerialDescriptor";
-import {SerializationStrategy} from "../TsSerializer";
+import {SerializationStrategy} from "../../TsSerializer";
 import {Encoder} from "./Encoder";
 import {SerializersModule} from "../SerializersModule";
 

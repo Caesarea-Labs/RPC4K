@@ -1,0 +1,11 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="Standalone TS Tests" type="JavaScriptTestRunnerJest">
+    <node-interpreter value="project" />
+    <jest-package value="$PROJECT_DIR$/typescript/runtime/node_modules/jest" />
+    <working-dir value="$PROJECT_DIR$/typescript/runtime" />
+    <envs />
+    <scope-kind value="DIRECTORY" />
+    <test-directory value="$PROJECT_DIR$/typescript/runtime/test/serialization" />
+    <method v="2" />
+  </configuration>
+</component>
