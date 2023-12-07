@@ -15,7 +15,7 @@ import {INVALID, NULL} from "./AbstractJsonLexer";
 import {CompositeEncoder} from "../../core/encoding/Encoding";
 import {InvalidFloatingPointEncoded} from "./JsonExceptions";
 import {getJsonElementName} from "./JsonNamesMap";
-import {SerializersModule} from "../../core/SerializersModule";
+import {SerializersModule} from "../../modules/SerializersModule";
 import {JsonConfiguration} from "../JsonConfiguration";
 
 export class StreamingJsonEncoder extends AbstractEncoder implements JsonEncoder {

@@ -17,7 +17,7 @@ import kotlinx.serialization.encoding.encodeCollection
 /**
  * Serializes a pair as an array of two elements
  */
-fun <K, V> TuplePairSerializer(keySerializer: KSerializer<K>, valueSerializer: KSerializer<V>): KSerializer<Pair<K, V>> = TupleSerializer(
+fun <K, V> TuplePairSerializer(keySerializer: KSerializer<K>, valueSerializer: KSerializer<V>): KSerializer<Pair<K, V>> = BuiltinTupleSerializer(
     listOf(keySerializer, valueSerializer), { listOf(it.first, it.second) }, { it[0] as K to it[1] as V }
 )
 
@@ -27,7 +27,7 @@ fun <K, V> TuplePairSerializer(keySerializer: KSerializer<K>, valueSerializer: K
  */
 fun <T1, T2, T3> TupleTripleSerializer(
     firstSerializer: KSerializer<T1>, secondSerializer: KSerializer<T2>, thirdSerializer: KSerializer<T3>
-): KSerializer<Triple<T1, T2, T3>> = TupleSerializer(
+): KSerializer<Triple<T1, T2, T3>> = BuiltinTupleSerializer(
     listOf(firstSerializer, secondSerializer, thirdSerializer),
     { listOf(it.first, it.second, it.third) },
     { Triple(it[0] as T1, it[1] as T2, it[2] as T3) }
@@ -37,7 +37,7 @@ fun <T1, T2, T3> TupleTripleSerializer(
 /**
  * Serializes a map entry the same way as a pair - array of two elements
  */
-fun <K, V> TupleMapEntrySerializer(keySerializer: KSerializer<K>, valueSerializer: KSerializer<V>): KSerializer<Map.Entry<K, V>> = TupleSerializer(
+fun <K, V> TupleMapEntrySerializer(keySerializer: KSerializer<K>, valueSerializer: KSerializer<V>): KSerializer<Map.Entry<K, V>> = BuiltinTupleSerializer(
     listOf(keySerializer, valueSerializer), { listOf(it.key, it.value) }, { MapEntryImpl(it[0] as K, it[1] as V) }
 )
 
@@ -61,10 +61,10 @@ private class MapEntryImpl<K, V>(override val key: K, override val value: V) : M
 /**
  * Serializes tuples as an array
  */
-private class TupleSerializer<T>(elementSerializers: List<KSerializer<*>>, private val toList: (T) -> List<*>, private val fromList: (List<*>) -> T) :
+private class BuiltinTupleSerializer<T>(elementSerializers: List<KSerializer<*>>, private val toList: (T) -> List<*>, private val fromList: (List<*>) -> T) :
     KSerializer<T> {
     private val length = elementSerializers.size
-    private val delegate = HeterogeneousListSerializer(elementSerializers)
+    private val delegate = TupleSerializer(elementSerializers)
     override val descriptor: SerialDescriptor = delegate.descriptor
 
     override fun deserialize(decoder: Decoder): T {
@@ -84,8 +84,8 @@ private class TupleSerializer<T>(elementSerializers: List<KSerializer<*>>, priva
  * Adapted from [kotlinx.serialization.internal.CollectionLikeSerializer], [kotlinx.serialization.internal.CollectionSerializer]
  * and [kotlinx.serialization.internal.ArrayListSerializer]
  */
-class HeterogeneousListSerializer(private val elementSerializers: List<KSerializer<*>>) : KSerializer<List<*>> {
-    override val descriptor: SerialDescriptor = HeterogeneousListDescriptor(elementSerializers.map { it.descriptor })
+class TupleSerializer(private val elementSerializers: List<KSerializer<*>>) : KSerializer<List<*>> {
+    override val descriptor: SerialDescriptor = TupleDescriptor(elementSerializers.map { it.descriptor })
 
     override fun deserialize(decoder: Decoder): List<*> {
         val builder = arrayListOf<Any?>()
@@ -137,10 +137,10 @@ class HeterogeneousListSerializer(private val elementSerializers: List<KSerializ
 /**
  * Adapted from [kotlinx.serialization.internal.ListLikeDescriptor]
  */
-internal class HeterogeneousListDescriptor(val elementDescriptors: List<SerialDescriptor>) : SerialDescriptor {
+internal class TupleDescriptor(val elementDescriptors: List<SerialDescriptor>) : SerialDescriptor {
     override val kind: SerialKind get() = StructureKind.LIST
     override val elementsCount: Int = elementDescriptors.size
-    override val serialName = "HeterogeneousList"
+    override val serialName = "Tuple"
 
     override fun getElementName(index: Int): String = index.toString()
     override fun getElementIndex(name: String): Int =
@@ -163,7 +163,7 @@ internal class HeterogeneousListDescriptor(val elementDescriptors: List<SerialDe
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
-        if (other !is HeterogeneousListDescriptor) return false
+        if (other !is TupleDescriptor) return false
         if (elementDescriptors == other.elementDescriptors && serialName == other.serialName) return true
         return false
     }

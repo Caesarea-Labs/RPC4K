@@ -160,7 +160,7 @@ export abstract class AbstractJsonLexer {
     }
 
     isNotEof(): boolean {
-        return this.peekNextToken() != TC_EOF; // Assuming TC_EOF is defined elsewhere
+        return this.peekNextToken() != TC_EOF; 
     }
 
     // Used as bound check in loops
@@ -210,12 +210,12 @@ export abstract class AbstractJsonLexer {
     }
 
     protected unexpectedToken(expected: string): void {
-        if (this.currentPosition > 0 && expected === STRING) { // Assuming STRING is defined elsewhere
+        if (this.currentPosition > 0 && expected === STRING) { 
             let inputLiteral: string;
             this.currentPosition--;
             inputLiteral = this.consumeStringLenient();
 
-            if (inputLiteral === NULL) { // Assuming NULL is defined elsewhere
+            if (inputLiteral === NULL) { 
                 this.failString("Expected string literal but 'null' literal was found", this.currentPosition - 1, coerceInputValuesHint); // coerceInputValuesHint should be defined
             }
         }
@@ -223,7 +223,7 @@ export abstract class AbstractJsonLexer {
     }
 
     protected fail(expectedToken: number, wasConsumed: boolean = true): never {
-        const expected = tokenDescription(expectedToken); // Assuming tokenDescription is defined elsewhere
+        const expected = tokenDescription(expectedToken); 
         const position = wasConsumed ? this.currentPosition - 1 : this.currentPosition;
         const s = this.currentPosition === this.source.length || position < 0 ? "EOF" : this.source[position];
         throw new Error(`Expected ${expected}, but had '${s}' instead at position ${position}`);
@@ -240,10 +240,10 @@ export abstract class AbstractJsonLexer {
                 continue;
             }
             this.currentPosition = cpos;
-            return charToTokenClass(ch); // Assuming charToTokenClass is defined elsewhere
+            return charToTokenClass(ch); 
         }
         this.currentPosition = cpos;
-        return TC_EOF; // Assuming TC_EOF is defined elsewhere
+        return TC_EOF; 
     }
 
     tryConsumeNull(doConsume: boolean = true): boolean {
@@ -252,9 +252,9 @@ export abstract class AbstractJsonLexer {
         const len = this.source.length - current;
         if (len < 4 || current === -1) return false;
         for (let i = 0; i < 4; i++) {
-            if (NULL[i] !== this.source[current + i]) return false; // Assuming NULL is defined elsewhere
+            if (NULL[i] !== this.source[current + i]) return false; 
         }
-        if (len > 4 && charToTokenClass(this.source[current + 4]) === TC_OTHER) return false; // Assuming TC_OTHER is defined elsewhere
+        if (len > 4 && charToTokenClass(this.source[current + 4]) === TC_OTHER) return false; 
 
         if (doConsume) {
             this.currentPosition = current + 4;
@@ -284,7 +284,7 @@ export abstract class AbstractJsonLexer {
         const token = this.peekNextToken();
         let string: string | null;
         if (isLenient) {
-            if (token !== TC_STRING && token !== TC_OTHER) return null; // Assuming TC_STRING and TC_OTHER are defined elsewhere
+            if (token !== TC_STRING && token !== TC_OTHER) return null; 
             string = this.consumeStringLenient();
         } else {
             if (token !== TC_STRING) return null;
@@ -309,7 +309,7 @@ export abstract class AbstractJsonLexer {
     abstract consumeKeyString(): string;
 
     protected insideString(isLenient: boolean, char: string): boolean {
-        return isLenient ? charToTokenClass(char) === TC_OTHER : char !== STRING; // Assuming charToTokenClass, TC_OTHER, and STRING are defined elsewhere
+        return isLenient ? charToTokenClass(char) === TC_OTHER : char !== STRING; 
     }
 
     consumeStringChunked(isLenient: boolean, consumeChunk: (stringChunk: string) => void): void {
@@ -324,9 +324,9 @@ export abstract class AbstractJsonLexer {
         let char = this.source[currentPosition];
         let usedAppend = false;
         while (this.insideString(isLenient, char)) {
-            if (!isLenient && char === STRING_ESC) { // Assuming STRING_ESC is defined elsewhere
+            if (!isLenient && char === STRING_ESC) { 
                 usedAppend = true;
-                currentPosition = this.prefetchOrEof(this.appendEscape(lastPosition, currentPosition)); // Assuming appendEscape is defined elsewhere
+                currentPosition = this.prefetchOrEof(this.appendEscape(lastPosition, currentPosition)); 
                 lastPosition = currentPosition;
             } else {
                 currentPosition++;
@@ -350,7 +350,7 @@ export abstract class AbstractJsonLexer {
 
     protected writeRange(fromIndex: number, toIndex: number, currentChunkHasEscape: boolean, consumeChunk: (stringChunk: string) => void): void {
         if (currentChunkHasEscape) {
-            consumeChunk(this.decodedString(fromIndex, toIndex)); // Assuming decodedString is defined elsewhere
+            consumeChunk(this.decodedString(fromIndex, toIndex)); 
         } else {
             consumeChunk(this.substring(fromIndex, toIndex));
         }
@@ -358,7 +358,7 @@ export abstract class AbstractJsonLexer {
 
     consumeString(): string {
         if (this.peekedString !== null) {
-            return this.takePeeked(); // Assuming takePeeked is defined elsewhere
+            return this.takePeeked(); 
         }
         return this.consumeKeyString();
     }
@@ -369,8 +369,8 @@ export abstract class AbstractJsonLexer {
         let char = source[currentPosition];
         let usedAppend = false;
 
-        while (char !== STRING) { // Assuming STRING is defined elsewhere
-            if (char === STRING_ESC) { // Assuming STRING_ESC is defined elsewhere
+        while (char !== STRING) {
+            if (char === STRING_ESC) {
                 usedAppend = true;
                 currentPosition = this.prefetchOrEof(this.appendEscape(lastPosition, currentPosition));
                 if (currentPosition === -1) {
@@ -397,7 +397,7 @@ export abstract class AbstractJsonLexer {
 
     private appendEscape(lastPosition: number, current: number): number {
         this.appendRange(lastPosition, current);
-        return this.appendEsc(current + 1); // Assuming appendEsc is defined elsewhere
+        return this.appendEsc(current + 1);
     }
 
     private decodedString(lastPosition: number, currentPosition: number): string {
@@ -408,21 +408,21 @@ export abstract class AbstractJsonLexer {
     }
 
     private takePeeked(): string {
-        const result = this.peekedString || ''; // Handling non-null assertion
+        const result = this.peekedString || '';
         this.peekedString = null;
         return result;
     }
 
     consumeStringLenientNotNull(): string {
-        const result = this.consumeStringLenient(); // Assuming consumeStringLenient is defined elsewhere
-        if (result === NULL && this.wasUnquotedString()) { // Assuming NULL is defined elsewhere
+        const result = this.consumeStringLenient();
+        if (result === NULL && this.wasUnquotedString()) {
             this.failString("Unexpected 'null' value instead of string literal");
         }
         return result;
     }
 
     private wasUnquotedString(): boolean {
-        return this.source[this.currentPosition - 1] !== STRING; // Assuming STRING is defined elsewhere
+        return this.source[this.currentPosition - 1] !== STRING;
     }
 
     consumeStringLenient(): string {
@@ -431,12 +431,12 @@ export abstract class AbstractJsonLexer {
         }
         let current = this.skipWhitespaces();
         if (current >= this.source.length || current === -1) this.failString("EOF", current);
-        const token = charToTokenClass(this.source[current]); // Assuming charToTokenClass is defined elsewhere
-        if (token === TC_STRING) { // Assuming TC_STRING is defined elsewhere
-            return this.consumeString(); // Assuming consumeString is defined elsewhere
+        const token = charToTokenClass(this.source[current]);
+        if (token === TC_STRING) {
+            return this.consumeString();
         }
 
-        if (token !== TC_OTHER) { // Assuming TC_OTHER is defined elsewhere
+        if (token !== TC_OTHER) {
             this.failString(`Expected beginning of the string, but got ${this.source[current]}`);
         }
         let usedAppend = false;
@@ -445,10 +445,10 @@ export abstract class AbstractJsonLexer {
             if (current >= this.source.length) {
                 usedAppend = true;
                 this.appendRange(this.currentPosition, current);
-                const eof = this.prefetchOrEof(current); // Assuming prefetchOrEof is defined elsewhere
+                const eof = this.prefetchOrEof(current); 
                 if (eof === -1) {
                     this.currentPosition = current;
-                    return this.decodedString(0, 0); // Assuming decodedString is defined elsewhere
+                    return this.decodedString(0, 0); 
                 } else {
                     current = eof;
                 }
@@ -469,12 +469,12 @@ export abstract class AbstractJsonLexer {
         currentPosition = this.prefetchOrEof(currentPosition);
         if (currentPosition === -1) this.failString("Expected escape sequence to continue, got EOF");
         const currentChar = this.source[currentPosition++];
-        if (currentChar === UNICODE_ESC) { // Assuming UNICODE_ESC is defined elsewhere
-            return this.appendHex(this.source, currentPosition); // Assuming appendHex is defined elsewhere
+        if (currentChar === UNICODE_ESC) { 
+            return this.appendHex(this.source, currentPosition); 
         }
 
-        const c = escapeToChar(currentChar.charCodeAt(0)); // Assuming escapeToChar is defined elsewhere
-        if (c === INVALID) this.failString(`Invalid escaped char '${currentChar}'`); // Assuming INVALID is defined elsewhere
+        const c = escapeToChar(currentChar.charCodeAt(0)); 
+        if (c === INVALID) this.failString(`Invalid escaped char '${currentChar}'`); 
         this.escapedString += c;
         return currentPosition;
     }
@@ -482,13 +482,13 @@ export abstract class AbstractJsonLexer {
     private appendHex(source: string, startPos: number): number {
         if (startPos + 4 >= source.length) {
             this.currentPosition = startPos;
-            this.ensureHaveChars(); // Assuming ensureHaveChars is defined elsewhere
+            this.ensureHaveChars(); 
             if (this.currentPosition + 4 >= source.length)
                 this.failString("Unexpected EOF during unicode escape");
             return this.appendHex(source, this.currentPosition);
         }
         this.escapedString += String.fromCharCode(
-            (this.fromHexChar(source, startPos) << 12) + // Assuming fromHexChar is defined elsewhere
+            (this.fromHexChar(source, startPos) << 12) + 
             (this.fromHexChar(source, startPos + 1) << 8) +
             (this.fromHexChar(source, startPos + 2) << 4) +
             this.fromHexChar(source, startPos + 3)
@@ -520,15 +520,15 @@ export abstract class AbstractJsonLexer {
 
     skipElement(allowLenientStrings: boolean): void {
         const tokenStack: number[] = []; // Byte in Kotlin, number in TypeScript
-        let lastToken = this.peekNextToken(); // Assuming peekNextToken is defined elsewhere
-        if (lastToken !== TC_BEGIN_LIST && lastToken !== TC_BEGIN_OBJ) { // Assuming TC_BEGIN_LIST and TC_BEGIN_OBJ are defined elsewhere
-            this.consumeStringLenient(); // Assuming consumeStringLenient is defined elsewhere
+        let lastToken = this.peekNextToken(); 
+        if (lastToken !== TC_BEGIN_LIST && lastToken !== TC_BEGIN_OBJ) { 
+            this.consumeStringLenient(); 
             return;
         }
         while (true) {
             lastToken = this.peekNextToken();
-            if (lastToken === TC_STRING) { // Assuming TC_STRING is defined elsewhere
-                if (allowLenientStrings) this.consumeStringLenient(); else this.consumeKeyString(); // Assuming consumeKeyString is defined elsewhere
+            if (lastToken === TC_STRING) { 
+                if (allowLenientStrings) this.consumeStringLenient(); else this.consumeKeyString(); 
                 continue;
             }
             switch (lastToken) {
@@ -536,26 +536,26 @@ export abstract class AbstractJsonLexer {
                 case TC_BEGIN_OBJ:
                     tokenStack.push(lastToken);
                     break;
-                case TC_END_LIST: // Assuming TC_END_LIST is defined elsewhere
-                    if (tokenStack[tokenStack.length - 1] !== TC_BEGIN_LIST) { // Assuming TC_BEGIN_LIST is defined elsewhere
+                case TC_END_LIST: 
+                    if (tokenStack[tokenStack.length - 1] !== TC_BEGIN_LIST) { 
                         throw new JsonDecodingException(
-                            `found ] instead of } at path: ${this.path.getPath()}`, // Assuming path and getPath are defined elsewhere
+                            `found ] instead of } at path: ${this.path.getPath()}`, 
                         );
                     }
                     tokenStack.pop();
                     break;
-                case TC_END_OBJ: // Assuming TC_END_OBJ is defined elsewhere
-                    if (tokenStack[tokenStack.length - 1] !== TC_BEGIN_OBJ) { // Assuming TC_BEGIN_OBJ is defined elsewhere
+                case TC_END_OBJ: 
+                    if (tokenStack[tokenStack.length - 1] !== TC_BEGIN_OBJ) { 
                         throw new JsonDecodingException(
                             `found } instead of ] at path: ${this.path.getPath()}`,
                         );
                     }
                     tokenStack.pop();
                     break;
-                case TC_EOF: // Assuming TC_EOF is defined elsewhere
+                case TC_EOF: 
                     this.failString("Unexpected end of input due to malformed JSON during ignoring unknown keys");
             }
-            this.consumeNextToken(); // Assuming consumeNextToken is defined elsewhere
+            this.consumeNextToken(); 
             if (tokenStack.length === 0) return;
         }
     }
@@ -567,20 +567,20 @@ export abstract class AbstractJsonLexer {
     failOnUnknownKey(key: string): void {
         const processed = this.source.substring(0, this.currentPosition);
         const lastIndexOf = processed.lastIndexOf(key);
-        this.failString(`Encountered an unknown key '${key}'`, lastIndexOf, ignoreUnknownKeysHint); // Assuming ignoreUnknownKeysHint is defined elsewhere
+        this.failString(`Encountered an unknown key '${key}'`, lastIndexOf, ignoreUnknownKeysHint); 
     }
 
     failString(message: string, position: number = this.currentPosition, hint: string = ""): never {
         const hintMessage = hint ? `\n${hint}` : "";
-        throw createJsonDecodingExceptionWithInput(position, message + " at path: " + this.path.getPath() + hintMessage, this.source); // Assuming JsonDecodingException is defined elsewhere
+        throw createJsonDecodingExceptionWithInput(position, message + " at path: " + this.path.getPath() + hintMessage, this.source); 
     }
 
     consumeNumericLiteral(): number {
-        let current = this.skipWhitespaces(); // Assuming skipWhitespaces is defined elsewhere
-        current = this.prefetchOrEof(current); // Assuming prefetchOrEof is defined elsewhere
+        let current = this.skipWhitespaces(); 
+        current = this.prefetchOrEof(current); 
         if (current >= this.source.length || current === -1) this.failString("EOF");
 
-        let hasQuotation = this.source[current] === STRING; // Assuming STRING is defined elsewhere
+        let hasQuotation = this.source[current] === STRING; 
         if (hasQuotation) {
             if (++current === this.source.length) this.failString("EOF");
         }
@@ -617,8 +617,8 @@ export abstract class AbstractJsonLexer {
                 continue;
             }
 
-            const token = charToTokenClass(ch); // Assuming charToTokenClass is defined elsewhere
-            if (token !== TC_OTHER) break; // Assuming TC_OTHER is defined elsewhere
+            const token = charToTokenClass(ch); 
+            if (token !== TC_OTHER) break; 
 
             ++current;
             const digit = ch.charCodeAt(0) - '0'.charCodeAt(0);
@@ -656,14 +656,14 @@ export abstract class AbstractJsonLexer {
     }
 
     consumeBoolean(): boolean {
-        return this.consumeBooleanFromPosition(this.skipWhitespaces()); // Assuming skipWhitespaces is defined elsewhere
+        return this.consumeBooleanFromPosition(this.skipWhitespaces()); 
     }
 
     consumeBooleanLenient(): boolean {
         let current = this.skipWhitespaces();
         if (current === this.source.length) this.failString("EOF");
 
-        let hasQuotation = this.source[current] === STRING; // Assuming STRING is defined elsewhere
+        let hasQuotation = this.source[current] === STRING; 
         if (hasQuotation) {
             ++current;
         }
@@ -681,7 +681,7 @@ export abstract class AbstractJsonLexer {
     }
 
     private consumeBooleanFromPosition(start: number): boolean {
-        let current = this.prefetchOrEof(start); // Assuming prefetchOrEof is defined elsewhere
+        let current = this.prefetchOrEof(start); 
         if (current >= this.source.length || current === -1) this.failString("EOF");
 
         const ch = this.source[current++].charCodeAt(0) | asciiCaseMask;
@@ -693,7 +693,7 @@ export abstract class AbstractJsonLexer {
                 this.consumeBooleanLiteral("alse", current);
                 return false;
             default:
-                this.failString(`Expected valid boolean literal prefix, but had '${this.consumeStringLenient()}'`); // Assuming consumeStringLenient is defined elsewhere
+                this.failString(`Expected valid boolean literal prefix, but had '${this.consumeStringLenient()}'`); 
         }
     }
 

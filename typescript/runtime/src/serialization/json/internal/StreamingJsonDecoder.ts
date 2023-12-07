@@ -13,8 +13,10 @@ import {DeserializationStrategy} from "../../TsSerializer";
 import {JsonElementMarker} from "./JsonElementMarker";
 import {CompositeDecoder, DECODER_DECODE_DONE, DECODER_UNKNOWN_NAME} from "../../core/encoding/Decoding";
 import {isUnsignedNumber} from "./StreamingJsonEncoder";
-import {getJsonNameIndex, tryCoerceValue} from "./JsonNamesMap";
-import {SerializersModule} from "../../core/SerializersModule";
+import {getJsonNameIndex, getJsonNameIndexOrThrow, tryCoerceValue} from "./JsonNamesMap";
+import {SerializersModule} from "../../modules/SerializersModule";
+import {AbstractPolymorphicSerializer} from "../../internal/AbstractPolymorphicSerializer";
+import {classDiscriminator} from "./Polymorphic";
 
 export class StreamingJsonDecoder extends AbstractDecoder implements JsonDecoder, ChunkedDecoder {
     json: Json;
@@ -49,37 +51,28 @@ export class StreamingJsonDecoder extends AbstractDecoder implements JsonDecoder
     // }
 
     decodeSerializableValue<T>(deserializer: DeserializationStrategy<T>): T {
-        // try {
-        //     if (!(deserializer instanceof AbstractPolymorphicSerializer) || this.json.configuration.useArrayPolymorphism) {
-        return deserializer.deserialize(this);
-        // } else {
-        //     throw new Error("Not implemented")
-        // }
-        //TODO: implement polymorphic serialization
-        //
-        // const discriminator = deserializer.descriptor.classDiscriminator(this.json);
-        // const type = this.lexer.peekLeadingMatchingValue(discriminator, this.configuration.isLenient);
-        // let actualSerializer: DeserializationStrategy<any> | null = null;
-        //
-        // if (type != null) {
-        //     actualSerializer = deserializer.findPolymorphicSerializerOrNull(this, type);
-        // }
-        //
-        // if (actualSerializer == null) {
-        //     return this.decodeSerializableValuePolymorphic<T>(deserializer);
-        // }
-        //
-        // this.discriminatorHolder = new DiscriminatorHolder(discriminator);
-        // const result = actualSerializer.deserialize(this);
-        // return result as T;
+        if (!(deserializer instanceof AbstractPolymorphicSerializer) || this.json.configuration.useArrayPolymorphism) {
+            return deserializer.deserialize(this);
+        }
+        const polyDeserializer = deserializer as AbstractPolymorphicSerializer<T>
 
-        // } catch (e: MissingFieldException) {
-        //     if (e.message && !e.message.includes("at path")) {
-        //         throw new MissingFieldException(e.missingFields, `${e.message} at path: ${this.lexer.path.getPath()}`, e);
-        //     } else {
-        //         throw e;
-        //     }
-        // }
+        const discriminator = classDiscriminator(deserializer.descriptor, this.json)
+        const type = this.lexer.peekLeadingMatchingValue(discriminator, this.configuration.isLenient);
+        let actualSerializer: DeserializationStrategy<any> | null = null;
+
+        if (type != null) {
+            actualSerializer = polyDeserializer.findPolymorphicSerializerOrNullForClassName(this, type);
+        }
+
+        if (actualSerializer == null) {
+            throw new Error("TODO")
+            // return this.decodeSerializableValuePolymorphic<T>(deserializer);
+        }
+
+        this.discriminatorHolder = new DiscriminatorHolder(discriminator);
+        const result = actualSerializer.deserialize(this);
+        return result as T;
+
     }
 
     beginStructure(descriptor: SerialDescriptor): CompositeDecoder {
@@ -278,12 +271,13 @@ export class StreamingJsonDecoder extends AbstractDecoder implements JsonDecoder
     }
 
     public decodeNumber(): number {
-        const value = this.lexer.consumeNumericLiteral();
+        const value = this.lexer.consumeStringLenient();
+        const asNumber = Number(value.toString())
         // Check for overflow
-        if (value !== Number(value.toString())) { // Adjust based on actual lexer implementation
+        if (isNaN(asNumber)) {
             this.lexer.failString(`Failed to parse number for input '${value}'`);
         }
-        return value
+        return asNumber
     }
 
     private decodeStringKey(): string {
@@ -306,7 +300,7 @@ export class StreamingJsonDecoder extends AbstractDecoder implements JsonDecoder
     }
 
     public decodeEnum(enumDescriptor: any): number { // Replace 'any' with actual enumDescriptor type
-        return enumDescriptor.getJsonNameIndexOrThrow(this.json, this.decodeString(), ` at path ${this.lexer.path.getPath()}`); // Adjust based on actual implementation
+        return getJsonNameIndexOrThrow(enumDescriptor, this.json, this.decodeString(), ` at path ${this.lexer.path.getPath()}`); // Adjust based on actual implementation
     }
 
 

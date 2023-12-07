@@ -303,6 +303,14 @@ open class AllEncompassingService(val value: Int = 1) {
         return service
     }
 
+    open suspend fun largeHierarchy(obj: LargeHierarchy): LargeHierarchy {
+        return obj
+    }
+
+    open suspend fun someMap(map: SomeMap): SomeMap {
+        return map
+    }
+
 //NiceToHave: Respect @SerialName
 //    open suspend fun serialName(obj: SerialNameTest): SerialNameTest {
 //        return obj
@@ -351,6 +359,8 @@ typealias TypeAliasReference = OnlyTypeAliased
 
 @Serializable
 data class SomeBuiltinTypes(@Contextual val p: Pair<Int, Int>)
+
+@Serializable data class SomeMap(val map: Map<Int, Float>)
 
 
 @Serializable
@@ -450,7 +460,10 @@ enum class EnumArgs(val x: Int) {
 object TheObject
 
 @Serializable
-sealed interface PolymorphicThing {
+sealed interface LargeHierarchy
+
+@Serializable
+sealed interface PolymorphicThing: LargeHierarchy {
     @Serializable
     data class Option1(val x: Int) : PolymorphicThing
 
@@ -459,7 +472,7 @@ sealed interface PolymorphicThing {
 }
 
 @Serializable
-sealed class PolymorphicClass {
+sealed class PolymorphicClass: LargeHierarchy {
     @Serializable
     data class Option4(val x: Int) : PolymorphicClass()
 

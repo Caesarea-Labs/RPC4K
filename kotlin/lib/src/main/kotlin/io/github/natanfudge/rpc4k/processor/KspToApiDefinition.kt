@@ -33,8 +33,6 @@ class KspToApiDefinition(private val resolver: Resolver) {
     }
 
 
-
-
     /**
      * Get list of models like this:
      * ```
@@ -163,25 +161,43 @@ class KspToApiDefinition(private val resolver: Resolver) {
 
     /**
      * Get `com.foo.bar.MyClass<Int,String>` as an [KotlinTypeReference]
+     * @param typeParameterResolver If specified, type parameters should be transformed to the given KSType of the name resolves to a
+     * non-null KSType.
      * */
-    private fun toKotlinTypeReference(type: KSTypeReference): KotlinTypeReference {
+    private fun toKotlinTypeReference(type: KSTypeReference, typeParameterResolver: ((String) -> KSTypeReference?)? = null): KotlinTypeReference {
         val resolved = type.resolveToUnderlying()
         val declaration = resolved.declaration
         val kotlinName = declaration.getKotlinName()
         val isTypeParameter = declaration is KSTypeParameter
+        if (isTypeParameter) {
+            // Resolve type parameters if they can be resolved
+            val resolvedType = typeParameterResolver?.invoke(declaration.getSimpleName())
+            if (resolvedType != null) return toKotlinTypeReference(resolvedType, typeParameterResolver)
+        }
         return KotlinTypeReference(
             kotlinName.copy(simple = if (isTypeParameter) declaration.getSimpleName() else kotlinName.simple),
-            typeArguments = resolved.arguments.map { toKotlinTypeReference(it.nonNullType()) },
+            typeArguments = resolved.arguments.map { toKotlinTypeReference(it.nonNullType(), typeParameterResolver) },
             isNullable = resolved.isMarkedNullable,
             isTypeParameter = isTypeParameter,
-            inlinedType = declaration.inlinedType()
+            inlinedType = resolved.inlinedType()
         )
     }
 
-    private fun KSDeclaration.inlinedType(): KotlinTypeReference? {
+    // fun foo(
+
+    // reference: GenericInline<K>
+
+    // GenericInline declaration: GenericInline<T>(val value: T)
+
+    private fun KSType.inlinedType(): KotlinTypeReference? {
+        val decl = declaration
         // Value classes may support multiple properties in the future so we require exactly one property to think ahead
-        if (this !is KSClassDeclaration || Modifier.VALUE !in this.modifiers || this.getDeclaredProperties().count() != 1) return null
-        return toKotlinTypeReference(getDeclaredProperties().single().type)
+        if (decl !is KSClassDeclaration || Modifier.VALUE !in decl.modifiers || decl.getDeclaredProperties().count() != 1) return null
+        val typeParameters = decl.typeParameters.map { it.name.asString() }
+        val typeArguments = arguments.map { it.nonNullType() }
+        val parameterToType = typeParameters.zip(typeArguments).toMap()
+        // Provide the actual type argument to the type parameters of the inlined type
+        return toKotlinTypeReference(decl.getDeclaredProperties().single().type) { parameterToType[it] }
     }
 
 

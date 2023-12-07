@@ -17,14 +17,3 @@ interface SerializationFormat {
     fun <T> decode(serializer: DeserializationStrategy<T>, raw: ByteArray): T
 }
 
-//
-//val Rpc4kSerializersModule = SerializersModule {
-//    // Serialize Pair, Triple and Map.Entry as heterogeneous lists
-//    contextual(Pair::class) { TuplePairSerializer(it[0],it[1]) }
-//    contextual(Triple::class) { TupleTripleSerializer(it[0], it[1], it[2]) }
-//    contextual(Map.Entry::class) { TupleMapEntrySerializer(it[0], it[1]) }
-//    contextual(Unit::class, VoidUnitSerializer())
-//    contextual(Instant::class, InstantSerializer())
-//    contextual(ZonedDateTime::class, ZonedDateTimeSerializer())
-//}
-//

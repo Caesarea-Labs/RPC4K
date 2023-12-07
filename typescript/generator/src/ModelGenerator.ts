@@ -1,14 +1,5 @@
 import {CodeBuilder} from "./CodeBuilder";
-import {
-    RpcEnumModel,
-    RpcInlineModel,
-    RpcModel,
-    RpcModelKind,
-    RpcStructModel,
-    RpcTypeDiscriminator,
-    RpcUnionModel,
-    simpleModelName,
-} from "rpc4ts-runtime";
+import {RpcEnumModel, RpcInlineModel, RpcModel, RpcModelKind, RpcStructModel, RpcType, RpcUnionModel,} from "rpc4ts-runtime";
 import {modelName, typescriptRpcType} from "./Rpc4tsType";
 
 export function generateModels(models: RpcModel[]): string {
@@ -52,6 +43,7 @@ function addStruct(code: CodeBuilder, struct: RpcStructModel) {
             )
         })
 
+
         // Add type discriminator if needed with a string type that can only be a specific value that is the model name
         // if (struct.hasTypeDiscriminator) {
         //     classBuilder.addProperty({name: RpcTypeDiscriminator, optional: false, type: `"${simpleModelName(struct.name)}"`})
@@ -60,11 +52,11 @@ function addStruct(code: CodeBuilder, struct: RpcStructModel) {
         const propertyNames = struct.properties.map(property => property.name).join(", ")
         const propertyTypes = struct.properties.map(property => `${property.name}: ${typescriptRpcType(property.type)}`).join(", ")
         // Only one parameter: the object argument
-        classBuilder.addConstructor([[`{${propertyNames}}`,`{${propertyTypes}}`]], ctrBuilder => {
+        classBuilder.addConstructor([[`{${propertyNames}}`, `{${propertyTypes}}`]], ctrBuilder => {
             struct.properties.forEach(({name, type, isOptional}) => {
                 //TODO: handle isOptional
 
-                ctrBuilder.addAssignment(`this.${name}`,`${name}`)
+                ctrBuilder.addAssignment(`this.${name}`, `${name}`)
 
                 // classBuilder.addProperty(
                 //     {
@@ -74,7 +66,29 @@ function addStruct(code: CodeBuilder, struct: RpcStructModel) {
                 // )
             })
         })
+
+        // Hide the brand way below
+        classBuilder.addNewline()
+            .addComment("@ts-ignore - require using constructor")
+
+        // Add _brand property to prevent random objects being assignable to this class
+        classBuilder.addProperty({name: "private readonly _brand", type: "void"})
+
+        if (struct.hasTypeDiscriminator) {
+            // We inject _rpc_name fields in classes that we may want to get the type name of in runtime.
+            classBuilder.addProperty({name: "private readonly _rpc_name", initializer: structRuntimeName(struct)})
+        }
     })
+}
+
+
+
+
+// This is the same format that kotlinx.serialization uses, for now.
+export function structRuntimeName(model: RpcStructModel): string {
+    const packageNamePrefix = model.packageName !== "" ? `${model.packageName}.` : ""
+    // BLOCKED: get rid of package name shenanigans
+    return `"${packageNamePrefix}${model.name}"`
 }
 
 function addEnum(code: CodeBuilder, enumModel: RpcEnumModel) {

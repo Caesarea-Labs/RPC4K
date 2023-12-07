@@ -9,7 +9,7 @@ test("Test codegen", () => {
     }).build()
     console.log(dog)
 
-    const myApiClientImpl = new CodeBuilder().addClass("MyApiClientImpl", clazz => {
+    const myApiClientImpl = new CodeBuilder().addClass({name:"MyApiClientImpl"}, clazz => {
         clazz.addProperty({name: "private readonly client", type: "RpcClient"})
             .addProperty({name: "private readonly format", type: "SerializationFormat"})
             .addConstructor([["client", "RpcClient"], ["format", "SerializationFormat"]], constructor => {

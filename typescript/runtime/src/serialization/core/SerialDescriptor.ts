@@ -6,27 +6,27 @@ import {SerialKind} from "./SerialKind";
 /**
  * Serial descriptor interface declaration.
  */
-export interface SerialDescriptor {
-    kind: SerialKind;
+export abstract class SerialDescriptor {
+    abstract kind: SerialKind;
 
-    isNullable: boolean;
+    isNullable: boolean = false
 
-    isInline?: boolean;
+    isInline: boolean = false
 
-    elementsCount: number;
+    abstract elementsCount: number;
 
-    serialName: string
+    abstract serialName: string
 
-    getElementName(index: number): string;
+    abstract getElementName(index: number): string;
 
-    getElementIndex(name: string): number;
+    abstract getElementIndex(name: string): number;
 
-    getElementDescriptor(index: number): SerialDescriptor;
+    abstract getElementDescriptor(index: number): SerialDescriptor;
 
-    isElementOptional(index: number): boolean;
+    abstract isElementOptional(index: number): boolean;
 }
 
 
-export function isSerialDescriptor(obj: object): obj is SerialDescriptor {
-    return obj !== null && "kind" in obj && "elementsCount" in obj
+export function isSerialDescriptor(obj: unknown): obj is SerialDescriptor {
+    return obj !== null && typeof obj === "object" && "kind" in obj && "elementsCount" in obj
 }

@@ -5,38 +5,59 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="9ca8770c-8d9e-44a0-b1e9-2417666ce2c1" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/runConfigurations/Standalone_TS_Tests.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/kotlin/testapp/src/main/java/com/example/TreeTest.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/typescript/runtime/src/serialization/GeneratedSerializer.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/typescript/runtime/src/serialization/builtins/NullableSerializerDescriptor.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/typescript/runtime/src/serialization/builtins/PrimitiveSerialDescriptor.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/typescript/runtime/src/serialization/internal/PluginGeneratedSerializer.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/typescript/generator/src/Util.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/typescript/runtime/src/serialization/EnumSerializer.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/typescript/runtime/src/serialization/UnionSerializer.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/typescript/runtime/src/serialization/descriptors/TupleDescriptor.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/typescript/runtime/src/serialization/internal/AbstractPolymorphicSerializer.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/typescript/runtime/src/serialization/internal/EnumDescriptor.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/typescript/runtime/src/serialization/modules/SerializersModule.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/typescript/runtime/src/serialization/polyfills/TsClass.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/runConfigurations/Upload_Rpc4k.xml" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/kotlin/lib/src/main/kotlin/io/github/natanfudge/rpc4k/processor/ApiClassValidator.kt" beforeDir="false" afterPath="$PROJECT_DIR$/kotlin/lib/src/main/kotlin/io/github/natanfudge/rpc4k/processor/ApiClassValidator.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/kotlin/plugin/src/main/kotlin/io/github/natanfudge/rpc4k/gradle/Rpc4kPlugin.kt" beforeDir="false" afterPath="$PROJECT_DIR$/kotlin/plugin/src/main/kotlin/io/github/natanfudge/rpc4k/gradle/Rpc4kPlugin.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/TODO.md" beforeDir="false" afterPath="$PROJECT_DIR$/TODO.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/kotlin/gradle/libs.versions.toml" beforeDir="false" afterPath="$PROJECT_DIR$/kotlin/gradle/libs.versions.toml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/kotlin/lib/src/main/kotlin/io/github/natanfudge/rpc4k/processor/KspToApiDefinition.kt" beforeDir="false" afterPath="$PROJECT_DIR$/kotlin/lib/src/main/kotlin/io/github/natanfudge/rpc4k/processor/KspToApiDefinition.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/kotlin/lib/src/main/kotlin/io/github/natanfudge/rpc4k/processor/Rpc4kProcessorProvider.kt" beforeDir="false" afterPath="$PROJECT_DIR$/kotlin/lib/src/main/kotlin/io/github/natanfudge/rpc4k/processor/Rpc4kProcessorProvider.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/kotlin/lib/src/main/kotlin/io/github/natanfudge/rpc4k/runtime/api/Rpc.kt" beforeDir="false" afterPath="$PROJECT_DIR$/kotlin/lib/src/main/kotlin/io/github/natanfudge/rpc4k/runtime/api/Rpc.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/kotlin/lib/src/main/kotlin/io/github/natanfudge/rpc4k/runtime/api/SerializationFormat.kt" beforeDir="false" afterPath="$PROJECT_DIR$/kotlin/lib/src/main/kotlin/io/github/natanfudge/rpc4k/runtime/api/SerializationFormat.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/kotlin/lib/src/main/kotlin/io/github/natanfudge/rpc4k/runtime/implementation/serializers/HeterogeneousListSerializers.kt" beforeDir="false" afterPath="$PROJECT_DIR$/kotlin/lib/src/main/kotlin/io/github/natanfudge/rpc4k/runtime/implementation/serializers/HeterogeneousListSerializers.kt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/kotlin/testapp/src/main/java/com/example/AllEncompassingService.kt" beforeDir="false" afterPath="$PROJECT_DIR$/kotlin/testapp/src/main/java/com/example/AllEncompassingService.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/typescript/generator/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/typescript/generator/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/kotlin/testapp/src/main/java/com/example/SerializationTest.kt" beforeDir="false" afterPath="$PROJECT_DIR$/kotlin/testapp/src/main/java/com/example/SerializationTest.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/kotlin/testapp/src/test/kotlin/io/github/natanfudge/rpc4k/test/AllEncompassingTest.kt" beforeDir="false" afterPath="$PROJECT_DIR$/kotlin/testapp/src/test/kotlin/io/github/natanfudge/rpc4k/test/AllEncompassingTest.kt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/typescript/generator/src/ClientAccessorGenerator.ts" beforeDir="false" afterPath="$PROJECT_DIR$/typescript/generator/src/ClientAccessorGenerator.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/typescript/generator/src/ClientGenerator.ts" beforeDir="false" afterPath="$PROJECT_DIR$/typescript/generator/src/ClientGenerator.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/typescript/generator/src/CodeBuilder.ts" beforeDir="false" afterPath="$PROJECT_DIR$/typescript/generator/src/CodeBuilder.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/typescript/generator/src/ModelGenerator.ts" beforeDir="false" afterPath="$PROJECT_DIR$/typescript/generator/src/ModelGenerator.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/typescript/generator/src/SerializerGenerator.ts" beforeDir="false" afterPath="$PROJECT_DIR$/typescript/generator/src/SerializerGenerator.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/typescript/runtime/index.ts" beforeDir="false" afterPath="$PROJECT_DIR$/typescript/runtime/index.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/typescript/runtime/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/typescript/runtime/package.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/typescript/runtime/src/impl/Util.ts" beforeDir="false" afterPath="$PROJECT_DIR$/typescript/runtime/src/impl/Util.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/typescript/runtime/src/serialization/builtins/BuiltinSerializers.ts" beforeDir="false" afterPath="$PROJECT_DIR$/typescript/runtime/src/serialization/BuiltinSerializers.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/typescript/runtime/src/serialization/core/TsSerializer.ts" beforeDir="false" afterPath="$PROJECT_DIR$/typescript/runtime/src/serialization/TsSerializer.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/typescript/runtime/src/serialization/core/encoding/AbstractDecoder.ts" beforeDir="false" afterPath="$PROJECT_DIR$/typescript/runtime/src/serialization/core/encoding/AbstractDecoder.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/typescript/runtime/src/serialization/core/encoding/AbstractEncoder.ts" beforeDir="false" afterPath="$PROJECT_DIR$/typescript/runtime/src/serialization/core/encoding/AbstractEncoder.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/typescript/generator/test/codegen.test.ts" beforeDir="false" afterPath="$PROJECT_DIR$/typescript/generator/test/codegen.test.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/typescript/runtime/src/RpcClient.ts" beforeDir="false" afterPath="$PROJECT_DIR$/typescript/runtime/src/RpcClient.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/typescript/runtime/src/SerializationFormat.ts" beforeDir="false" afterPath="$PROJECT_DIR$/typescript/runtime/src/SerializationFormat.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/typescript/runtime/src/components/FetchRpcClient.ts" beforeDir="false" afterPath="$PROJECT_DIR$/typescript/runtime/src/components/FetchRpcClient.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/typescript/runtime/src/components/JsonFormat.ts" beforeDir="false" afterPath="$PROJECT_DIR$/typescript/runtime/src/components/JsonFormat.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/typescript/runtime/src/impl/GeneratedCodeUtils.ts" beforeDir="false" afterPath="$PROJECT_DIR$/typescript/runtime/src/impl/GeneratedCodeUtils.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/typescript/runtime/src/impl/Rpc.ts" beforeDir="false" afterPath="$PROJECT_DIR$/typescript/runtime/src/impl/Rpc.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/typescript/runtime/src/serialization/BuiltinSerializers.ts" beforeDir="false" afterPath="$PROJECT_DIR$/typescript/runtime/src/serialization/BuiltinSerializers.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/typescript/runtime/src/serialization/builtins/NullableSerializerDescriptor.ts" beforeDir="false" afterPath="$PROJECT_DIR$/typescript/runtime/src/serialization/builtins/NullableSerializerDescriptor.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/typescript/runtime/src/serialization/builtins/PrimitiveSerialDescriptor.ts" beforeDir="false" afterPath="$PROJECT_DIR$/typescript/runtime/src/serialization/builtins/PrimitiveSerialDescriptor.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/typescript/runtime/src/serialization/core/SerialDescriptor.ts" beforeDir="false" afterPath="$PROJECT_DIR$/typescript/runtime/src/serialization/core/SerialDescriptor.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/typescript/runtime/src/serialization/core/SerialKind.ts" beforeDir="false" afterPath="$PROJECT_DIR$/typescript/runtime/src/serialization/core/SerialKind.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/typescript/runtime/src/serialization/core/SerializersModule.ts" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/typescript/runtime/src/serialization/core/encoding/Decoding.ts" beforeDir="false" afterPath="$PROJECT_DIR$/typescript/runtime/src/serialization/core/encoding/Decoding.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/typescript/runtime/src/serialization/core/encoding/Encoder.ts" beforeDir="false" afterPath="$PROJECT_DIR$/typescript/runtime/src/serialization/core/encoding/Encoder.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/typescript/runtime/src/serialization/core/encoding/Encoding.ts" beforeDir="false" afterPath="$PROJECT_DIR$/typescript/runtime/src/serialization/core/encoding/Encoding.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/typescript/runtime/src/serialization/descriptors/SerialDescriptors.ts" beforeDir="false" afterPath="$PROJECT_DIR$/typescript/runtime/src/serialization/descriptors/SerialDescriptors.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/typescript/runtime/src/serialization/internal/CollectionDescriptors.ts" beforeDir="false" afterPath="$PROJECT_DIR$/typescript/runtime/src/serialization/internal/CollectionDescriptors.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/typescript/runtime/src/serialization/internal/CollectionSerializers.ts" beforeDir="false" afterPath="$PROJECT_DIR$/typescript/runtime/src/serialization/internal/CollectionSerializers.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/typescript/runtime/src/serialization/internal/PluginGeneratedSerializer.ts" beforeDir="false" afterPath="$PROJECT_DIR$/typescript/runtime/src/serialization/internal/PluginGeneratedSerializer.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/typescript/runtime/src/serialization/json/Json.ts" beforeDir="false" afterPath="$PROJECT_DIR$/typescript/runtime/src/serialization/json/Json.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/typescript/runtime/src/serialization/json/internal/JsonStreams.ts" beforeDir="false" afterPath="$PROJECT_DIR$/typescript/runtime/src/serialization/json/internal/JsonStreams.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/typescript/runtime/src/serialization/json/internal/AbstractJsonLexer.ts" beforeDir="false" afterPath="$PROJECT_DIR$/typescript/runtime/src/serialization/json/internal/AbstractJsonLexer.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/typescript/runtime/src/serialization/json/internal/JsonNamesMap.ts" beforeDir="false" afterPath="$PROJECT_DIR$/typescript/runtime/src/serialization/json/internal/JsonNamesMap.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/typescript/runtime/src/serialization/json/internal/Polymorphic.ts" beforeDir="false" afterPath="$PROJECT_DIR$/typescript/runtime/src/serialization/json/internal/Polymorphic.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/typescript/runtime/src/serialization/json/internal/StreamingJsonDecoder.ts" beforeDir="false" afterPath="$PROJECT_DIR$/typescript/runtime/src/serialization/json/internal/StreamingJsonDecoder.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/typescript/runtime/src/serialization/json/internal/StreamingJsonEncoder.ts" beforeDir="false" afterPath="$PROJECT_DIR$/typescript/runtime/src/serialization/json/internal/StreamingJsonEncoder.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/typescript/runtime/src/serialization/json/internal/WriteMode.ts" beforeDir="false" afterPath="$PROJECT_DIR$/typescript/runtime/src/serialization/json/internal/WriteMode.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/typescript/runtime/test/CodegenedClientTest.test.ts" beforeDir="false" afterPath="$PROJECT_DIR$/typescript/runtime/test/CodegenedClientTest.test.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/typescript/runtime/test/serialization/JsonToStringTest.test.ts" beforeDir="false" afterPath="$PROJECT_DIR$/typescript/runtime/test/serialization/JsonToStringTest.test.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/typescript/runtime/test/serialization/StringToJsonTest.test.ts" beforeDir="false" afterPath="$PROJECT_DIR$/typescript/runtime/test/serialization/StringToJsonTest.test.ts" afterDir="false" />
@@ -73,9 +94,44 @@
         <task path="$PROJECT_DIR$/kotlin/lib">
           <activation />
         </task>
+        <task path="$PROJECT_DIR$/exampleapp/kotlin">
+          <activation />
+        </task>
         <projects_view>
           <tree_state>
-            <expand />
+            <expand>
+              <path>
+                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
+                <item name="kotlin" type="f1a62948:ProjectNode" />
+              </path>
+              <path>
+                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
+                <item name="kotlin" type="f1a62948:ProjectNode" />
+                <item name="Tasks" type="e4a08cd1:TasksNode" />
+              </path>
+              <path>
+                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
+                <item name="RPC4K" type="f1a62948:ProjectNode" />
+              </path>
+              <path>
+                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
+                <item name="RPC4K" type="f1a62948:ProjectNode" />
+                <item name="RPC4K" type="2d1252cf:ModuleNode" />
+              </path>
+              <path>
+                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
+                <item name="RPC4K" type="f1a62948:ProjectNode" />
+                <item name="RPC4K" type="2d1252cf:ModuleNode" />
+                <item name="Tasks" type="e4a08cd1:TasksNode" />
+              </path>
+              <path>
+                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
+                <item name="RPC4K" type="f1a62948:ProjectNode" />
+                <item name="RPC4K" type="2d1252cf:ModuleNode" />
+                <item name="Tasks" type="e4a08cd1:TasksNode" />
+                <item name="upload" type="c8890929:TasksNode$1" />
+              </path>
+            </expand>
             <select />
           </tree_state>
         </projects_view>
@@ -110,17 +166,28 @@
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
     "Gradle.AllEncompassingTest.testExoticTypes (1).executor": "Run",
+    "Gradle.AllEncompassingTest.testExoticTypes.executor": "Run",
     "Gradle.Build kotlin.executor": "Run",
+    "Gradle.DirectProcessorTest.Symbol processor success.executor": "Debug",
     "Gradle.Kotlin Tests.executor": "Debug",
-    "Gradle.Test Server.executor": "Run",
-    "Jest.Codegened Client works in all cases.executor": "Run",
+    "Gradle.Test Server.executor": "Debug",
+    "Gradle.Upload Rpc4k.executor": "Run",
+    "Jest.Codegened Client works in all cases.executor": "Debug",
+    "Jest.Codegened Client works in more cases.executor": "Run",
+    "Jest.Codegened Client works.executor": "Run",
     "Jest.Standalone TS Tests.executor": "Run",
     "Jest.Test AnotherModelHolder serialization from string.executor": "Run",
     "Jest.Test AnotherModelHolder serialization to string.executor": "Run",
+    "Jest.Test Enum serialization from string.executor": "Run",
+    "Jest.Test Enum serialization to string.executor": "Run",
     "Jest.Test GenericThing serialization from string.executor": "Run",
     "Jest.Test GenericThing serialization.executor": "Run",
+    "Jest.Test Polymorphic serialization from string.executor": "Run",
+    "Jest.Test Polymorphic serialization to string.executor": "Run",
     "Jest.Test Tree serialization to string (1).executor": "Run",
     "Jest.Test Tree serialization to string.executor": "Run",
+    "Jest.Test constructor dynamics.executor": "Run",
+    "Jest.Test enum values.executor": "Run",
     "Jest.Test fromString.executor": "Debug",
     "Jest.Test toString (1).executor": "Run",
     "Kotlin.SerializationTestKt.executor": "Debug",
@@ -138,6 +205,7 @@
     "node.js.selected.package.tslint": "(autodetect)",
     "nodejs.jest.jest_package": "C:/Users/natan/Desktop/RPC4K/typescript/runtime/node_modules/jest",
     "nodejs_package_manager_path": "npm",
+    "npm.Generate Client.executor": "Run",
     "npm.build.executor": "Run",
     "npm.generateClient.executor": "Run",
     "npm.pub.executor": "Run",
@@ -158,11 +226,11 @@
       <recent name="C:\Users\natan\Desktop\RPC4K\typescript\generator" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\natan\Desktop\RPC4K\typescript\runtime\src\serialization\modules" />
       <recent name="C:\Users\natan\Desktop\RPC4K\typescript\runtime\src\serialization" />
       <recent name="C:\Users\natan\Desktop\RPC4K\typescript\runtime\src\serialization\json\internal" />
       <recent name="C:\Users\natan\Desktop\RPC4K\typescript\runtime\src\serialization\core\encoding" />
       <recent name="C:\Users\natan\Desktop\RPC4K\typescript\runtime" />
-      <recent name="C:\Users\natan\Desktop\RPC4K\typescript\runtime\src" />
     </key>
     <key name="es6.move.members.recent.items">
       <recent name="C:\Users\natan\Desktop\RPC4K\typescript\runtime\src\serialization\BuiltinSerializers.ts" />
@@ -170,84 +238,124 @@
       <recent name="C:\Users\natan\Desktop\RPC4K\typescript\runtime\src\serialization\core\encoding\CompositeEncoder.ts" />
     </key>
   </component>
-  <component name="RunManager" selected="npm.generateClient">
-    <configuration name="Test AnotherModelHolder serialization to string" type="JavaScriptTestRunnerJest" temporary="true" nameIsGenerated="true">
+  <component name="RunManager" selected="Jest.Codegened Client works in all cases">
+    <configuration name="AllEncompassingTest.testExoticTypes" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
+      <ExternalSystemSettings>
+        <option name="executionName" />
+        <option name="externalProjectPath" value="$PROJECT_DIR$/kotlin" />
+        <option name="externalSystemIdString" value="GRADLE" />
+        <option name="scriptParameters" value="" />
+        <option name="taskDescriptions">
+          <list />
+        </option>
+        <option name="taskNames">
+          <list>
+            <option value=":testapp:test" />
+            <option value="--tests" />
+            <option value="&quot;io.github.natanfudge.rpc4k.test.AllEncompassingTest.testExoticTypes&quot;" />
+          </list>
+        </option>
+        <option name="vmOptions" />
+      </ExternalSystemSettings>
+      <ExternalSystemDebugServerProcess>false</ExternalSystemDebugServerProcess>
+      <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
+      <DebugAllEnabled>false</DebugAllEnabled>
+      <RunAsTest>true</RunAsTest>
+      <method v="2" />
+    </configuration>
+    <configuration name="DirectProcessorTest.Symbol processor success" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
+      <ExternalSystemSettings>
+        <option name="executionName" />
+        <option name="externalProjectPath" value="$PROJECT_DIR$/kotlin" />
+        <option name="externalSystemIdString" value="GRADLE" />
+        <option name="scriptParameters" value="" />
+        <option name="taskDescriptions">
+          <list />
+        </option>
+        <option name="taskNames">
+          <list>
+            <option value=":lib:test" />
+            <option value="--tests" />
+            <option value="&quot;io.github.natanfudge.rpc4k.test.DirectProcessorTest.Symbol processor success&quot;" />
+          </list>
+        </option>
+        <option name="vmOptions" />
+      </ExternalSystemSettings>
+      <ExternalSystemDebugServerProcess>false</ExternalSystemDebugServerProcess>
+      <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
+      <DebugAllEnabled>false</DebugAllEnabled>
+      <RunAsTest>true</RunAsTest>
+      <method v="2" />
+    </configuration>
+    <configuration name="Upload Rpc4k" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
+      <ExternalSystemSettings>
+        <option name="executionName" />
+        <option name="externalProjectPath" value="$PROJECT_DIR$/kotlin" />
+        <option name="externalSystemIdString" value="GRADLE" />
+        <option name="scriptParameters" value="" />
+        <option name="taskDescriptions">
+          <list />
+        </option>
+        <option name="taskNames">
+          <list>
+            <option value="uploadRpc4k" />
+          </list>
+        </option>
+        <option name="vmOptions" />
+      </ExternalSystemSettings>
+      <ExternalSystemDebugServerProcess>true</ExternalSystemDebugServerProcess>
+      <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
+      <DebugAllEnabled>false</DebugAllEnabled>
+      <RunAsTest>false</RunAsTest>
+      <method v="2" />
+    </configuration>
+    <configuration name="Codegened Client works in all cases" type="JavaScriptTestRunnerJest" temporary="true" nameIsGenerated="true">
       <node-interpreter value="project" />
       <jest-package value="$PROJECT_DIR$/typescript/runtime/node_modules/jest" />
       <working-dir value="$PROJECT_DIR$/typescript/runtime" />
       <envs />
       <scope-kind value="TEST" />
-      <test-file value="$PROJECT_DIR$/typescript/runtime/test/serialization/JsonToStringTest.test.ts" />
+      <test-file value="$PROJECT_DIR$/typescript/runtime/test/CodegenedClientTest.test.ts" />
       <test-names>
-        <test-name value="Test AnotherModelHolder serialization to string" />
+        <test-name value="Codegened Client works in all cases" />
       </test-names>
       <method v="2" />
     </configuration>
-    <configuration name="Test GenericThing serialization from string" type="JavaScriptTestRunnerJest" temporary="true" nameIsGenerated="true">
-      <node-interpreter value="project" />
-      <jest-package value="$PROJECT_DIR$/typescript/runtime/node_modules/jest" />
-      <working-dir value="$PROJECT_DIR$/typescript/runtime" />
-      <envs />
-      <scope-kind value="TEST" />
-      <test-file value="$PROJECT_DIR$/typescript/runtime/test/serialization/StringToJsonTest.test.ts" />
-      <test-names>
-        <test-name value="Test GenericThing serialization from string" />
-      </test-names>
-      <method v="2" />
+    <configuration name="SerializationTestKt" type="JetRunConfigurationType" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="com.example.SerializationTestKt" />
+      <module name="RPC4K.testapp.main" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
     </configuration>
-    <configuration name="Test Tree serialization to string (1)" type="JavaScriptTestRunnerJest" temporary="true" nameIsGenerated="true">
-      <node-interpreter value="project" />
-      <jest-package value="$PROJECT_DIR$/typescript/runtime/node_modules/jest" />
-      <working-dir value="$PROJECT_DIR$/typescript/runtime" />
-      <envs />
-      <scope-kind value="TEST" />
-      <test-file value="$PROJECT_DIR$/typescript/runtime/test/serialization/StringToJsonTest.test.ts" />
-      <test-names>
-        <test-name value="Test Tree serialization to string" />
-      </test-names>
-      <method v="2" />
-    </configuration>
-    <configuration name="Test Tree serialization to string" type="JavaScriptTestRunnerJest" temporary="true" nameIsGenerated="true">
-      <node-interpreter value="project" />
-      <jest-package value="$PROJECT_DIR$/typescript/runtime/node_modules/jest" />
-      <working-dir value="$PROJECT_DIR$/typescript/runtime" />
-      <envs />
-      <scope-kind value="TEST" />
-      <test-file value="$PROJECT_DIR$/typescript/runtime/test/serialization/JsonToStringTest.test.ts" />
-      <test-names>
-        <test-name value="Test Tree serialization to string" />
-      </test-names>
-      <method v="2" />
-    </configuration>
-    <configuration name="generateClient" type="js.build_tools.npm" temporary="true" nameIsGenerated="true">
-      <package-json value="$PROJECT_DIR$/typescript/generator/package.json" />
-      <command value="run" />
-      <scripts>
-        <script value="generateClient" />
-      </scripts>
-      <node-interpreter value="project" />
-      <envs />
+    <configuration default="true" type="Remote">
+      <option name="USE_SOCKET_TRANSPORT" value="true" />
+      <option name="SERVER_MODE" value="false" />
+      <option name="SHMEM_ADDRESS" value="javadebug" />
+      <option name="HOST" value="localhost" />
+      <option name="PORT" value="5005" />
+      <option name="AUTO_RESTART" value="false" />
       <method v="2" />
     </configuration>
     <list>
       <item itemvalue="Gradle.Test Server" />
       <item itemvalue="Gradle.Kotlin Tests" />
       <item itemvalue="Gradle.Upload Rpc4k" />
+      <item itemvalue="Gradle.AllEncompassingTest.testExoticTypes" />
+      <item itemvalue="Gradle.DirectProcessorTest.Symbol processor success" />
       <item itemvalue="Jest.Standalone TS Tests" />
-      <item itemvalue="Jest.Test Tree serialization to string" />
-      <item itemvalue="Jest.Test Tree serialization to string (1)" />
-      <item itemvalue="Jest.Test AnotherModelHolder serialization to string" />
-      <item itemvalue="Jest.Test GenericThing serialization from string" />
+      <item itemvalue="Jest.Codegened Client works in all cases" />
+      <item itemvalue="Kotlin.SerializationTestKt" />
       <item itemvalue="Multirun.Publish TS" />
-      <item itemvalue="npm.generateClient" />
+      <item itemvalue="npm.Generate Client" />
     </list>
     <recent_temporary>
       <list>
-        <item itemvalue="npm.generateClient" />
-        <item itemvalue="Jest.Test Tree serialization to string" />
-        <item itemvalue="Jest.Test Tree serialization to string (1)" />
-        <item itemvalue="Jest.Test AnotherModelHolder serialization to string" />
-        <item itemvalue="Jest.Test GenericThing serialization from string" />
+        <item itemvalue="Jest.Codegened Client works in all cases" />
+        <item itemvalue="Kotlin.SerializationTestKt" />
+        <item itemvalue="Gradle.Upload Rpc4k" />
+        <item itemvalue="Gradle.AllEncompassingTest.testExoticTypes" />
+        <item itemvalue="Gradle.DirectProcessorTest.Symbol processor success" />
       </list>
     </recent_temporary>
   </component>
@@ -330,6 +438,16 @@
       <workItem from="1701597622036" duration="238000" />
       <workItem from="1701604211934" duration="2802000" />
       <workItem from="1701631694241" duration="8640000" />
+      <workItem from="1701640936571" duration="9000" />
+      <workItem from="1701687885710" duration="898000" />
+      <workItem from="1701688795572" duration="1779000" />
+      <workItem from="1701698264403" duration="7807000" />
+      <workItem from="1701719520365" duration="603000" />
+      <workItem from="1701759987180" duration="13423000" />
+      <workItem from="1701800803466" duration="1881000" />
+      <workItem from="1701849278740" duration="3565000" />
+      <workItem from="1701858800423" duration="478000" />
+      <workItem from="1701937819763" duration="6366000" />
     </task>
     <servers />
   </component>
@@ -337,20 +455,6 @@
     <option name="version" value="3" />
   </component>
   <component name="XDebuggerManager">
-    <breakpoint-manager>
-      <breakpoints>
-        <line-breakpoint enabled="true" type="kotlin-line">
-          <url>file://$PROJECT_DIR$/kotlin/lib/src/main/kotlin/io/github/natanfudge/rpc4k/runtime/implementation/serializers/HeterogeneousListSerializers.kt</url>
-          <line>122</line>
-          <option name="timeStamp" value="8" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="kotlin-line">
-          <url>jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.jetbrains.kotlinx/kotlinx-serialization-json-jvm/1.6.0/647e4cd4e89aa1dcb89f4ae3afb5c947d8837beb/kotlinx-serialization-json-jvm-1.6.0-sources.jar!/commonMain/kotlinx/serialization/json/internal/JsonStreams.kt</url>
-          <line>27</line>
-          <option name="timeStamp" value="14" />
-        </line-breakpoint>
-      </breakpoints>
-    </breakpoint-manager>
     <watches-manager>
       <configuration name="JavaScriptTestRunnerJest">
         <watch expression="serialDescriptor.getElementIndex(name);" />

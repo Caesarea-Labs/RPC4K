@@ -1,7 +1,7 @@
 package io.github.natanfudge.rpc4k.runtime.api
 
 import io.github.natanfudge.rpc4k.runtime.implementation.InvalidRpcRequestException
-import io.github.natanfudge.rpc4k.runtime.implementation.serializers.HeterogeneousListSerializer
+import io.github.natanfudge.rpc4k.runtime.implementation.serializers.TupleSerializer
 import kotlinx.serialization.KSerializer
 
 
@@ -15,7 +15,7 @@ data class Rpc(val method: String, val arguments: List<*>) {
         fun fromByteArray(bytes: ByteArray, format: SerializationFormat, argDeserializers: List<KSerializer<*>>): Rpc {
             val (method, readBytes) = readMethodName(bytes)
             //SLOW: Copying of entire request create Rpc`s
-            val arguments = format.decode(HeterogeneousListSerializer(argDeserializers), bytes.copyOfRange(readBytes, bytes.size))
+            val arguments = format.decode(TupleSerializer(argDeserializers), bytes.copyOfRange(readBytes, bytes.size))
             return Rpc(method, arguments)
         }
 
@@ -58,7 +58,7 @@ data class Rpc(val method: String, val arguments: List<*>) {
      * See docs/rpc_format.png
      */
     fun toByteArray(format: SerializationFormat, serializers: List<KSerializer<*>>): ByteArray {
-        return (method.toByteArray(Encoding) + ColonCode) + format.encode(HeterogeneousListSerializer(serializers), arguments)
+        return (method.toByteArray(Encoding) + ColonCode) + format.encode(TupleSerializer(serializers), arguments)
     }
 
 }

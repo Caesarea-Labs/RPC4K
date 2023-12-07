@@ -4,7 +4,7 @@
 import {SerialDescriptor} from "../SerialDescriptor";
 import {SerializationStrategy} from "../../TsSerializer";
 import {Encoder} from "./Encoder";
-import {SerializersModule} from "../SerializersModule";
+import {SerializersModule} from "../../modules/SerializersModule";
 
 export interface CompositeEncoder {
     serializersModule: SerializersModule;

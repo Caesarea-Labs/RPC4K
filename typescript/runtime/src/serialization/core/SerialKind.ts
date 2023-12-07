@@ -20,10 +20,15 @@ export function isPrimitiveKind(kind: SerialKind): kind is PrimitiveKind {
 
 export enum StructureKind {
     LIST = "LIST",
-    OBJECT = "OBJECT",
+    CLASS = "CLASS",
+    SINGLETON = "SINGLETON",
     MAP = "MAP"
 }
 
 export enum PolymorphicKind {
-    OPEN = "OPEN"
+    OPEN = "OPEN",
+    SEALED = "SEALED"
+}
+export function isPolymorphicKind(kind: SerialKind): kind is PolymorphicKind {
+    return kind === PolymorphicKind.OPEN || kind == PolymorphicKind.SEALED
 }

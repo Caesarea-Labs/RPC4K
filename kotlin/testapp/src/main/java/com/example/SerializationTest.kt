@@ -1,12 +1,27 @@
 package com.example
 
 import kotlinx.serialization.Serializable
-import kotlinx.serialization.encodeToString
+import kotlinx.serialization.builtins.MapSerializer
+import kotlinx.serialization.builtins.serializer
 import kotlinx.serialization.json.Json
 
 @Serializable
-data class Foo(val x: Int, val y: String, val z: Boolean)
+sealed interface Foo {
+    @Serializable
+    data class Bar(val x: Int) : Foo
+}
 
+//@Serializable
+//enum class Enum {
+//    X,
+//    Y,
+//    Z
+//}
+//
 fun main() {
-    val res = Json.encodeToString(Foo.serializer(),Foo(1, "hello", false))
+    val map = """{"1": 2.0}"""
+    val res = Json.decodeFromString(MapSerializer(Int.serializer(),Double.serializer()), map)
+//    val
+//    val res = Json.encodeToString(Foo.serializer(), Foo.Bar(2))
+//    println(res)
 }

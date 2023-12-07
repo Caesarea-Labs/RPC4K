@@ -1,41 +1,44 @@
 import {CodeBuilder} from "./CodeBuilder";
 import {Rpc4TsClientGenerationOptions} from "./ClientGenerator";
-import {ApiDefinition, RpcType, RpcTypeNames, stripDefaultTypeValues} from "rpc4ts-runtime";
+import {ApiDefinition, RpcType, RpcTypeNames} from "rpc4ts-runtime";
 import {isBuiltinType, modelName, typescriptRpcType} from "./Rpc4tsType";
+import {addSerializerImports, buildSerializer, libraryPath, serializerName} from "./SerializerGenerator";
 
 /**
  * @param api definition with default values
  * @param rawApi definition without default values
  */
-export function generateAccessor(api: ApiDefinition,rawApi: ApiDefinition, options: Rpc4TsClientGenerationOptions): string {
+export function generateAccessor(api: ApiDefinition, rawApi: ApiDefinition, options: Rpc4TsClientGenerationOptions): string {
     const builder = new CodeBuilder()
 
-    function libraryPath(path: string): string {
-        if (options.localLibPaths) return `../../src/${path}`
-        else return "rpc4ts-runtime"
-    }
 
-    builder.addImport(["RpcClient"], libraryPath("RpcClient"))
-        .addImport(["SerializationFormat"], libraryPath("SerializationFormat"))
-        .addImport(["GeneratedCodeUtils"], libraryPath("impl/GeneratedCodeUtils"))
-        .addImport(["Rpc4aTypeAdapter"], libraryPath("impl/Rpc4aTypeAdapter"))
+    const referencedModels = api.models.filter(model => model.type !== "inline")
+        .map(model => modelName(model.name))
+
+    builder.addImport(["RpcClient"], libraryPath("RpcClient", options))
+        .addImport(["SerializationFormat"], libraryPath("SerializationFormat", options))
+        .addImport(["GeneratedCodeUtils"], libraryPath("impl/GeneratedCodeUtils", options))
+        // .addImport(["Rpc4aTypeAdapter"], libraryPath("impl/Rpc4aTypeAdapter", options))
         .addImport(getReferencedGeneratedTypeNames(api), `./rpc4ts_${api.name}Models`)
         // .addImport(["UserProtocolRuntimeModels"], `./${api.name}RuntimeModels`)
         .addImport(["Dayjs"], `dayjs`)
         .addImport(["Duration"], `dayjs/plugin/duration`)
+        .addImport(referencedModels.map(model => serializerName(model)), `./rpc4ts_${api.name}Serializers`)
 
-    const runtimeModelsName  = `${api.name}RuntimeModels`
+    addSerializerImports(builder, options)
+
+    const runtimeModelsName = `${api.name}RuntimeModels`
 
     builder._addLineOfCode(`const ${runtimeModelsName} = \`${JSON.stringify(rawApi.models)}\``)
 
-    builder.addClass({name:`${api.name}Api`}, (clazz) => {
+    builder.addClass({name: `${api.name}Api`}, (clazz) => {
         clazz.addProperty({name: "private readonly client", type: "RpcClient"})
             .addProperty({name: "private readonly format", type: "SerializationFormat"})
-            .addProperty({
-                name: "private readonly adapter",
-                type: "Rpc4aTypeAdapter",
-                initializer: `GeneratedCodeUtils.createTypeAdapter(${runtimeModelsName})`
-            })
+            // .addProperty({
+            //     name: "private readonly adapter",
+            //     type: "Rpc4aTypeAdapter",
+            //     initializer: `GeneratedCodeUtils.createTypeAdapter(${runtimeModelsName})`
+            // })
             .addConstructor([["client", "RpcClient"], ["format", "SerializationFormat"]], constructor => {
                 constructor.addAssignment("this.client", "client")
                     .addAssignment("this.format", "format")
@@ -50,26 +53,36 @@ export function generateAccessor(api: ApiDefinition,rawApi: ApiDefinition, optio
                 isTypeParameter: false,
                 inlinedType: undefined
             }
+            const returnTypeString = typescriptRpcType(returnType)
             clazz.addFunction(
                 method.name,
                 method.parameters.map(param => [param.name, typescriptRpcType(param.type)]),
-                typescriptRpcType(returnType),
+                returnTypeString,
                 (body) => {
                     const args = [
-                        "this.client", "this.format", "this.adapter", `"${method.name}"`,
+                        "this.client", "this.format", `"${method.name}"`,
                         arrayLiteral(method.parameters.map(param => param.name)),
                         // Get rid of default values to be the type that is manually inputted be shorter
-                        arrayLiteral(method.parameters.map(param => stringifyToJsObject(stripDefaultTypeValues(param.type))))
+                        arrayLiteral(method.parameters.map(param => buildSerializer(param.type, {})))
                     ]
-                    if (method.returnType.name !== RpcTypeNames.Void) {
+                    const isVoid = method.returnType.name === RpcTypeNames.Void
+                    if (!isVoid) {
+                        const retvalSerializer = buildSerializer(method.returnType, {})
                         // Add return type if it's not null
-                        args.push(stringifyToJsObject(stripDefaultTypeValues(method.returnType)))
+                        args.push(retvalSerializer)
                     }
+                    const functionName = isVoid ? "send" : "request"
                     body.addReturningFunctionCall(
-                        "GeneratedCodeUtils.request",
+                        `GeneratedCodeUtils.${functionName}`,
                         // Add all the parameters as a trailing argument to GeneratedCodeUtils.request
-                        args
+                        args,
+                        false
                     )
+                    if (method.returnType.name === RpcTypeNames.Tuple) {
+                        // The type for tuples is not recognized correctly so we need to explicitly cast it
+                        body.addCast(returnTypeString)
+                    }
+                    body.addEmptyLine()
                 })
         }
     })
@@ -103,11 +116,11 @@ function addReferencedGeneratedTypeNames(type: RpcType, addTo: Set<string>) {
     // if (type.inlinedType !== undefined) {
     //     addReferencedGeneratedTypeNames(type.inlinedType, addTo)
     // } else {
-        if (!isBuiltinType(type)) {
-            addTo.add(modelName(type.name))
-        }
-        for (const typeArgument of type.typeArguments) {
-            addReferencedGeneratedTypeNames(typeArgument, addTo)
-        }
+    if (!isBuiltinType(type)) {
+        addTo.add(modelName(type.name))
+    }
+    for (const typeArgument of type.typeArguments) {
+        addReferencedGeneratedTypeNames(typeArgument, addTo)
+    }
     // }
 }

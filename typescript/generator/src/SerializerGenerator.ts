@@ -1,58 +1,78 @@
-import {BooleanSerializer, NumberSerializer, RpcModel, RpcModelKind, RpcStructModel, RpcType, RpcTypeNames, StringSerializer} from "rpc4ts-runtime";
+import {
+    BooleanSerializer,
+    NumberSerializer,
+    RpcEnumModel,
+    RpcModel,
+    RpcModelKind,
+    RpcStructModel,
+    RpcType,
+    RpcTypeNames,
+    RpcUnionModel,
+    StringSerializer
+} from "rpc4ts-runtime";
 import {CodeBuilder} from "./CodeBuilder";
 import {Rpc4TsClientGenerationOptions} from "./ClientGenerator";
 import {buildRecord} from "rpc4ts-runtime/src/impl/Util";
 import {modelName} from "./Rpc4tsType";
+import {structRuntimeName} from "./ModelGenerator";
+import {uniqueBy} from "./Util";
+
+export function libraryPath(path: string, options: Rpc4TsClientGenerationOptions) {
+    if (options.localLibPaths) return `../../src/${path}`
+    else return "rpc4ts-runtime"
+}
+
+export function addSerializerImports(codeBuilder: CodeBuilder, options: Rpc4TsClientGenerationOptions): CodeBuilder {
+    return codeBuilder.addImport(
+        [
+            "BooleanSerializer", "StringSerializer", "NumberSerializer", "ArraySerializer",
+            "DayjsSerializer", "DurationSerializer", "NullableSerializer", "VoidSerializer",
+            "RecordSerializer", "TupleSerializer"
+        ],
+        libraryPath("serialization/BuiltinSerializers", options)
+    )
+        .addImport(["EnumSerializer"], libraryPath("serialization/EnumSerializer", options))
+        .addImport(["UnionSerializer"], libraryPath("serialization/UnionSerializer", options))
+}
 
 /**
  *
  * @param models
  */
 export function generateSerializers(models: RpcModel[], options: Rpc4TsClientGenerationOptions) {
-    function libraryPath(path: string): string {
-        if (options.localLibPaths) return `../../src/${path}`
-        else return "rpc4ts-runtime"
-    }
 
     const modelNames = models.map(model => modelName(model.name))
 
     const builder = new CodeBuilder()
         .addImport(
-            [
-                "BooleanSerializer", "StringSerializer", "NumberSerializer", "ArraySerializer",
-                "DayjsSerializer", "DurationSerializer", "NullableSerializer", "VoidSerializer",
-                "RecordSerializer", "HeterogeneousArraySerializer"
-            ],
-            libraryPath("serialization/BuiltinSerializers")
-        )
-        .addImport(
             ["TsSerializer"],
-            libraryPath("serialization/TsSerializer")
+            libraryPath("serialization/TsSerializer", options)
         )
         .addImport(
             ["GeneratedSerializerImpl"],
-            libraryPath("serialization/GeneratedSerializer")
+            libraryPath("serialization/GeneratedSerializer", options)
         )
         .addImport(modelNames, "./rpc4ts_AllEncompassingServiceModels")
 
+    addSerializerImports(builder, options)
 
     const modelMap = buildRecord(models, (model) => [model.name, model])
-    // .addImport(["Duration"], `dayjs/plugin/duration`)
 
     for (const model of models) {
         switch (model.type) {
             case RpcModelKind.struct:
-                new SerializerGenerator(model,modelMap).addStructSerializer(builder)
+                addStructSerializer(builder, model)
                 break;
-            // case RpcModelKind.enum:
-            //     addEnum(builder, model)
-            //     break;
-            // case RpcModelKind.union:
-            //     addUnion(builder, model)
-            //     break;
-            // case RpcModelKind.inline:
-            //     addInlineType(builder, model)
-
+            case RpcModelKind.enum:
+                addEnumSerializer(builder, model)
+                break;
+            case RpcModelKind.inline: {
+                // No need to generate anything for inline types, as they are aliases in TS.
+                break;
+            }
+            case RpcModelKind.union:
+                addUnionSerializer(builder, model, modelMap)
+                break;
         }
     }
     return builder.build()
@@ -61,53 +81,160 @@ export function generateSerializers(models: RpcModel[], options: Rpc4TsClientGen
 
 // A map from each model name to its full description
 type ModelMap = Record<string, RpcModel>
-// A map from each type parameter of the given struct to the index of that type parameter
-type TypeParameterIndices = Record<string, number>
 
 const TypeParameterPrefix = "T"
 const TypeParameterSerializerPrefix = "typeArg"
 
-class SerializerGenerator {
-    modelMap: ModelMap
-    typeParameterIndices: TypeParameterIndices
-    struct: RpcStructModel
+function addEnumSerializer(code: CodeBuilder, enumModel: RpcEnumModel) {
+    const enumName = modelName(enumModel.name)
+    code.addTopLevelFunction(serializerName(enumName), [], `TsSerializer<${enumName}>`, (builder) => {
+        builder.addReturningFunctionCall("new EnumSerializer", [
+            `"${enumName}"`,
+            `[${enumModel.options.map(option => `"${option}"`).join(", ")}]`
+        ])
+    })
+}
 
-    constructor(struct: RpcStructModel, modelMap: ModelMap) {
-        this.struct = struct
-        this.modelMap = modelMap
-        this.typeParameterIndices = buildRecord(struct.typeParameters, ((param, i) => [param, i]))
-    }
 
-    addStructSerializer(code: CodeBuilder) {
-        const struct = this.struct
-        const structName = modelName(struct.name)
-        // Name type argument serializers 'typeArg{i}`
-        const parameters: [string, string][] = struct.typeParameters
-            .map((param, i) => [`typeArg${i}`, `TsSerializer<${TypeParameterPrefix}${i}>`])
-        // Name type arguments 'T{i}`
-        const typeArguments = struct.typeParameters.length === 0 ? "" :
-            "<" + struct.typeParameters.map((_, i) => `T${i}`) + ">"
-        const modelType = `<${structName}${typeArguments}>`
-        const serializerName = `rpc4ts_serializer_${structName}`
-        code.addTopLevelFunction(`${serializerName}${typeArguments}`, parameters, `TsSerializer${modelType}`, (func) => {
-            const serializers = struct.properties.map(prop => {
-                const serializer = this.buildSerializer(prop.type)
-                // If the serializer refers to itself, defer it to prevent infinite recursion.
-                // The GeneratedSerializerImpl takes care to lazily use the serializers so that recursion is limited.
-                const deferredSerializer = serializer.includes(serializerName) ? `() => ${serializer}`: serializer
-                return `${prop.name}: ${deferredSerializer}`;
-            }).join(", ")
-            const typeArgumentParamNames = parameters.map(([name]) => name).join(", ")
-            func.addReturningFunctionCall(
-                `new GeneratedSerializerImpl${modelType}`,
-                [
-                    `"${structName}"`,
-                    `{${serializers}}`,
-                    `[${typeArgumentParamNames}]`,
-                    `(params) => new ${structName}(params)`
-                ]
-            )
+function addUnionSerializer(code: CodeBuilder, unionModel: RpcUnionModel, modelMap: ModelMap) {
+    const unionName = modelName(unionModel.name)
+    // Name type arguments 'T{i}`
+    const typeArguments = unionModel.typeParameters.length === 0 ? "" :
+        "<" + unionModel.typeParameters.map((_, i) => `T${i}`) + ">"
+    const modelType = `<${unionName}${typeArguments}>`
+    const typeParameterValues = mapTypeParametersValues(unionModel)
+    code.addTopLevelFunction(serializerName(unionName), [], `TsSerializer${modelType}`, (builder) => {
+
+        const subclasses = fullyExpandUnion(unionModel, modelMap)
+        const uniqueSubclasses = uniqueBy(subclasses, subclass => subclass.name)
+
+        const subclassNames = uniqueSubclasses.map(type => {
+            const model = modelMap[type.name]
+            if (model === undefined) {
+                throw new Error(`Unknown model name: ${type.name}`)
+            }
+            if (model.type === "enum") {
+                throw new Error("Enums are not expected to be part of a union at the moment")
+            }
+            if (model.type !== "struct") {
+                throw new Error(`Unexpected model type: ${model.type}`)
+            }
+            return structRuntimeName(model)
         })
+
+        const subclassSerializers = uniqueSubclasses.map(type => buildSerializer(type, typeParameterValues))
+
+
+        builder.addReturningFunctionCall(`new UnionSerializer${modelType}`, [
+            `"${unionName}"`,
+            `"${unionName}"`, // Not entirely accurate but should work (it should be the runtime name of the union)
+            `[${subclassNames.join(", ")}]`,
+            `[${subclassSerializers.join(", ")}]`
+        ])
+    })
+}
+
+
+type NonUnionModels = (RpcType)[]
+
+/**
+ * If a union type contains types that are also unions, this will expand those as well.
+ * This also expands inline types.
+ */
+function fullyExpandUnion(union: RpcUnionModel, modelMap: ModelMap): NonUnionModels {
+    const arr: NonUnionModels = []
+    addUnionChildren(union, arr, modelMap)
+    return arr
+}
+
+function addUnionChildren(union: RpcUnionModel, to: NonUnionModels, modelMap: ModelMap) {
+    for (const option of union.options) {
+        addChild(option, to, modelMap)
+    }
+}
+
+function addChild(type: RpcType, to: NonUnionModels, modelMap: ModelMap) {
+    const model = modelMap[type.name]
+    if (model === undefined) {
+        throw new Error(`Unknown model specified as child of union type: ${type.name}`)
+    }
+    if (model.type === "union") {
+        addUnionChildren(model, to, modelMap)
+    } else if (model.type === "inline") {
+        addChild(model.inlinedType, to, modelMap)
+    } else {
+        to.push(type)
+    }
+}
+
+//     export function testUnion<T>(argSerializer: TsSerializer<T>): TsSerializer<TestUnion<T>> {
+//         return new UnionSerializer<TestUnion<T>>("TestUnion",  "TestUnion",
+//             ["AnotherModelHolder",  "GenericThing"],
+//             [anotherModelHolder(StringSerializer), genericThing(argSerializer, NumberSerializer)]
+//         )
+//     }
+
+export function serializerName(modelName: string): string {
+    return `rpc4ts_serializer_${modelName}`
+}
+
+
+function addStructSerializer(code: CodeBuilder, struct: RpcStructModel) {
+    const typeParameterValues = mapTypeParametersValues(struct)
+    const structName = modelName(struct.name)
+    // Name type argument serializers 'typeArg{i}`
+    const parameters: [string, string][] = struct.typeParameters
+        .map((_, i) => [`typeArg${i}`, `TsSerializer<${TypeParameterPrefix}${i}>`])
+    // Name type arguments 'T{i}`
+    const typeArguments = struct.typeParameters.length === 0 ? "" :
+        "<" + struct.typeParameters.map((_, i) => `T${i}`) + ">"
+    const modelType = `<${structName}${typeArguments}>`
+    const serializeName = serializerName(structName)
+    code.addTopLevelFunction(`${serializeName}${typeArguments}`, parameters, `TsSerializer${modelType}`, (func) => {
+        const serializers = struct.properties.map(prop => {
+            const serializer = buildSerializer(prop.type, typeParameterValues)
+            // If the serializer refers to itself, defer it to prevent infinite recursion.
+            // The GeneratedSerializerImpl takes care to lazily use the serializers so that recursion is limited.
+            const deferredSerializer = serializer.includes(serializeName) ? `() => ${serializer}` : serializer
+            return `${prop.name}: ${deferredSerializer}`;
+        }).join(", ")
+        const typeArgumentParamNames = parameters.map(([name]) => name).join(", ")
+        func.addReturningFunctionCall(
+            `new GeneratedSerializerImpl${modelType}`,
+            [
+                structRuntimeName(struct),
+                `{${serializers}}`,
+                `[${typeArgumentParamNames}]`,
+                `(params) => new ${structName}(params)`
+            ]
+        )
+    })
+}
+
+function mapTypeParametersValues(model: RpcUnionModel | RpcStructModel): Record<string, string> {
+    return buildRecord(
+        model.typeParameters,
+        // For the type parameter T0, use the serializer typeArgSerializer0, and so on.
+        (param, i) => [param, TypeParameterSerializerPrefix + i]
+    )
+}
+
+
+// }
+
+/**
+ * A serializer requires all type parameters to be fulfilled.
+ * @param typeParameterValues Since `forType` may have type parameters, we need to know how to assign each type parameter its value.
+ */
+export function buildSerializer(forType: RpcType, typeParameterValues: Record<string, string>): string {
+    return new SerializerBuilder(typeParameterValues).buildSerializer(forType)
+}
+
+class SerializerBuilder {
+    typeParameterValues: Record<string, string>
+
+    constructor(typeParameterValues: Record<string, string>) {
+        this.typeParameterValues = typeParameterValues
     }
 
 
@@ -115,7 +242,7 @@ class SerializerGenerator {
      * Takes into account nullability
      * @param type
      */
-    private buildSerializer(type: RpcType): string {
+    buildSerializer(type: RpcType): string {
         const withoutNullable = this.buildSerializerImpl(type)
         if (type.isNullable) {
             return `new NullableSerializer(${withoutNullable})`
@@ -127,12 +254,15 @@ class SerializerGenerator {
 
     private buildSerializerImpl(type: RpcType): string {
         if (type.isTypeParameter) {
-            const parameterIndex = this.typeParameterIndices[type.name]
-            if (parameterIndex === undefined) {
+            const parameterValue = this.typeParameterValues[type.name]
+            if (parameterValue === undefined) {
                 throw new Error(`Type parameter had an unexpected name: ${type.name}`)
             }
-            // For the type parameter T1, use the serializer typeArgSerializer1, and so on.
-            return TypeParameterSerializerPrefix + parameterIndex
+            return parameterValue
+        }
+        if (type.inlinedType !== undefined) {
+            // Inline type are serialized with the same serializer as what they are inlined to because they are just aliases
+            return this.buildSerializer(type.inlinedType)
         }
         switch (type.name) {
             case "bool" :
@@ -176,67 +306,18 @@ class SerializerGenerator {
             }
             case RpcTypeNames.Tuple: {
                 // Typescript tuples are [T1, T2, ..., Tn]
-                return `new HeterogeneousArraySerializer([${type.typeArguments.map(arg => this.buildSerializer(arg)).join(", ")}])`
+                return `new TupleSerializer([${type.typeArguments.map(arg => this.buildSerializer(arg)).join(", ")}])`
             }
             case RpcTypeNames.Void:
                 return "VoidSerializer"
             default: {
-                return this.resolveModelSerializer(type)
+                const typeArgumentSerializers = type.typeArguments.map(arg => this.buildSerializer(arg))
+                    .join(", ")
+                return `rpc4ts_serializer_${modelName(type.name)}(${typeArgumentSerializers})`
             }
 
         }
     }
 
-    private resolveModelSerializer(modelType: RpcType): string {
-        const modelName = modelType.name
-        const model = this.modelMap[modelName]
-        if (model === undefined) {
-            throw new Error(`Can't resolve serializer for type '${modelName}' as it's not a builtin type nor an existing model`)
-        }
-        switch (model.type) {
-            case RpcModelKind.enum:
-                throw new Error("TODO")
-            case RpcModelKind.struct:
-                const propertySerializers = modelType.typeArguments.map(arg => this.buildSerializer(arg))
-                    .join(", ")
-                return `rpc4ts_serializer_${modelName}(${propertySerializers})`
-            case RpcModelKind.union:
-                throw new Error("TODO")
-            case RpcModelKind.inline:
-                // We treat inline types as aliases in typescript so we can just have a serializer for the underlying type.
-                return this.buildSerializer(model.inlinedType)
-        }
-    }
-
 }
-
-
-// export namespace Rpc4tsSerializers {
-//     export function anotherModelHolder<T>(typeArgument1: TsSerializer<T>): TsSerializer<AnotherModelHolder<T>> {
-//         return new GeneratedSerializer<AnotherModelHolder<T>>(
-//             "AnotherModelHolder",
-//             {t: genericThing(typeArgument1, StringSerializer)},
-//             [typeArgument1],
-//             (params) => new AnotherModelHolder(params)
-//         )
-//     }
-//
-//     export function genericThing<T1, T2>(typeArgument1: TsSerializer<T1>, typeArgument2: TsSerializer<T2>): TsSerializer<GenericThing<T1, T2>> {
-//         return new GeneratedSerializer<GenericThing<T1, T2>>(
-//             "GenericThing",
-//             {x: typeArgument1, w: new ArraySerializer(typeArgument2), a: StringSerializer},
-//             [typeArgument1],
-//             (params) => new GenericThing(params)
-//         )
-//     }
-//
-//     export function foo(): TsSerializer<Foo> {
-//         return new GeneratedSerializer<Foo>(
-//             "Foo",
-//             {x: NumberSerializer, y: StringSerializer, z: BooleanSerializer},
-//             [],
-//             (params) => new Foo(params)
-//         )
-//     }
-// }
 

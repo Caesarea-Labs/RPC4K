@@ -9,13 +9,13 @@ import {WriteModes, WriteModeValues} from "./internal/WriteMode";
 import {JsonConfiguration} from "./JsonConfiguration";
 import {StringJsonLexer} from "./internal/StringJsonLexer";
 import {StreamingJsonDecoder} from "./internal/StreamingJsonDecoder";
-import {SerializersModule} from "../core/SerializersModule";
+import {EmptySerializersModule, SerializersModule} from "../modules/SerializersModule";
 
 export class Json {
     configuration: JsonConfiguration
     serializersModule: SerializersModule
 
-    constructor(configuration: JsonConfiguration, serializersModule: SerializersModule) {
+    constructor(configuration: JsonConfiguration = new JsonConfiguration(), serializersModule: SerializersModule = EmptySerializersModule) {
         this.configuration = configuration
         this.serializersModule = serializersModule
     }

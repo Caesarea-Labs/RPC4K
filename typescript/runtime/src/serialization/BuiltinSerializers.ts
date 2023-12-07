@@ -4,14 +4,17 @@
 import {PrimitiveKind} from "./core/SerialKind";
 import {TsSerializer} from "./TsSerializer";
 import {Encoder} from "./core/encoding/Encoder";
-import {Decoder} from "./core/encoding/Decoding";
+import {CompositeDecoder, Decoder, DECODER_DECODE_DONE} from "./core/encoding/Decoding";
 import {PrimitiveSerialDescriptor} from "./builtins/PrimitiveSerialDescriptor";
 import {SerialDescriptor} from "./core/SerialDescriptor";
-import {ArrayDesc} from "./internal/CollectionDescriptors";
-import {CollectionSerializer} from "./internal/CollectionSerializers";
-import {Dayjs} from "dayjs";
+import {ArrayDesc, RecordDesc} from "./internal/CollectionDescriptors";
+import {CollectionSerializer, MapLikeSerializer} from "./internal/CollectionSerializers";
+import dayjs, {Dayjs} from "dayjs";
 import {Duration} from "dayjs/plugin/duration";
 import {NullableSerializerDescriptor} from "./builtins/NullableSerializerDescriptor";
+import any = jasmine.any;
+import {TupleDescriptor} from "./descriptors/TupleDescriptor";
+import {recordToArray} from "../impl/Util";
 
 export const StringSerializer: TsSerializer<string> = {
     descriptor: new PrimitiveSerialDescriptor("javascript.string", PrimitiveKind.STRING),
@@ -79,58 +82,127 @@ export class ArraySerializer<E> extends CollectionSerializer<E, Array<E>, Array<
     }
 }
 
-const todoDescriptor: SerialDescriptor  =new PrimitiveSerialDescriptor("TODO", PrimitiveKind.NUMBER)
 
-export class RecordSerializer<K extends string | number,V> implements TsSerializer<Record<K,V>>  {
-    constructor(keySerializer: TsSerializer<any>, valueSerializer: TsSerializer<any>) {
+export class RecordSerializer<K extends string | number, V> extends MapLikeSerializer<K, V, Record<K,V>> {
+    descriptor: SerialDescriptor;
+
+    constructor(kSerializer: TsSerializer<K>, vSerializer: TsSerializer<V>) {
+        super(kSerializer, vSerializer);
+        this.descriptor = new RecordDesc(kSerializer.descriptor, vSerializer.descriptor);
     }
-    serialize(encoder: Encoder, value: Record<K, V>): void {
-        throw new Error("Method not implemented.");
+
+    override collectionSize(collection: Record<K, V>): number {
+        return Object.values(collection).length
     }
-    deserialize(decoder: Decoder): Record<K, V> {
-        throw new Error("Method not implemented.");
+
+    override collectionToArray(collection: Record<K, V>): [K, V][] {
+        return recordToArray(collection, (k,v) => [k,v])
     }
-    descriptor= todoDescriptor
+
+
+    builder(): Record<K, V> {
+        return {} as Record<K, V>
+    }
+
+    builderSize(builder: Record<K, V>): number {
+        return Object.values(builder).length
+    }
+
+    toResult(builder: Record<K, V>): Record<K, V> {
+        return builder;
+    }
+
+    toBuilder(collection: Record<K, V>): Record<K, V> {
+        return collection
+    }
+
+    checkCapacity(builder: Record<K, V>, size: number): void {
+    }
 }
-export class HeterogeneousArraySerializer implements TsSerializer<unknown[]>  {
-    constructor(serializers: TsSerializer<any>[]) {
+export class TupleSerializer implements TsSerializer<unknown[]>  {
+    private readonly elementSerializers: TsSerializer<any>[]; // Define the type of element serializers
+     descriptor: SerialDescriptor; // Define the type of descriptor
+
+    constructor(elementSerializers: TsSerializer<any>[]) {
+        this.elementSerializers = elementSerializers;
+        this.descriptor = new TupleDescriptor(elementSerializers.map(serializer => serializer.descriptor));
     }
-    serialize(encoder: Encoder, value: unknown[]): void {
-        throw new Error("Method not implemented.");
+
+    deserialize(decoder: Decoder): any[] {
+        const builder: any[] = [];
+        const compositeDecoder = decoder.beginStructure(this.descriptor);
+        if (compositeDecoder.decodeSequentially()) {
+            this.readAll(compositeDecoder, builder, this.readSize(compositeDecoder, builder));
+        } else {
+            let index: number;
+            while ((index = compositeDecoder.decodeElementIndex(this.descriptor)) !== DECODER_DECODE_DONE) {
+                this.readElement(compositeDecoder, index, builder);
+            }
+        }
+        compositeDecoder.endStructure(this.descriptor);
+        return builder;
     }
-    deserialize(decoder: Decoder): unknown[] {
-        throw new Error("Method not implemented.");
+
+    private readAll(decoder: CompositeDecoder, list: any[], size: number): void {
+        if (size < 0) throw new Error("Size must be known in advance when using READ_ALL");
+        for (let index = 0; index < size; index++) {
+            this.readElement(decoder, index, list);
+        }
     }
-    descriptor= todoDescriptor
+
+    private readElement(decoder: CompositeDecoder, index: number, builder: any[]): void {
+        builder[index] = decoder.decodeSerializableElement(this.descriptor, index, this.elementSerializers[index]);
+    }
+
+    serialize(encoder: Encoder, value: any[]): void {
+        const size = value.length;
+        const collection = encoder.beginCollection(this.descriptor, size)
+        value.forEach((item, i) => {
+            collection.encodeSerializableElement(this.descriptor, i, this.elementSerializers[i], item);
+        });
+        collection.endStructure(this.descriptor)
+    }
+
+    private readSize(decoder: CompositeDecoder, builder: any[]): number {
+        const size = decoder.decodeCollectionSize(this.descriptor);
+        if (builder.length < size) builder.length = size;
+        return size;
+    }
 };
 
 export const DayjsSerializer: TsSerializer<Dayjs> = {
-    descriptor: todoDescriptor,
+    descriptor: StringSerializer.descriptor,
     serialize: function (encoder: Encoder, value: Dayjs): void {
-        throw new Error("Function not implemented.");
+        encoder.encodeString(value.toISOString())
     },
     deserialize: function (decoder: Decoder): Dayjs {
-        throw new Error("Function not implemented.");
+        return dayjs(decoder.decodeString())
     }
 };
 
+//     override val descriptor: SerialDescriptor = String.serializer().descriptor
+//
+//     override fun deserialize(decoder: Decoder): Instant = Instant.parse(decoder.decodeString())
+//
+//     override fun serialize(encoder: Encoder, value: Instant) = encoder.encodeString(value.toString())
+
 export const DurationSerializer: TsSerializer<Duration> = {
-    descriptor: todoDescriptor,
+    descriptor: StringSerializer.descriptor,
     serialize: function (encoder: Encoder, value: Duration): void {
-        throw new Error("Function not implemented.");
+        encoder.encodeString(value.toISOString())
     },
     deserialize: function (decoder: Decoder): Duration {
-        throw new Error("Function not implemented.");
+        return dayjs.duration(decoder.decodeString())
     }
 };
 
 export const VoidSerializer: TsSerializer<void> = {
-    descriptor: todoDescriptor,
+    descriptor: StringSerializer.descriptor,
     serialize: function (encoder: Encoder, value: void): void {
-        throw new Error("Function not implemented.");
+        encoder.encodeString("void")
     },
     deserialize: function (decoder: Decoder): void {
-        throw new Error("Function not implemented.");
+        decoder.decodeString()
     }
 };
 

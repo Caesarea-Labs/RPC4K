@@ -72,9 +72,12 @@ export function getJsonElementName(serialDescriptor: SerialDescriptor, json: Jso
     // const strategy = namingStrategy(json, serialDescriptor);
     // return strategy === null ? serialDescriptor.getElementName(index) : serializationNamesIndices(serialDescriptor, json, strategy)[index];
 }
+export function getJsonNameIndexOrThrow(serialDescriptor: SerialDescriptor, json: Json,  name: string , suffix: String = "") : number {
+    return getJsonNameIndex(serialDescriptor, json, name)
+}
 
 function namingStrategy(json: Json, serialDescriptor: SerialDescriptor) {
-    return serialDescriptor.kind === StructureKind.OBJECT ? json.configuration.namingStrategy : null;
+    return serialDescriptor.kind === StructureKind.CLASS ? json.configuration.namingStrategy : null;
 }
 
 // function getJsonNameIndexSlowPath(serialDescriptor: SerialDescriptor, json: Json, name: string): number {

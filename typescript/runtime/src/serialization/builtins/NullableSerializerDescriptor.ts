@@ -1,14 +1,14 @@
 import {SerialDescriptor} from "../core/SerialDescriptor";
 import { SerialKind } from "../core/SerialKind";
 
-export class NullableSerializerDescriptor implements SerialDescriptor {
+export class NullableSerializerDescriptor extends SerialDescriptor {
     original: SerialDescriptor
     kind: SerialKind
-    isNullable: boolean;
-    isInline?: boolean | undefined;
+    isNullable: boolean = true
     elementsCount: number;
     serialName: string;
     constructor(original: SerialDescriptor) {
+        super()
         this.original = original
         this.kind = original.kind
         this.isNullable = true

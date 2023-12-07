@@ -28,7 +28,7 @@ internal class Rpc4kProcessor(private val env: SymbolProcessorEnvironment) : Sym
         processed = true
         val validator = ApiClassValidator(env, resolver)
 
-        env.logger.warn("Classes in example package: " + resolver.getDeclarationsFromPackage("com.example").toList())
+//        env.logger.warn("Classes in example package: " + resolver.getDeclarationsFromPackage("com.example").toList())
 
         val time = measureTimeMillis {
             val apiClasses = resolver.getClassesWithAnnotation(Api::class)

@@ -5,6 +5,26 @@ import {SerialDescriptor} from "../core/SerialDescriptor";
 import {SerialKind, StructureKind} from "../core/SerialKind";
 import {DECODER_UNKNOWN_NAME} from "../core/encoding/Decoding";
 
+export function buildSerialDescriptor(
+    serialName: string,
+    kind: SerialKind,
+    typeParameters: SerialDescriptor[],
+    builder: (sdBuilder: ClassSerialDescriptorBuilder) => void = () => {}
+): SerialDescriptor {
+    if (!serialName.trim()) {
+        throw new Error("Blank serial names are prohibited");
+    }
+
+    if (kind === StructureKind.CLASS) {
+        throw new Error("For StructureKind.CLASS please use 'buildClassSerialDescriptor' instead");
+    }
+
+    const sdBuilder = new ClassSerialDescriptorBuilder(serialName);
+    builder(sdBuilder);
+
+    return new SerialDescriptorImpl(serialName, kind, sdBuilder.elementNames.length, typeParameters, sdBuilder);
+}
+
 export function buildClassSerialDescriptor(
     serialName: string,
     typeParameters: SerialDescriptor[] = [],
@@ -19,21 +39,20 @@ export function buildClassSerialDescriptor(
 
     return new SerialDescriptorImpl(
         serialName,
-        StructureKind.OBJECT,
+        StructureKind.CLASS,
         sdBuilder.elementNames.length,
         typeParameters,
         sdBuilder
     );
 }
 
-export class SerialDescriptorImpl implements SerialDescriptor {
+export class SerialDescriptorImpl extends SerialDescriptor {
     private serialNames: Set<string>;
     private elementNames: string[];
     private elementDescriptors: SerialDescriptor[];
     private elementOptionality: boolean[];
     private name2Index: Map<string, number>;
     private typeParametersDescriptors: SerialDescriptor[];
-    isNullable = false
 
     constructor(
         public serialName: string,
@@ -42,6 +61,7 @@ export class SerialDescriptorImpl implements SerialDescriptor {
         typeParameters: SerialDescriptor[],
         builder: ClassSerialDescriptorBuilder
     ) {
+        super()
         this.serialNames = new Set(builder.elementNames);
 
         this.elementNames = [...builder.elementNames];
@@ -100,4 +120,12 @@ export class ClassSerialDescriptorBuilder {
         this.elementDescriptors.push(descriptor);
         this.elementOptionality.push(isOptional);
     }
+}
+
+export function getDescriptorElementNames(descriptor: SerialDescriptor): string[] {
+    const arr : string[] = []
+    for(let i = 0; i < descriptor.elementsCount; i ++ ){
+        arr[i] = descriptor.getElementName(i)
+    }
+    return  arr
 }

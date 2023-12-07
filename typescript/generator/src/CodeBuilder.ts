@@ -79,7 +79,7 @@ export class CodeBuilder {
     }
 
     addTopLevelFunction(name: string, parameters: [string, string][], returnType: string | undefined, body: (body: BodyBuilder) => void): CodeBuilder {
-        return this._addFunction(`export function ${name}`, parameters, returnType,body)
+        return this._addFunction(`export function ${name}`, parameters, returnType, body)
     }
 
     ///////////////////// Internal ////////////////
@@ -97,10 +97,17 @@ export class CodeBuilder {
         return this
     }
 
-    _addLineOfCode(code: string): CodeBuilder {
-        this.code += ("\t".repeat(this.currentIndent) + code + "\n")
+    _addLineOfCode(code: string, addNewline: boolean = true): CodeBuilder {
+        this.code += ("\t".repeat(this.currentIndent) + code )
+        if(addNewline) this.code += "\n"
         return this
     }
+
+    _addCode(code: string): CodeBuilder {
+        this.code += code
+        return this
+    }
+
     _addFunction(name: string, parameters: [string, string][], returnType: string | undefined, body: (body: BodyBuilder) => void): CodeBuilder {
         const returnTypeString = returnType === undefined ? "" : `: ${returnType}`
         //TODO: implement optional parameters
@@ -112,8 +119,8 @@ export class CodeBuilder {
         })
     }
 
-    _addParameterListLineOfCode(prefix: string, list: string[]): CodeBuilder {
-        return this._addLineOfCode(prefix + this.parameterList(prefix.length, list))
+    _addParameterListLineOfCode(prefix: string, list: string[], addNewline: boolean = true): CodeBuilder {
+        return this._addLineOfCode(prefix + this.parameterList(prefix.length, list), addNewline)
     }
 
     /**
@@ -169,10 +176,11 @@ export class InterfaceBuilder {
         this.codegen = codegen
     }
 
-    addProperty({name, type, optional, initializer}: { name: string, type: string, optional?: boolean, initializer?: string }): InterfaceBuilder {
+    addProperty({name, type, optional, initializer}: { name: string, type?: string, optional?: boolean, initializer?: string }): InterfaceBuilder {
         const optionalString = optional === true ? "?" : ""
         const initializerString = initializer === undefined ? "" : ` = ${initializer}`
-        this.codegen._addLineOfCode(`${name}${optionalString}: ${type}${initializerString}`)
+        const typeHint: string = type !== undefined ? `: ${type}` : ""
+        this.codegen._addLineOfCode(`${name}${optionalString}${typeHint}${initializerString}`)
         return this
     }
 
@@ -184,17 +192,26 @@ export class ClassBuilder extends InterfaceBuilder {
         super(codegen)
     }
 
-    addProperty(property: { name: string, type: string, optional?: boolean, initializer?: string }): ClassBuilder {
+    addProperty(property: { name: string, type?: string, optional?: boolean, initializer?: string }): ClassBuilder {
         return super.addProperty(property) as ClassBuilder
     }
 
     addConstructor(parameterList: [string, string][], body: (builder: BodyBuilder) => void): ClassBuilder {
-        this.codegen._addFunction("constructor", parameterList, undefined, body)
-        return this
+        return this.addFunction("constructor", parameterList, undefined, body)
     }
 
     addFunction(name: string, parameterList: [string, string][], returnType: string | undefined, body: (builder: BodyBuilder) => void) {
         this.codegen._addFunction(name, parameterList, returnType, body)
+        return this
+    }
+
+    addNewline(): ClassBuilder {
+        this.codegen._addLineOfCode("")
+        return this
+    }
+
+    addComment(comment: string): ClassBuilder {
+        this.codegen._addLineOfCode(`// ${comment}`)
         return this
     }
 
@@ -211,10 +228,41 @@ export class BodyBuilder {
         this.codegen._addLineOfCode(`${variable} = ${value}`)
         return this
     }
+    addEmptyLine() :BodyBuilder {
+        this.codegen._addLineOfCode("")
+        return this
+    }
 
-    addReturningFunctionCall(functionName: string, args: string[]): BodyBuilder {
-        this.codegen._addParameterListLineOfCode(`return ${functionName}`, args)
+    addReturningFunctionCall(functionName: string, args: string[], addNewline: boolean = true): BodyBuilder {
+        this.codegen._addParameterListLineOfCode(`return ${functionName}`, args, addNewline)
+        return this
+    }
+
+    addCast(type: string): BodyBuilder {
+        this.codegen._addLineOfCode(`as ${type}`, false)
         return this
     }
 
 }
+
+//     addReturningFunctionCall(functionName: string, args: string[], chaining: (builder: FunctionChainingBuilder) => void = () => {}): FunctionChainingBuilder {
+//         const builder = new FunctionChainingBuilder(this.codegen)
+//         chaining(builder)
+//         this.codegen._addParameterListLineOfCode(`return ${functionName}`, args, builder.build())
+//         return new FunctionChainingBuilder(this.codegen)
+//     }
+// export class FunctionChainingBuilder {
+//     private chains: string[] = []
+//
+//     constructor(codegen: CodeBuilder) {
+//     }
+//
+//     addCast(type: string): BodyBuilder {
+//         this.chains.push(`as ${type}`)
+//     }
+//
+//     build(): string {
+//
+//     }
+//
+// }

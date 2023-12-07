@@ -139,6 +139,8 @@ class AllEncompassingTest {
         expectThat(protocol.mutableThings(mutable)).isEqualTo(mutable)
         expectThat(protocol.mutableThingsAsParams(mutableMapOf(1 to 2), mutableListOf(3))).isEqualTo(mutableSetOf(1, 2, 3))
 
+        expectThat(protocol.largeHierarchy(PolymorphicThing.Option1(1))).isEqualTo(PolymorphicThing.Option1(1))
+
 //        expectThat(protocol.defaultValue(WithDefaultValue())).isEqualTo(WithDefaultValue())
 
 //        This is currently bugged, see:

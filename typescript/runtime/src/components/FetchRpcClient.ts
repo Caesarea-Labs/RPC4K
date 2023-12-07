@@ -2,6 +2,7 @@ import {RpcClient} from "../RpcClient";
 import {Rpc} from "../impl/Rpc";
 import {SerializationFormat} from "../SerializationFormat";
 import {RpcFetchError, RpcResponseError} from "../RpcClientError";
+import {TsSerializer} from "../serialization/TsSerializer";
 
 
 export class FetchRpcClient implements RpcClient {
@@ -11,8 +12,8 @@ export class FetchRpcClient implements RpcClient {
         this.url = url
     }
 
-    async send(rpc: Rpc, format: SerializationFormat): Promise<Uint8Array> {
-        const data = rpc.toByteArray(format);
+    async send(rpc: Rpc, format: SerializationFormat, argSerializers: TsSerializer<any>[]): Promise<Uint8Array> {
+        const data = rpc.toByteArray(format, argSerializers);
         let response: Response
         try {
             response = await fetch(this.url, {body: data, method: "POST", headers: {"content-type": "application/json"}});

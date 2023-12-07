@@ -14,6 +14,7 @@ export interface Rpc4TsClientGenerationOptions {
 }
 
 export function generateClientModel(definitionJson: string, writeTo: string, options: Rpc4TsClientGenerationOptions) {
+    // return
     const startTime = new Date().getTime()
     // This value doesn't contain default values
     let rawApi: ApiDefinition

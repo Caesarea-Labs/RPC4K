@@ -4,12 +4,11 @@ import {Decoder, DECODER_UNKNOWN_NAME} from "../core/encoding/Decoding";
 import {SerialKind, StructureKind} from "../core/SerialKind";
 import {Encoder} from "../core/encoding/Encoder";
 
-export class PluginGeneratedSerialDescriptor implements SerialDescriptor {
+export class PluginGeneratedSerialDescriptor extends SerialDescriptor {
     readonly serialName: string;
     private readonly generatedSerializer: GeneratedSerializer<unknown> | null;
     readonly elementsCount: number;
     kind: SerialKind; // Adjust this as needed
-    isNullable = false
     private added: number = -1;
     private readonly names: string[];
     private readonly elementsOptionality: boolean[];
@@ -17,11 +16,12 @@ export class PluginGeneratedSerialDescriptor implements SerialDescriptor {
     private readonly childSerializers: TsSerializer<any>[];
 
     constructor(serialName: string, generatedSerializer: GeneratedSerializer<any> | null = null, elementsCount: number) {
+        super()
         this.serialName = serialName;
         this.generatedSerializer = generatedSerializer;
         this.elementsCount = elementsCount;
 
-        this.kind = StructureKind.OBJECT
+        this.kind = StructureKind.CLASS
         this.names = Array(elementsCount).fill("[UNINITIALIZED]");
         this.elementsOptionality = Array(elementsCount).fill(false);
         this.childSerializers = this.generatedSerializer ? this.generatedSerializer.childSerializers() : [];

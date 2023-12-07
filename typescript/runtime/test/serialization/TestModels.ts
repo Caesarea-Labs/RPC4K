@@ -1,6 +1,12 @@
 import {TsSerializer} from "../../src/serialization/TsSerializer";
 import {ArraySerializer, BooleanSerializer, NumberSerializer, StringSerializer} from "../../src/serialization/BuiltinSerializers";
-import { GeneratedSerializerImpl} from "../../src/serialization/GeneratedSerializer";
+import {GeneratedSerializerImpl} from "../../src/serialization/GeneratedSerializer";
+import {EnumSerializer} from "../../src/serialization/EnumSerializer";
+import {UnionSerializer} from "../../src/serialization/UnionSerializer";
+
+export type TestEnum = "a" | "b" | "c"
+
+export type TestUnion<T> = AnotherModelHolder<string> | GenericThing<T, number>
 
 export class AnotherModelHolder<T> {
     readonly t: GenericThing<T, string>
@@ -8,9 +14,22 @@ export class AnotherModelHolder<T> {
     constructor({t}: { t: GenericThing<T, string> }) {
         this.t = t;
     }
+
+    private _rpc_name = "AnotherModelHolder"
 }
 
 export namespace Rpc4tsSerializers {
+    export function testUnion<T>(argSerializer: TsSerializer<T>): TsSerializer<TestUnion<T>> {
+        return new UnionSerializer<TestUnion<T>>("TestUnion",  "TestUnion",
+            ["AnotherModelHolder",  "GenericThing"],
+            [anotherModelHolder(StringSerializer), genericThing(argSerializer, NumberSerializer)]
+        )
+    }
+
+    export function testEnum(): TsSerializer<TestEnum> {
+        return new EnumSerializer("TestEnum", ["a", "b", "c"])
+    }
+
     export function anotherModelHolder<T>(typeArgument1: TsSerializer<T>): TsSerializer<AnotherModelHolder<T>> {
         return new GeneratedSerializerImpl<AnotherModelHolder<T>>(
             "AnotherModelHolder",
@@ -66,7 +85,7 @@ export class GenericThing<T1, T2> {
         this.w = w
         this.a = a
     }
-
+    private _rpc_name = "AnotherModelHolder"
 }
 
 

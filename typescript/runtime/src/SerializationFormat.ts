@@ -1,4 +1,6 @@
+import {DeserializationStrategy, SerializationStrategy} from "./serialization/TsSerializer";
+
 export interface SerializationFormat {
-    encode(value: unknown): Uint8Array
-    decode<T>(raw: Uint8Array): T
+    encode<T>(serializer: SerializationStrategy<T>, value: T): Uint8Array
+    decode<T>(deserializer: DeserializationStrategy<T>, raw: Uint8Array): T
 }

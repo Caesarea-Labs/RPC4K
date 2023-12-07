@@ -6,7 +6,7 @@ import {Json} from "../Json";
 import {SerialDescriptor} from "../../core/SerialDescriptor";
 import {isPrimitiveKind, OtherSerialType, PolymorphicKind, StructureKind} from "../../core/SerialKind";
 import {InvalidKeyKindException} from "./JsonExceptions";
-import {SerializersModule} from "../../core/SerializersModule";
+import {SerializersModule} from "../../modules/SerializersModule";
 
 
 

@@ -1,11 +1,12 @@
 import {SerialDescriptor} from "../core/SerialDescriptor";
 import {PrimitiveKind} from "../core/SerialKind";
 
-export class PrimitiveSerialDescriptor implements SerialDescriptor {
+export class PrimitiveSerialDescriptor extends SerialDescriptor {
     serialName: string;
     kind: PrimitiveKind;
 
     constructor(serialName: string, kind: PrimitiveKind) {
+        super()
         this.serialName = serialName;
         this.kind = kind;
     }
@@ -33,6 +34,4 @@ export class PrimitiveSerialDescriptor implements SerialDescriptor {
     toString(): string {
         return `PrimitiveDescriptor(${this.serialName})`;
     }
-
-    isNullable: boolean = false
 }
