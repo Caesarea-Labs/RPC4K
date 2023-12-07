@@ -1,4 +1,4 @@
-import {CodeBuilder} from "./CodeBuilder";
+import {CodeBuilder} from "./codegen/CodeBuilder";
 import {Rpc4TsClientGenerationOptions} from "./ClientGenerator";
 import {ApiDefinition, RpcType, RpcTypeNames} from "rpc4ts-runtime";
 import {isBuiltinType, modelName, typescriptRpcType} from "./Rpc4tsType";

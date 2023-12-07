@@ -10,7 +10,7 @@ import {
     RpcUnionModel,
     StringSerializer
 } from "rpc4ts-runtime";
-import {CodeBuilder} from "./CodeBuilder";
+import {CodeBuilder} from "./codegen/CodeBuilder";
 import {Rpc4TsClientGenerationOptions} from "./ClientGenerator";
 import {buildRecord} from "rpc4ts-runtime/src/impl/Util";
 import {modelName} from "./Rpc4tsType";

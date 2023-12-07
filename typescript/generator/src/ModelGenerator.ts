@@ -1,4 +1,4 @@
-import {CodeBuilder} from "./CodeBuilder";
+import {CodeBuilder} from "./codegen/CodeBuilder";
 import {RpcEnumModel, RpcInlineModel, RpcModel, RpcModelKind, RpcStructModel, RpcType, RpcUnionModel,} from "rpc4ts-runtime";
 import {modelName, typescriptRpcType} from "./Rpc4tsType";
 

@@ -1,5 +1,5 @@
 
-import {CodeBuilder} from "../src/CodeBuilder";
+import {CodeBuilder} from "../src/codegen/CodeBuilder";
 
 test("Test codegen", () => {
     const dog = new CodeBuilder().addInterface({name: "Dog"}, builder => {

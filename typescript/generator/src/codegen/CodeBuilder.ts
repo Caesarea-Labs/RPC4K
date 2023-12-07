@@ -1,5 +1,7 @@
 // noinspection PointlessBooleanExpressionJS
 
+import {concat, FormatString, length, MaybeFormattedString, TsReference} from "./FormatString";
+
 const MaxLineLength = 120;
 const tabWidth = 4;
 
@@ -17,16 +19,6 @@ export class CodeBuilder {
         return this.code
     }
 
-    //TODO: introduce a new import architecture that doesn't import unnecessary stuff, i think use the same way that kotlinpoet does it
-    addImport(identifiers: string[], path: string): CodeBuilder {
-        const identifiersJoined = identifiers.join(", ")
-        const unwrappedLine = `import {${identifiersJoined}} from "${path}"`
-        if (this.isTooLong(unwrappedLine.length)) {
-            return this._addLineOfCode(`import {\n${this.indentList(identifiers).join(",\n")}\n} from "${path}"`)
-        } else {
-            return this._addLineOfCode(unwrappedLine)
-        }
-    }
 
     addInterface({name, typeParameters}: {
         name: string,
@@ -63,13 +55,13 @@ export class CodeBuilder {
     addTypeAlias({name, typeParameters, type}: {
         name: string,
         typeParameters?: string[],
-        type: string
+        type: TsReference
     }): CodeBuilder {
         const prefix = `export type ${name}${this.typeParametersString(typeParameters)} = `
-        return this._addLineOfCode(prefix + type)
+        return this._addLineOfCode(concat(prefix, type))
     }
 
-    typeParametersString(params: string[] | undefined): string {
+    private typeParametersString(params: string[] | undefined): string {
         if (params === undefined || params.length === 0) return ""
         return `<${params.join(", ")}>`
     }
@@ -78,11 +70,21 @@ export class CodeBuilder {
         return this._addLineOfCode(`export const ${name} = ${value}`)
     }
 
-    addTopLevelFunction(name: string, parameters: [string, string][], returnType: string | undefined, body: (body: BodyBuilder) => void): CodeBuilder {
+    addTopLevelFunction(name: string, parameters: [string, TsReference][], returnType: TsReference | undefined, body: (body: BodyBuilder) => void): CodeBuilder {
         return this._addFunction(`export function ${name}`, parameters, returnType, body)
     }
 
     ///////////////////// Internal ////////////////
+
+    private _addImport(identifiers: string[], path: string): CodeBuilder {
+        const identifiersJoined = identifiers.join(", ")
+        const unwrappedLine = `import {${identifiersJoined}} from "${path}"`
+        if (this.isTooLong(unwrappedLine.length)) {
+            return this._addLineOfCode(`import {\n${this.indentList(identifiers).join(",\n")}\n} from "${path}"`)
+        } else {
+            return this._addLineOfCode(unwrappedLine)
+        }
+    }
 
     _indent(): CodeBuilder {
         this.currentIndent++
@@ -97,10 +99,31 @@ export class CodeBuilder {
         return this
     }
 
-    _addLineOfCode(code: string, addNewline: boolean = true): CodeBuilder {
-        this.code += ("\t".repeat(this.currentIndent) + code )
-        if(addNewline) this.code += "\n"
+    private referencesToImport: Record<string, TsReference> = {}
+
+    _addLineOfCode(code: MaybeFormattedString, addNewline = true): CodeBuilder {
+        //TODO: import references
+        const [codeString, references] = this.resolveFormatString(code)
+        for (const reference of references) {
+            if (reference.importPath !== undefined) {
+                // Consider references unique by the combination of the name + the import path. 
+                // This ensure we only add each reference once. 
+                this.referencesToImport[reference.name + reference.importPath] = reference
+            }
+        }
+        this.code += ("\t".repeat(this.currentIndent) + codeString)
+        if (addNewline) this.code += "\n"
         return this
+    }
+
+    private resolveFormatString(code: MaybeFormattedString): [string, TsReference[]] {
+        if (typeof code === "string") {
+            return [code, []]
+        } else {
+
+            // throw new Error("TODO")
+            return ["...", code.formatArguments]
+        }
     }
 
     _addCode(code: string): CodeBuilder {
@@ -108,13 +131,13 @@ export class CodeBuilder {
         return this
     }
 
-    _addFunction(name: string, parameters: [string, string][], returnType: string | undefined, body: (body: BodyBuilder) => void): CodeBuilder {
-        const returnTypeString = returnType === undefined ? "" : `: ${returnType}`
+    _addFunction(name: string, parameters: [string, TsReference][], returnType: TsReference | undefined, body: (body: BodyBuilder) => void): CodeBuilder {
+        const returnTypeString = returnType === undefined ? "" : concat(": ", returnType)
         //TODO: implement optional parameters
         const parametersString = this.parameterList(
-            this.blockStart(name).length + returnTypeString.length, parameters.map(([name, type]) => `${name}: ${type}`)
+            length(this.blockStart(name)) + length(returnTypeString), parameters.map(([name, type]) => concat(`${name}: `, type))
         )
-        return this._addBlock(name + parametersString + returnTypeString, () => {
+        return this._addBlock(concat(name + parametersString, returnTypeString), () => {
             body(new BodyBuilder(this))
         })
     }
@@ -128,7 +151,7 @@ export class CodeBuilder {
      * @param otherCodeLength the amount of characters that this line contains other than the parameter list.
      * Required for knowing whether to wrap parameters.
      */
-    private parameterList(otherCodeLength: number, list: string[]): string {
+    private parameterList(otherCodeLength: number, list: MaybeFormattedString[]): string {
         const joined = "(" + list.join(", ") + ")"
         if (this.isTooLong(otherCodeLength + joined.length)) {
             // Chop argument list into separate lines if it's too long
@@ -146,8 +169,8 @@ export class CodeBuilder {
         return this.currentIndent * tabWidth + codeLength
     }
 
-    private indentList(list: string[]): string[] {
-        return list.map(s => "\t".repeat(this.currentIndent + 1) + s)
+    private indentList(list: MaybeFormattedString[]): MaybeFormattedString[] {
+        return list.map(s => concat("\t".repeat(this.currentIndent + 1), s))
     }
 
     private indent(str: string): string {
@@ -155,16 +178,16 @@ export class CodeBuilder {
     }
 
 
-    _addBlock(blockName: string, blockBuilder: () => void): CodeBuilder {
-        this._addLineOfCode(this.blockStart(blockName))
+    _addBlock(blockPrefix: MaybeFormattedString, blockBuilder: () => void): CodeBuilder {
+        this._addLineOfCode(this.blockStart(blockPrefix))
         this._indent()
         blockBuilder()
         this._unindent()
         return this._addLineOfCode("}")
     }
 
-    private blockStart(prefix: string) {
-        return `${prefix} {`
+    private blockStart(prefix: MaybeFormattedString): FormatString {
+        return concat(prefix, " {")
     }
 }
 
@@ -196,11 +219,11 @@ export class ClassBuilder extends InterfaceBuilder {
         return super.addProperty(property) as ClassBuilder
     }
 
-    addConstructor(parameterList: [string, string][], body: (builder: BodyBuilder) => void): ClassBuilder {
+    addConstructor(parameterList: [string, TsReference][], body: (builder: BodyBuilder) => void): ClassBuilder {
         return this.addFunction("constructor", parameterList, undefined, body)
     }
 
-    addFunction(name: string, parameterList: [string, string][], returnType: string | undefined, body: (builder: BodyBuilder) => void) {
+    addFunction(name: string, parameterList: [string, TsReference][], returnType: TsReference | undefined, body: (builder: BodyBuilder) => void) {
         this.codegen._addFunction(name, parameterList, returnType, body)
         return this
     }
@@ -228,7 +251,8 @@ export class BodyBuilder {
         this.codegen._addLineOfCode(`${variable} = ${value}`)
         return this
     }
-    addEmptyLine() :BodyBuilder {
+
+    addEmptyLine(): BodyBuilder {
         this.codegen._addLineOfCode("")
         return this
     }
