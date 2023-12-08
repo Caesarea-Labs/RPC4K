@@ -1,8 +1,13 @@
 import {CodeBuilder} from "./codegen/CodeBuilder";
 import {Rpc4TsClientGenerationOptions} from "./ClientGenerator";
-import {ApiDefinition, RpcType, RpcTypeNames} from "rpc4ts-runtime";
+import {ApiDefinition, RpcModelKind, RpcType, RpcTypeNames} from "rpc4ts-runtime";
 import {isBuiltinType, modelName, typescriptRpcType} from "./Rpc4tsType";
 import {addSerializerImports, buildSerializer, libraryPath, serializerName} from "./SerializerGenerator";
+import {TsTypes} from "./codegen/FormatString";
+
+
+ const RPC_CLIENT = TsTypes.library("RpcClient", "RpcClient")
+ const SERIALIZATION_FORMAT = TsTypes.library("SerializationFormat", "SerializationFormat")
 
 /**
  * @param api definition with default values
@@ -12,18 +17,18 @@ export function generateAccessor(api: ApiDefinition, rawApi: ApiDefinition, opti
     const builder = new CodeBuilder()
 
 
-    const referencedModels = api.models.filter(model => model.type !== "inline")
+    const referencedModels = api.models.filter(model => model.type !== RpcModelKind.inline)
         .map(model => modelName(model.name))
 
-    builder.addImport(["RpcClient"], libraryPath("RpcClient", options))
-        .addImport(["SerializationFormat"], libraryPath("SerializationFormat", options))
-        .addImport(["GeneratedCodeUtils"], libraryPath("impl/GeneratedCodeUtils", options))
-        // .addImport(["Rpc4aTypeAdapter"], libraryPath("impl/Rpc4aTypeAdapter", options))
-        .addImport(getReferencedGeneratedTypeNames(api), `./rpc4ts_${api.name}Models`)
-        // .addImport(["UserProtocolRuntimeModels"], `./${api.name}RuntimeModels`)
-        .addImport(["Dayjs"], `dayjs`)
-        .addImport(["Duration"], `dayjs/plugin/duration`)
-        .addImport(referencedModels.map(model => serializerName(model)), `./rpc4ts_${api.name}Serializers`)
+    // builder.addImport(["RpcClient"], libraryPath("RpcClient", options))
+    //     .addImport(["SerializationFormat"], libraryPath("SerializationFormat", options))
+    //     .addImport(["GeneratedCodeUtils"], libraryPath("impl/GeneratedCodeUtils", options))
+    //     // .addImport(["Rpc4aTypeAdapter"], libraryPath("impl/Rpc4aTypeAdapter", options))
+    //     .addImport(getReferencedGeneratedTypeNames(api), `./rpc4ts_${api.name}Models`)
+    //     // .addImport(["UserProtocolRuntimeModels"], `./${api.name}RuntimeModels`)
+    //     .addImport(["Dayjs"], `dayjs`)
+    //     .addImport(["Duration"], `dayjs/plugin/duration`)
+    //     .addImport(referencedModels.map(model => serializerName(model)), `./rpc4ts_${api.name}Serializers`)
 
     addSerializerImports(builder, options)
 
@@ -32,32 +37,34 @@ export function generateAccessor(api: ApiDefinition, rawApi: ApiDefinition, opti
     builder._addLineOfCode(`const ${runtimeModelsName} = \`${JSON.stringify(rawApi.models)}\``)
 
     builder.addClass({name: `${api.name}Api`}, (clazz) => {
-        clazz.addProperty({name: "private readonly client", type: "RpcClient"})
-            .addProperty({name: "private readonly format", type: "SerializationFormat"})
+        clazz.addProperty({name: "private readonly client", type: RPC_CLIENT})
+            .addProperty({name: "private readonly format", type: SERIALIZATION_FORMAT})
             // .addProperty({
             //     name: "private readonly adapter",
             //     type: "Rpc4aTypeAdapter",
             //     initializer: `GeneratedCodeUtils.createTypeAdapter(${runtimeModelsName})`
             // })
-            .addConstructor([["client", "RpcClient"], ["format", "SerializationFormat"]], constructor => {
+            .addConstructor([["client", RPC_CLIENT], ["format", SERIALIZATION_FORMAT]], constructor => {
                 constructor.addAssignment("this.client", "client")
                     .addAssignment("this.format", "format")
             })
 
         for (const method of api.methods) {
+            const nonPromiseReturnType = typescriptRpcType(method.returnType)
             // We wrap the return type with a promise because api methods are network calls
-            const returnType: RpcType = {
-                name: "Promise",
-                isNullable: false,
-                typeArguments: [method.returnType],
-                isTypeParameter: false,
-                inlinedType: undefined
-            }
-            const returnTypeString = typescriptRpcType(returnType)
+            const returnType = TsTypes.promise(nonPromiseReturnType)
+            // const returnType: RpcType = {
+            //     name: "Promise",
+            //     isNullable: false,
+            //     typeArguments: [method.returnType],
+            //     isTypeParameter: false,
+            //     inlinedType: undefined
+            // }
+            // const returnTypeString = typescriptRpcType(returnType)
             clazz.addFunction(
                 method.name,
                 method.parameters.map(param => [param.name, typescriptRpcType(param.type)]),
-                returnTypeString,
+                returnType,
                 (body) => {
                     const args = [
                         "this.client", "this.format", `"${method.name}"`,
@@ -80,7 +87,7 @@ export function generateAccessor(api: ApiDefinition, rawApi: ApiDefinition, opti
                     )
                     if (method.returnType.name === RpcTypeNames.Tuple) {
                         // The type for tuples is not recognized correctly so we need to explicitly cast it
-                        body.addCast(returnTypeString)
+                        body.addCast(returnType)
                     }
                     body.addEmptyLine()
                 })

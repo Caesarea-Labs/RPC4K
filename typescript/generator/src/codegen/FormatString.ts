@@ -32,8 +32,9 @@ export function format(str: string, ...formatArguments: TsReference[]): FormatSt
     return new FormatString(str, formatArguments)
 }
 
-export function concat(str: MaybeFormattedString, formatString: MaybeFormattedString | TsReference): FormatString {
-    return toFormat(str).concat(formatString)
+export function concat(str: MaybeFormattedString, formatString: MaybeFormattedString | TsReference, anotherFormat?: MaybeFormattedString): FormatString {
+    const concatenated = toFormat(str).concat(formatString)
+    return anotherFormat === undefined ? concatenated : concatenated.concat(anotherFormat)
 }
 
 function toFormat(str: MaybeFormattedString): FormatString {
@@ -51,9 +52,9 @@ export type TsReference = TsType | TsFunction
 
 export class TsFunction {
     name: string
-    importPath: string
+    importPath: ImportPath
 
-    constructor(name: string, importPath: string) {
+    constructor(name: string, importPath: ImportPath) {
         this.name = name
         this.importPath = importPath
     }
@@ -86,10 +87,15 @@ export function isUnionType(reference: TsReference): reference is TsUnionType {
     return "references" in type
 }
 
+export interface ImportPath {
+    libraryPath: boolean
+    value: string
+}
+
 export interface TsBasicType {
     name: string
     typeArguments: TsReference[]
-    importPath: string | undefined
+    importPath: ImportPath | undefined
 
     // constructor(name: string, importPath?: string, typeArguments?: TypescriptReference[]) {
     //     this.name = name
@@ -104,8 +110,7 @@ export function isBasicType(reference: TsReference): reference is TsUnionType {
 
 function type(name: string, importPath: string, ...typeArguments: TsReference[]): TsBasicType {
     return {
-        name,
-        importPath,
+        name, importPath: {libraryPath: false, value: importPath},
         typeArguments
     }
 }
@@ -114,7 +119,7 @@ function builtin(name: string, ...typeArguments: TsReference[]): TsBasicType {
     return {
         importPath: undefined,
         name,
-        typeArguments: typeArguments
+        typeArguments: typeArguments,
     }
 }
 
@@ -131,9 +136,15 @@ export namespace TsTypes {
         //TODO: add special handling to treat "Array" as "[]"
         return builtin("Array", elementType)
     }
+
     export function record(keyType: TsType, valueType: TsType): TsBasicType {
-        return builtin("Record", keyType,valueType)
+        return builtin("Record", keyType, valueType)
     }
+
+    export function promise(type: TsType): TsBasicType {
+        return builtin("Promise", type)
+    }
+
     export function tuple(types: TsType[]): TsBasicType {
         //TODO: add special handling to treat "_tuple" as "[]"
         return builtin(TupleTypeName, ...types)
@@ -152,13 +163,25 @@ export namespace TsTypes {
         return {
             importPath: undefined,
             name,
-            typeArguments: []
+            typeArguments: [],
         }
     }
 
-    export function create(name: string, importPath: string, typeArguments: TsType[]): TsBasicType {
+    export function create(name: string, importPath: string, ...typeArguments: TsType[]): TsBasicType {
         return {
-            importPath,
+            importPath: {
+                value: importPath,
+                libraryPath: false
+            },
+            name, typeArguments
+        }
+    }
+
+    export function library(name: string, importPath: string, ...typeArguments: TsType[]): TsBasicType {
+        return {
+            importPath: {
+                value: importPath, libraryPath: false
+            },
             name, typeArguments
         }
     }

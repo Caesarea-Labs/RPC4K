@@ -18,7 +18,6 @@ export function typescriptRpcType(type: RpcType): TsType {
 }
 
 // We keep this constant for now to make things simpler
-const ModelFile = "./rpc4ts_AllEncompassingServiceModels"
 
 function typescriptRpcTypeIgnoreOptional(type: RpcType): TsType {
     // If it's a type parameter we don't care if it's a builtin type, we treat it as a type parameter.
@@ -29,7 +28,7 @@ function typescriptRpcTypeIgnoreOptional(type: RpcType): TsType {
     // const typeArgumentString = type.typeArguments.length === 0 ? ""
     //     : `<${).join(", ")}>`
 
-    return TsTypes.create(modelName(type.name), ModelFile, typeArguments)
+    return modelType(type.name, ...typeArguments) /*TsTypes.create(modelName(type.name), ModelFile, ...typeArguments)*/
 
     // return modelName(type.name) + typeArgumentString
 }
@@ -112,10 +111,20 @@ function resolveToUnderlying(type: RpcType): RpcType {
     }
 }
 
+// /**
+//  * Converts the Rpc representation of a struct name to the typescript representation
+//  */
+// export function modelName(name: string): string {
+//     // Treat "Foo.Bar" as "FooBar"
+//     return name.replace(/\./g, "")
+// }
 /**
  * Converts the Rpc representation of a struct name to the typescript representation
  */
-export function modelName(name: string): string {
+export function modelType(name: string, ...typeArguments: TsType[]): TsType {
     // Treat "Foo.Bar" as "FooBar"
-    return name.replace(/\./g, "")
+    const withoutDot = name.replace(/\./g, "")
+    return TsTypes.create(withoutDot, ModelFile, ...typeArguments)
 }
+
+const ModelFile = "./rpc4ts_AllEncompassingServiceModels"

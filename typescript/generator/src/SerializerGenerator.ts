@@ -16,24 +16,25 @@ import {buildRecord} from "rpc4ts-runtime/src/impl/Util";
 import {modelName} from "./Rpc4tsType";
 import {structRuntimeName} from "./ModelGenerator";
 import {uniqueBy} from "./Util";
+import {TsType, TsTypes} from "./codegen/FormatString";
 
 export function libraryPath(path: string, options: Rpc4TsClientGenerationOptions) {
     if (options.localLibPaths) return `../../src/${path}`
     else return "rpc4ts-runtime"
 }
 
-export function addSerializerImports(codeBuilder: CodeBuilder, options: Rpc4TsClientGenerationOptions): CodeBuilder {
-    return codeBuilder.addImport(
-        [
-            "BooleanSerializer", "StringSerializer", "NumberSerializer", "ArraySerializer",
-            "DayjsSerializer", "DurationSerializer", "NullableSerializer", "VoidSerializer",
-            "RecordSerializer", "TupleSerializer"
-        ],
-        libraryPath("serialization/BuiltinSerializers", options)
-    )
-        .addImport(["EnumSerializer"], libraryPath("serialization/EnumSerializer", options))
-        .addImport(["UnionSerializer"], libraryPath("serialization/UnionSerializer", options))
-}
+// export function addSerializerImports(codeBuilder: CodeBuilder, options: Rpc4TsClientGenerationOptions): CodeBuilder {
+//     return codeBuilder.addImport(
+//         [
+//             "BooleanSerializer", "StringSerializer", "NumberSerializer", "ArraySerializer",
+//             "DayjsSerializer", "DurationSerializer", "NullableSerializer", "VoidSerializer",
+//             "RecordSerializer", "TupleSerializer"
+//         ],
+//         libraryPath("serialization/BuiltinSerializers", options)
+//     )
+//         .addImport(["EnumSerializer"], libraryPath("serialization/EnumSerializer", options))
+//         .addImport(["UnionSerializer"], libraryPath("serialization/UnionSerializer", options))
+// }
 
 /**
  *
@@ -44,17 +45,17 @@ export function generateSerializers(models: RpcModel[], options: Rpc4TsClientGen
     const modelNames = models.map(model => modelName(model.name))
 
     const builder = new CodeBuilder()
-        .addImport(
-            ["TsSerializer"],
-            libraryPath("serialization/TsSerializer", options)
-        )
-        .addImport(
-            ["GeneratedSerializerImpl"],
-            libraryPath("serialization/GeneratedSerializer", options)
-        )
-        .addImport(modelNames, "./rpc4ts_AllEncompassingServiceModels")
+        // .addImport(
+        //     ["TsSerializer"],
+        //     libraryPath("serialization/TsSerializer", options)
+        // )
+        // .addImport(
+        //     ["GeneratedSerializerImpl"],
+        //     libraryPath("serialization/GeneratedSerializer", options)
+        // )
+        // .addImport(modelNames, "./rpc4ts_AllEncompassingServiceModels")
 
-    addSerializerImports(builder, options)
+    // addSerializerImports(builder, options)
 
     const modelMap = buildRecord(models, (model) => [model.name, model])
 
@@ -85,9 +86,13 @@ type ModelMap = Record<string, RpcModel>
 const TypeParameterPrefix = "T"
 const TypeParameterSerializerPrefix = "typeArg"
 
-function addEnumSerializer(code: CodeBuilder, enumModel: RpcEnumModel) {
+function TS_SERIALIZER(type: TsType): TsType {
+    return TsTypes.library("TsSerializer", "serialization/TsSerializer", type)
+}
+
+function addEnumSerializer(code: CodeBuilder, enumMo del: RpcEnumModel) {
     const enumName = modelName(enumModel.name)
-    code.addTopLevelFunction(serializerName(enumName), [], `TsSerializer<${enumName}>`, (builder) => {
+    code.addTopLevelFunction(serializerName(enumName), [], TS_SERIALIZER`TsSerializer<${enumName}>`, (builder) => {
         builder.addReturningFunctionCall("new EnumSerializer", [
             `"${enumName}"`,
             `[${enumModel.options.map(option => `"${option}"`).join(", ")}]`

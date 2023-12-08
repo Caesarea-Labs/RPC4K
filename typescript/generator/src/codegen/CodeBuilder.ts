@@ -1,6 +1,6 @@
 // noinspection PointlessBooleanExpressionJS
 
-import {concat, FormatString, length, MaybeFormattedString, TsReference} from "./FormatString";
+import {concat, FormatString, length, MaybeFormattedString, TsReference, TsType, TsTypes} from "./FormatString";
 
 const MaxLineLength = 120;
 const tabWidth = 4;
@@ -105,15 +105,19 @@ export class CodeBuilder {
         //TODO: import references
         const [codeString, references] = this.resolveFormatString(code)
         for (const reference of references) {
-            if (reference.importPath !== undefined) {
-                // Consider references unique by the combination of the name + the import path. 
-                // This ensure we only add each reference once. 
-                this.referencesToImport[reference.name + reference.importPath] = reference
-            }
+            this.addImportReferences(reference)
         }
         this.code += ("\t".repeat(this.currentIndent) + codeString)
         if (addNewline) this.code += "\n"
         return this
+    }
+
+    private addImportReferences(reference: TsReference) {
+        // if (reference.importPath !== undefined) {
+        //     // Consider references unique by the combination of the name + the import path.
+        //     // This ensure we only add each reference once.
+        //     this.referencesToImport[reference.name + reference.importPath] = reference
+        // }
     }
 
     private resolveFormatString(code: MaybeFormattedString): [string, TsReference[]] {
@@ -199,11 +203,11 @@ export class InterfaceBuilder {
         this.codegen = codegen
     }
 
-    addProperty({name, type, optional, initializer}: { name: string, type?: string, optional?: boolean, initializer?: string }): InterfaceBuilder {
+    addProperty({name, type, optional, initializer}: { name: string, type?: TsType, optional?: boolean, initializer?: string }): InterfaceBuilder {
         const optionalString = optional === true ? "?" : ""
         const initializerString = initializer === undefined ? "" : ` = ${initializer}`
-        const typeHint: string = type !== undefined ? `: ${type}` : ""
-        this.codegen._addLineOfCode(`${name}${optionalString}${typeHint}${initializerString}`)
+        const typeHint: MaybeFormattedString = type !== undefined ? concat(": ", type) : ""
+        this.codegen._addLineOfCode(concat(`${name}${optionalString}`, typeHint, initializerString))
         return this
     }
 
@@ -215,7 +219,7 @@ export class ClassBuilder extends InterfaceBuilder {
         super(codegen)
     }
 
-    addProperty(property: { name: string, type?: string, optional?: boolean, initializer?: string }): ClassBuilder {
+    addProperty(property: { name: string, type?: TsType, optional?: boolean, initializer?: string }): ClassBuilder {
         return super.addProperty(property) as ClassBuilder
     }
 
@@ -262,8 +266,8 @@ export class BodyBuilder {
         return this
     }
 
-    addCast(type: string): BodyBuilder {
-        this.codegen._addLineOfCode(`as ${type}`, false)
+    addCast(type: TsType): BodyBuilder {
+        this.codegen._addLineOfCode(concat("as ",type), false)
         return this
     }
 
