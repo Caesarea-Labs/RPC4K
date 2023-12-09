@@ -1,25 +1,27 @@
 import {CodeBuilder} from "./codegen/CodeBuilder";
 import {RpcEnumModel, RpcInlineModel, RpcModel, RpcModelKind, RpcStructModel, RpcType, RpcUnionModel,} from "rpc4ts-runtime";
-import {modelName, typescriptRpcType} from "./Rpc4tsType";
+import {modelName2, modelType, typescriptRpcType} from "./Rpc4tsType";
+import {TsObjectType, TsTypes} from "./codegen/FormatString";
+import {buildRecord} from "rpc4ts-runtime/src/impl/Util";
 
-export function generateModels(models: RpcModel[]): string {
+export function generateModels(models: RpcModel[], serviceName: string): string {
     const builder = new CodeBuilder()
-        .addImport(["Dayjs"], `dayjs`)
-        .addImport(["Duration"], `dayjs/plugin/duration`)
+        // .addImport(["Dayjs"], `dayjs`)
+        // .addImport(["Duration"], `dayjs/plugin/duration`)
 
     for (const model of models) {
         switch (model.type) {
             case RpcModelKind.struct:
-                addStruct(builder, model)
+                addStruct(builder, model, serviceName)
                 break;
             case RpcModelKind.enum:
                 addEnum(builder, model)
                 break;
             case RpcModelKind.union:
-                addUnion(builder, model)
+                addUnion(builder, model, serviceName)
                 break;
             case RpcModelKind.inline:
-                addInlineType(builder, model)
+                addInlineType(builder, model, serviceName)
 
         }
     }
@@ -31,14 +33,14 @@ export function generateModels(models: RpcModel[]): string {
  * In optional properties, we can allow clients to construct them without specifying the property value, but still expose the
  * property as a non-nullable value assuming the server always gives it a value.
  */
-function addStruct(code: CodeBuilder, struct: RpcStructModel) {
-    const name = modelName(struct.name)
+function addStruct(code: CodeBuilder, struct: RpcStructModel, serviceName :string) {
+    const name = modelName2(struct.name)
     code.addClass({name, typeParameters: struct.typeParameters}, classBuilder => {
         struct.properties.forEach(({name, type, isOptional}) => {
             classBuilder.addProperty(
                 //TODO: handle isOptional properly
                 {
-                    name: `readonly ${name}`, optional: isOptional, type: typescriptRpcType(type)
+                    name: `readonly ${name}`, optional: isOptional, type: typescriptRpcType(type, serviceName)
                 }
             )
         })
@@ -50,9 +52,12 @@ function addStruct(code: CodeBuilder, struct: RpcStructModel) {
         // }
 
         const propertyNames = struct.properties.map(property => property.name).join(", ")
-        const propertyTypes = struct.properties.map(property => `${property.name}: ${typescriptRpcType(property.type)}`).join(", ")
+        const propertyTypes : TsObjectType = {
+            properties: buildRecord(struct.properties, property => [property.name,typescriptRpcType(property.type, serviceName)])
+        }
+        // const propertyTypes = struct.properties.map(property => `${property.name}: ${typescriptRpcType(property.type)}`).join(", ")
         // Only one parameter: the object argument
-        classBuilder.addConstructor([[`{${propertyNames}}`, `{${propertyTypes}}`]], ctrBuilder => {
+        classBuilder.addConstructor([[`{${propertyNames}}`, propertyTypes]], ctrBuilder => {
             struct.properties.forEach(({name, type, isOptional}) => {
                 //TODO: handle isOptional
 
@@ -72,7 +77,7 @@ function addStruct(code: CodeBuilder, struct: RpcStructModel) {
             .addComment("@ts-ignore - require using constructor")
 
         // Add _brand property to prevent random objects being assignable to this class
-        classBuilder.addProperty({name: "private readonly _brand", type: "void"})
+        classBuilder.addProperty({name: "private readonly _brand", type: TsTypes.VOID})
 
         if (struct.hasTypeDiscriminator) {
             // We inject _rpc_name fields in classes that we may want to get the type name of in runtime.
@@ -92,26 +97,26 @@ export function structRuntimeName(model: RpcStructModel): string {
 }
 
 function addEnum(code: CodeBuilder, enumModel: RpcEnumModel) {
-    const name = modelName(enumModel.name)
-    const options = enumModel.options.map(option => `"${modelName(option)}"`)
-    code.addUnionType({name: name, types: options})
+    const name = modelName2(enumModel.name)
+    const options = enumModel.options.map(option => `"${option}"`)
+    code.addUnionType({name: name, types: options.map(option => TsTypes.stringLiteral(option))})
         // Add a list of values of an enum to make it easier to use
         .addConst(name + "Values", `[${options.join(", ")}]`)
 }
 
-function addUnion(code: CodeBuilder, struct: RpcUnionModel) {
+function addUnion(code: CodeBuilder, struct: RpcUnionModel, serviceName: string) {
     code.addUnionType({
-        name: modelName(struct.name),
-        types: struct.options.map(option => typescriptRpcType(option)),
+        name: modelName2(struct.name),
+        types: struct.options.map(option => typescriptRpcType(option, serviceName)),
         typeParameters: struct.typeParameters
     })
 }
 
 
-function addInlineType(code: CodeBuilder, model: RpcInlineModel) {
+function addInlineType(code: CodeBuilder, model: RpcInlineModel, serviceName: string) {
     code.addTypeAlias({
-        name: modelName(model.name),
-        type: typescriptRpcType(model.inlinedType),
+        name: modelName2(model.name),
+        type: typescriptRpcType(model.inlinedType, serviceName),
         typeParameters: model.typeParameters
     })
 }

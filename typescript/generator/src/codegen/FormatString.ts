@@ -1,4 +1,5 @@
 import {Dayjs} from "dayjs";
+import {recordToArray} from "rpc4ts-runtime/src/impl/Util";
 
 /**
  * Strings may be formatted with %T to replace %T with some reference that will be automatically imported.
@@ -12,19 +13,36 @@ export class FormatString {
         this.formatArguments = formatArguments
     }
 
-    concat(other: MaybeFormattedString | TsReference): FormatString {
-        if (typeof other === "string") {
-            return new FormatString(this.str + other, this.formatArguments)
-        } else if (isTypescriptReference(other)) {
-            return new FormatString(this.str + "%T", this.formatArguments.concat(other))
-        } else {
-            return new FormatString(this.str + other.str, this.formatArguments.concat(other.formatArguments))
-        }
+    concat(other: MaybeFormattedString): FormatString {
+        const otherFormat = toFormat(other)
+        return new FormatString(this.str + otherFormat.str, this.formatArguments.concat(otherFormat.formatArguments))
+        // if (typeof other === "string") {
+        //     return new FormatString(this.str + other, this.formatArguments)
+        // } else if (isTypescriptReference(other)) {
+        //     return new FormatString(this.str + "%T", this.formatArguments.concat(other))
+        // } else {
+        //     return new FormatString(this.str + other.str, this.formatArguments.concat(other.formatArguments))
+        // }
+    }
+
+    resolve(): string {
+        //TODO
+        throw new Error("TODO")
     }
 }
 
-function isTypescriptReference(obj: FormatString | TsReference): obj is TsReference {
-    return "name" in obj
+export type MaybeFormattedString = FormatString | string | TsReference
+export function resolveMaybeFormatString(str : MaybeFormattedString): string {
+    if(isTypescriptReference(str)) {
+        return tsReferenceToString(str)
+    } else if(typeof str === "string") return str
+    else {
+        return str.resolve()
+    }
+}
+
+function isTypescriptReference(obj: MaybeFormattedString): obj is TsReference {
+    return typeof obj !== "string" && !("formatArguments" in obj)
 }
 
 
@@ -32,31 +50,106 @@ export function format(str: string, ...formatArguments: TsReference[]): FormatSt
     return new FormatString(str, formatArguments)
 }
 
-export function concat(str: MaybeFormattedString, formatString: MaybeFormattedString | TsReference, anotherFormat?: MaybeFormattedString): FormatString {
-    const concatenated = toFormat(str).concat(formatString)
-    return anotherFormat === undefined ? concatenated : concatenated.concat(anotherFormat)
+export function concat(str: MaybeFormattedString, ...others: MaybeFormattedString[]): MaybeFormattedString {
+    let current = str
+    for (const other of others) {
+        current = concat2(current, other)
+    }
+    return current
+}
+
+export function join(strings: MaybeFormattedString[], delimiter: string): MaybeFormattedString {
+    if (strings.length === 0) return ""
+    let current = strings[0]
+    if (strings.length === 1) return current
+    for (let i = 1; i < strings.length; i++) {
+        current = concat(current, delimiter, strings[i])
+    }
+    return current
+}
+
+function concat2(str: MaybeFormattedString, formatString: MaybeFormattedString): FormatString {
+    return toFormat(str).concat(formatString)
 }
 
 function toFormat(str: MaybeFormattedString): FormatString {
-    return typeof str === "string" ? new FormatString(str, []) : str
+    if (typeof str === "string") {
+        return new FormatString(str, [])
+    } else if (isTypescriptReference(str)) {
+        return new FormatString("%R", [str])
+    } else {
+        return str
+    }
+
+    // return typeof str === "string" ? new FormatString(str, []) : str
 }
 
 //TODo: adding this for now for compatibility, in the future i don't want to do the newline calculation shenanigans
 // and use a better approach
-export function length(str: MaybeFormattedString): number {
-    return (typeof str === "string") ? str.length : str.str.length
+export function formatLength(str: MaybeFormattedString): number {
+    return toFormat(str).str.length
 }
 
 export type TsReference = TsType | TsFunction
 
-
-export class TsFunction {
+export class TsNamespace {
     name: string
     importPath: ImportPath
 
     constructor(name: string, importPath: ImportPath) {
         this.name = name
         this.importPath = importPath
+    }
+
+    static library(name: string, importPath: string): TsNamespace {
+        return new TsNamespace(name, {value: importPath, libraryPath: true})
+    }
+
+    function(name: string): TsFunction {
+        return TsFunction.namespaced(this, name)
+    }
+}
+
+// export namespace TsNamespaces {
+//     export function library(name: string, importPath: string): Namespace {
+//         return {
+//             name,
+//             importPath: {
+//                 value: importPath,
+//                 libraryPath: true
+//             }
+//         }
+//     }
+// }
+
+
+export class TsFunction {
+    name: string
+    namespace: TsNamespace | undefined
+    importPath: ImportPath
+
+    static namespaced(namespace: TsNamespace, name: string): TsFunction {
+        return new TsFunction(name, namespace.importPath, namespace)
+    }
+
+    static user(name: string, importPath: string): TsFunction {
+        return new TsFunction(name, {
+            value: importPath,
+            libraryPath: false
+        }, undefined)
+    }
+
+    // static library(name: string,importPath: string, {namespace}: { namespace: string }): TsFunction {
+    //     return new TsFunction(name, {
+    //         value: importPath,
+    //         libraryPath: true
+    //     }, namespace)
+    // }
+
+    constructor(name: string, importPath: ImportPath, namespace?: TsNamespace) {
+        this.name = name
+        this.importPath = importPath
+        this.namespace = namespace
     }
 
     private readonly _brand: void = undefined
@@ -67,20 +160,27 @@ export class TsFunction {
 // }
 
 
-export type TsType = TsUnionType | TsBasicType
+export type TsType = TsUnionType | TsBasicType | TsObjectType
 
 export function tsReferenceToString(reference: TsReference): string {
     if (reference instanceof TsFunction) {
         return `${reference.name}()`
     } else if (isUnionType(reference)) {
         return reference.references.map(reference => tsReferenceToString(reference)).join(" | ")
-    } else {
+    } else if (isBasicType(reference)) {
         return reference.name
+    } else {
+        return "{" + recordToArray(reference.properties, (k, v) => `${k}: ${tsReferenceToString(v)}`)
+            .join(", ") + "}"
     }
 }
 
 export interface TsUnionType {
     references: TsReference[]
+}
+
+export interface TsObjectType {
+    properties: Record<string, TsType>
 }
 
 export function isUnionType(reference: TsReference): reference is TsUnionType {
@@ -104,7 +204,7 @@ export interface TsBasicType {
     // }
 }
 
-export function isBasicType(reference: TsReference): reference is TsUnionType {
+export function isBasicType(reference: TsReference): reference is TsBasicType {
     return "typeArguments" in reference
 }
 
@@ -135,6 +235,10 @@ export namespace TsTypes {
     export function array(elementType: TsType): TsBasicType {
         //TODO: add special handling to treat "Array" as "[]"
         return builtin("Array", elementType)
+    }
+
+    export function stringLiteral(value: string): TsBasicType {
+        return builtin(`"${value}"`)
     }
 
     export function record(keyType: TsType, valueType: TsType): TsBasicType {
@@ -187,5 +291,4 @@ export namespace TsTypes {
     }
 }
 
-export type MaybeFormattedString = FormatString | string
 // export type ReferenceString = FormatString | string

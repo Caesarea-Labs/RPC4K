@@ -2,10 +2,10 @@ import {RpcType, RpcTypeNames} from "rpc4ts-runtime";
 import {tsReferenceToString, TsType, TsTypes} from "./codegen/FormatString";
 
 
-export function typescriptRpcType(type: RpcType): TsType {
+export function typescriptRpcType(type: RpcType, serviceName: string): TsType {
     // if (type.inlinedType !== undefined) return typescriptRpcType(type.inlinedType)
     // Handle | null adding
-    const withoutNull = typescriptRpcTypeIgnoreOptional(type)
+    const withoutNull = typescriptRpcTypeIgnoreOptional(type, serviceName)
     if (type.isNullable) {
         return TsTypes.nullable(withoutNull)
     } else {
@@ -19,25 +19,25 @@ export function typescriptRpcType(type: RpcType): TsType {
 
 // We keep this constant for now to make things simpler
 
-function typescriptRpcTypeIgnoreOptional(type: RpcType): TsType {
+function typescriptRpcTypeIgnoreOptional(type: RpcType, serviceName: string): TsType {
     // If it's a type parameter we don't care if it's a builtin type, we treat it as a type parameter.
     if (type.isTypeParameter) return TsTypes.typeParameter(type.name)
-    const builtinType = resolveBuiltinType(type)
+    const builtinType = resolveBuiltinType(type, serviceName)
     if (builtinType !== undefined) return builtinType
-    const typeArguments = type.typeArguments.map(arg => typescriptRpcType(arg))
+    const typeArguments = type.typeArguments.map(arg => typescriptRpcType(arg,serviceName))
     // const typeArgumentString = type.typeArguments.length === 0 ? ""
     //     : `<${).join(", ")}>`
 
-    return modelType(type.name, ...typeArguments) /*TsTypes.create(modelName(type.name), ModelFile, ...typeArguments)*/
+    return modelType(type.name,serviceName, typeArguments) /*TsTypes.create(modelName(type.name), ModelFile, ...typeArguments)*/
 
     // return modelName(type.name) + typeArgumentString
 }
 
-export function isBuiltinType(type: RpcType): boolean {
-    return resolveBuiltinType(type) !== undefined
+export function isBuiltinType(type: RpcType, serviceName: string): boolean {
+    return resolveBuiltinType(type, serviceName) !== undefined
 }
 
-function resolveBuiltinType(type: RpcType): TsType | undefined {
+function resolveBuiltinType(type: RpcType, serviceName: string): TsType | undefined {
     switch (type.name) {
         case "bool" :
             return TsTypes.BOOLEAN
@@ -65,7 +65,7 @@ function resolveBuiltinType(type: RpcType): TsType | undefined {
             }
 
             const elementType = typeArgs[0]
-            const elementTypeReference = typescriptRpcType(elementType)
+            const elementTypeReference = typescriptRpcType(elementType, serviceName)
 
             return TsTypes.array(elementTypeReference)
 
@@ -80,19 +80,19 @@ function resolveBuiltinType(type: RpcType): TsType | undefined {
             if (typeArgs.length !== 2) {
                 throw new Error(`Record type had an unexpected amount of type arguments: ${typeArgs.length}`)
             }
-            const keyType = typescriptRpcType(typeArgs[0])
-            const underlyingKeyType = typescriptRpcType(resolveToUnderlying(typeArgs[0]))
+            const keyType = typescriptRpcType(typeArgs[0], serviceName)
+            const underlyingKeyType = typescriptRpcType(resolveToUnderlying(typeArgs[0]), serviceName)
             if (underlyingKeyType !== TsTypes.STRING && underlyingKeyType !== TsTypes.NUMBER) {
                 // NiceToHave: Support complex keys in Typescript
                 throw new Error(`Unsupported map key type: ${tsReferenceToString(keyType)} in type: ${JSON.stringify(type)}`)
             }
-            const valueType = typescriptRpcType(typeArgs[1])
+            const valueType = typescriptRpcType(typeArgs[1], serviceName)
             return TsTypes.record(keyType,valueType)
             // Typescript Records are Record<K,V>
             // return `Record<${keyType}, ${valueType}>`
         }
         case RpcTypeNames.Tuple: {
-            return TsTypes.tuple(type.typeArguments.map(arg => typescriptRpcType(arg)))
+            return TsTypes.tuple(type.typeArguments.map(arg => typescriptRpcType(arg, serviceName)))
             // Typescript tuples are [T1, T2, ..., Tn]
             // return `[${.join(", ")}]`
         }
@@ -111,20 +111,23 @@ function resolveToUnderlying(type: RpcType): RpcType {
     }
 }
 
-// /**
-//  * Converts the Rpc representation of a struct name to the typescript representation
-//  */
-// export function modelName(name: string): string {
-//     // Treat "Foo.Bar" as "FooBar"
-//     return name.replace(/\./g, "")
-// }
 /**
  * Converts the Rpc representation of a struct name to the typescript representation
  */
-export function modelType(name: string, ...typeArguments: TsType[]): TsType {
+//TODO: remove '2'
+export function modelName2(name: string): string {
     // Treat "Foo.Bar" as "FooBar"
-    const withoutDot = name.replace(/\./g, "")
-    return TsTypes.create(withoutDot, ModelFile, ...typeArguments)
+    return name.replace(/\./g, "")
+}
+/**
+ * Converts the Rpc representation of a struct name to the typescript representation
+ */
+export function modelType(name: string, serviceName: string,typeArguments?: TsType[]): TsType {
+    // Treat "Foo.Bar" as "FooBar"
+    // const withoutDot = name.replace(/\./g, "")
+    return TsTypes.create(modelName2(name), MODELS_FILE(serviceName), ...(typeArguments ?? []))
 }
 
-const ModelFile = "./rpc4ts_AllEncompassingServiceModels"
+export function MODELS_FILE(serviceName: string): string {
+    return `./rpc4ts_${serviceName}Models`
+}

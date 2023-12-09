@@ -1,6 +1,6 @@
 // noinspection PointlessBooleanExpressionJS
 
-import {concat, FormatString, length, MaybeFormattedString, TsReference, TsType, TsTypes} from "./FormatString";
+import {concat, FormatString, formatLength, MaybeFormattedString, TsFunction, TsReference, TsType, TsTypes} from "./FormatString";
 
 const MaxLineLength = 120;
 const tabWidth = 4;
@@ -41,7 +41,7 @@ export class CodeBuilder {
     addUnionType({name, typeParameters, types}: {
         name: string,
         typeParameters?: string[],
-        types: string[]
+        types: TsType[]
     }): CodeBuilder {
         const prefix = `export type ${name}${this.typeParametersString(typeParameters)} = `
         const typesJoined = types.length === 0 ? "never" : types.join(" | ")
@@ -70,8 +70,8 @@ export class CodeBuilder {
         return this._addLineOfCode(`export const ${name} = ${value}`)
     }
 
-    addTopLevelFunction(name: string, parameters: [string, TsReference][], returnType: TsReference | undefined, body: (body: BodyBuilder) => void): CodeBuilder {
-        return this._addFunction(`export function ${name}`, parameters, returnType, body)
+    addTopLevelFunction(declaration: MaybeFormattedString, parameters: [string, TsReference][], returnType: TsReference | undefined, body: (body: BodyBuilder) => void): CodeBuilder {
+        return this._addFunction(concat(`export function `,declaration), parameters, returnType, body)
     }
 
     ///////////////////// Internal ////////////////
@@ -126,7 +126,8 @@ export class CodeBuilder {
         } else {
 
             // throw new Error("TODO")
-            return ["...", code.formatArguments]
+            //TODO
+            return ["...", []]
         }
     }
 
@@ -135,19 +136,19 @@ export class CodeBuilder {
         return this
     }
 
-    _addFunction(name: string, parameters: [string, TsReference][], returnType: TsReference | undefined, body: (body: BodyBuilder) => void): CodeBuilder {
+    _addFunction(declaration: MaybeFormattedString, parameters: [string, TsReference][], returnType: TsReference | undefined, body: (body: BodyBuilder) => void): CodeBuilder {
         const returnTypeString = returnType === undefined ? "" : concat(": ", returnType)
         //TODO: implement optional parameters
         const parametersString = this.parameterList(
-            length(this.blockStart(name)) + length(returnTypeString), parameters.map(([name, type]) => concat(`${name}: `, type))
+            formatLength(this.blockStart(declaration)) + formatLength(returnTypeString), parameters.map(([name, type]) => concat(`${name}: `, type))
         )
-        return this._addBlock(concat(name + parametersString, returnTypeString), () => {
+        return this._addBlock(concat(declaration ,parametersString, returnTypeString), () => {
             body(new BodyBuilder(this))
         })
     }
 
-    _addParameterListLineOfCode(prefix: string, list: string[], addNewline: boolean = true): CodeBuilder {
-        return this._addLineOfCode(prefix + this.parameterList(prefix.length, list), addNewline)
+    _addParameterListLineOfCode(prefix: MaybeFormattedString, list: string[], addNewline = true): CodeBuilder {
+        return this._addLineOfCode(concat(prefix , this.parameterList(formatLength(prefix), list)), addNewline)
     }
 
     /**
@@ -190,7 +191,7 @@ export class CodeBuilder {
         return this._addLineOfCode("}")
     }
 
-    private blockStart(prefix: MaybeFormattedString): FormatString {
+    private blockStart(prefix: MaybeFormattedString): MaybeFormattedString {
         return concat(prefix, " {")
     }
 }
@@ -223,11 +224,11 @@ export class ClassBuilder extends InterfaceBuilder {
         return super.addProperty(property) as ClassBuilder
     }
 
-    addConstructor(parameterList: [string, TsReference][], body: (builder: BodyBuilder) => void): ClassBuilder {
+    addConstructor(parameterList: [string, TsType][], body: (builder: BodyBuilder) => void): ClassBuilder {
         return this.addFunction("constructor", parameterList, undefined, body)
     }
 
-    addFunction(name: string, parameterList: [string, TsReference][], returnType: TsReference | undefined, body: (builder: BodyBuilder) => void) {
+    addFunction(name: string, parameterList: [string, TsType][], returnType: TsType | undefined, body: (builder: BodyBuilder) => void) {
         this.codegen._addFunction(name, parameterList, returnType, body)
         return this
     }
@@ -261,8 +262,8 @@ export class BodyBuilder {
         return this
     }
 
-    addReturningFunctionCall(functionName: string, args: string[], addNewline: boolean = true): BodyBuilder {
-        this.codegen._addParameterListLineOfCode(`return ${functionName}`, args, addNewline)
+    addReturningFunctionCall(functionName: MaybeFormattedString, args: MaybeFormattedString[], addNewline = true): BodyBuilder {
+        this.codegen._addParameterListLineOfCode(concat("return ", functionName), args, addNewline)
         return this
     }
 
