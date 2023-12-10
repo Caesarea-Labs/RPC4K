@@ -5,12 +5,27 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="9ca8770c-8d9e-44a0-b1e9-2417666ce2c1" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/compiler.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/runConfigurations/Generate_Client.xml" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/exampleapp/typescript/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/exampleapp/typescript/package-lock.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/kotlin/lib/build.gradle.kts" beforeDir="false" afterPath="$PROJECT_DIR$/kotlin/lib/build.gradle.kts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/package-lock.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/typescript/generator/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/typescript/generator/package-lock.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/typescript/generator/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/typescript/generator/package.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/typescript/generator/src/ClientAccessorGenerator.ts" beforeDir="false" afterPath="$PROJECT_DIR$/typescript/generator/src/ClientAccessorGenerator.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/typescript/generator/src/Rpc4tsType.ts" beforeDir="false" afterPath="$PROJECT_DIR$/typescript/generator/src/Rpc4tsType.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/typescript/generator/src/ClientGenerator.ts" beforeDir="false" afterPath="$PROJECT_DIR$/typescript/generator/src/ClientGenerator.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/typescript/generator/src/ModelGenerator.ts" beforeDir="false" afterPath="$PROJECT_DIR$/typescript/generator/src/ModelGenerator.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/typescript/generator/src/SerializerGenerator.ts" beforeDir="false" afterPath="$PROJECT_DIR$/typescript/generator/src/SerializerGenerator.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/typescript/generator/src/Util.ts" beforeDir="false" afterPath="$PROJECT_DIR$/typescript/generator/src/Util.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/typescript/generator/src/codegen/CodeBuilder.ts" beforeDir="false" afterPath="$PROJECT_DIR$/typescript/generator/src/codegen/CodeBuilder.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/typescript/generator/src/codegen/FormatString.ts" beforeDir="false" afterPath="$PROJECT_DIR$/typescript/generator/src/codegen/FormatString.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/typescript/generator/src/index.ts" beforeDir="false" afterPath="$PROJECT_DIR$/typescript/generator/src/index.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/typescript/runtime/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/typescript/runtime/package-lock.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/typescript/runtime/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/typescript/runtime/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/typescript/runtime/src/impl/Util.ts" beforeDir="false" afterPath="$PROJECT_DIR$/typescript/runtime/src/impl/Util.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/typescript/runtime/test/CodegenedClientTest.test.ts" beforeDir="false" afterPath="$PROJECT_DIR$/typescript/runtime/test/CodegenedClientTest.test.ts" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -112,62 +127,62 @@
     <option name="showLibraryContents" value="true" />
     <option name="showModules" value="false" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;Gradle.AllEncompassingTest.testExoticTypes (1).executor&quot;: &quot;Run&quot;,
-    &quot;Gradle.AllEncompassingTest.testExoticTypes.executor&quot;: &quot;Run&quot;,
-    &quot;Gradle.Build kotlin.executor&quot;: &quot;Run&quot;,
-    &quot;Gradle.DirectProcessorTest.Symbol processor success.executor&quot;: &quot;Debug&quot;,
-    &quot;Gradle.Kotlin Tests.executor&quot;: &quot;Run&quot;,
-    &quot;Gradle.Test Server.executor&quot;: &quot;Run&quot;,
-    &quot;Gradle.Upload Rpc4k.executor&quot;: &quot;Run&quot;,
-    &quot;Jest.Codegened Client works in all cases.executor&quot;: &quot;Run&quot;,
-    &quot;Jest.Codegened Client works in more cases.executor&quot;: &quot;Run&quot;,
-    &quot;Jest.Codegened Client works.executor&quot;: &quot;Run&quot;,
-    &quot;Jest.Standalone TS Tests.executor&quot;: &quot;Run&quot;,
-    &quot;Jest.Test AnotherModelHolder serialization from string.executor&quot;: &quot;Run&quot;,
-    &quot;Jest.Test AnotherModelHolder serialization to string.executor&quot;: &quot;Run&quot;,
-    &quot;Jest.Test Enum serialization from string.executor&quot;: &quot;Run&quot;,
-    &quot;Jest.Test Enum serialization to string.executor&quot;: &quot;Run&quot;,
-    &quot;Jest.Test GenericThing serialization from string.executor&quot;: &quot;Run&quot;,
-    &quot;Jest.Test GenericThing serialization.executor&quot;: &quot;Run&quot;,
-    &quot;Jest.Test Polymorphic serialization from string.executor&quot;: &quot;Run&quot;,
-    &quot;Jest.Test Polymorphic serialization to string.executor&quot;: &quot;Run&quot;,
-    &quot;Jest.Test Tree serialization to string (1).executor&quot;: &quot;Run&quot;,
-    &quot;Jest.Test Tree serialization to string.executor&quot;: &quot;Run&quot;,
-    &quot;Jest.Test constructor dynamics.executor&quot;: &quot;Run&quot;,
-    &quot;Jest.Test enum values.executor&quot;: &quot;Run&quot;,
-    &quot;Jest.Test fromString.executor&quot;: &quot;Debug&quot;,
-    &quot;Jest.Test toString (1).executor&quot;: &quot;Run&quot;,
-    &quot;Kotlin.SerializationTestKt.executor&quot;: &quot;Debug&quot;,
-    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
-    &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
-    &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
-    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
-    &quot;last_opened_file_path&quot;: &quot;C:/Users/natan/Desktop/RPC4K/typescript/runtime/test/serialization&quot;,
-    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.standard&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
-    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
-    &quot;node.js.selected.package.standard&quot;: &quot;&quot;,
-    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
-    &quot;nodejs.jest.jest_package&quot;: &quot;C:/Users/natan/Desktop/RPC4K/typescript/runtime/node_modules/jest&quot;,
-    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;npm.Generate Client.executor&quot;: &quot;Run&quot;,
-    &quot;npm.build.executor&quot;: &quot;Run&quot;,
-    &quot;npm.generateClient.executor&quot;: &quot;Run&quot;,
-    &quot;npm.pub.executor&quot;: &quot;Run&quot;,
-    &quot;project.structure.last.edited&quot;: &quot;Project&quot;,
-    &quot;project.structure.proportion&quot;: &quot;0.0&quot;,
-    &quot;project.structure.side.proportion&quot;: &quot;0.2&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;settings.javascript.linters.eslint&quot;,
-    &quot;ts.external.directory.path&quot;: &quot;C:\\Users\\natan\\Desktop\\RPC4K\\typescript\\generator\\node_modules\\typescript\\lib&quot;,
-    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "Gradle.AllEncompassingTest.testExoticTypes (1).executor": "Run",
+    "Gradle.AllEncompassingTest.testExoticTypes.executor": "Run",
+    "Gradle.Build kotlin.executor": "Run",
+    "Gradle.DirectProcessorTest.Symbol processor success.executor": "Debug",
+    "Gradle.Kotlin Tests.executor": "Run",
+    "Gradle.Test Server.executor": "Run",
+    "Gradle.Upload Rpc4k.executor": "Run",
+    "Jest.Codegened Client works in all cases.executor": "Run",
+    "Jest.Codegened Client works in more cases.executor": "Run",
+    "Jest.Codegened Client works.executor": "Run",
+    "Jest.Standalone TS Tests.executor": "Run",
+    "Jest.Test AnotherModelHolder serialization from string.executor": "Run",
+    "Jest.Test AnotherModelHolder serialization to string.executor": "Run",
+    "Jest.Test Enum serialization from string.executor": "Run",
+    "Jest.Test Enum serialization to string.executor": "Run",
+    "Jest.Test GenericThing serialization from string.executor": "Run",
+    "Jest.Test GenericThing serialization.executor": "Run",
+    "Jest.Test Polymorphic serialization from string.executor": "Run",
+    "Jest.Test Polymorphic serialization to string.executor": "Run",
+    "Jest.Test Tree serialization to string (1).executor": "Run",
+    "Jest.Test Tree serialization to string.executor": "Run",
+    "Jest.Test constructor dynamics.executor": "Run",
+    "Jest.Test enum values.executor": "Run",
+    "Jest.Test fromString.executor": "Debug",
+    "Jest.Test toString (1).executor": "Run",
+    "Kotlin.SerializationTestKt.executor": "Debug",
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
+    "WebServerToolWindowFactoryState": "false",
+    "git-widget-placeholder": "main",
+    "ignore.virus.scanning.warn.message": "true",
+    "kotlin-language-version-configured": "true",
+    "last_opened_file_path": "C:/Users/natan/Desktop/PoC",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.standard": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.standard": "",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs.jest.jest_package": "C:/Users/natan/Desktop/RPC4K/typescript/runtime/node_modules/jest",
+    "nodejs_package_manager_path": "npm",
+    "npm.Generate Client.executor": "Run",
+    "npm.build.executor": "Run",
+    "npm.generateClient.executor": "Run",
+    "npm.pub.executor": "Run",
+    "project.structure.last.edited": "Project",
+    "project.structure.proportion": "0.0",
+    "project.structure.side.proportion": "0.2",
+    "settings.editor.selected.configurable": "settings.javascript.linters.eslint",
+    "ts.external.directory.path": "C:\\Users\\natan\\Desktop\\RPC4K\\exampleapp\\typescript\\node_modules\\typescript\\lib",
+    "vue.rearranger.settings.migration": "true"
   }
-}</component>
+}]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="C:\Users\natan\Desktop\RPC4K\typescript\runtime\test\serialization" />
@@ -189,55 +204,7 @@
       <recent name="C:\Users\natan\Desktop\RPC4K\typescript\runtime\src\serialization\core\encoding\CompositeEncoder.ts" />
     </key>
   </component>
-  <component name="RunManager" selected="Gradle.Kotlin Tests">
-    <configuration name="AllEncompassingTest.testExoticTypes" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
-      <ExternalSystemSettings>
-        <option name="executionName" />
-        <option name="externalProjectPath" value="$PROJECT_DIR$/kotlin" />
-        <option name="externalSystemIdString" value="GRADLE" />
-        <option name="scriptParameters" value="" />
-        <option name="taskDescriptions">
-          <list />
-        </option>
-        <option name="taskNames">
-          <list>
-            <option value=":testapp:test" />
-            <option value="--tests" />
-            <option value="&quot;io.github.natanfudge.rpc4k.test.AllEncompassingTest.testExoticTypes&quot;" />
-          </list>
-        </option>
-        <option name="vmOptions" />
-      </ExternalSystemSettings>
-      <ExternalSystemDebugServerProcess>false</ExternalSystemDebugServerProcess>
-      <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
-      <DebugAllEnabled>false</DebugAllEnabled>
-      <RunAsTest>true</RunAsTest>
-      <method v="2" />
-    </configuration>
-    <configuration name="DirectProcessorTest.Symbol processor success" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
-      <ExternalSystemSettings>
-        <option name="executionName" />
-        <option name="externalProjectPath" value="$PROJECT_DIR$/kotlin" />
-        <option name="externalSystemIdString" value="GRADLE" />
-        <option name="scriptParameters" value="" />
-        <option name="taskDescriptions">
-          <list />
-        </option>
-        <option name="taskNames">
-          <list>
-            <option value=":lib:test" />
-            <option value="--tests" />
-            <option value="&quot;io.github.natanfudge.rpc4k.test.DirectProcessorTest.Symbol processor success&quot;" />
-          </list>
-        </option>
-        <option name="vmOptions" />
-      </ExternalSystemSettings>
-      <ExternalSystemDebugServerProcess>false</ExternalSystemDebugServerProcess>
-      <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
-      <DebugAllEnabled>false</DebugAllEnabled>
-      <RunAsTest>true</RunAsTest>
-      <method v="2" />
-    </configuration>
+  <component name="RunManager" selected="npm.pub">
     <configuration name="Upload Rpc4k" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
       <ExternalSystemSettings>
         <option name="executionName" />
@@ -279,25 +246,44 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
+    <configuration name="Generate Client" type="js.build_tools.npm" temporary="true">
+      <package-json value="$PROJECT_DIR$/typescript/generator/package.json" />
+      <command value="run" />
+      <scripts>
+        <script value="generateClient" />
+      </scripts>
+      <node-interpreter value="project" />
+      <envs />
+      <method v="2" />
+    </configuration>
+    <configuration name="pub" type="js.build_tools.npm" temporary="true" nameIsGenerated="true">
+      <package-json value="$PROJECT_DIR$/typescript/runtime/package.json" />
+      <command value="run" />
+      <scripts>
+        <script value="pub" />
+      </scripts>
+      <node-interpreter value="project" />
+      <envs />
+      <method v="2" />
+    </configuration>
     <list>
       <item itemvalue="Gradle.Test Server" />
       <item itemvalue="Gradle.Kotlin Tests" />
       <item itemvalue="Gradle.Upload Rpc4k" />
-      <item itemvalue="Gradle.AllEncompassingTest.testExoticTypes" />
-      <item itemvalue="Gradle.DirectProcessorTest.Symbol processor success" />
       <item itemvalue="Jest.Standalone TS Tests" />
       <item itemvalue="Jest.Codegened Client works in all cases" />
       <item itemvalue="Kotlin.SerializationTestKt" />
       <item itemvalue="Multirun.Publish TS" />
+      <item itemvalue="npm.pub" />
       <item itemvalue="npm.Generate Client" />
     </list>
     <recent_temporary>
       <list>
+        <item itemvalue="npm.pub" />
+        <item itemvalue="npm.Generate Client" />
         <item itemvalue="Jest.Codegened Client works in all cases" />
         <item itemvalue="Kotlin.SerializationTestKt" />
         <item itemvalue="Gradle.Upload Rpc4k" />
-        <item itemvalue="Gradle.AllEncompassingTest.testExoticTypes" />
-        <item itemvalue="Gradle.DirectProcessorTest.Symbol processor success" />
       </list>
     </recent_temporary>
   </component>
@@ -392,6 +378,11 @@
       <workItem from="1701937819763" duration="9651000" />
       <workItem from="1701960444581" duration="4327000" />
       <workItem from="1702020237994" duration="2457000" />
+      <workItem from="1702043131036" duration="6194000" />
+      <workItem from="1702126247346" duration="2571000" />
+      <workItem from="1702203283772" duration="2785000" />
+      <workItem from="1702219409909" duration="1152000" />
+      <workItem from="1702223857475" duration="1971000" />
     </task>
     <servers />
   </component>

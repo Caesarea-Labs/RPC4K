@@ -2,7 +2,7 @@ import {CodeBuilder} from "./codegen/CodeBuilder";
 import {Rpc4TsClientGenerationOptions} from "./ClientGenerator";
 import {ApiDefinition, RpcModelKind, RpcType, RpcTypeNames} from "rpc4ts-runtime";
 import {isBuiltinType, modelType, typescriptRpcType} from "./Rpc4tsType";
-import {buildSerializer, libraryPath} from "./SerializerGenerator";
+import {buildSerializer} from "./SerializerGenerator";
 import {TsTypes, TsNamespace, MaybeFormattedString, concat, join} from "./codegen/FormatString";
 
 
@@ -14,7 +14,7 @@ import {TsTypes, TsNamespace, MaybeFormattedString, concat, join} from "./codege
  * @param rawApi definition without default values
  */
 export function generateAccessor(api: ApiDefinition, rawApi: ApiDefinition, options: Rpc4TsClientGenerationOptions): string {
-    const builder = new CodeBuilder()
+    const builder = new CodeBuilder(options.localLibPaths)
 
 
     // const referencedModels = api.models.filter(model => model.type !== RpcModelKind.inline)

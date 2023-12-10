@@ -1,5 +1,5 @@
 import {FetchRpcClient, JsonFormat} from "../src/components";
-import {RpcResponseError} from "../src/RpcClientError";
+import {RpcResponseError} from "rpc4ts-runtime/RpcClientError";
 import dayjs from "dayjs";
 import {AllEncompassingServiceApi} from "./generated/rpc4ts_AllEncompassingServiceApi";
 import {

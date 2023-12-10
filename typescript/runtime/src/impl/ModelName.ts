@@ -1,7 +1,5 @@
-import dayjs, {Dayjs} from "dayjs";
-import {RpcType} from "./ApiDefinition";
-import {RpcTypeNames} from "./RpcTypeUtils";
-import {removeBeforeLastExclusive} from "./Util";
+import "ts-minimum"
+
 
 
 
@@ -11,5 +9,5 @@ import {removeBeforeLastExclusive} from "./Util";
  */
 export function simpleModelName(name: string): string {
     // Treat "Foo.Bar" as "Bar"
-    return removeBeforeLastExclusive(name, ".")
+    return name.removeBeforeLastExclusive(".")
 }

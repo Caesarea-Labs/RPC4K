@@ -24,7 +24,7 @@ export function generateClientModel(definitionJson: string, writeTo: string, opt
         throw Error("Invalid json file provided for definition of API")
     }
     const api = fillDefaultApiDefinitionValues(rawApi)
-    const models = generateModels(api.models, api.name)
+    const models = generateModels(api.models, api.name, options)
     const accessor = generateAccessor(api, rawApi, options)
     const serializers = generateSerializers(api.models, options, api.name)
 

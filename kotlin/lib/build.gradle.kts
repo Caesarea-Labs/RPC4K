@@ -61,62 +61,63 @@ sourceSets.main {
 }
 
 
+//TODO: move to caesarea maven
 
-fun getSecretsDir() = System.getenv("SECRETS_PATH")
-    ?: error("Missing SECRETS_PATH environment variables. Make sure to set the environment variable to the directory containing secrets.")
-
-fun getSecretsFile(path: String): Path {
-    val file = Paths.get(getSecretsDir(), path)
-    if (!file.exists()) error("Missing secrets file $file. Make sure to create the file with the secrets.")
-    return file
-}
-
-fun getSecretFileContents(path: String): String {
-    return String(getSecretsFile(path).readBytes())
-}
-
-
-
-afterEvaluate {
-    publishing {
-        publications {
-            register("release", MavenPublication::class) {
-                groupId = projectGroup
-                artifactId = projectId
-                version = projectVersion
-
-                from(components["java"])
-
-                pom {
-                    name = projectId
-                    description = "Networking Utility"
-                    url = githubUrl
-                    licenses {
-                        license {
-                            name = projectLicense
-                        }
-                    }
-                    developers {
-                        developer {
-                            id = "natan"
-                            name = "Natan Lifshitz"
-                            email = "natan.lifsiz@gmail.com"
-                        }
-                    }
-
-                    scm {
-                        url = githubUrl
-                    }
-                }
-            }
-        }
-    }
-}
-
-signing {
-    useInMemoryPgpKeys(
-        System.getenv("GPG_KEY_ID"), getSecretFileContents("ksm/secret_key.txt"), System.getenv("GPG_KEY_PASSWORD")
-    )
-    sign(publishing.publications)
-}
-
+//fun getSecretsDir() = System.getenv("SECRETS_PATH")
+//    ?: error("Missing SECRETS_PATH environment variables. Make sure to set the environment variable to the directory containing secrets.")
+//
+//fun getSecretsFile(path: String): Path {
+//    val file = Paths.get(getSecretsDir(), path)
+//    if (!file.exists()) error("Missing secrets file $file. Make sure to create the file with the secrets.")
+//    return file
+//}
+//
+//fun getSecretFileContents(path: String): String {
+//    return String(getSecretsFile(path).readBytes())
+//}
+//
+//
+//
+//afterEvaluate {
+//    publishing {
+//        publications {
+//            register("release", MavenPublication::class) {
+//                groupId = projectGroup
+//                artifactId = projectId
+//                version = projectVersion
+//
+//                from(components["java"])
+//
+//                pom {
+//                    name = projectId
+//                    description = "Networking Utility"
+//                    url = githubUrl
+//                    licenses {
+//                        license {
+//                            name = projectLicense
+//                        }
+//                    }
+//                    developers {
+//                        developer {
+//                            id = "natan"
+//                            name = "Natan Lifshitz"
+//                            email = "natan.lifsiz@gmail.com"
+//                        }
+//                    }
+//
+//                    scm {
+//                        url = githubUrl
+//                    }
+//                }
+//            }
+//        }
+//    }
+//}
+//
+//signing {
+//    useInMemoryPgpKeys(
+//        System.getenv("GPG_KEY_ID"), getSecretFileContents("ksm/secret_key.txt"), System.getenv("GPG_KEY_PASSWORD")
+//    )
+//    sign(publishing.publications)
+//}
+//

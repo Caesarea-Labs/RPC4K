@@ -1,5 +1,5 @@
 import {Dayjs} from "dayjs";
-import {recordToArray} from "rpc4ts-runtime/src/impl/Util";
+import {recordToArray} from "ts-minimum"
 
 /**
  * Strings may be formatted with %T to replace %T with some reference that will be automatically imported.
@@ -25,23 +25,49 @@ export class FormatString {
         // }
     }
 
+    /**
+     * Inserts the format arguments in place of the reference markers
+     */
     resolve(): string {
-        //TODO
-        throw new Error("TODO")
+        let current = ""
+        let formatIndex = 0
+        let prevChar: string | null = null
+        for (const c of this.str) {
+            if (prevChar === FORMAT_MARKER && c === REFERENCE_MARKER) {
+                if (this.formatArguments.length > formatIndex) {
+                    current += tsReferenceToString(this.formatArguments[formatIndex])
+                    formatIndex++
+                    // Don't include the REFERENCE_MARKER in the string
+                    prevChar = null
+                } else {
+                    throw new Error(`No format argument specified for ${formatIndex}th format marker`)
+                }
+            } else {
+                if (prevChar !== null) {
+                    current += prevChar
+                }
+            }
+        }
+        return current
     }
 }
 
 export type MaybeFormattedString = FormatString | string | TsReference
-export function resolveMaybeFormatString(str : MaybeFormattedString): string {
-    if(isTypescriptReference(str)) {
+
+// export function isFormatString(maybeFormatString: MaybeFormattedString): maybeFormatString is FormatString {
+//     return maybeFormatString instanceof FormatString
+// }
+
+export function resolveMaybeFormatString(str: MaybeFormattedString): string {
+    if (isTypescriptReference(str)) {
         return tsReferenceToString(str)
-    } else if(typeof str === "string") return str
+    } else if (typeof str === "string") return str
     else {
         return str.resolve()
     }
 }
 
-function isTypescriptReference(obj: MaybeFormattedString): obj is TsReference {
+export function isTypescriptReference(obj: MaybeFormattedString): obj is TsReference {
     return typeof obj !== "string" && !("formatArguments" in obj)
 }
 
@@ -72,11 +98,14 @@ function concat2(str: MaybeFormattedString, formatString: MaybeFormattedString):
     return toFormat(str).concat(formatString)
 }
 
+const REFERENCE_MARKER = "R"
+const FORMAT_MARKER = "%"
+
 function toFormat(str: MaybeFormattedString): FormatString {
     if (typeof str === "string") {
         return new FormatString(str, [])
     } else if (isTypescriptReference(str)) {
-        return new FormatString("%R", [str])
+        return new FormatString(FORMAT_MARKER + REFERENCE_MARKER, [str])
     } else {
         return str
     }
@@ -91,6 +120,7 @@ export function formatLength(str: MaybeFormattedString): number {
 }
 
 export type TsReference = TsType | TsFunction
+
 
 export class TsNamespace {
     name: string
@@ -162,13 +192,24 @@ export class TsFunction {
 
 export type TsType = TsUnionType | TsBasicType | TsObjectType
 
-export function tsReferenceToString(reference: TsReference): string {
+/**
+ * Some type literals like union types are sensitive to brackets around the type, so if this type is being wrapped
+ * by another type like an array then brackets are required.
+ */
+export function tsReferenceToString(reference: TsReference, brackets = false): string {
     if (reference instanceof TsFunction) {
-        return `${reference.name}()`
+        const namespace = reference.namespace !== undefined ? `${reference.namespace.name}.` : ""
+        return namespace + reference.name
     } else if (isUnionType(reference)) {
-        return reference.references.map(reference => tsReferenceToString(reference)).join(" | ")
+        const literal = reference.references.map(reference => tsReferenceToString(reference)).join(" | ")
+        return brackets ? `(${literal})` : literal
     } else if (isBasicType(reference)) {
-        return reference.name
+        //TODO: special array handling with brackets = true here
+        let str = reference.name
+        if (reference.typeArguments.length > 0) {
+            str += `<${reference.typeArguments.map(arg => tsReferenceToString(arg)).join(", ")}>`
+        }
+        return str
     } else {
         return "{" + recordToArray(reference.properties, (k, v) => `${k}: ${tsReferenceToString(v)}`)
             .join(", ") + "}"
@@ -184,7 +225,7 @@ export interface TsObjectType {
 }
 
 export function isUnionType(reference: TsReference): reference is TsUnionType {
-    return "references" in type
+    return "references" in reference
 }
 
 export interface ImportPath {
@@ -194,7 +235,7 @@ export interface ImportPath {
 
 export interface TsBasicType {
     name: string
-    typeArguments: TsReference[]
+    typeArguments: TsType[]
     importPath: ImportPath | undefined
 
     // constructor(name: string, importPath?: string, typeArguments?: TypescriptReference[]) {
@@ -208,14 +249,14 @@ export function isBasicType(reference: TsReference): reference is TsBasicType {
     return "typeArguments" in reference
 }
 
-function type(name: string, importPath: string, ...typeArguments: TsReference[]): TsBasicType {
+function type(name: string, importPath: string, ...typeArguments: TsType[]): TsBasicType {
     return {
         name, importPath: {libraryPath: false, value: importPath},
         typeArguments
     }
 }
 
-function builtin(name: string, ...typeArguments: TsReference[]): TsBasicType {
+function builtin(name: string, ...typeArguments: TsType[]): TsBasicType {
     return {
         importPath: undefined,
         name,

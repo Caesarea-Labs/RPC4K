@@ -13,16 +13,13 @@ import {
 } from "rpc4ts-runtime";
 import {CodeBuilder} from "./codegen/CodeBuilder";
 import {Rpc4TsClientGenerationOptions} from "./ClientGenerator";
-import {buildRecord} from "rpc4ts-runtime/src/impl/Util";
+// import {buildRecord} from "rpc4ts-runtime";
 import {structRuntimeName} from "./ModelGenerator";
-import {uniqueBy} from "./Util";
 import {concat, join, MaybeFormattedString, resolveMaybeFormatString, TsFunction, TsType, TsTypes} from "./codegen/FormatString";
 import {modelName2, modelType} from "./Rpc4tsType";
+import "ts-minimum"
+import "ts-minimum/extensions/Extensions"
 
-export function libraryPath(path: string, options: Rpc4TsClientGenerationOptions) {
-    if (options.localLibPaths) return `../../src/${path}`
-    else return "rpc4ts-runtime"
-}
 
 // export function addSerializerImports(codeBuilder: CodeBuilder, options: Rpc4TsClientGenerationOptions): CodeBuilder {
 //     return codeBuilder.addImport(
@@ -45,7 +42,7 @@ export function generateSerializers(models: RpcModel[], options: Rpc4TsClientGen
 
     // const modelNames = models.map(model => modelName(model.name))
 
-    const builder = new CodeBuilder()
+    const builder = new CodeBuilder(options.localLibPaths)
     // .addImport(
     //     ["TsSerializer"],
     //     libraryPath("serialization/TsSerializer", options)
@@ -58,7 +55,7 @@ export function generateSerializers(models: RpcModel[], options: Rpc4TsClientGen
 
     // addSerializerImports(builder, options)
 
-    const modelMap = buildRecord(models, (model) => [model.name, model])
+    const modelMap = models.toRecord((model) => [model.name, model])
 
     for (const model of models) {
         switch (model.type) {
@@ -119,7 +116,7 @@ function addUnionSerializer(code: CodeBuilder, unionModel: RpcUnionModel, modelM
     code.addTopLevelFunction(serializerDeclaration(unionModel.name, typeArguments), [], TS_SERIALIZER(unionType), (builder) => {
 
         const subclasses = fullyExpandUnion(unionModel, modelMap)
-        const uniqueSubclasses = uniqueBy(subclasses, subclass => subclass.name)
+        const uniqueSubclasses = subclasses.distinctBy(subclass => subclass.name)
 
         const subclassNames = uniqueSubclasses.map(type => {
             const model = modelMap[type.name]
@@ -237,8 +234,7 @@ function addStructSerializer(code: CodeBuilder, struct: RpcStructModel, serviceN
 }
 
 function mapTypeParametersValues(model: RpcUnionModel | RpcStructModel): Record<string, string> {
-    return buildRecord(
-        model.typeParameters,
+    return model.typeParameters.toRecord(
         // For the type parameter T0, use the serializer typeArgSerializer0, and so on.
         (param, i) => [param, TypeParameterSerializerPrefix + i]
     )

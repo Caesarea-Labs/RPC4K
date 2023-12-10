@@ -2,10 +2,10 @@ import {CodeBuilder} from "./codegen/CodeBuilder";
 import {RpcEnumModel, RpcInlineModel, RpcModel, RpcModelKind, RpcStructModel, RpcType, RpcUnionModel,} from "rpc4ts-runtime";
 import {modelName2, modelType, typescriptRpcType} from "./Rpc4tsType";
 import {TsObjectType, TsTypes} from "./codegen/FormatString";
-import {buildRecord} from "rpc4ts-runtime/src/impl/Util";
+import {Rpc4TsClientGenerationOptions} from "./ClientGenerator";
 
-export function generateModels(models: RpcModel[], serviceName: string): string {
-    const builder = new CodeBuilder()
+export function generateModels(models: RpcModel[], serviceName: string, options: Rpc4TsClientGenerationOptions): string {
+    const builder = new CodeBuilder(options.localLibPaths)
         // .addImport(["Dayjs"], `dayjs`)
         // .addImport(["Duration"], `dayjs/plugin/duration`)
 
@@ -53,7 +53,7 @@ function addStruct(code: CodeBuilder, struct: RpcStructModel, serviceName :strin
 
         const propertyNames = struct.properties.map(property => property.name).join(", ")
         const propertyTypes : TsObjectType = {
-            properties: buildRecord(struct.properties, property => [property.name,typescriptRpcType(property.type, serviceName)])
+            properties: struct.properties.toRecord(property => [property.name,typescriptRpcType(property.type, serviceName)])
         }
         // const propertyTypes = struct.properties.map(property => `${property.name}: ${typescriptRpcType(property.type)}`).join(", ")
         // Only one parameter: the object argument

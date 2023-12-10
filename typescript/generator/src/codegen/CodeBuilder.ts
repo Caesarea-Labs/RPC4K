@@ -1,6 +1,20 @@
 // noinspection PointlessBooleanExpressionJS
 
-import {concat, FormatString, formatLength, MaybeFormattedString, TsFunction, TsReference, TsType, TsTypes} from "./FormatString";
+import {
+    concat,
+    formatLength,
+    FormatString,
+    ImportPath,
+    isBasicType,
+    isTypescriptReference,
+    isUnionType,
+    MaybeFormattedString,
+    TsFunction,
+    TsReference,
+    tsReferenceToString,
+    TsType,
+    TsTypes
+} from "./FormatString";
 
 const MaxLineLength = 120;
 const tabWidth = 4;
@@ -11,6 +25,14 @@ const tabWidth = 4;
 export class CodeBuilder {
     private code = ""
     private currentIndent = 0
+    /**
+     * If true, references to the runtime library will use local paths instead of npm library paths
+     */
+    private readonly localImports: boolean
+
+    constructor(localImports: boolean) {
+        this.localImports = localImports
+    }
 
     build() {
         if (this.currentIndent !== 0) {
@@ -71,7 +93,7 @@ export class CodeBuilder {
     }
 
     addTopLevelFunction(declaration: MaybeFormattedString, parameters: [string, TsReference][], returnType: TsReference | undefined, body: (body: BodyBuilder) => void): CodeBuilder {
-        return this._addFunction(concat(`export function `,declaration), parameters, returnType, body)
+        return this._addFunction(concat(`export function `, declaration), parameters, returnType, body)
     }
 
     ///////////////////// Internal ////////////////
@@ -99,7 +121,6 @@ export class CodeBuilder {
         return this
     }
 
-    private referencesToImport: Record<string, TsReference> = {}
 
     _addLineOfCode(code: MaybeFormattedString, addNewline = true): CodeBuilder {
         //TODO: import references
@@ -112,22 +133,66 @@ export class CodeBuilder {
         return this
     }
 
+    //TODO: can be replaced by a HashSet<{reference: string, importPath: string}>
+    private importsToInsert: Record<string, Import> = {}
+
     private addImportReferences(reference: TsReference) {
-        // if (reference.importPath !== undefined) {
-        //     // Consider references unique by the combination of the name + the import path.
-        //     // This ensure we only add each reference once.
-        //     this.referencesToImport[reference.name + reference.importPath] = reference
-        // }
+        for(const imp of this.resolveReferences(reference)) {
+            // Consider references unique by the combination of the name + the import path.
+            // This ensure we only add each reference once.
+            this.importsToInsert[imp.path + imp.reference] = imp
+        }
+    }
+
+
+    private resolveReferences(reference: TsReference): Import[] {
+        const imports: Import[] = []
+        this.addReferences(reference, imports)
+        return imports
+    }
+
+    private addReferences(reference: TsReference, addTo: Import[]) {
+        if (reference instanceof TsFunction) {
+            addTo.push({
+                path: this.resolveImportPath(reference.importPath),
+                // If it's namespaced, import the namespace, otherwise import the function itself.
+                reference: reference.namespace !== undefined ? reference.namespace.name : reference.name
+            })
+        } else if (isUnionType(reference)) {
+            for (const child of reference.references) {
+                this.addReferences(child, addTo)
+            }
+        } else if (isBasicType(reference)) {
+            // Only references that require imports are relevant here
+            if (reference.importPath !== undefined) {
+                addTo.push({
+                    path: this.resolveImportPath(reference.importPath),
+                    reference: reference.name
+                })
+            }
+        } else {
+            for (const propertyType of Object.values(reference.properties)) {
+                this.addReferences(propertyType, addTo)
+            }
+        }
+    }
+
+    resolveImportPath(path: ImportPath): string {
+        return path.libraryPath ? this.libraryPath(path.value) : path.value
+    }
+
+    libraryPath(path: string) {
+        if (this.localImports) return `../../src/${path}`
+        else return "rpc4ts-runtime"
     }
 
     private resolveFormatString(code: MaybeFormattedString): [string, TsReference[]] {
-        if (typeof code === "string") {
-            return [code, []]
+        if (code instanceof FormatString) {
+            return [code.resolve(), code.formatArguments]
+        } else if (isTypescriptReference(code)) {
+            return [tsReferenceToString(code), [code]]
         } else {
-
-            // throw new Error("TODO")
-            //TODO
-            return ["...", []]
+            return [code, []]
         }
     }
 
@@ -142,13 +207,13 @@ export class CodeBuilder {
         const parametersString = this.parameterList(
             formatLength(this.blockStart(declaration)) + formatLength(returnTypeString), parameters.map(([name, type]) => concat(`${name}: `, type))
         )
-        return this._addBlock(concat(declaration ,parametersString, returnTypeString), () => {
+        return this._addBlock(concat(declaration, parametersString, returnTypeString), () => {
             body(new BodyBuilder(this))
         })
     }
 
-    _addParameterListLineOfCode(prefix: MaybeFormattedString, list: string[], addNewline = true): CodeBuilder {
-        return this._addLineOfCode(concat(prefix , this.parameterList(formatLength(prefix), list)), addNewline)
+    _addParameterListLineOfCode(prefix: MaybeFormattedString, list: MaybeFormattedString[], addNewline = true): CodeBuilder {
+        return this._addLineOfCode(concat(prefix, this.parameterList(formatLength(prefix), list)), addNewline)
     }
 
     /**
@@ -196,6 +261,10 @@ export class CodeBuilder {
     }
 }
 
+interface Import {
+    reference: string
+    path: string
+}
 
 export class InterfaceBuilder {
     protected codegen: CodeBuilder
@@ -268,7 +337,7 @@ export class BodyBuilder {
     }
 
     addCast(type: TsType): BodyBuilder {
-        this.codegen._addLineOfCode(concat("as ",type), false)
+        this.codegen._addLineOfCode(concat("as ", type), false)
         return this
     }
 

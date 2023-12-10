@@ -1,10 +1,9 @@
 import {RpcModel, RpcModelKind, RpcStructModel, RpcType, RpcUnionModel} from "./ApiDefinition";
-import {buildRecord, objectForEach, objectMapValues, removeBeforeLastExclusive} from "./Util";
 import dayjs, {isDayjs} from "dayjs";
 import {RpcTypeDiscriminator, RpcTypeNames, RpcTypes} from "./RpcTypeUtils";
 import {simpleModelName} from "./ModelName";
 import duration from "dayjs/plugin/duration";
-import exp from "constants";
+import {mapRecordValues, recordForEach} from "ts-minimum";
 
 dayjs.extend(duration)
 
@@ -57,7 +56,7 @@ const DefaultJavascriptToSpecAdapter: TypedValueAdapter = (context) => {
     // if (dayjs.isDuration(value)) return value.toISOString()
 
     const parentModel = context.parentModel
-    if (parentModel?.type === "struct" && parentModel.hasTypeDiscriminator && context.key === RpcTypeDiscriminator) {
+    if (parentModel?.type ===RpcModelKind.struct  && parentModel.hasTypeDiscriminator && context.key === RpcTypeDiscriminator) {
         if (context.polymorphic === true) {
             // Currently, because kotlin is being a bitch, we need to provide te package name in addition to the class name for the type discriminator.
             return parentModel.packageName + "." + parentModel.name
@@ -96,14 +95,14 @@ const DefaultSpecToJavascriptAdapter: TypedValueAdapter = ({key, value, parentMo
     }
 
     // This is in the case that this is the type discriminator itself
-    const parentHasTypeDiscriminator = parentModel?.type === "struct" && parentModel.hasTypeDiscriminator
+    const parentHasTypeDiscriminator = parentModel?.type === RpcModelKind.struct && parentModel.hasTypeDiscriminator
     // Typescript still expects the simple name to be the value of the type field
     if (parentHasTypeDiscriminator && key === RpcTypeDiscriminator) {
         return simpleModelName(parentModel.name)
     }
 
     // This is in the case this is a struct that contains a type discriminator
-    const hasTypeDiscriminator = model?.type === "struct" && model.hasTypeDiscriminator
+    const hasTypeDiscriminator = model?.type ===RpcModelKind.struct  && model.hasTypeDiscriminator
     // Even if in this case the type is not polymorphic, we want to include the "type" field anyway because it's vital for typescript code using it.
     if (polymorphic !== true && hasTypeDiscriminator) {
         if (typeof value !== "object") throw new Error("Unexpected non-object value with a struct type")
@@ -122,7 +121,7 @@ export class Rpc4aTypeAdapter {
     private readonly modelMap: Record<string, RpcModel>
 
     constructor(models: RpcModel[]) {
-        this.modelMap = buildRecord(models, (model) => [model.name, model])
+        this.modelMap = models.toRecord( (model) => [model.name, model])
     }
 
     alignJsItemWithRpcSpec(value: unknown, type: RpcType): unknown {
@@ -212,9 +211,9 @@ class RpcTypeAdapterImpl {
         const matchingModel = this.modelMap[type.name]
         if (matchingModel === undefined) return undefined
         if (matchingModel.type === RpcModelKind.enum) return matchingModel // Enums don't have type arguments
-        const parameterValues = buildRecord(
+        const parameterValues = type.typeArguments.toRecord(
             // Populate type parameter values by index - the first argument corresponds to the first parameter, and so on.
-            type.typeArguments, (typeArg, i) => [matchingModel.typeParameters[i], typeArg]
+           (typeArg, i) => [matchingModel.typeParameters[i], typeArg]
         )
         return expandModelTypeParameters(matchingModel, parameterValues);
     }
@@ -242,7 +241,7 @@ class RpcTypeAdapterImpl {
         if (Array.isArray(obj)) {
             throw new Error(`Item ${JSON.stringify(obj)} is invalid: it's an array but it's defined as a struct (object)`)
         }
-        return objectMapValues(obj, (key, value) => {
+        return mapRecordValues(obj, (key, value) => {
             const isTypeDiscriminator = model.hasTypeDiscriminator && key === RpcTypeDiscriminator
 
             // SLOW: O(n) search on every object property
@@ -266,7 +265,7 @@ class RpcTypeAdapterImpl {
         const [keyType, valueType] = type.typeArguments
         const resultObject: Partial<Record<string | number, unknown>> = {}
 
-        objectForEach(obj, (key, value) => {
+        recordForEach(obj, (key, value) => {
             // Align both keys and values
             const alignedKey = this.alignWithType({value: key, type: keyType}) as string | number
             resultObject[alignedKey] = this.alignWithType({value, type: valueType})
@@ -355,7 +354,7 @@ function resolveActualMemberOfUnionType(obj: object, model: RpcUnionModel): RpcT
             )
         }
         // Ignore package name
-        const simpleTypeName = removeBeforeLastExclusive(typeValue, ".")
+        const simpleTypeName = typeValue.removeBeforeLastInclusive(".")
         // Resolve the full type info of the model, most importantly the type arguments, by inspecting the union type.
         const modelType = model.options.find(type => simpleModelName(type.name) === simpleTypeName)
         if (modelType === undefined) {
