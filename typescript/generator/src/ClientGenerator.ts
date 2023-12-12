@@ -1,9 +1,9 @@
-import {generateModels} from "./ModelGenerator";
+import {generateModels} from "./ModelGenerator"
 import * as fs from "fs";
-import {generateAccessor} from "./ClientAccessorGenerator";
+import {generateAccessor} from "./ClientAccessorGenerator"
 import {ApiDefinition} from "rpc4ts-runtime";
-import {fillDefaultApiDefinitionValues} from "./ApiDefinitionsDefaults";
-import {generateSerializers} from "./SerializerGenerator";
+import {fillDefaultApiDefinitionValues} from "./ApiDefinitionsDefaults"
+import {generateSerializers} from "./SerializerGenerator"
 
 
 export interface Rpc4TsClientGenerationOptions {

@@ -11,14 +11,14 @@ import {
     StringSerializer,
     TupleSerializer
 } from "rpc4ts-runtime";
-import {CodeBuilder} from "./codegen/CodeBuilder";
-import {Rpc4TsClientGenerationOptions} from "./ClientGenerator";
+// import {CodeBuilder} from "./codegen/CodeBuilder";
+import {Rpc4TsClientGenerationOptions} from "./ClientGenerator"
 // import {buildRecord} from "rpc4ts-runtime";
-import {structRuntimeName} from "./ModelGenerator";
-import {concat, join, MaybeFormattedString, resolveMaybeFormatString, TsFunction, TsType, TsTypes} from "./codegen/FormatString";
-import {modelName2, modelType} from "./Rpc4tsType";
+import {structRuntimeName} from "./ModelGenerator"
+import {concat, join, MaybeFormattedString, resolveMaybeFormatString, TsFunction, TsType, TsTypes} from "./codegen/FormatString"
+import {modelName2, modelType} from "./Rpc4tsType"
 import "ts-minimum"
-import "ts-minimum/extensions/Extensions"
+import {CodeBuilder} from "./codegen/CodeBuilder"
 
 
 // export function addSerializerImports(codeBuilder: CodeBuilder, options: Rpc4TsClientGenerationOptions): CodeBuilder {

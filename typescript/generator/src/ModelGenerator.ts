@@ -1,8 +1,8 @@
-import {CodeBuilder} from "./codegen/CodeBuilder";
+import {CodeBuilder} from "./codegen/CodeBuilder"
 import {RpcEnumModel, RpcInlineModel, RpcModel, RpcModelKind, RpcStructModel, RpcType, RpcUnionModel,} from "rpc4ts-runtime";
-import {modelName2, modelType, typescriptRpcType} from "./Rpc4tsType";
-import {TsObjectType, TsTypes} from "./codegen/FormatString";
-import {Rpc4TsClientGenerationOptions} from "./ClientGenerator";
+import {modelName2, modelType, typescriptRpcType} from "./Rpc4tsType"
+import {TsObjectType, TsTypes} from "./codegen/FormatString"
+import {Rpc4TsClientGenerationOptions} from "./ClientGenerator"
 
 export function generateModels(models: RpcModel[], serviceName: string, options: Rpc4TsClientGenerationOptions): string {
     const builder = new CodeBuilder(options.localLibPaths)

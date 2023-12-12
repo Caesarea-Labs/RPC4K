@@ -1,14 +1,14 @@
 import {TsSerializer} from "./TsSerializer";
-import {recordForEach, recordMapValues, recordToArray} from "../impl/Util";
 import {SerialDescriptor} from "./core/SerialDescriptor";
 import {Encoder} from "./core/encoding/Encoder";
 import {Decoder, DECODER_DECODE_DONE} from "./core/encoding/Decoding";
 import {GeneratedSerializer, PluginGeneratedSerialDescriptor} from "./internal/PluginGeneratedSerializer";
+import {mapRecordValues, recordForEach, recordToArray} from "ts-minimum";
 
 /**
  * Serializers may be lazy so that recursively defined serializers may be used
  */
-export type SerializerMap<T> = Record<keyof T, (() => TsSerializer<any>) | TsSerializer<any>>
+export type SerializerMap<T> = Record<keyof T, (() => TsSerializer<unknown>) | TsSerializer<unknown>>
 
 export class GeneratedSerializerImpl<T> extends GeneratedSerializer<T> {
     private readonly serializers: SerializerMap<T>
@@ -17,25 +17,25 @@ export class GeneratedSerializerImpl<T> extends GeneratedSerializer<T> {
      * Resolve lazy serializers, so it should only be used when the serializer is actually used
      * @private
      */
-    private getSerializerMap(): Record<keyof T, TsSerializer<any>> {
-       return recordMapValues(this.serializers,
+    private getSerializerMap(): Record<keyof T, TsSerializer<unknown>> {
+       return mapRecordValues(this.serializers,
             (_, serializer) => typeof serializer === "function" ? serializer() : serializer
-        )  as Record<keyof T, TsSerializer<any>>
+        ) 
     }
 
-    private readonly typeParamSerializers: TsSerializer<any>[]
+    private readonly typeParamSerializers: TsSerializer<unknown>[]
 
-    typeParametersSerializers(): TsSerializer<any>[] {
+    typeParametersSerializers(): TsSerializer<unknown>[] {
         return this.typeParamSerializers
     }
 
     private readonly elementIndices: (keyof T)[]
-    private readonly construct: (params: any) => T
+    private readonly construct: (params: unknown) => T
 
-    public childSerializers(): TsSerializer<any>[] {
+    public childSerializers(): TsSerializer<unknown>[] {
         return Object.values(this.serializers)
     }
-    constructor(name: string, serializers: SerializerMap<T>, typeParameterSerializers: TsSerializer<any>[], constructor: (params: any) => T) {
+    constructor(name: string, serializers: SerializerMap<T>, typeParameterSerializers: TsSerializer<unknown>[], constructor: (params: unknown) => T) {
         super()
         this.typeParamSerializers = typeParameterSerializers
         this.serializers = serializers
@@ -61,8 +61,10 @@ export class GeneratedSerializerImpl<T> extends GeneratedSerializer<T> {
 
     serialize(encoder: Encoder, value: T): void {
         const compositeEncoder = encoder.beginStructure(this.descriptor)
-        recordForEach(this.getSerializerMap(), (elementName, serializer, i) => {
+        let i = 0;
+        recordForEach(this.getSerializerMap(), (elementName, serializer) => {
             compositeEncoder.encodeSerializableElement(this.descriptor, i, serializer, value[elementName])
+            i++
         })
         compositeEncoder.endStructure(this.descriptor)
     }
@@ -82,7 +84,7 @@ export class GeneratedSerializerImpl<T> extends GeneratedSerializer<T> {
                 throw new Error(`Unexpected index: ${index}`);
             } else {
                 const key = this.elementIndices[index]
-                values[key] = compositeDecoder.decodeSerializableElement(this.descriptor, index, serializers[key])
+                values[key] = compositeDecoder.decodeSerializableElement(this.descriptor, index, serializers[key]) as T[keyof T]
             }
         }
 

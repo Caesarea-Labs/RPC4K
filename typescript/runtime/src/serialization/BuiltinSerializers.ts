@@ -14,7 +14,7 @@ import {Duration} from "dayjs/plugin/duration";
 import {NullableSerializerDescriptor} from "./builtins/NullableSerializerDescriptor";
 import any = jasmine.any;
 import {TupleDescriptor} from "./descriptors/TupleDescriptor";
-import {recordToArray} from "../impl/Util";
+import {recordToArray} from "ts-minimum";
 
 export const StringSerializer: TsSerializer<string> = {
     descriptor: new PrimitiveSerialDescriptor("javascript.string", PrimitiveKind.STRING),
@@ -118,18 +118,19 @@ export class RecordSerializer<K extends string | number, V> extends MapLikeSeria
 
     checkCapacity(builder: Record<K, V>, size: number): void {
     }
+
 }
 export class TupleSerializer implements TsSerializer<unknown[]>  {
-    private readonly elementSerializers: TsSerializer<any>[]; // Define the type of element serializers
+    private readonly elementSerializers: TsSerializer<unknown>[]; // Define the type of element serializers
      descriptor: SerialDescriptor; // Define the type of descriptor
 
-    constructor(elementSerializers: TsSerializer<any>[]) {
+    constructor(elementSerializers: TsSerializer<unknown>[]) {
         this.elementSerializers = elementSerializers;
         this.descriptor = new TupleDescriptor(elementSerializers.map(serializer => serializer.descriptor));
     }
 
-    deserialize(decoder: Decoder): any[] {
-        const builder: any[] = [];
+    deserialize(decoder: Decoder): unknown[] {
+        const builder: unknown[] = [];
         const compositeDecoder = decoder.beginStructure(this.descriptor);
         if (compositeDecoder.decodeSequentially()) {
             this.readAll(compositeDecoder, builder, this.readSize(compositeDecoder, builder));
@@ -143,18 +144,18 @@ export class TupleSerializer implements TsSerializer<unknown[]>  {
         return builder;
     }
 
-    private readAll(decoder: CompositeDecoder, list: any[], size: number): void {
+    private readAll(decoder: CompositeDecoder, list: unknown[], size: number): void {
         if (size < 0) throw new Error("Size must be known in advance when using READ_ALL");
         for (let index = 0; index < size; index++) {
             this.readElement(decoder, index, list);
         }
     }
 
-    private readElement(decoder: CompositeDecoder, index: number, builder: any[]): void {
+    private readElement(decoder: CompositeDecoder, index: number, builder: unknown[]): void {
         builder[index] = decoder.decodeSerializableElement(this.descriptor, index, this.elementSerializers[index]);
     }
 
-    serialize(encoder: Encoder, value: any[]): void {
+    serialize(encoder: Encoder, value: unknown[]): void {
         const size = value.length;
         const collection = encoder.beginCollection(this.descriptor, size)
         value.forEach((item, i) => {
@@ -163,12 +164,12 @@ export class TupleSerializer implements TsSerializer<unknown[]>  {
         collection.endStructure(this.descriptor)
     }
 
-    private readSize(decoder: CompositeDecoder, builder: any[]): number {
+    private readSize(decoder: CompositeDecoder, builder: unknown[]): number {
         const size = decoder.decodeCollectionSize(this.descriptor);
         if (builder.length < size) builder.length = size;
         return size;
     }
-};
+}
 
 export const DayjsSerializer: TsSerializer<Dayjs> = {
     descriptor: StringSerializer.descriptor,

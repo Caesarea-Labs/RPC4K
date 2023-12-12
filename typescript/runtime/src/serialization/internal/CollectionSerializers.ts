@@ -5,7 +5,7 @@ import {SerialDescriptor} from "../core/SerialDescriptor";
 import {encodeCollection} from "../core/encoding/Encoding";
 import {isPrimitiveKind} from "../core/SerialKind";
 import {RecordDesc} from "./CollectionDescriptors";
-import {recordForEach, recordToArray} from "../../impl/Util";
+import {recordForEach} from "ts-minimum";
 
 abstract class AbstractCollectionSerializer<Element, Collection, Builder> implements TsSerializer<Collection> {
     abstract descriptor: SerialDescriptor
@@ -21,7 +21,7 @@ abstract class AbstractCollectionSerializer<Element, Collection, Builder> implem
 
     //
     public merge(decoder: Decoder, previous: Collection | null): Collection {
-        const builder = previous ? this.toBuilder(previous) : this.builder();
+        const builder = previous !== null ? this.toBuilder(previous) : this.builder();
         const startIndex = this.builderSize(builder);
         const compositeDecoder = decoder.beginStructure(this.descriptor);
         if (compositeDecoder.decodeSequentially()) {

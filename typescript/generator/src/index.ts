@@ -4,7 +4,7 @@ import * as fs from "fs";
 import {createCommand} from "@commander-js/extra-typings";
 import path from "path";
 import "ts-minimum"
-import "ts-minimum/extensions/ExtensionsImpl"
+
 
 // npm link rpc4ts-runtime ts-minimum
 

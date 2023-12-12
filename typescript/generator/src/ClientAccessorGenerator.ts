@@ -1,9 +1,9 @@
-import {CodeBuilder} from "./codegen/CodeBuilder";
-import {Rpc4TsClientGenerationOptions} from "./ClientGenerator";
+import {CodeBuilder} from "./codegen/CodeBuilder"
+import {Rpc4TsClientGenerationOptions} from "./ClientGenerator"
 import {ApiDefinition, RpcModelKind, RpcType, RpcTypeNames} from "rpc4ts-runtime";
-import {isBuiltinType, modelType, typescriptRpcType} from "./Rpc4tsType";
-import {buildSerializer} from "./SerializerGenerator";
-import {TsTypes, TsNamespace, MaybeFormattedString, concat, join} from "./codegen/FormatString";
+import {isBuiltinType, modelType, typescriptRpcType} from "./Rpc4tsType"
+import {buildSerializer} from "./SerializerGenerator"
+import {TsTypes, TsNamespace, MaybeFormattedString, concat, join} from "./codegen/FormatString"
 
 
  const RPC_CLIENT = TsTypes.library("RpcClient", "RpcClient")

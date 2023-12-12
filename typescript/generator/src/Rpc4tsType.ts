@@ -1,5 +1,5 @@
 import {RpcType, RpcTypeNames} from "rpc4ts-runtime";
-import {tsReferenceToString, TsType, TsTypes} from "./codegen/FormatString";
+import {tsReferenceToString, TsType, TsTypes} from "./codegen/FormatString"
 
 
 export function typescriptRpcType(type: RpcType, serviceName: string): TsType {
