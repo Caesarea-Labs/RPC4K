@@ -345,7 +345,7 @@ export namespace TsTypes {
     export function library(name: string, importPath: string, ...typeArguments: TsType[]): TsBasicType {
         return {
             importPath: {
-                value: importPath, libraryPath: false
+                value: importPath, libraryPath: true
             },
             name, typeArguments
         }

@@ -1,5 +1,4 @@
 import {FetchRpcClient, JsonFormat} from "../src/components";
-import {RpcResponseError} from "rpc4ts-runtime/RpcClientError";
 import dayjs from "dayjs";
 import {AllEncompassingServiceApi} from "./generated/rpc4ts_AllEncompassingServiceApi";
 import {
@@ -13,6 +12,8 @@ import {
 } from "./generated/rpc4ts_AllEncompassingServiceModels";
 import {PolymorphicClassOption4} from "./generated/rpc4ts_AllEncompassingServiceModels";
 import JestMatchers = jest.JestMatchers;
+import {RpcResponseError} from "../src/RpcClientError";
+import duration from "dayjs/plugin/duration";
 
 // test("Test constructor dynamics", () => {
 //     const x: CreateLobbyResponse = new CreateLobbyResponse({})

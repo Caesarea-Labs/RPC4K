@@ -16,7 +16,7 @@ export class UnionSerializer<T> extends AbstractPolymorphicSerializer<T> {
     constructor(
         private serialName: string,
         public baseClass: TsClass<T>,
-        private subclasses: TsClass<any>[],
+        private subclasses: TsClass<unknown>[],
         private subclassSerializers: TsSerializer<T>[]
     ) {
         super();

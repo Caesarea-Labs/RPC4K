@@ -16,9 +16,10 @@ import {Rpc4TsClientGenerationOptions} from "./ClientGenerator"
 // import {buildRecord} from "rpc4ts-runtime";
 import {structRuntimeName} from "./ModelGenerator"
 import {concat, join, MaybeFormattedString, resolveMaybeFormatString, TsFunction, TsType, TsTypes} from "./codegen/FormatString"
-import {modelName2, modelType} from "./Rpc4tsType"
+import {modelName, modelType} from "./Rpc4tsType"
 import "ts-minimum"
 import {CodeBuilder} from "./codegen/CodeBuilder"
+import {GeneratedSerializerImpl} from "rpc4ts-runtime/src/serialization/GeneratedSerializer";
 
 
 // export function addSerializerImports(codeBuilder: CodeBuilder, options: Rpc4TsClientGenerationOptions): CodeBuilder {
@@ -92,8 +93,8 @@ const ENUM_SERIALIZER = TsTypes.library("EnumSerializer", "serialization/EnumSer
 
 function addEnumSerializer(code: CodeBuilder, enumModel: RpcEnumModel, serviceName: string) {
     const enumType = modelType(enumModel.name, serviceName)
-    const enumName = modelName2(enumModel.name)
-    code.addTopLevelFunction(serializerName2(enumModel.name), [], TS_SERIALIZER(enumType), (builder) => {
+    const enumName = modelName(enumModel.name)
+    code.addTopLevelFunction(serializerName(enumModel.name), [], [], TS_SERIALIZER(enumType), (builder) => {
         builder.addReturningFunctionCall(concat("new ", ENUM_SERIALIZER), [
             `"${enumName}"`,
             `[${enumModel.options.map(option => `"${option}"`).join(", ")}]`
@@ -105,7 +106,7 @@ const UNION_SERIALIZER = TsTypes.library("UnionSerializer", "serialization/Union
 
 
 function addUnionSerializer(code: CodeBuilder, unionModel: RpcUnionModel, modelMap: ModelMap, serviceName: string) {
-    const unionName = modelName2(unionModel.name)
+    const unionName = modelName(unionModel.name)
     // Name type arguments 'T{i}`
     const typeArguments = unionModel.typeParameters.map((_, i) => TsTypes.typeParameter(TypeParameterPrefix + i))
     // const typeArguments = unionModel.typeParameters.length === 0 ? "" :
@@ -113,7 +114,7 @@ function addUnionSerializer(code: CodeBuilder, unionModel: RpcUnionModel, modelM
     const unionType = modelType(unionModel.name, serviceName, typeArguments)
     // const modelType2 = `<${unionName}${typeArguments}>`
     const typeParameterValues = mapTypeParametersValues(unionModel)
-    code.addTopLevelFunction(serializerDeclaration(unionModel.name, typeArguments), [], TS_SERIALIZER(unionType), (builder) => {
+    code.addTopLevelFunction(serializerName(unionModel.name), typeArguments, [], TS_SERIALIZER(unionType), (builder) => {
 
         const subclasses = fullyExpandUnion(unionModel, modelMap)
         const uniqueSubclasses = subclasses.distinctBy(subclass => subclass.name)
@@ -135,12 +136,12 @@ function addUnionSerializer(code: CodeBuilder, unionModel: RpcUnionModel, modelM
         const subclassSerializers = uniqueSubclasses.map(type => buildSerializer(type, typeParameterValues, serviceName))
 
 
-        builder.addReturningFunctionCall(`new UnionSerializer${modelType}`, [
+        builder.addReturningFunctionCall(concat("new ", UNION_SERIALIZER, "<", unionType, ">"), [
             `"${unionName}"`,
             `"${unionName}"`, // Not entirely accurate but should work because the implementation doesn't actually consider what is passed here
             // (it should be the runtime name of the union)
             `[${subclassNames.join(", ")}]`,
-            `[${subclassSerializers.join(", ")}]`
+            concat("[", join(subclassSerializers, ", "), "]")
         ])
     })
 }
@@ -186,13 +187,13 @@ function addChild(type: RpcType, to: NonUnionModels, modelMap: ModelMap) {
 //     }
 
 
-export function serializerName2(typeName: string): string {
-    return `rpc4ts_serializer_${modelName2(typeName)}`
+export function serializerName(typeName: string): string {
+    return `rpc4ts_serializer_${modelName(typeName)}`
 }
 
 function serializerDeclaration(modelName: string, typeArguments: TsType[]): MaybeFormattedString {
-    if (typeArguments.length === 0) return serializerName2(modelName)
-    return concat(serializerName2(modelName) + "<", ...typeArguments, ">")
+    if (typeArguments.length === 0) return serializerName(modelName)
+    return concat(serializerName(modelName) + "<", ...typeArguments, ">")
 }
 
 
@@ -211,27 +212,29 @@ function addStructSerializer(code: CodeBuilder, struct: RpcStructModel, serviceN
     // const structName2 = modelName2(struct.name)
 
     // const modelType = `<${structName}${typeArguments}>`
-    const serializeName = serializerName2(struct.name)
-    code.addTopLevelFunction(serializerDeclaration(struct.name, typeArguments), parameters, TS_SERIALIZER(structType), (func) => {
-        const serializers = struct.properties.map(prop => {
+    const serializeName = serializerName(struct.name)
+    code.addTopLevelFunction(serializerName(struct.name), typeArguments, parameters, TS_SERIALIZER(structType), (func) => {
+        const serializers = join(struct.properties.map(prop => {
             const serializer = buildSerializer(prop.type, typeParameterValues, serviceName)
             // If the serializer refers to itself, defer it to prevent infinite recursion.
             // The GeneratedSerializerImpl takes care to lazily use the serializers so that recursion is limited.
             const deferredSerializer = resolveMaybeFormatString(serializer).includes(serializeName) ? concat(`() => `, serializer) : serializer
             return concat(`${prop.name}: `, deferredSerializer);
-        }).join(", ")
+        }), ", ")
         const typeArgumentParamNames = parameters.map(([name]) => name).join(", ")
         func.addReturningFunctionCall(
-            `new GeneratedSerializerImpl${modelType}`,
+            concat("new ", GENERATED_SERIALIZER_IMPL),
             [
                 structRuntimeName(struct),
-                `{${serializers}}`,
+                concat("{", serializers, "}"),
                 `[${typeArgumentParamNames}]`,
                 concat(`(params) => new `, structType, `(params)`)
             ]
         )
     })
 }
+
+const GENERATED_SERIALIZER_IMPL = TsTypes.library("GeneratedSerializerImpl", "serialization/GeneratedSerializer")
 
 function mapTypeParametersValues(model: RpcUnionModel | RpcStructModel): Record<string, string> {
     return model.typeParameters.toRecord(
@@ -339,7 +342,7 @@ class SerializerBuilder {
                     type.typeArguments.map(arg => this.buildSerializer(arg)),
                     ", "
                 )
-                return concat(TsFunction.user(serializerName2(type.name), SERIALIZERS_FILE(this.serviceName)), `(`, typeArgumentSerializers, `)`)
+                return concat(TsFunction.user(serializerName(type.name), SERIALIZERS_FILE(this.serviceName)), `(`, typeArgumentSerializers, `)`)
             }
 
         }
@@ -347,14 +350,14 @@ class SerializerBuilder {
 
 }
 
-const NULLABLE_SERIALIZER = TsTypes.library("NullableSerializer", "serialization/builtinSerializers")
-const BOOLEAN_SERIALIZER = TsTypes.library("BooleanSerializer", "serialization/builtinSerializers")
-const NUMBER_SERIALIZER = TsTypes.library("NumberSerializer", "serialization/builtinSerializers")
-const STRING_SERIALIZER = TsTypes.library("StringSerializer", "serialization/builtinSerializers")
-const DURATION_SERIALIZER = TsTypes.library("DurationSerializer", "serialization/builtinSerializers")
-const DAYJS_SERIALIZER = TsTypes.library("DayjsSerializer", "serialization/builtinSerializers")
-const ARRAY_SERIALIZER = TsTypes.library("ArraySerializer", "serialization/builtinSerializers")
-const RECORD_SERIALIZER = TsTypes.library("RecordSerializer", "serialization/builtinSerializers")
+const NULLABLE_SERIALIZER = TsTypes.library("NullableSerializer", "serialization/BuiltinSerializers")
+const BOOLEAN_SERIALIZER = TsTypes.library("BooleanSerializer", "serialization/BuiltinSerializers")
+const NUMBER_SERIALIZER = TsTypes.library("NumberSerializer", "serialization/BuiltinSerializers")
+const STRING_SERIALIZER = TsTypes.library("StringSerializer", "serialization/BuiltinSerializers")
+const DURATION_SERIALIZER = TsTypes.library("DurationSerializer", "serialization/BuiltinSerializers")
+const DAYJS_SERIALIZER = TsTypes.library("DayjsSerializer", "serialization/BuiltinSerializers")
+const ARRAY_SERIALIZER = TsTypes.library("ArraySerializer", "serialization/BuiltinSerializers")
+const RECORD_SERIALIZER = TsTypes.library("RecordSerializer", "serialization/BuiltinSerializers")
 const TUPLE_SERIALIZER = TsTypes.library("TupleSerializer", "serialization/BuiltinSerializers")
 const VOID_SERIALIZER = TsTypes.library("VoidSerializer", "serialization/BuiltinSerializers")
 

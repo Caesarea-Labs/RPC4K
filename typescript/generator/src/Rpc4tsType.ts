@@ -114,8 +114,7 @@ function resolveToUnderlying(type: RpcType): RpcType {
 /**
  * Converts the Rpc representation of a struct name to the typescript representation
  */
-//TODO: remove '2'
-export function modelName2(name: string): string {
+export function modelName(name: string): string {
     // Treat "Foo.Bar" as "FooBar"
     return name.replace(/\./g, "")
 }
@@ -125,7 +124,7 @@ export function modelName2(name: string): string {
 export function modelType(name: string, serviceName: string,typeArguments?: TsType[]): TsType {
     // Treat "Foo.Bar" as "FooBar"
     // const withoutDot = name.replace(/\./g, "")
-    return TsTypes.create(modelName2(name), MODELS_FILE(serviceName), ...(typeArguments ?? []))
+    return TsTypes.create(modelName(name), MODELS_FILE(serviceName), ...(typeArguments ?? []))
 }
 
 export function MODELS_FILE(serviceName: string): string {

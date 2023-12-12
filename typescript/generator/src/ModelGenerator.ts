@@ -1,6 +1,6 @@
 import {CodeBuilder} from "./codegen/CodeBuilder"
 import {RpcEnumModel, RpcInlineModel, RpcModel, RpcModelKind, RpcStructModel, RpcType, RpcUnionModel,} from "rpc4ts-runtime";
-import {modelName2, modelType, typescriptRpcType} from "./Rpc4tsType"
+import {modelName, modelType, typescriptRpcType} from "./Rpc4tsType"
 import {concat, join, TsObjectType, TsTypes} from "./codegen/FormatString"
 import {Rpc4TsClientGenerationOptions} from "./ClientGenerator"
 
@@ -34,7 +34,7 @@ export function generateModels(models: RpcModel[], serviceName: string, options:
  * property as a non-nullable value assuming the server always gives it a value.
  */
 function addStruct(code: CodeBuilder, struct: RpcStructModel, serviceName :string) {
-    const name = modelName2(struct.name)
+    const name = modelName(struct.name)
     code.addClass({name, typeParameters: struct.typeParameters}, classBuilder => {
         struct.properties.forEach(({name, type, isOptional}) => {
             classBuilder.addProperty(
@@ -97,7 +97,7 @@ export function structRuntimeName(model: RpcStructModel): string {
 }
 
 function addEnum(code: CodeBuilder, enumModel: RpcEnumModel) {
-    const name = modelName2(enumModel.name)
+    const name = modelName(enumModel.name)
     const options = enumModel.options.map(option =>  TsTypes.stringLiteral(option))
     code.addUnionType({name: name, types: options})
         // Add a list of values of an enum to make it easier to use
@@ -106,7 +106,7 @@ function addEnum(code: CodeBuilder, enumModel: RpcEnumModel) {
 
 function addUnion(code: CodeBuilder, struct: RpcUnionModel, serviceName: string) {
     code.addUnionType({
-        name: modelName2(struct.name),
+        name: modelName(struct.name),
         types: struct.options.map(option => typescriptRpcType(option, serviceName)),
         typeParameters: struct.typeParameters
     })
@@ -115,7 +115,7 @@ function addUnion(code: CodeBuilder, struct: RpcUnionModel, serviceName: string)
 
 function addInlineType(code: CodeBuilder, model: RpcInlineModel, serviceName: string) {
     code.addTypeAlias({
-        name: modelName2(model.name),
+        name: modelName(model.name),
         type: typescriptRpcType(model.inlinedType, serviceName),
         typeParameters: model.typeParameters
     })

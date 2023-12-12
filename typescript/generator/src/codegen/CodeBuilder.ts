@@ -122,9 +122,10 @@ export class CodeBuilder {
         return this._addLineOfCode(concat(`export const ${name} = `, value))
     }
 
-    addTopLevelFunction(declaration: MaybeFormattedString, parameters: [string, TsReference][], returnType: TsReference | undefined, body: (body: BodyBuilder) => void): CodeBuilder {
-        //TODO: we need to accept the function name itself so we can track it in this.referencesInFile
-        return this._addFunction(concat(`export function `, declaration), parameters, returnType, body)
+    addTopLevelFunction(name: string,typeArguments: TsType[], parameters: [string, TsReference][], returnType: TsReference | undefined, body: (body: BodyBuilder) => void): CodeBuilder {
+        this.referencesInFile.add(name)
+        const typeArgs = typeArguments.length > 0 ? concat("<",join(typeArguments, ", ") , ">") : ""
+        return this._addFunction(concat(`export function `, name, typeArgs), parameters, returnType, body)
     }
 
     ///////////////////// Internal ////////////////
@@ -199,6 +200,9 @@ export class CodeBuilder {
                     reference: reference.name
                 })
             }
+            for (const arg of reference.typeArguments) {
+                this.addReferences(arg, addTo)
+            }
         } else {
             for (const propertyType of Object.values(reference.properties)) {
                 this.addReferences(propertyType, addTo)
@@ -210,7 +214,7 @@ export class CodeBuilder {
         return path.libraryPath ? this.libraryPath(path.value) : path.value
     }
 
-    libraryPath(path: string) {
+    libraryPath(path: string): string {
         if (this.localImports) return `../../src/${path}`
         else return "rpc4ts-runtime"
     }

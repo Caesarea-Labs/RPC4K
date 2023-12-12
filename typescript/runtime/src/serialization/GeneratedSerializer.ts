@@ -35,7 +35,8 @@ export class GeneratedSerializerImpl<T> extends GeneratedSerializer<T> {
     public childSerializers(): TsSerializer<unknown>[] {
         return Object.values(this.serializers)
     }
-    constructor(name: string, serializers: SerializerMap<T>, typeParameterSerializers: TsSerializer<unknown>[], constructor: (params: unknown) => T) {
+    // eslint-disable-next-line
+    constructor(name: string, serializers: SerializerMap<T>, typeParameterSerializers: TsSerializer<unknown>[], constructor: (params: any) => T) {
         super()
         this.typeParamSerializers = typeParameterSerializers
         this.serializers = serializers
