@@ -3,7 +3,6 @@ import {DeserializationStrategy, SerializationStrategy} from "../serialization/T
 import {Json} from "../serialization/json/Json";
 
 const json = new Json()
-//TODO: this won't work well with maps with non-primitive keys
 export const JsonFormat: SerializationFormat = {
     decode<T>(deserializer: DeserializationStrategy<T>, raw: Uint8Array): T {
         return json.decodeFromString(deserializer, new TextDecoder().decode(raw))

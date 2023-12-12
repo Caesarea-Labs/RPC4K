@@ -1,5 +1,5 @@
 
-import io.github.natanfudge.rpc4k.runtime.api.Api
+import com.caesarealabs.rpc4k.runtime.api.Api
 import java.util.Locale
 
 

@@ -12,7 +12,7 @@
         <list>
           <option value="test" />
           <option value="--tests" />
-          <option value="io.github.natanfudge.rpc4k.test.*" />
+          <option value="com.caesarealabs.rpc4k.test.*" />
         </list>
       </option>
       <option name="vmOptions" />

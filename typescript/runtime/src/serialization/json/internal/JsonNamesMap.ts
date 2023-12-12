@@ -4,92 +4,19 @@
 import {Json} from "../Json";
 import {SerialDescriptor} from "../../core/SerialDescriptor";
 import {DECODER_UNKNOWN_NAME} from "../../core/encoding/Decoding";
-import {OtherSerialType, StructureKind} from "../../core/SerialKind";
-import {JsonException} from "./JsonExceptions";
-import {JsonNamingStrategy} from "../JsonConfiguration";
+import {OtherSerialType} from "../../core/SerialKind";
 
-// TODO: dont delete
-// Assuming DescriptorSchemaCache and Key types are defined
-// const JsonDeserializationNamesKey = new DescriptorSchemaCache.Key<Map<string, number>>();
-// const JsonSerializationNamesKey = new DescriptorSchemaCache.Key<Array<string>>();
-//
-// function buildDeserializationNamesMap(serialDescriptor: SerialDescriptor, json: Json): Map<string, number> {
-//     const builder: Map<string, number> = new Map();
-//
-//     const putOrThrow = (name: string, index: number) => {
-//         const entity = serialDescriptor.kind === SerialKind.ENUM ? "enum value" : "property";
-//         if (builder.has(name)) {
-//             throw new JsonException(
-//                 `The suggested name '${name}' for ${entity} ${serialDescriptor.getElementName(index)} is already one of the names for ${entity} ` +
-//                 `${serialDescriptor.getElementName(builder.get(name)!)} in ${serialDescriptor}`
-//             );
-//         }
-//         builder.set(name, index);
-//     };
-//
-//     const useLowercaseEnums = decodeCaseInsensitive(json,serialDescriptor)
-//     const strategyForClasses = namingStrategy(json, serialDescriptor);
-//
-//     for (let i = 0; i < serialDescriptor.elementsCount; i++) {
-//         // // Assuming getElementAnnotations and JsonNames types are defined
-//         // serialDescriptor.getElementAnnotations(i).filter(annotation => annotation instanceof JsonNames).forEach(annotation => {
-//         //     annotation.names.forEach(name => {
-//         //         putOrThrow(useLowercaseEnums ? name.toLowerCase() : name, i);
-//         //     });
-//         // });
-//
-//         let nameToPut: string | null = null;
-//         if (useLowercaseEnums) {
-//             nameToPut = serialDescriptor.getElementName(i).toLowerCase();
-//         } else if (strategyForClasses !== null) {
-//             nameToPut = strategyForClasses.serialNameForJson(serialDescriptor, i, serialDescriptor.getElementName(i));
-//         }
-//
-//         if (nameToPut !== null) {
-//             putOrThrow(nameToPut, i);
-//         }
-//     }
-//
-//     return builder.size === 0 ? new Map() : builder;
-// }
-//
-// function deserializationNamesMap(json: Json, descriptor: SerialDescriptor): Map<string, number> {
-//     return json.schemaCache.getOrPut(descriptor, JsonDeserializationNamesKey, () => buildDeserializationNamesMap(descriptor, json));
-// }
-
-// function serializationNamesIndices(serialDescriptor: SerialDescriptor, json: Json, strategy: JsonNamingStrategy): Array<string> {
-//     return json.schemaCache.getOrPut(serialDescriptor, JsonSerializationNamesKey, () => {
-//         return Array.from({ length: serialDescriptor.elementsCount }, (_, i) => {
-//             const baseName = serialDescriptor.getElementName(i);
-//             return strategy.serialNameForJson(serialDescriptor, i, baseName);
-//         });
-//     });
-// }
 
 export function getJsonElementName(serialDescriptor: SerialDescriptor, json: Json, index: number): string {
     return serialDescriptor.getElementName(index)
-    //TODO: do
+    // Don't delete:
     // const strategy = namingStrategy(json, serialDescriptor);
     // return strategy === null ? serialDescriptor.getElementName(index) : serializationNamesIndices(serialDescriptor, json, strategy)[index];
 }
-export function getJsonNameIndexOrThrow(serialDescriptor: SerialDescriptor, json: Json,  name: string , suffix: String = "") : number {
+
+export function getJsonNameIndexOrThrow(serialDescriptor: SerialDescriptor, json: Json, name: string, suffix: string = ""): number {
     return getJsonNameIndex(serialDescriptor, json, name)
 }
-
-function namingStrategy(json: Json, serialDescriptor: SerialDescriptor) {
-    return serialDescriptor.kind === StructureKind.CLASS ? json.configuration.namingStrategy : null;
-}
-
-// function getJsonNameIndexSlowPath(serialDescriptor: SerialDescriptor, json: Json, name: string): number {
-//     const namesMap = deserializationNamesMap(json, serialDescriptor);
-//     return namesMap.get(name) ?? DECODER_UNKNOWN_NAME;
-// }
-
-function decodeCaseInsensitive(json: Json, descriptor: SerialDescriptor): boolean {
-    return json.configuration.decodeEnumsCaseInsensitive && descriptor.kind === OtherSerialType.ENUM;
-}
-
-
 
 
 export function tryCoerceValue(
@@ -97,7 +24,8 @@ export function tryCoerceValue(
     elementDescriptor: SerialDescriptor, // Replace with the actual type of SerialDescriptor
     peekNull: (consume: boolean) => boolean,
     peekString: () => string | null,
-    onEnumCoercing: () => void = () => {}
+    onEnumCoercing: () => void = () => {
+    }
 ): boolean {
     if (!elementDescriptor.isNullable && peekNull(true)) {
         return true;
@@ -111,7 +39,7 @@ export function tryCoerceValue(
         if (enumValue === null) {
             return false; // If value is not a string, decodeEnum() will throw correct exception
         }
-        const enumIndex =  getJsonNameIndex(elementDescriptor,json,enumValue)
+        const enumIndex = getJsonNameIndex(elementDescriptor, json, enumValue)
         if (enumIndex === DECODER_UNKNOWN_NAME) {
             onEnumCoercing();
             return true;
@@ -131,7 +59,7 @@ export function getJsonNameIndex(
     name: string
 ): number {
     return serialDescriptor.getElementIndex(name);
-    // TODO: dont delete
+    // Don't delete:
     // if (decodeCaseInsensitive(json,serialDescriptor)) {
     //     return getJsonNameIndexSlowPath(serialDescriptor, json, name.toLowerCase());
     // }

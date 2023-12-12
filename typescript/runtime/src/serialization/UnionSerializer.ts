@@ -9,14 +9,14 @@ import {CompositeDecoder} from "./core/encoding/Decoding";
 import {Encoder} from "./core/encoding/Encoder";
 
 export class UnionSerializer<T> extends AbstractPolymorphicSerializer<T> {
-    private class2Serializer: Map<TsClass<T>, TsSerializer<T>>;
+    private class2Serializer: Map<TsClass, TsSerializer<T>>;
     private serialName2Serializer: Map<string, TsSerializer<T>>;
     private _descriptor: SerialDescriptor | undefined;
 
     constructor(
         private serialName: string,
-        public baseClass: TsClass<T>,
-        private subclasses: TsClass<unknown>[],
+        public baseClass: TsClass,
+        private subclasses: TsClass[],
         private subclassSerializers: TsSerializer<T>[]
     ) {
         super();
@@ -38,7 +38,7 @@ export class UnionSerializer<T> extends AbstractPolymorphicSerializer<T> {
     }
 
     get descriptor(): SerialDescriptor {
-        if (!this._descriptor) {
+        if (this._descriptor === undefined) {
             this._descriptor = this.buildDescriptor();
         }
         return this._descriptor;
@@ -63,7 +63,6 @@ export class UnionSerializer<T> extends AbstractPolymorphicSerializer<T> {
     }
 
     override findPolymorphicSerializerOrNullForValue(encoder: Encoder, value: T): SerializationStrategy<T> | null {
-        //TODO: this is probably gonna fail because of getTsClass implementation
         return this.class2Serializer.get(getTsClass(value)) ?? super.findPolymorphicSerializerOrNullForValue(encoder, value);
     }
 

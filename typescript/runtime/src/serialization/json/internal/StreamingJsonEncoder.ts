@@ -204,6 +204,6 @@ export class StreamingJsonEncoder extends AbstractEncoder implements JsonEncoder
 
 export function isUnsignedNumber(descriptor: SerialDescriptor): boolean {
     return false
-    // TODO
+    // don't delete:
     // return     descriptor.isInline && descriptor in unsignedNumberDescriptors
 }

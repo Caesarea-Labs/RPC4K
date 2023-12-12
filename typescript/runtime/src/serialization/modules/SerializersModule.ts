@@ -9,14 +9,14 @@ import {DeserializationStrategy, SerializationStrategy, TsSerializer} from "../T
 export abstract class SerializersModule {
 
     abstract getContextual<T>(
-        kClass: TsClass<T>,
-        typeArgumentsSerializers?: TsSerializer<any>[]
+        kClass: TsClass,
+        typeArgumentsSerializers?: TsSerializer<unknown>[]
     ): TsSerializer<T> | null;
 
-    abstract getPolymorphicSerialization<T>(baseClass: TsClass<T>, value: T): SerializationStrategy<T> | null;
+    abstract getPolymorphicSerialization<T>(baseClass: TsClass, value: T): SerializationStrategy<T> | null;
 
     abstract getPolymorphicDeserialization<T>(
-        baseClass: TsClass<T>,
+        baseClass: TsClass,
         serializedClassName: string | null
     ): DeserializationStrategy<T> | null;
 
@@ -25,18 +25,18 @@ export abstract class SerializersModule {
 }
 
 export class SerialModuleImpl extends SerializersModule{
-    private class2ContextualFactory: Map<TsClass<any>, ContextualProvider>;
-    public polyBase2Serializers: Map<TsClass<any>, Map<TsClass<any>, TsSerializer<any>>>;
-    private polyBase2DefaultSerializerProvider: Map<TsClass<any>, PolymorphicSerializerProvider<any>>;
-    private polyBase2NamedSerializers: Map<TsClass<any>, Map<string, TsSerializer<any>>>;
-    private polyBase2DefaultDeserializerProvider: Map<TsClass<any>, PolymorphicDeserializerProvider<any>>;
+    private class2ContextualFactory: Map<TsClass, ContextualProvider>;
+    public polyBase2Serializers: Map<TsClass, Map<TsClass, TsSerializer<unknown>>>;
+    private polyBase2DefaultSerializerProvider: Map<TsClass, PolymorphicSerializerProvider<unknown>>;
+    private polyBase2NamedSerializers: Map<TsClass, Map<string, TsSerializer<unknown>>>;
+    private polyBase2DefaultDeserializerProvider: Map<TsClass, PolymorphicDeserializerProvider<unknown>>;
 
     constructor(
-        class2ContextualFactory: Map<TsClass<any>, ContextualProvider>,
-        polyBase2Serializers: Map<TsClass<any>, Map<TsClass<any>, TsSerializer<any>>>,
-        polyBase2DefaultSerializerProvider: Map<TsClass<any>, PolymorphicSerializerProvider<any>>,
-        polyBase2NamedSerializers: Map<TsClass<any>, Map<string, TsSerializer<any>>>,
-        polyBase2DefaultDeserializerProvider: Map<TsClass<any>, PolymorphicDeserializerProvider<any>>
+        class2ContextualFactory: Map<TsClass, ContextualProvider>,
+        polyBase2Serializers: Map<TsClass, Map<TsClass, TsSerializer<unknown>>>,
+        polyBase2DefaultSerializerProvider: Map<TsClass, PolymorphicSerializerProvider<unknown>>,
+        polyBase2NamedSerializers: Map<TsClass, Map<string, TsSerializer<unknown>>>,
+        polyBase2DefaultDeserializerProvider: Map<TsClass, PolymorphicDeserializerProvider<unknown>>
     ) {
         super();
         this.class2ContextualFactory = class2ContextualFactory;
@@ -46,23 +46,23 @@ export class SerialModuleImpl extends SerializersModule{
         this.polyBase2DefaultDeserializerProvider = polyBase2DefaultDeserializerProvider;
     }
 
-    getPolymorphicSerialization<T>(baseClass: TsClass<T>, value: T): SerializationStrategy<T> | null {
+    getPolymorphicSerialization<T>(baseClass: TsClass, value: T): SerializationStrategy<T> | null {
         // Registered
         const registered = this.polyBase2Serializers.get(baseClass)?.get(getTsClass(value)) as SerializationStrategy<T>;
-        if (registered) return registered;
+        if (registered !== undefined) return registered;
         // Default
         return this.polyBase2DefaultSerializerProvider.get(baseClass)?.(value) ?? null;
     }
 
-    getPolymorphicDeserialization<T>(baseClass: TsClass<T>, serializedClassName: string): DeserializationStrategy<T> | null {
+    getPolymorphicDeserialization<T>(baseClass: TsClass, serializedClassName: string): DeserializationStrategy<T> | null {
         // Registered
         const registered = this.polyBase2NamedSerializers.get(baseClass)?.get(serializedClassName) as TsSerializer<T>;
-        if (registered) return registered;
+        if (registered !== undefined) return registered;
         // Default
-        return this.polyBase2DefaultDeserializerProvider.get(baseClass)?.(serializedClassName) ?? null;
+        return (this.polyBase2DefaultDeserializerProvider.get(baseClass)?.(serializedClassName) ?? null) as DeserializationStrategy<T> | null;
     }
 
-    getContextual<T>(tsClass: TsClass<T>, typeArgumentsSerializers: Array<TsSerializer<any>>): TsSerializer<T> | null {
+    getContextual<T>(tsClass: TsClass, typeArgumentsSerializers: Array<TsSerializer<unknown>>): TsSerializer<T> | null {
         return this.class2ContextualFactory.get(tsClass)?.invoke(typeArgumentsSerializers) as TsSerializer<T>;
     }
 
@@ -89,34 +89,9 @@ export class SerialModuleImpl extends SerializersModule{
 export const EmptySerializersModule = new SerialModuleImpl(new Map(), new Map() , new Map(), new Map(), new Map())
 
 abstract class ContextualProvider {
-    abstract invoke(typeArgumentsSerializers: Array<TsSerializer<any>>): TsSerializer<any>;
+    abstract invoke(typeArgumentsSerializers: Array<TsSerializer<unknown>>): TsSerializer<unknown>;
 }
 
-class Argless extends ContextualProvider {
-    serializer: TsSerializer<any>;
-
-    constructor(serializer: TsSerializer<any>) {
-        super();
-        this.serializer = serializer;
-    }
-
-    invoke(typeArgumentsSerializers: Array<TsSerializer<any>>): TsSerializer<any> {
-        return this.serializer;
-    }
-}
-
-class WithTypeArguments extends ContextualProvider {
-    provider: (typeArgumentsSerializers: Array<TsSerializer<any>>) => TsSerializer<any>;
-
-    constructor(provider: (typeArgumentsSerializers: Array<TsSerializer<any>>) => TsSerializer<any>) {
-        super();
-        this.provider = provider;
-    }
-
-    invoke(typeArgumentsSerializers: Array<TsSerializer<any>>): TsSerializer<any> {
-        return this.provider(typeArgumentsSerializers);
-    }
-}
 
 type PolymorphicDeserializerProvider<Base> = (className: string | null) => DeserializationStrategy<Base> | null;
 type PolymorphicSerializerProvider<Base> = (value: Base) => SerializationStrategy<Base> | null;

@@ -4,7 +4,7 @@ plugins {
     id("com.gradle.plugin-publish") version "1.1.0"
 }
 
-group = "io.github.natanfudge"
+group = "com.caesarealabs"
 version = libs.versions.rpc4k.get()
 
 repositories {
@@ -24,8 +24,8 @@ gradlePlugin {
     vcsUrl = "https://github.com/natanfudge/rpc4k"
     plugins {
         create("rpc4kPlugin") {
-            id = "io.github.natanfudge.rpc4k"
-            implementationClass = "io.github.natanfudge.rpc4k.gradle.Rpc4KPlugin"
+            id = "com.caesarealabs.rpc4k"
+            implementationClass = "com.caesarealabs.rpc4k.gradle.Rpc4KPlugin"
             tags = listOf("rpc", "annotation processor", "ksp", "rpc4all")
             displayName = "Rpc4k"
             description = "Sets up rpc4k - a framework for interfacing between services in different programming languages"

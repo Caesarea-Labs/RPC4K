@@ -3,7 +3,7 @@ buildscript {
     System.setProperty("rpc4k.dev", "true")
 }
 plugins {
-    id("io.github.natanfudge.rpc4k")
+    id("com.caesarealabs.rpc4k")
 }
 
 rpc4k {

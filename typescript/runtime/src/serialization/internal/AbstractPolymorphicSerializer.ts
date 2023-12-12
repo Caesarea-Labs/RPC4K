@@ -21,7 +21,7 @@ export abstract class AbstractPolymorphicSerializer<T> implements TsSerializer<T
     /**
      * Base class for all classes that this polymorphic serializer can serialize or deserialize.
      */
-    public abstract baseClass: TsClass<T>;
+    public abstract baseClass: TsClass;
 
     public serialize(encoder: Encoder, value: T) {
         const actualSerializer = this.findPolymorphicSerializer(encoder, value);
@@ -33,7 +33,7 @@ export abstract class AbstractPolymorphicSerializer<T> implements TsSerializer<T
 
     public deserialize(decoder: Decoder): T {
         let klassName: string | null = null;
-        let value: any = null;
+        let value: unknown = null;
         const composite = decoder.beginStructure(this.descriptor)
 
         if (composite.decodeSequentially()) {
@@ -53,7 +53,7 @@ export abstract class AbstractPolymorphicSerializer<T> implements TsSerializer<T
                 const serializer = this.findPolymorphicDeserializer(composite, klassName);
                 value = composite.decodeSerializableElement(this.descriptor, index, serializer);
             } else {
-                throw new Error(`Invalid index in polymorphic deserialization of ${klassName || "unknown class"}\nExpected 0, 1 or DECODE_DONE(-1), but found ${index}`);
+                throw new Error(`Invalid index in polymorphic deserialization of ${klassName ?? "unknown class"}\nExpected 0, 1 or DECODE_DONE(-1), but found ${index}`);
             }
         }
 
@@ -82,7 +82,7 @@ export abstract class AbstractPolymorphicSerializer<T> implements TsSerializer<T
     ): DeserializationStrategy<T> | null {  // Replace 'any' with the appropriate type for your deserialization strategy
         // Implement the logic to get the polymorphic serializer based on the class name and decoder context
         // This is a placeholder implementation
-        return decoder.serializersModule?.getPolymorphicDeserialization(this.baseClass, klassName) || null;
+        return decoder.serializersModule?.getPolymorphicDeserialization(this.baseClass, klassName) ?? null;
     }
 
     /**
@@ -95,7 +95,7 @@ export abstract class AbstractPolymorphicSerializer<T> implements TsSerializer<T
     ): SerializationStrategy<T> | null {  // Replace 'any' with the appropriate type for your serialization strategy
         // Implement the logic to find the serializer based on the value and encoder context
         // This is a placeholder implementation
-        return encoder.serializersModule?.getPolymorphicSerialization(this.baseClass, value) || null;
+        return encoder.serializersModule?.getPolymorphicSerialization(this.baseClass, value) ?? null;
     }
 
     findPolymorphicDeserializer(decoder: CompositeDecoder, klassName: string | null): DeserializationStrategy<T> {
@@ -108,7 +108,7 @@ export abstract class AbstractPolymorphicSerializer<T> implements TsSerializer<T
 
 }
 
-function throwSubtypeNotRegistered(subClassName: string | null, baseClass: TsClass<any>): never {
+function throwSubtypeNotRegistered(subClassName: string | null, baseClass: TsClass): never {
     const scope = `in the scope of '${baseClass}'`;
     throw new SerializationException(
         subClassName === null

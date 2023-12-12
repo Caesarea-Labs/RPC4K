@@ -38,7 +38,7 @@ function addStruct(code: CodeBuilder, struct: RpcStructModel, serviceName :strin
     code.addClass({name, typeParameters: struct.typeParameters}, classBuilder => {
         struct.properties.forEach(({name, type, isOptional}) => {
             classBuilder.addProperty(
-                //TODO: handle isOptional properly
+                //LOWPRIO: Support optional properties
                 {
                     name: `readonly ${name}`, optional: isOptional, type: typescriptRpcType(type, serviceName)
                 }
@@ -59,7 +59,7 @@ function addStruct(code: CodeBuilder, struct: RpcStructModel, serviceName :strin
         // Only one parameter: the object argument
         classBuilder.addConstructor([[`{${propertyNames}}`, propertyTypes]], ctrBuilder => {
             struct.properties.forEach(({name, type, isOptional}) => {
-                //TODO: handle isOptional
+                //LOWPRIO: support optional properties
 
                 ctrBuilder.addAssignment(`this.${name}`, `${name}`)
 

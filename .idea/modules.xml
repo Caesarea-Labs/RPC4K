@@ -3,6 +3,8 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/.idea/RPC4K.iml" filepath="$PROJECT_DIR$/.idea/RPC4K.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../fudge-lib/fudge-lib.iml" filepath="$PROJECT_DIR$/../fudge-lib/fudge-lib.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/plugin/plugin.main.iml" filepath="$PROJECT_DIR$/.idea/modules/plugin/plugin.main.iml" />
     </modules>
   </component>
 </project>

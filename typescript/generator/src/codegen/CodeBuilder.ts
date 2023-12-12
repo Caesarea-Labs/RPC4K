@@ -31,7 +31,6 @@ export class CodeBuilder {
      */
     private readonly localImports: boolean
 
-    //TODO: can be replaced by a HashSet<{reference: string, importPath: string}>
     private importsToInsert: HashSet<Import> = HashSet.create()
     // Tracks references created in this file to avoid importing stuff from this file itself
     private referencesInFile: Set<string> = new Set()
@@ -155,7 +154,6 @@ export class CodeBuilder {
 
 
     _addLineOfCode(code: MaybeFormattedString, addNewline = true): CodeBuilder {
-        //TODO: import references
         const [codeString, references] = this.resolveFormatString(code)
         for (const reference of references) {
             this.addImportReferences(reference)
@@ -232,7 +230,6 @@ export class CodeBuilder {
 
     _addFunction(declaration: MaybeFormattedString, parameters: [string, TsReference][], returnType: TsReference | undefined, body: (body: BodyBuilder) => void): CodeBuilder {
         const returnTypeString = returnType === undefined ? "" : concat(": ", returnType)
-        //TODO: implement optional parameters
         const parametersString = this.parameterList(
             formatLength(this.blockStart(declaration)) + formatLength(returnTypeString), parameters.map(([name, type]) => concat(`${name}: `, type))
         )

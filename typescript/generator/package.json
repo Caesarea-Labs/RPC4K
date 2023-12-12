@@ -1,6 +1,6 @@
 {
   "name": "rpc4ts-gen",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "license": "MIT",
   "keywords": [],
   "scripts": {
@@ -12,6 +12,7 @@
     "test": "run-s build test:*",
     "watch:build": "tsc -p tsconfig.json -w",
     "pub": "tsup --dts && npm version patch --force && npm publish",
+    "pubNoBump": "tsup --dts && npm publish",
     "update-runtime": "npm update rpc4ts-runtime"
   },
   "engines": {
@@ -23,8 +24,8 @@
     "@commander-js/extra-typings": "^11.1.0",
     "commander": "^11.1.0",
     "dayjs": "^1.11.10",
-    "rpc4ts-runtime": "file:../runtime",
-    "ts-minimum": "file:../../../fudge-lib"
+    "rpc4ts-runtime": "^0.2.0",
+    "ts-minimum": "0.3.0"
   },
   "devDependencies": {
     "@types/jest": "^29.5.5",

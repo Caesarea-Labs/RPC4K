@@ -42,7 +42,7 @@ export class GeneratedSerializerImpl<T> extends GeneratedSerializer<T> {
         this.serializers = serializers
         const descriptor = new PluginGeneratedSerialDescriptor(name, this, Object.values(serializers).length)
         for (const serializerName in serializers) {
-            descriptor.addElement(serializerName, false) //TODO: optionals
+            descriptor.addElement(serializerName, false) //LOWPRIO: support optional properties
         }
         this.descriptor = descriptor
 

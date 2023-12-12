@@ -114,7 +114,8 @@ function toFormat(str: MaybeFormattedString): FormatString {
     // return typeof str === "string" ? new FormatString(str, []) : str
 }
 
-//TODo: adding this for now for compatibility, in the future i don't want to do the newline calculation shenanigans
+//NiceToHave: Improve wrapping of generated Typescript file
+// adding this for now for compatibility, in the future i don't want to do the newline calculation shenanigans
 // and use a better approach
 export function formatLength(str: MaybeFormattedString): number {
     return toFormat(str).str.length
@@ -223,7 +224,6 @@ export function tsReferenceToString(reference: TsReference, brackets = false): s
             const finalElementString = needsBrackets ? `(${elementString})` : elementString
             return `${finalElementString}[]`
         }
-        //TODO: special array handling with brackets = true here
         let str = reference.name
         if (reference.typeArguments.length > 0) {
             str += `<${reference.typeArguments.map(arg => tsReferenceToString(arg)).join(", ")}>`
@@ -294,7 +294,6 @@ export namespace TsTypes {
     export const VOID = builtin("void")
 
     export function array(elementType: TsType): TsBasicType {
-        //TODO: add special handling to treat "Array" as "[]"
         return builtin(ArrayTypeName, elementType)
     }
 
@@ -311,7 +310,6 @@ export namespace TsTypes {
     }
 
     export function tuple(types: TsType[]): TsBasicType {
-        //TODO: add special handling to treat "_tuple" as "[]"
         return builtin(TupleTypeName, ...types)
     }
 

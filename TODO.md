@@ -6,65 +6,16 @@
 
 I should support an appropriate conversion for the return type of Flow<T>
 
+### Support easy construction of nested objects
+consider adding special constructor that make it easier to create nested objects
+instead of:
+AnotherModelHolder (t: new GenericThing({...}) )
+ do:
+ AnotherModelHolder (t: {...} )
+
 
 
 # 2. Low Priority - Do later
-
-### Rework Typescript deserialization mechanism
-#### A. Create a generic serialization and deserialization interface:
-Basically, continue work on the kotlinx.serialization clone.
-
-#### B - Generate classes in place of interfaces
-```typescript
-interface Foo {
-    x: number
-    y: string
-}
-```
-Becomes:
-
-```typescript
-class Foo {
-    readonly x: number
-    readonly y: string
-
-    constructor({x, y}: {x: number, y: string}) {
-        this.x = x
-        this.y = y
-    }
-}
-```
-
-`type` Discriminators are no longer necessary:
-
-```typescript
-interface Foo {
-    z: number
-    type: "Foo"
-}
-
-if(foo.type === "Foo") {
-    // ...
-}
-
-```
-Becomes:
-
-```typescript
-class Foo {
-    readonly z: number
-
-    constructor({z}: {z: number}) {
-        this.x = x
-    }
-}
-
-if(foo instanceof Foo) {
-    // ...
-}
-```
-
-
 
 
 ### Support optional properties
@@ -321,6 +272,18 @@ will serialize using the builtin serializers. Right now we simply require @Conte
 serialization with our specific serializer using @Serializable (with = OurSerializer()) on every property of these types. 
 
 # 4. Nice to have - Will be done much later
+
+### Add Reflection helpers for generated classes
+For example, when doing:
+
+```kotlin
+   RpcServerSetup.managedKtor(BasicApi(), BasicApi.server()).createServer().start(wait = true)
+```
+
+It can be shorted with reflection to: 
+```kotlin
+   RpcServerSetup.managedKtor(BasicApi()).createServer().start(wait = true)
+```
 
 ### Deal with sealed inline classes
 This is currently bugged, see:

@@ -10,7 +10,7 @@ plugins {
 
 fun rpc4kRuntimeVersion() = libs.versions.rpc4k.get()
 
-val projectGroup = "io.github.natanfudge"
+val projectGroup = "com.caesarealabs"
 val projectId = "rpc4k"
 val projectVersion = rpc4kRuntimeVersion()
 val githubUrl = "https://github.com/natanfudge/Rpc4k"
@@ -62,62 +62,54 @@ sourceSets.main {
 
 
 //TODO: move to caesarea maven
+afterEvaluate {
+    publishing {
+        publications {
+            register("release", MavenPublication::class) {
+                // The coordinates of the library, being set from variables that
+                // we'll set up later
+                groupId = projectGroup
+                artifactId = projectId
+                version = projectVersion
 
-//fun getSecretsDir() = System.getenv("SECRETS_PATH")
-//    ?: error("Missing SECRETS_PATH environment variables. Make sure to set the environment variable to the directory containing secrets.")
-//
-//fun getSecretsFile(path: String): Path {
-//    val file = Paths.get(getSecretsDir(), path)
-//    if (!file.exists()) error("Missing secrets file $file. Make sure to create the file with the secrets.")
-//    return file
-//}
-//
-//fun getSecretFileContents(path: String): String {
-//    return String(getSecretsFile(path).readBytes())
-//}
-//
-//
-//
-//afterEvaluate {
-//    publishing {
-//        publications {
-//            register("release", MavenPublication::class) {
-//                groupId = projectGroup
-//                artifactId = projectId
-//                version = projectVersion
-//
-//                from(components["java"])
-//
-//                pom {
-//                    name = projectId
-//                    description = "Networking Utility"
-//                    url = githubUrl
-//                    licenses {
-//                        license {
-//                            name = projectLicense
-//                        }
-//                    }
-//                    developers {
-//                        developer {
-//                            id = "natan"
-//                            name = "Natan Lifshitz"
-//                            email = "natan.lifsiz@gmail.com"
-//                        }
-//                    }
-//
-//                    scm {
-//                        url = githubUrl
-//                    }
-//                }
-//            }
-//        }
-//    }
-//}
-//
-//signing {
-//    useInMemoryPgpKeys(
-//        System.getenv("GPG_KEY_ID"), getSecretFileContents("ksm/secret_key.txt"), System.getenv("GPG_KEY_PASSWORD")
-//    )
-//    sign(publishing.publications)
-//}
-//
+                from(components["java"])
+
+                // Mostly self-explanatory metadata
+                pom {
+                    name = projectId
+                    description = "RPC Utility"
+                    url = githubUrl
+                    licenses {
+                        license {
+                            name = projectLicense
+                        }
+                    }
+                    developers {
+                        developer {
+                            id = "natan"
+                            name = "Natan Lifshitz"
+                            email = "natan.lifshitz@caesarealabs.com"
+                        }
+                    }
+
+                    scm {
+                        url = githubUrl
+                    }
+                }
+            }
+        }
+    }
+}
+
+// Secrets are set in github actions
+
+signing {
+    useInMemoryPgpKeys(
+        System.getenv("GPG_KEY_ID"),
+        // The ONELINE secret key contains literal '\n' in place of new lines in order to make it fit in a windows env variable.
+        // We then replace the literal '\n's with actual '\n's.
+        System.getenv("GPG_SECRET_KEY_ONELINE").replace("\\n", "\n"),
+        System.getenv("GPG_KEY_PASSWORD")
+    )
+    sign(publishing.publications)
+}

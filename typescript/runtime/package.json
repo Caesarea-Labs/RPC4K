@@ -1,6 +1,6 @@
 {
   "name": "rpc4ts-runtime",
-  "version": "0.1.8",
+  "version": "0.2.0",
   "main": "dist/index.cjs",
   "typings": "dist/index.d.cts",
   "module": "dist/index.cjs",
@@ -14,7 +14,8 @@
     "build:module": "tsc -p tsconfig.module.json",
     "test": "run-s build test:*",
     "watch:build": "tsc -p tsconfig.json -w",
-    "pub": "tsup --dts && npm version patch --force && npm publish"
+    "pub": "tsup --dts && npm version patch --force && npm publish",
+    "pubNoBump" : "tsup --dts && npm publish"
   },
   "engines": {
     "node": ">=18.0.0"
@@ -44,6 +45,6 @@
   ],
   "dependencies": {
     "dayjs": "^1.11.10",
-    "ts-minimum": "file:../../../fudge-lib"
+    "ts-minimum": "^0.3.0"
   }
 }

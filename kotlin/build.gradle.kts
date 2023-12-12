@@ -21,6 +21,7 @@ allprojects {
 nexusPublishing {
     this@nexusPublishing.repositories {
         sonatype {
+            nexusUrl.set(uri("https://s01.oss.sonatype.org/service/local/"))
             stagingProfileId = System.getenv("SONATYPE_STAGING_PROFILE_ID")
             username = System.getenv("OSSRH_USERNAME")
             password = System.getenv("OSSRH_PASSWORD")
@@ -29,7 +30,7 @@ nexusPublishing {
 }
 
 project(":lib").afterEvaluate {
-    tasks.create("uploadRpc4k") {
+    tasks.create("uploadLibrary") {
         group = "upload"
         dependsOn(
             project(":lib").tasks["publishToSonatype"],
