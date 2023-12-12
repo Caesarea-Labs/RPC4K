@@ -28,13 +28,13 @@ export class FormatString {
      * Inserts the format arguments in place of the reference markers
      */
     resolve(): string {
-        let current = ""
+        let retval = ""
         let formatIndex = 0
         let prevChar: string | null = null
-        for (const c of this.str) {
-            if (prevChar === FORMAT_MARKER && c === REFERENCE_MARKER) {
+        for (const char of this.str) {
+            if (prevChar === FORMAT_MARKER && char === REFERENCE_MARKER) {
                 if (this.formatArguments.length > formatIndex) {
-                    current += tsReferenceToString(this.formatArguments[formatIndex])
+                    retval += tsReferenceToString(this.formatArguments[formatIndex])
                     formatIndex++
                     // Don't include the REFERENCE_MARKER in the string
                     prevChar = null
@@ -43,11 +43,13 @@ export class FormatString {
                 }
             } else {
                 if (prevChar !== null) {
-                    current += prevChar
+                    retval += prevChar
                 }
+                prevChar = char
             }
         }
-        return current
+        if (prevChar !== null) retval += prevChar
+        return retval
     }
 }
 
@@ -190,6 +192,13 @@ export class TsFunction {
 
 
 export type TsType = TsUnionType | TsBasicType | TsObjectType
+//
+// /**
+//  * Will resolve the type on the spot to prevent it from being imported
+//  */
+// export function dontImport(type: TsType): string {
+//     return resolveMaybeFormatString(type)
+// }
 
 /**
  * Some type literals like union types are sensitive to brackets around the type, so if this type is being wrapped
@@ -203,6 +212,17 @@ export function tsReferenceToString(reference: TsReference, brackets = false): s
         const literal = reference.references.map(reference => tsReferenceToString(reference)).join(" | ")
         return brackets ? `(${literal})` : literal
     } else if (isBasicType(reference)) {
+        if (reference.name === TupleTypeName) {
+            // Represent a tuple as [  , ... ]
+            return "[" + reference.typeArguments.map(arg => tsReferenceToString(arg)).join(", ") + "]"
+        }
+        if (reference.name === ArrayTypeName) {
+            const elementType = reference.typeArguments[0]
+            const elementString = tsReferenceToString(elementType)
+            const needsBrackets = isUnionType(elementType)
+            const finalElementString = needsBrackets ? `(${elementString})` : elementString
+            return `${finalElementString}[]`
+        }
         //TODO: special array handling with brackets = true here
         let str = reference.name
         if (reference.typeArguments.length > 0) {
@@ -264,6 +284,7 @@ function builtin(name: string, ...typeArguments: TsType[]): TsBasicType {
 }
 
 export const TupleTypeName = "_tuple"
+export const ArrayTypeName = "Array"
 
 export namespace TsTypes {
     export const STRING = builtin("string")
@@ -274,7 +295,7 @@ export namespace TsTypes {
 
     export function array(elementType: TsType): TsBasicType {
         //TODO: add special handling to treat "Array" as "[]"
-        return builtin("Array", elementType)
+        return builtin(ArrayTypeName, elementType)
     }
 
     export function stringLiteral(value: string): TsBasicType {

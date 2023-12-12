@@ -1,7 +1,7 @@
 import {CodeBuilder} from "./codegen/CodeBuilder"
 import {RpcEnumModel, RpcInlineModel, RpcModel, RpcModelKind, RpcStructModel, RpcType, RpcUnionModel,} from "rpc4ts-runtime";
 import {modelName2, modelType, typescriptRpcType} from "./Rpc4tsType"
-import {TsObjectType, TsTypes} from "./codegen/FormatString"
+import {concat, join, TsObjectType, TsTypes} from "./codegen/FormatString"
 import {Rpc4TsClientGenerationOptions} from "./ClientGenerator"
 
 export function generateModels(models: RpcModel[], serviceName: string, options: Rpc4TsClientGenerationOptions): string {
@@ -98,10 +98,10 @@ export function structRuntimeName(model: RpcStructModel): string {
 
 function addEnum(code: CodeBuilder, enumModel: RpcEnumModel) {
     const name = modelName2(enumModel.name)
-    const options = enumModel.options.map(option => `"${option}"`)
-    code.addUnionType({name: name, types: options.map(option => TsTypes.stringLiteral(option))})
+    const options = enumModel.options.map(option =>  TsTypes.stringLiteral(option))
+    code.addUnionType({name: name, types: options})
         // Add a list of values of an enum to make it easier to use
-        .addConst(name + "Values", `[${options.join(", ")}]`)
+        .addConst(name + "Values", concat("[", join(options, ", "), "]"))
 }
 
 function addUnion(code: CodeBuilder, struct: RpcUnionModel, serviceName: string) {

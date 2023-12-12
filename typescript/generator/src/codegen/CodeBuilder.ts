@@ -8,13 +8,14 @@ import {
     isBasicType,
     isTypescriptReference,
     isUnionType,
+    join,
     MaybeFormattedString,
     TsFunction,
     TsReference,
     tsReferenceToString,
-    TsType,
-    TsTypes
+    TsType
 } from "./FormatString";
+import {HashSet, recordToArray} from "ts-minimum"
 
 const MaxLineLength = 120;
 const tabWidth = 4;
@@ -30,6 +31,11 @@ export class CodeBuilder {
      */
     private readonly localImports: boolean
 
+    //TODO: can be replaced by a HashSet<{reference: string, importPath: string}>
+    private importsToInsert: HashSet<Import> = HashSet.create()
+    // Tracks references created in this file to avoid importing stuff from this file itself
+    private referencesInFile: Set<string> = new Set()
+
     constructor(localImports: boolean) {
         this.localImports = localImports
     }
@@ -38,7 +44,26 @@ export class CodeBuilder {
         if (this.currentIndent !== 0) {
             throw new Error(`${this.currentIndent} indents were not unindented`)
         }
-        return this.code
+        return this.buildImports() + "\n" + this.code
+    }
+
+    private buildImports(): string {
+        const importsByPath: Record<string, string[]> = {}
+
+        this.importsToInsert.forEach(({reference, path}) => {
+            const existing = importsByPath[path]
+            // Avoid importing things from this file
+            if (!this.referencesInFile.has(reference)) {
+                if (existing === undefined) {
+                    importsByPath[path] = [reference]
+                } else {
+                    existing.push(reference)
+                }
+            }
+        })
+
+        return recordToArray(importsByPath, (path: string, references: string[]) => `import {${references.join(", ")}} from "${path}"`)
+            .join("\n")
     }
 
 
@@ -46,6 +71,7 @@ export class CodeBuilder {
         name: string,
         typeParameters?: string[]
     }, interfaceBuilder: (builder: InterfaceBuilder) => void): CodeBuilder {
+        this.referencesInFile.add(name)
         return this._addBlock(`export interface ${name}${this.typeParametersString(typeParameters)}`, () => {
             interfaceBuilder(new InterfaceBuilder(this))
         })._addLineOfCode("") // Add empty line
@@ -55,6 +81,7 @@ export class CodeBuilder {
         name: string,
         typeParameters?: string[]
     }, classBuilder: (builder: ClassBuilder) => void): CodeBuilder {
+        this.referencesInFile.add(name)
         return this._addBlock(`export class ${name}${this.typeParametersString(typeParameters)}`, () => {
             classBuilder(new ClassBuilder(this))
         })._addLineOfCode("")// Add empty line
@@ -65,12 +92,13 @@ export class CodeBuilder {
         typeParameters?: string[],
         types: TsType[]
     }): CodeBuilder {
+        this.referencesInFile.add(name)
         const prefix = `export type ${name}${this.typeParametersString(typeParameters)} = `
-        const typesJoined = types.length === 0 ? "never" : types.join(" | ")
-        if (this.isTooLong(prefix.length + typesJoined.length)) {
-            return this._addLineOfCode(prefix + this.indentList(types).join(" |\n"))
+        const typesJoined = types.length === 0 ? "never" : join(types, " | ")
+        if (this.isTooLong(formatLength(prefix) + formatLength(typesJoined))) {
+            return this._addLineOfCode(concat(prefix, join(this.indentList(types), " | ")))
         } else {
-            return this._addLineOfCode(prefix + typesJoined)
+            return this._addLineOfCode(concat(prefix, typesJoined))
         }
     }
 
@@ -79,6 +107,7 @@ export class CodeBuilder {
         typeParameters?: string[],
         type: TsReference
     }): CodeBuilder {
+        this.referencesInFile.add(name)
         const prefix = `export type ${name}${this.typeParametersString(typeParameters)} = `
         return this._addLineOfCode(concat(prefix, type))
     }
@@ -88,11 +117,13 @@ export class CodeBuilder {
         return `<${params.join(", ")}>`
     }
 
-    addConst(name: string, value: string): CodeBuilder {
-        return this._addLineOfCode(`export const ${name} = ${value}`)
+    addConst(name: string, value: MaybeFormattedString): CodeBuilder {
+        this.referencesInFile.add(name)
+        return this._addLineOfCode(concat(`export const ${name} = `, value))
     }
 
     addTopLevelFunction(declaration: MaybeFormattedString, parameters: [string, TsReference][], returnType: TsReference | undefined, body: (body: BodyBuilder) => void): CodeBuilder {
+        //TODO: we need to accept the function name itself so we can track it in this.referencesInFile
         return this._addFunction(concat(`export function `, declaration), parameters, returnType, body)
     }
 
@@ -133,14 +164,12 @@ export class CodeBuilder {
         return this
     }
 
-    //TODO: can be replaced by a HashSet<{reference: string, importPath: string}>
-    private importsToInsert: Record<string, Import> = {}
 
     private addImportReferences(reference: TsReference) {
-        for(const imp of this.resolveReferences(reference)) {
+        for (const imp of this.resolveReferences(reference)) {
             // Consider references unique by the combination of the name + the import path.
             // This ensure we only add each reference once.
-            this.importsToInsert[imp.path + imp.reference] = imp
+            this.importsToInsert.put(imp)
         }
     }
 
@@ -196,10 +225,6 @@ export class CodeBuilder {
         }
     }
 
-    _addCode(code: string): CodeBuilder {
-        this.code += code
-        return this
-    }
 
     _addFunction(declaration: MaybeFormattedString, parameters: [string, TsReference][], returnType: TsReference | undefined, body: (body: BodyBuilder) => void): CodeBuilder {
         const returnTypeString = returnType === undefined ? "" : concat(": ", returnType)
@@ -221,11 +246,11 @@ export class CodeBuilder {
      * @param otherCodeLength the amount of characters that this line contains other than the parameter list.
      * Required for knowing whether to wrap parameters.
      */
-    private parameterList(otherCodeLength: number, list: MaybeFormattedString[]): string {
-        const joined = "(" + list.join(", ") + ")"
-        if (this.isTooLong(otherCodeLength + joined.length)) {
+    private parameterList(otherCodeLength: number, list: MaybeFormattedString[]): MaybeFormattedString {
+        const joined = concat("(", join(list, ", "), ")")
+        if (this.isTooLong(otherCodeLength + formatLength(joined))) {
             // Chop argument list into separate lines if it's too long
-            return "(\n" + this.indentList(list).join(",\n") + "\n" + this.indent(")")
+            return concat("(\n", join(this.indentList(list), ", \n"), "\n", this.indent(")"))
         } else {
             return joined
         }

@@ -16,7 +16,7 @@ module.exports = {
     "plugin:@typescript-eslint/recommended",
     "plugin:@typescript-eslint/recommended-requiring-type-checking"
   ],
-  ignorePatterns: ["vite.config.*", "*.js", "*.cjs", "*.config.ts" , "generated/*", "dist/*"],
+  ignorePatterns: ["vite.config.*", "*.js", "*.cjs", "*.config.ts" , "**/generated/**", "dist/*"],
   rules: {
     "@typescript-eslint/no-unnecessary-boolean-literal-compare": "warn",
     "@typescript-eslint/consistent-indexed-object-style": "warn",
