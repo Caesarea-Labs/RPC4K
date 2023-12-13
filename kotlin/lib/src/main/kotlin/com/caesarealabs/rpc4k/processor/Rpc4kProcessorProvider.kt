@@ -1,5 +1,10 @@
 package com.caesarealabs.rpc4k.processor
 
+import com.caesarealabs.rpc4k.processor.utils.checkRequirement
+import com.caesarealabs.rpc4k.processor.utils.findDuplicate
+import com.caesarealabs.rpc4k.processor.utils.getClassesWithAnnotation
+import com.caesarealabs.rpc4k.processor.utils.getQualifiedName
+import com.caesarealabs.rpc4k.runtime.api.Api
 import com.google.devtools.ksp.KspExperimental
 import com.google.devtools.ksp.processing.Resolver
 import com.google.devtools.ksp.processing.SymbolProcessor
@@ -9,8 +14,6 @@ import com.google.devtools.ksp.symbol.ClassKind
 import com.google.devtools.ksp.symbol.KSAnnotated
 import com.google.devtools.ksp.symbol.KSClassDeclaration
 import com.squareup.kotlinpoet.ksp.writeTo
-import com.caesarealabs.rpc4k.processor.utils.*
-import com.caesarealabs.rpc4k.runtime.api.Api
 import kotlin.system.measureTimeMillis
 
 internal class Rpc4kProcessorProvider : SymbolProcessorProvider {
@@ -50,6 +53,10 @@ internal class Rpc4kProcessor(private val env: SymbolProcessorEnvironment) : Sym
     private fun generateRpc(apiClass: KSClassDeclaration, resolver: Resolver) {
         val time = measureTimeMillis {
             val api = KspToApiDefinition(resolver).toApiDefinition(apiClass)
+            if (api == null) {
+                env.logger.warn("Source code is invalid, code won't be generated for ${apiClass.getQualifiedName()}.")
+                return
+            }
 
             val nameDuplicate = api.models.findDuplicate { it.name }
 

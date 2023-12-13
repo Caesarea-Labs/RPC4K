@@ -1,34 +1,34 @@
 package com.caesarealabs.rpc4k.processor
 
+import com.caesarealabs.rpc4k.processor.utils.*
 import com.google.devtools.ksp.getAllSuperTypes
 import com.google.devtools.ksp.getDeclaredProperties
 import com.google.devtools.ksp.processing.Resolver
 import com.google.devtools.ksp.symbol.*
 import com.google.devtools.ksp.symbol.ClassKind.*
-import com.caesarealabs.rpc4k.processor.utils.*
 
 class KspToApiDefinition(private val resolver: Resolver) {
-    fun toApiDefinition(kspClass: KSClassDeclaration): RpcApi {
+    fun toApiDefinition(kspClass: KSClassDeclaration): RpcApi? {
         return RpcApi(
             // Doesn't quite fit, but good enough to represent the name as an KotlinTypeReference
-            name = kspClass.getKotlinName(),
-            methods = kspClass.getPublicApiFunctions().map { toRpc(it) }.toList(),
-            getRpcModels(kspClass)
+            name = kspClass.getKotlinName() ?: return null,
+            methods = kspClass.getPublicApiFunctions().map { toRpc(it) }.toList().allOrNothing() ?: return null,
+            getRpcModels(kspClass) ?: return null
         )
     }
 
-    private fun toRpc(kspMethod: KSFunctionDeclaration): RpcDefinition {
+    private fun toRpc(kspMethod: KSFunctionDeclaration): RpcDefinition? {
         return RpcDefinition(
             kspMethod.simpleName.getShortName(),
-            parameters = kspMethod.parameters.map { toRpcParameter(it) }.toList(),
-            returnType = toKotlinTypeReference(kspMethod.nonNullReturnType())
+            parameters = kspMethod.parameters.map { toRpcParameter(it) }.toList().allOrNothing() ?: return null,
+            returnType = toKotlinTypeReference(kspMethod.nonNullReturnType()) ?: return null
         )
     }
 
-    private fun toRpcParameter(parameter: KSValueParameter): RpcParameter {
+    private fun toRpcParameter(parameter: KSValueParameter): RpcParameter? {
         return RpcParameter(
             name = parameter.name?.getShortName() ?: error("Only named parameters are expected at the moment"),
-            type = toKotlinTypeReference(parameter.type),
+            type = toKotlinTypeReference(parameter.type) ?: return null,
         )
     }
 
@@ -40,15 +40,16 @@ class KspToApiDefinition(private val resolver: Resolver) {
      * ```
      * as [RpcModel]s
      */
-    private fun getRpcModels(kspClass: KSClassDeclaration): List<RpcModel> {
+    private fun getRpcModels(kspClass: KSClassDeclaration): List<RpcModel>? {
         // Sort to get deterministic results (this helps with incremental stuff)
-        return kspClass.getReferencedClasses(resolver).sortedBy { it.nonNullQualifiedName() }.map { toRpcModel(it) }
+        return kspClass.getReferencedClasses(resolver).sortedBy { it.getQualifiedName() }.map { toRpcModel(it) }
+            .allOrNothing()
     }
 
     /**
      * This returns a list because sometimes two models spawn from one class declaration. Such a case is enums with values.
      */
-    private fun toRpcModel(declaration: KSClassDeclaration): RpcModel = when (declaration.classKind) {
+    private fun toRpcModel(declaration: KSClassDeclaration): RpcModel? = when (declaration.classKind) {
         INTERFACE -> toRpcUnionModel(declaration)
         // If it has sealed subclasses, it means it is a sealed type, and it should be treated as a union.
         CLASS, OBJECT -> when {
@@ -74,11 +75,13 @@ class KspToApiDefinition(private val resolver: Resolver) {
      *
      * generates the [RpcModel.Union] for it.
      */
-    private fun toRpcUnionModel(declaration: KSClassDeclaration) = RpcModel.Union(
-        name = declaration.getSimpleName(),
-        options = declaration.fastGetSealedSubclasses(resolver).map { sealedSubclassToRpcType(it) }.toList(),
-        declaration.typeParameters.map { it.name.asString() }
-    )
+    private fun toRpcUnionModel(declaration: KSClassDeclaration): RpcModel.Union? {
+        return RpcModel.Union(
+            name = declaration.getSimpleName() ?: return null,
+            options = declaration.fastGetSealedSubclasses(resolver).map { sealedSubclassToRpcType(it) }.toList().allOrNothing() ?: return null,
+            declaration.typeParameters.map { it.name.asString() }
+        )
+    }
 
 
     /**
@@ -99,8 +102,8 @@ class KspToApiDefinition(private val resolver: Resolver) {
      *     Generic types could be implemented by adding inheritance to the format, but I don't think that's really required yet.
      *
      */
-    private fun sealedSubclassToRpcType(sealedSubclass: KSClassDeclaration): KotlinTypeReference {
-        return KotlinTypeReference(sealedSubclass.getKotlinName())
+    private fun sealedSubclassToRpcType(sealedSubclass: KSClassDeclaration): KotlinTypeReference? {
+        return KotlinTypeReference(sealedSubclass.getKotlinName() ?: return null)
     }
 
     /**
@@ -110,13 +113,13 @@ class KspToApiDefinition(private val resolver: Resolver) {
      * ```
      * to a [RpcModel.Enum] (and sometimes also a [RpcModel.Struct])
      */
-    private fun toRpcEnumModel(declaration: KSClassDeclaration): RpcModel {
+    private fun toRpcEnumModel(declaration: KSClassDeclaration): RpcModel? {
         // Get all enum entries/options
         val options = declaration.declarations.filter { it is KSClassDeclaration && it.classKind == ENUM_ENTRY }
             // Make sure to use the simple names for the enum entries
             .map { it.getTopLevelSimpleName() }.toList()
         val name = declaration.getSimpleName()
-        return RpcModel.Enum(name = name, options)
+        return RpcModel.Enum(name = name ?: return null, options)
     }
 
     /**
@@ -126,16 +129,16 @@ class KspToApiDefinition(private val resolver: Resolver) {
      * ```
      * to a [RpcModel.Struct]
      */
-    private fun toRpcStructModel(declaration: KSClassDeclaration): RpcModel.Struct {
+    private fun toRpcStructModel(declaration: KSClassDeclaration): RpcModel.Struct? {
         val properties = declaration.getDeclaredProperties().map {
             //NiceToHave: Support optional parameters and properties
-            RpcModel.Struct.Property(name = it.getSimpleName(), type = toKotlinTypeReference(it.type)/*it.hasDefault*/)
-        }.toList()
+            RpcModel.Struct.Property(name = it.getSimpleName() ?: return@map null, type = toKotlinTypeReference(it.type) ?: return@map null)
+        }.toList().allOrNothing() ?: return null
 
         val name = declaration.getKotlinName()
 
         return RpcModel.Struct(
-            name = name.simple,
+            name = name?.simple ?: return null,
             typeParameters = declaration.typeParameters.map { it.name.asString() },
             hasTypeDiscriminator = isPartOfTuple(declaration),
             // If the struct is part of a tuple kotlinx.serialization also inserts a String "type" property
@@ -144,11 +147,11 @@ class KspToApiDefinition(private val resolver: Resolver) {
         )
     }
 
-    private fun toRpcInlineModel(declaration: KSClassDeclaration): RpcModel.Inline {
+    private fun toRpcInlineModel(declaration: KSClassDeclaration): RpcModel.Inline? {
         return RpcModel.Inline(
-            name = declaration.getSimpleName(),
+            name = declaration.getSimpleName() ?: return null,
             typeParameters = declaration.typeParameters.map { it.name.asString() },
-            inlinedType = toKotlinTypeReference(declaration.getDeclaredProperties().single().type)
+            inlinedType = toKotlinTypeReference(declaration.getDeclaredProperties().single().type) ?: return null
         )
     }
 
@@ -164,19 +167,19 @@ class KspToApiDefinition(private val resolver: Resolver) {
      * @param typeParameterResolver If specified, type parameters should be transformed to the given KSType of the name resolves to a
      * non-null KSType.
      * */
-    private fun toKotlinTypeReference(type: KSTypeReference, typeParameterResolver: ((String) -> KSTypeReference?)? = null): KotlinTypeReference {
+    private fun toKotlinTypeReference(type: KSTypeReference, typeParameterResolver: ((String) -> KSTypeReference?)? = null): KotlinTypeReference? {
         val resolved = type.resolveToUnderlying()
         val declaration = resolved.declaration
         val kotlinName = declaration.getKotlinName()
         val isTypeParameter = declaration is KSTypeParameter
         if (isTypeParameter) {
             // Resolve type parameters if they can be resolved
-            val resolvedType = typeParameterResolver?.invoke(declaration.getSimpleName())
+            val resolvedType = typeParameterResolver?.invoke(declaration.getSimpleName() ?: return null)
             if (resolvedType != null) return toKotlinTypeReference(resolvedType, typeParameterResolver)
         }
         return KotlinTypeReference(
-            kotlinName.copy(simple = if (isTypeParameter) declaration.getSimpleName() else kotlinName.simple),
-            typeArguments = resolved.arguments.map { toKotlinTypeReference(it.nonNullType(), typeParameterResolver) },
+            kotlinName?.copy(simple = (if (isTypeParameter) declaration.getSimpleName() else kotlinName.simple) ?: return null) ?: return null,
+            typeArguments = resolved.arguments.map { toKotlinTypeReference(it.nonNullType(), typeParameterResolver) }.allOrNothing() ?: return null,
             isNullable = resolved.isMarkedNullable,
             isTypeParameter = isTypeParameter,
             inlinedType = resolved.inlinedType()

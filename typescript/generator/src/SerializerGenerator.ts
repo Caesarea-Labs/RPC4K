@@ -44,6 +44,7 @@ export function generateSerializers(models: RpcModel[], options: Rpc4TsClientGen
     // const modelNames = models.map(model => modelName(model.name))
 
     const builder = new CodeBuilder(options.localLibPaths)
+        .ignoreAnyWarnings()
     // .addImport(
     //     ["TsSerializer"],
     //     libraryPath("serialization/TsSerializer", options)
@@ -161,19 +162,19 @@ function fullyExpandUnion(union: RpcUnionModel, modelMap: ModelMap): NonUnionMod
 
 function addUnionChildren(union: RpcUnionModel, to: NonUnionModels, modelMap: ModelMap) {
     for (const option of union.options) {
-        addChild(option, to, modelMap)
+        addChild(option, to, modelMap, union.name)
     }
 }
 
-function addChild(type: RpcType, to: NonUnionModels, modelMap: ModelMap) {
+function addChild(type: RpcType, to: NonUnionModels, modelMap: ModelMap, parentName: string) {
     const model = modelMap[type.name]
     if (model === undefined) {
-        throw new Error(`Unknown model specified as child of union type: ${type.name}`)
+        throw new Error(`Unknown model '${type.name}' specified as child of union type '${parentName}' (this happens when you have a sealed superinterface of an inline class, it's not supported yet)`)
     }
     if (model.type === RpcModelKind.union) {
         addUnionChildren(model, to, modelMap)
     } else if (model.type === RpcModelKind.inline) {
-        addChild(model.inlinedType, to, modelMap)
+        addChild(model.inlinedType, to, modelMap, type.name)
     } else {
         to.push(type)
     }

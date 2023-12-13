@@ -33,7 +33,7 @@ class ApiClassValidator(private val env: SymbolProcessorEnvironment, private val
             val serializable = type.isSerializable()
             if (!serializable) unserializableReferencedClass = true
             it.checkRequirement(env, serializable) {
-                "Referenced type '${type.declaration.nonNullQualifiedName()}' is not a @Serializable class or a builtin serializable type."
+                "Referenced type '${type.declaration.getQualifiedName()}' is not a @Serializable class or a builtin serializable type."
             }
         }
 
@@ -70,7 +70,7 @@ class ApiClassValidator(private val env: SymbolProcessorEnvironment, private val
         // Blocked: Also we need to get rid of the test that verifies this in that case
         return referencedClasses.evaluateAll { classDecl ->
             classDecl.getDeclaredProperties().evaluateAll { property ->
-                val typeName = property.type.resolve().declaration.nonNullQualifiedName()
+                val typeName = property.type.resolve().declaration.getQualifiedName()
                 if (typeName in typesWithCustomSerializers) {
                     property.type.checkRequirement(env, property.annotatedByContextual() || property.type.annotatedByContextual()) {
                         "@Contextual must be specified on properties of type $typeName"

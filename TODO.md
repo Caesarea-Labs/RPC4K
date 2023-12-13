@@ -14,8 +14,25 @@ AnotherModelHolder (t: new GenericThing({...}) )
  AnotherModelHolder (t: {...} )
 
 
+### Refine PlainObject<>
+We currently use that utility to convert rpc classes into plain objects. We need to think if it's good as-is or maybe it can be improved. 
+
+
+### Add a .extend({} method)
+Some utility like this is useful: 
+```typescript
+export function extendObject<T extends {}, E>(obj: T, extension: E): T & E {
+    const copy: T = obj.constructor({...obj})
+    return Object.assign<T, E>(copy, extension)
+}
+
+```
 
 # 2. Low Priority - Do later
+
+### Think about reworking the generated typescript structure again.
+The best solution may be to expose everything as interfaces again, but have them extend a GeneratedModel interface, and then expose createX functions. 
+The main benefit would be that the model file itself would look better. We could then add many methods like .copy() and .extend() without cluttering the file.
 
 
 ### Support optional properties

@@ -6,7 +6,7 @@ import {Rpc4TsClientGenerationOptions} from "./ClientGenerator"
 
 export function generateModels(models: RpcModel[], serviceName: string, options: Rpc4TsClientGenerationOptions): string {
     const builder = new CodeBuilder(options.localLibPaths)
-        // .addImport(["Dayjs"], `dayjs`)
+    // .addImport(["Dayjs"], `dayjs`)
         // .addImport(["Duration"], `dayjs/plugin/duration`)
 
     for (const model of models) {

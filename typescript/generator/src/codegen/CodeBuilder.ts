@@ -121,9 +121,9 @@ export class CodeBuilder {
         return this._addLineOfCode(concat(`export const ${name} = `, value))
     }
 
-    addTopLevelFunction(name: string,typeArguments: TsType[], parameters: [string, TsReference][], returnType: TsReference | undefined, body: (body: BodyBuilder) => void): CodeBuilder {
+    addTopLevelFunction(name: string, typeArguments: TsType[], parameters: [string, TsReference][], returnType: TsReference | undefined, body: (body: BodyBuilder) => void): CodeBuilder {
         this.referencesInFile.add(name)
-        const typeArgs = typeArguments.length > 0 ? concat("<",join(typeArguments, ", ") , ">") : ""
+        const typeArgs = typeArguments.length > 0 ? concat("<", join(typeArguments, ", "), ">") : ""
         return this._addFunction(concat(`export function `, name, typeArgs), parameters, returnType, body)
     }
 
@@ -161,6 +161,13 @@ export class CodeBuilder {
         this.code += ("\t".repeat(this.currentIndent) + codeString)
         if (addNewline) this.code += "\n"
         return this
+    }
+
+    /**
+     *  Gets rid of the common "Unsafe argument of type `any` assigned to a parameter of type" lints
+     */
+    ignoreAnyWarnings() {
+        return this._addLineOfCode("/* eslint-disable @typescript-eslint/no-unsafe-argument */")
     }
 
 

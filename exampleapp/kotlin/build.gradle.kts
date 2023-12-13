@@ -2,7 +2,7 @@
 plugins {
    alias(libs.plugins.kotlin)
     alias(libs.plugins.serialization)
-    id("import com.caesarealabs.natanfudge.rpc4k") version "0.0.3"
+    id("io.github.natanfudge.rpc4k") version "0.0.3"
 }
 
 rpc4k {

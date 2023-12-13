@@ -29,20 +29,20 @@ fun KSAnnotated.hasAnnotation(annotation: KClass<*>) = annotations.any { it.shor
 /**
  * Extract from `com.foo.bar.Inner$Thing` the pair `[com.foo.bar, inner.Thing]`
  */
-fun KSDeclaration.getKotlinName(): KotlinClassName {
-    val qualifiedName = nonNullQualifiedName()
+fun KSDeclaration.getKotlinName(): KotlinClassName? {
+    val qualifiedName = getQualifiedName()
     val packageName = packageName.asString()
-    val className = qualifiedName.removePrefix("$packageName.")
+    val className = qualifiedName?.removePrefix("$packageName.") ?: return null
     return KotlinClassName(pkg = packageName, simple = className)
 }
 
 /**
  * Extract from `com.foo.bar.Inner$Thing` , `Inner.Thing`
  */
-fun KSDeclaration.getSimpleName(): String = if (this is KSClassDeclaration) {
-    val qualifiedName = nonNullQualifiedName()
+fun KSDeclaration.getSimpleName(): String? = if (this is KSClassDeclaration) {
+    val qualifiedName = getQualifiedName()
     val packageName = packageName.asString()
-    qualifiedName.removePrefix("$packageName.")
+    qualifiedName?.removePrefix("$packageName.")
 } else {
     getTopLevelSimpleName()
 }
@@ -67,11 +67,11 @@ fun KSTypeArgument.nonNullType() =
             "There's no reason why a type of a type argument would be null. If you encounter this error, open a bug report ASAP! This happened for '$this'."
         )
 
-fun KSDeclaration.nonNullQualifiedName() =
+fun KSDeclaration.getQualifiedName() =
     qualifiedName?.asString()
-        ?: error(
-            "There's no reason why the qualified name of a type would be null. If you encounter this error, open a bug report ASAP! This happened for '$this'."
-        )
+//        ?: error(
+//            "There's no reason why the qualified name of a type would be null. If you encounter this error, open a bug report ASAP! This happened for '$this'."
+//        )
 
 fun KSFunctionDeclaration.nonNullReturnType() =
     returnType

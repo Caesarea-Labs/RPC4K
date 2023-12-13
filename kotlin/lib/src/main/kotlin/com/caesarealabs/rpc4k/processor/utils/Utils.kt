@@ -15,3 +15,12 @@ inline fun <T, V> Iterable<T>.findDuplicate(byValue: (T) -> V): V? {
 }
 
 inline fun <T> List<T>.appendIf(condition: Boolean, element: () -> T) = if (condition) this + element() else this
+
+/**
+ * If any item is null, returns null. Otherwise, returns a non-null list.
+ */
+fun <T> List<T?>.allOrNothing(): List<T>? {
+    @Suppress("UNCHECKED_CAST")
+    if (any { it == null }) return null
+    else return this as List<T>
+}
