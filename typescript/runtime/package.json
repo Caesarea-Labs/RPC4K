@@ -1,10 +1,14 @@
 {
   "name": "rpc4ts-runtime",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "main": "dist/index.cjs",
-  "typings": "dist/index.d.cts",
-  "module": "dist/index.cjs",
-  "type": "module",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "require": "./dist/index.cjs",
+      "import": "./dist/index.js"
+    }
+  },
   "license": "MIT",
   "keywords": [],
   "scripts": {

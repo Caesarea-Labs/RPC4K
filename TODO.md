@@ -21,12 +21,15 @@ We currently use that utility to convert rpc classes into plain objects. We need
 ### Add a .extend({} method)
 Some utility like this is useful: 
 ```typescript
-export function extendObject<T extends {}, E>(obj: T, extension: E): T & E {
+export function extendObject<T extends object, E>(obj: T, extension: E): T & E {
     const copy: T = obj.constructor({...obj})
     return Object.assign<T, E>(copy, extension)
 }
 
 ```
+
+### Add a .copy({}) method
+obj.copy({x: 2}) to replace x with the value 2
 
 # 2. Low Priority - Do later
 

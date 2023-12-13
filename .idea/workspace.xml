@@ -5,20 +5,12 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="9ca8770c-8d9e-44a0-b1e9-2417666ce2c1" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/compiler.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/TODO.md" beforeDir="false" afterPath="$PROJECT_DIR$/TODO.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/exampleapp/kotlin/build.gradle.kts" beforeDir="false" afterPath="$PROJECT_DIR$/exampleapp/kotlin/build.gradle.kts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/kotlin/lib/src/main/kotlin/com/caesarealabs/rpc4k/processor/ApiClassValidator.kt" beforeDir="false" afterPath="$PROJECT_DIR$/kotlin/lib/src/main/kotlin/com/caesarealabs/rpc4k/processor/ApiClassValidator.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/kotlin/lib/src/main/kotlin/com/caesarealabs/rpc4k/processor/KspToApiDefinition.kt" beforeDir="false" afterPath="$PROJECT_DIR$/kotlin/lib/src/main/kotlin/com/caesarealabs/rpc4k/processor/KspToApiDefinition.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/kotlin/lib/src/main/kotlin/com/caesarealabs/rpc4k/processor/Rpc4kProcessorProvider.kt" beforeDir="false" afterPath="$PROJECT_DIR$/kotlin/lib/src/main/kotlin/com/caesarealabs/rpc4k/processor/Rpc4kProcessorProvider.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/kotlin/lib/src/main/kotlin/com/caesarealabs/rpc4k/processor/utils/KspUtils.kt" beforeDir="false" afterPath="$PROJECT_DIR$/kotlin/lib/src/main/kotlin/com/caesarealabs/rpc4k/processor/utils/KspUtils.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/kotlin/lib/src/main/kotlin/com/caesarealabs/rpc4k/processor/utils/SerializationUtils.kt" beforeDir="false" afterPath="$PROJECT_DIR$/kotlin/lib/src/main/kotlin/com/caesarealabs/rpc4k/processor/utils/SerializationUtils.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/kotlin/lib/src/main/kotlin/com/caesarealabs/rpc4k/processor/utils/Utils.kt" beforeDir="false" afterPath="$PROJECT_DIR$/kotlin/lib/src/main/kotlin/com/caesarealabs/rpc4k/processor/utils/Utils.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/typescript/generator/src/ClientAccessorGenerator.ts" beforeDir="false" afterPath="$PROJECT_DIR$/typescript/generator/src/ClientAccessorGenerator.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/typescript/generator/src/ModelGenerator.ts" beforeDir="false" afterPath="$PROJECT_DIR$/typescript/generator/src/ModelGenerator.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/typescript/generator/src/SerializerGenerator.ts" beforeDir="false" afterPath="$PROJECT_DIR$/typescript/generator/src/SerializerGenerator.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/typescript/generator/src/codegen/CodeBuilder.ts" beforeDir="false" afterPath="$PROJECT_DIR$/typescript/generator/src/codegen/CodeBuilder.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/typescript/runtime/index.ts" beforeDir="false" afterPath="$PROJECT_DIR$/typescript/runtime/index.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/typescript/runtime/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/typescript/runtime/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/typescript/runtime/tsconfig.json" beforeDir="false" afterPath="$PROJECT_DIR$/typescript/runtime/tsconfig.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/typescript/runtime/tsup.config.ts" beforeDir="false" afterPath="$PROJECT_DIR$/typescript/runtime/tsup.config.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../fudge-lib/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/../fudge-lib/package.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../fudge-lib/structures/hashmap/HashMap.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../fudge-lib/structures/hashmap/HashMap.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../fudge-lib/structures/hashmap/HashSet.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../fudge-lib/structures/hashmap/HashSet.ts" afterDir="false" />
@@ -107,7 +99,7 @@
     </option>
   </component>
   <component name="Git.Settings">
-    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/../fudge-lib" />
   </component>
   <component name="KubernetesApiProvider">{
   &quot;isMigrated&quot;: true
@@ -214,7 +206,7 @@
       <recent name="C:\Users\natan\Desktop\RPC4K\typescript\runtime\src\serialization\core\encoding\CompositeEncoder.ts" />
     </key>
   </component>
-  <component name="RunManager" selected="Gradle.kotlin [uploadLibrary]">
+  <component name="RunManager" selected="npm.build">
     <configuration name="kotlin [uploadLibrary]" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
       <ExternalSystemSettings>
         <option name="executionName" />
@@ -281,8 +273,8 @@
     </list>
     <recent_temporary>
       <list>
-        <item itemvalue="Gradle.kotlin [uploadLibrary]" />
         <item itemvalue="npm.build" />
+        <item itemvalue="Gradle.kotlin [uploadLibrary]" />
         <item itemvalue="Kotlin.UnrelatedTestKt" />
         <item itemvalue="Kotlin.ServiceModelsInOtherFileKt" />
         <item itemvalue="Kotlin.TestCompKt" />
@@ -397,7 +389,8 @@
       <workItem from="1702376834815" duration="9309000" />
       <workItem from="1702391679143" duration="1986000" />
       <workItem from="1702451353715" duration="122000" />
-      <workItem from="1702452022369" duration="4912000" />
+      <workItem from="1702452022369" duration="5980000" />
+      <workItem from="1702462506572" duration="1607000" />
     </task>
     <servers />
   </component>
