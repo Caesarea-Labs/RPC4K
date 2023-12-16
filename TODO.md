@@ -1,5 +1,6 @@
 ### Upload gradle plugin to the correct account once the request has been rejected by gradle.
-1. Add 
+1. Add "gradle-verification=HK394O2OJA4800GL72U9OALP4D51O" to dns
+2. Publish again
 
 
 ### Support Streaming
@@ -8,6 +9,7 @@ I should support an appropriate conversion for the return type of Flow<T>
 
 
 ### Think about reworking the generated typescript structure again.
+
 The best solution may be to expose everything as interfaces again, but have them extend a GeneratedModel interface, and then expose createX functions.
 The main benefit would be that the model file itself would look better. We could then add many methods like .copy() and .extend() without cluttering the file.
 In addition this would avoid issues with branding and such. 
@@ -15,22 +17,10 @@ Every interface will have a private class that is used to implement that interfa
 We'll also bring back `type` for union types.
 
 ```typescript
-export interface MyGenedClass extends GeneratedModel<MyGenedClass> {
-    get x(): number
-
-    type: "MyGenedClass"
-}
-
-
-
-export function createMyGenedClass(props: { x?: number }): MyGenedClass {
-}
-
-
-class MyGenedClassImpl implements MyGenedClass {
+class MyGenedClass implements GeneratedModel<MyGenedClass> {
     _x?: number
 
-    constructor({x}: MyGenedClassProps) {
+    constructor({x}: { x?: number }) {
         this._x = x
     }
 
@@ -40,20 +30,18 @@ class MyGenedClassImpl implements MyGenedClass {
     }
     
     copy(props: Partial<MyGenedClass>): MyGenedClass {
-        const newObj = createMyGenedClass(props)
+        const newObj = new MyGenedClassImpl(props)
         recordForEach(props, (k,v) => {
             newObj[[k]] = v
         })
         return newObj
     }
 }
-// This will allow differentiating between union children
-MyGenedClassImpl.prototype.type = "MyGenedClass"
 // The _rpc_name is applied to be used in the rpc implementation
 MyGenedClassImpl.prototype._rpc_name = "com.example.MyGenedClass"
 ```
 ```typescript
-export function extendObject<T, M extends GeneratedModel<T>, E>(model: M, extension: E): M & E {
+export function extendModel<T, M extends GeneratedModel<T>, E>(model: M, extension: E): M & E {
     const copy: M = model.copy({})
     return Object.assign<T, E>(copy, extension)
 }
@@ -62,8 +50,9 @@ GeneratedModel defined like so:
 
 ```typescript
 interface GeneratedModel<T> {
-    //TODO: need to see if i allow the "type" / "copy" fields on anything. If so, i shouldn't because it wouldn't work with this. 
-    copy(props: Partial<Omit<T, "type" | "copy">>): T
+    //TODO: need to see if i allow the "copy" fields on anything. If so, i shouldn't because it wouldn't work with this. 
+    // Alternatively, make copy be _copy. 
+    copy(props: Partial<Omit<T, "copy">>): T
 }
 ```
 /////////////////
