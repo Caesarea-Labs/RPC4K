@@ -1,10 +1,75 @@
-### Check if incremental compilation works now
-### Resolve all TODOs
+### Upload gradle plugin to the correct account once the request has been rejected by gradle.
+1. Add 
 
 
 ### Support Streaming
 
 I should support an appropriate conversion for the return type of Flow<T>
+
+
+### Think about reworking the generated typescript structure again.
+The best solution may be to expose everything as interfaces again, but have them extend a GeneratedModel interface, and then expose createX functions.
+The main benefit would be that the model file itself would look better. We could then add many methods like .copy() and .extend() without cluttering the file.
+In addition this would avoid issues with branding and such. 
+Every interface will have a private class that is used to implement that interface. 
+We'll also bring back `type` for union types.
+
+```typescript
+export interface MyGenedClass extends GeneratedModel<MyGenedClass> {
+    get x(): number
+
+    type: "MyGenedClass"
+}
+
+
+
+export function createMyGenedClass(props: { x?: number }): MyGenedClass {
+}
+
+
+class MyGenedClassImpl implements MyGenedClass {
+    _x?: number
+
+    constructor({x}: MyGenedClassProps) {
+        this._x = x
+    }
+
+    get x(): number {
+        GeneratedCodeUtils.checkDefined(this._x, "x", this)
+        return this._x
+    }
+    
+    copy(props: Partial<MyGenedClass>): MyGenedClass {
+        const newObj = createMyGenedClass(props)
+        recordForEach(props, (k,v) => {
+            newObj[[k]] = v
+        })
+        return newObj
+    }
+}
+// This will allow differentiating between union children
+MyGenedClassImpl.prototype.type = "MyGenedClass"
+// The _rpc_name is applied to be used in the rpc implementation
+MyGenedClassImpl.prototype._rpc_name = "com.example.MyGenedClass"
+```
+```typescript
+export function extendObject<T, M extends GeneratedModel<T>, E>(model: M, extension: E): M & E {
+    const copy: M = model.copy({})
+    return Object.assign<T, E>(copy, extension)
+}
+```
+GeneratedModel defined like so:
+
+```typescript
+interface GeneratedModel<T> {
+    //TODO: need to see if i allow the "type" / "copy" fields on anything. If so, i shouldn't because it wouldn't work with this. 
+    copy(props: Partial<Omit<T, "type" | "copy">>): T
+}
+```
+/////////////////
+
+
+### Stop emitting _brand = undefined in runtime. Ith should be a compile-only thing. 
 
 ### Support easy construction of nested objects
 consider adding special constructor that make it easier to create nested objects
@@ -12,6 +77,9 @@ instead of:
 AnotherModelHolder (t: new GenericThing({...}) )
  do:
  AnotherModelHolder (t: {...} )
+
+### Split model file into .d.ts and .js 
+Because the .js file would include many implementation details such as assigning values in the constructor, which makes the file much longer. 
 
 
 ### Refine PlainObject<>
@@ -21,8 +89,8 @@ We currently use that utility to convert rpc classes into plain objects. We need
 ### Add a .extend({} method)
 Some utility like this is useful: 
 ```typescript
-export function extendObject<T extends object, E>(obj: T, extension: E): T & E {
-    const copy: T = obj.constructor({...obj})
+extendObject<E>(extension: E): MyModel & E {
+    const copy: MyModel = new MyModel({...this})
     return Object.assign<T, E>(copy, extension)
 }
 
@@ -33,9 +101,6 @@ obj.copy({x: 2}) to replace x with the value 2
 
 # 2. Low Priority - Do later
 
-### Think about reworking the generated typescript structure again.
-The best solution may be to expose everything as interfaces again, but have them extend a GeneratedModel interface, and then expose createX functions. 
-The main benefit would be that the model file itself would look better. We could then add many methods like .copy() and .extend() without cluttering the file.
 
 
 ### Support optional properties

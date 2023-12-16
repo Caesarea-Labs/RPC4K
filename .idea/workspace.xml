@@ -5,15 +5,36 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="9ca8770c-8d9e-44a0-b1e9-2417666ce2c1" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/.idea/runConfigurations/Build_Runtime.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/runConfigurations/Generate_Client_.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/typescript/runtime/runtime.iml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/typescript/runtime/test/serialization/TddTests.test.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/compiler.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/modules.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/vcs.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/TODO.md" beforeDir="false" afterPath="$PROJECT_DIR$/TODO.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/kotlin/build.gradle.kts" beforeDir="false" afterPath="$PROJECT_DIR$/kotlin/build.gradle.kts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/kotlin/gradle.properties" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/kotlin/gradle/libs.versions.toml" beforeDir="false" afterPath="$PROJECT_DIR$/kotlin/gradle/libs.versions.toml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/kotlin/lib/build.gradle.kts" beforeDir="false" afterPath="$PROJECT_DIR$/kotlin/lib/build.gradle.kts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/kotlin/plugin/build.gradle.kts" beforeDir="false" afterPath="$PROJECT_DIR$/kotlin/plugin/build.gradle.kts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/kotlin/testapp/src/main/java/com/caesarealabs/rpc4k/testapp/AllEncompassingService.kt" beforeDir="false" afterPath="$PROJECT_DIR$/kotlin/testapp/src/main/java/com/caesarealabs/rpc4k/testapp/AllEncompassingService.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/typescript/generator/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/typescript/generator/package-lock.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/typescript/generator/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/typescript/generator/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/typescript/runtime/index.ts" beforeDir="false" afterPath="$PROJECT_DIR$/typescript/runtime/index.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/typescript/runtime/package-lock.json" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/typescript/runtime/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/typescript/runtime/package.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/typescript/runtime/tsconfig.json" beforeDir="false" afterPath="$PROJECT_DIR$/typescript/runtime/tsconfig.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/typescript/runtime/tsup.config.ts" beforeDir="false" afterPath="$PROJECT_DIR$/typescript/runtime/tsup.config.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../fudge-lib/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/../fudge-lib/package.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../fudge-lib/structures/hashmap/HashMap.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../fudge-lib/structures/hashmap/HashMap.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../fudge-lib/structures/hashmap/HashSet.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../fudge-lib/structures/hashmap/HashSet.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/typescript/runtime/src/serialization/json/internal/StreamingJsonDecoder.ts" beforeDir="false" afterPath="$PROJECT_DIR$/typescript/runtime/src/serialization/json/internal/StreamingJsonDecoder.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/typescript/runtime/test/CodegenedClientTest.test.ts" beforeDir="false" afterPath="$PROJECT_DIR$/typescript/runtime/test/CodegenedClientTest.test.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../ts-minimum/index.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../ts-minimum/index.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../ts-minimum/searchit/SearchitBar.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/../ts-minimum/searchit/SearchitBar.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../ts-minimum/searchit/impl/searchit.css" beforeDir="false" afterPath="$PROJECT_DIR$/../ts-minimum/searchit/impl/searchit.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../ts-minimum/state/State.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../ts-minimum/state/State.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../ts-minimum/theme/ThemeProvider.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/../ts-minimum/theme/ThemeProvider.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../ts-minimum/theme/styles.global.css" beforeDir="false" afterPath="$PROJECT_DIR$/../ts-minimum/theme/styles.global.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../ts-minimum/ts-minimum.iml" beforeDir="false" afterPath="$PROJECT_DIR$/../ts-minimum/ts-minimum.iml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -74,14 +95,22 @@
                 <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
                 <item name="RPC4K" type="f1a62948:ProjectNode" />
                 <item name="RPC4K" type="2d1252cf:ModuleNode" />
+                <item name="lib" type="2d1252cf:ModuleNode" />
+              </path>
+              <path>
+                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
+                <item name="RPC4K" type="f1a62948:ProjectNode" />
+                <item name="RPC4K" type="2d1252cf:ModuleNode" />
+                <item name="lib" type="2d1252cf:ModuleNode" />
                 <item name="Tasks" type="e4a08cd1:TasksNode" />
               </path>
               <path>
                 <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
                 <item name="RPC4K" type="f1a62948:ProjectNode" />
                 <item name="RPC4K" type="2d1252cf:ModuleNode" />
+                <item name="lib" type="2d1252cf:ModuleNode" />
                 <item name="Tasks" type="e4a08cd1:TasksNode" />
-                <item name="upload" type="c8890929:TasksNode$1" />
+                <item name="publishing" type="c8890929:TasksNode$1" />
               </path>
             </expand>
             <select />
@@ -99,7 +128,7 @@
     </option>
   </component>
   <component name="Git.Settings">
-    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/../fudge-lib" />
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
   <component name="KubernetesApiProvider">{
   &quot;isMigrated&quot;: true
@@ -128,6 +157,9 @@
     &quot;Gradle.Test Server.executor&quot;: &quot;Run&quot;,
     &quot;Gradle.Upload Rpc4k.executor&quot;: &quot;Run&quot;,
     &quot;Gradle.kotlin [uploadLibrary].executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.kotlin:lib [publishToSonatype].executor&quot;: &quot;Run&quot;,
+    &quot;Jest.Can decode array of generated class.executor&quot;: &quot;Run&quot;,
+    &quot;Jest.Can decode array of nested generated class.executor&quot;: &quot;Run&quot;,
     &quot;Jest.Codegened Client works in all cases.executor&quot;: &quot;Run&quot;,
     &quot;Jest.Codegened Client works in more cases.executor&quot;: &quot;Run&quot;,
     &quot;Jest.Codegened Client works.executor&quot;: &quot;Run&quot;,
@@ -157,7 +189,7 @@
     &quot;git-widget-placeholder&quot;: &quot;main&quot;,
     &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
     &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
-    &quot;last_opened_file_path&quot;: &quot;C:/Users/natan/Desktop/RPC4K/exampleapp/kotlin&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/Users/natan/Desktop/ts-minimum&quot;,
     &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
     &quot;node.js.detected.package.standard&quot;: &quot;true&quot;,
     &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
@@ -166,6 +198,8 @@
     &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
     &quot;nodejs.jest.jest_package&quot;: &quot;C:/Users/natan/Desktop/RPC4K/typescript/runtime/node_modules/jest&quot;,
     &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;npm.Build Runtime.executor&quot;: &quot;Run&quot;,
+    &quot;npm.Generate Client .executor&quot;: &quot;Run&quot;,
     &quot;npm.Generate Client.executor&quot;: &quot;Run&quot;,
     &quot;npm.build (1).executor&quot;: &quot;Run&quot;,
     &quot;npm.build.executor&quot;: &quot;Run&quot;,
@@ -177,11 +211,11 @@
     &quot;npm.pubNoBump (1).executor&quot;: &quot;Run&quot;,
     &quot;npm.pubNoBump (2).executor&quot;: &quot;Run&quot;,
     &quot;npm.pubNoBump.executor&quot;: &quot;Run&quot;,
-    &quot;project.structure.last.edited&quot;: &quot;Project&quot;,
+    &quot;project.structure.last.edited&quot;: &quot;Modules&quot;,
     &quot;project.structure.proportion&quot;: &quot;0.0&quot;,
     &quot;project.structure.side.proportion&quot;: &quot;0.2&quot;,
     &quot;settings.editor.selected.configurable&quot;: &quot;preferences.toDoOptions&quot;,
-    &quot;ts.external.directory.path&quot;: &quot;C:\\Users\\natan\\Desktop\\fudge-lib\\node_modules\\typescript\\lib&quot;,
+    &quot;ts.external.directory.path&quot;: &quot;C:\\Users\\natan\\Desktop\\ts-minimum\\node_modules\\typescript\\lib&quot;,
     &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
 }</component>
@@ -206,7 +240,7 @@
       <recent name="C:\Users\natan\Desktop\RPC4K\typescript\runtime\src\serialization\core\encoding\CompositeEncoder.ts" />
     </key>
   </component>
-  <component name="RunManager" selected="npm.build">
+  <component name="RunManager" selected="Gradle.kotlin:lib [publishToSonatype]">
     <configuration name="kotlin [uploadLibrary]" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
       <ExternalSystemSettings>
         <option name="executionName" />
@@ -229,32 +263,57 @@
       <RunAsTest>false</RunAsTest>
       <method v="2" />
     </configuration>
-    <configuration name="ServiceModelsInOtherFileKt" type="JetRunConfigurationType" temporary="true" nameIsGenerated="true">
-      <option name="MAIN_CLASS_NAME" value="com.clabs.rpc4k.testapp.ServiceModelsInOtherFileKt" />
-      <module name="RPC4K.testapp.main" />
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
+    <configuration name="kotlin:lib [publishToSonatype]" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
+      <ExternalSystemSettings>
+        <option name="executionName" />
+        <option name="externalProjectPath" value="$PROJECT_DIR$/kotlin/lib" />
+        <option name="externalSystemIdString" value="GRADLE" />
+        <option name="scriptParameters" />
+        <option name="taskDescriptions">
+          <list />
+        </option>
+        <option name="taskNames">
+          <list>
+            <option value="publishToSonatype" />
+          </list>
+        </option>
+        <option name="vmOptions" />
+      </ExternalSystemSettings>
+      <ExternalSystemDebugServerProcess>true</ExternalSystemDebugServerProcess>
+      <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
+      <DebugAllEnabled>false</DebugAllEnabled>
+      <RunAsTest>false</RunAsTest>
+      <method v="2" />
     </configuration>
-    <configuration name="TestCompKt" type="JetRunConfigurationType" temporary="true" nameIsGenerated="true">
-      <option name="MAIN_CLASS_NAME" value="com.clabs.rpc4k.test.TestCompKt" />
-      <module name="RPC4K.testapp.test" />
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
+    <configuration name="Can decode array of generated class" type="JavaScriptTestRunnerJest" temporary="true" nameIsGenerated="true">
+      <node-interpreter value="project" />
+      <jest-package value="$PROJECT_DIR$/typescript/runtime/node_modules/jest" />
+      <working-dir value="$PROJECT_DIR$/typescript/runtime" />
+      <envs />
+      <scope-kind value="TEST" />
+      <test-file value="$PROJECT_DIR$/typescript/runtime/test/serialization/TddTests.test.ts" />
+      <test-names>
+        <test-name value="Can decode array of generated class" />
+      </test-names>
+      <method v="2" />
     </configuration>
-    <configuration name="UnrelatedTestKt" type="JetRunConfigurationType" temporary="true" nameIsGenerated="true">
-      <option name="MAIN_CLASS_NAME" value="com.clabs.rpc4k.testapp.UnrelatedTestKt" />
-      <module name="RPC4K.testapp.main" />
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
+    <configuration name="Can decode array of nested generated class" type="JavaScriptTestRunnerJest" temporary="true" nameIsGenerated="true">
+      <node-interpreter value="project" />
+      <jest-package value="$PROJECT_DIR$/typescript/runtime/node_modules/jest" />
+      <working-dir value="$PROJECT_DIR$/typescript/runtime" />
+      <envs />
+      <scope-kind value="TEST" />
+      <test-file value="$PROJECT_DIR$/typescript/runtime/test/serialization/TddTests.test.ts" />
+      <test-names>
+        <test-name value="Can decode array of nested generated class" />
+      </test-names>
+      <method v="2" />
     </configuration>
-    <configuration name="build" type="js.build_tools.npm" temporary="true" nameIsGenerated="true">
+    <configuration name="pub" type="js.build_tools.npm" temporary="true" nameIsGenerated="true">
       <package-json value="$PROJECT_DIR$/typescript/runtime/package.json" />
       <command value="run" />
       <scripts>
-        <script value="build" />
+        <script value="pub" />
       </scripts>
       <node-interpreter value="project" />
       <envs />
@@ -264,20 +323,22 @@
       <item itemvalue="Gradle.Test Server" />
       <item itemvalue="Gradle.Kotlin Tests" />
       <item itemvalue="Gradle.kotlin [uploadLibrary]" />
+      <item itemvalue="Gradle.kotlin:lib [publishToSonatype]" />
       <item itemvalue="Jest.Standalone TS Tests" />
-      <item itemvalue="Kotlin.ServiceModelsInOtherFileKt" />
-      <item itemvalue="Kotlin.TestCompKt" />
-      <item itemvalue="Kotlin.UnrelatedTestKt" />
+      <item itemvalue="Jest.Can decode array of nested generated class" />
+      <item itemvalue="Jest.Can decode array of generated class" />
       <item itemvalue="Multirun.Publish TS" />
-      <item itemvalue="npm.build" />
+      <item itemvalue="npm.Generate Client " />
+      <item itemvalue="npm.Build Runtime" />
+      <item itemvalue="npm.pub" />
     </list>
     <recent_temporary>
       <list>
-        <item itemvalue="npm.build" />
+        <item itemvalue="Gradle.kotlin:lib [publishToSonatype]" />
         <item itemvalue="Gradle.kotlin [uploadLibrary]" />
-        <item itemvalue="Kotlin.UnrelatedTestKt" />
-        <item itemvalue="Kotlin.ServiceModelsInOtherFileKt" />
-        <item itemvalue="Kotlin.TestCompKt" />
+        <item itemvalue="Jest.Can decode array of nested generated class" />
+        <item itemvalue="Jest.Can decode array of generated class" />
+        <item itemvalue="npm.pub" />
       </list>
     </recent_temporary>
   </component>
@@ -391,6 +452,12 @@
       <workItem from="1702451353715" duration="122000" />
       <workItem from="1702452022369" duration="5980000" />
       <workItem from="1702462506572" duration="1607000" />
+      <workItem from="1702543144663" duration="2354000" />
+      <workItem from="1702547366771" duration="27000" />
+      <workItem from="1702566143573" duration="46000" />
+      <workItem from="1702566781116" duration="1689000" />
+      <workItem from="1702731210008" duration="865000" />
+      <workItem from="1702734929037" duration="2830000" />
     </task>
     <servers />
   </component>

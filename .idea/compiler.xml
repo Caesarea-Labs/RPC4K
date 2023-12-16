@@ -1,7 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="CompilerConfiguration">
+    <annotationProcessing>
+      <profile name="Maven default annotation processors profile" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <module name="plugin" />
+      </profile>
+    </annotationProcessing>
     <bytecodeTargetLevel>
+      <module name="io.github.natanfudge.plugin" target="17" />
+      <module name="io.github.natanfudge.plugin.main" target="17" />
+      <module name="io.github.natanfudge.plugin.test" target="17" />
       <module name="testprodapp" target="19" />
       <module name="testprodapp.main" target="19" />
       <module name="testprodapp.test" target="19" />

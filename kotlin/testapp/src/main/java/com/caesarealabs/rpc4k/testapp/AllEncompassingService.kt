@@ -14,6 +14,10 @@ import java.time.ZonedDateTime
 import java.util.*
 import kotlin.time.Duration
 
+@Serializable
+data class NestedObject(val x : Int)
+@Serializable
+data class NestingObject(val nested: NestedObject)
 
 
 @Serializable
@@ -299,6 +303,10 @@ open class AllEncompassingService(val value: Int = 1) {
 
     open suspend fun someMap(map: SomeMap): SomeMap {
         return map
+    }
+
+    open suspend fun nestingObject(obj: NestingObject): NestingObject {
+        return obj
     }
 
 //NiceToHave: Respect @SerialName

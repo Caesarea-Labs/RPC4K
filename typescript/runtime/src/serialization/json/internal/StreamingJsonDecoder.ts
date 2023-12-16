@@ -11,7 +11,7 @@ import {ChunkedDecoder} from "../../core/encoding/ChunkedDecoder";
 import {SerialDescriptor} from "../../core/SerialDescriptor";
 import {DeserializationStrategy} from "../../TsSerializer";
 import {JsonElementMarker} from "./JsonElementMarker";
-import {CompositeDecoder, DECODER_DECODE_DONE, DECODER_UNKNOWN_NAME} from "../../core/encoding/Decoding";
+import {CompositeDecoder, Decoder, DECODER_DECODE_DONE, DECODER_UNKNOWN_NAME} from "../../core/encoding/Decoding";
 import {isUnsignedNumber} from "./StreamingJsonEncoder";
 import {getJsonNameIndex, getJsonNameIndexOrThrow, tryCoerceValue} from "./JsonNamesMap";
 import {SerializersModule} from "../../modules/SerializersModule";
@@ -58,14 +58,14 @@ export class StreamingJsonDecoder extends AbstractDecoder implements JsonDecoder
 
         const discriminator = classDiscriminator(deserializer.descriptor, this.json)
         const type = this.lexer.peekLeadingMatchingValue(discriminator, this.configuration.isLenient);
-        let actualSerializer: DeserializationStrategy<any> | null = null;
+        let actualSerializer: DeserializationStrategy<unknown> | null = null;
 
-        if (type != null) {
+        if (type !== null) {
             actualSerializer = polyDeserializer.findPolymorphicSerializerOrNullForClassName(this, type);
         }
 
-        if (actualSerializer == null) {
-            throw new Error("TODO")
+        if (actualSerializer === null) {
+            throw new Error(`Missing 'type' field in polymorphic object of '${deserializer.descriptor.serialName}'`)
             // return this.decodeSerializableValuePolymorphic<T>(deserializer);
         }
 
@@ -114,7 +114,7 @@ export class StreamingJsonDecoder extends AbstractDecoder implements JsonDecoder
         return !(this.elementMarker?.isUnmarkedNull ?? false) && !this.lexer.tryConsumeNull();
     }
 
-    override decodeNull(): any {
+    override decodeNull(): null {
         // Do nothing, null was consumed by `decodeNotNullMark`
         return null;
     }
@@ -194,7 +194,7 @@ export class StreamingJsonDecoder extends AbstractDecoder implements JsonDecoder
         }
     }
 
-    private coerceInputValue(descriptor: any, index: number): boolean { // Replace 'any' with the actual descriptor type
+    private coerceInputValue(descriptor: SerialDescriptor, index: number): boolean { // Replace 'any' with the actual descriptor type
         return tryCoerceValue(this.json,
             descriptor.getElementDescriptor(index),
             () => this.lexer.tryConsumeNull(),
@@ -203,7 +203,7 @@ export class StreamingJsonDecoder extends AbstractDecoder implements JsonDecoder
         );
     }
 
-    private decodeObjectIndex(descriptor: any): number { // Replace 'any' with the actual descriptor type
+    private decodeObjectIndex(descriptor: SerialDescriptor): number { // Replace 'any' with the actual descriptor type
         let hasComma = this.lexer.tryConsumeComma();
 
         while (this.lexer.canConsumeValue()) {
@@ -218,7 +218,7 @@ export class StreamingJsonDecoder extends AbstractDecoder implements JsonDecoder
                     hasComma = this.lexer.tryConsumeComma(); // Assuming hasComma is defined earlier
                     isUnknown = false; // Known element, but coerced
                 } else {
-                    if (this.elementMarker) {
+                    if (this.elementMarker !== null) {
                         this.elementMarker.mark(index); // Assuming elementMarker's mark method is defined
                     }
                     return index; // Known element without coercing, return it
@@ -292,14 +292,14 @@ export class StreamingJsonDecoder extends AbstractDecoder implements JsonDecoder
         this.lexer.consumeStringChunked(this.configuration.isLenient, consumeChunk);
     }
 
-    public decodeInline(descriptor: SerialDescriptor): any {
+    public decodeInline(descriptor: SerialDescriptor): Decoder {
         if (isUnsignedNumber(descriptor)) {
             throw new Error("Not implemented")
         }
         return super.decodeInline(descriptor)
     }
 
-    public decodeEnum(enumDescriptor: any): number { // Replace 'any' with actual enumDescriptor type
+    public decodeEnum(enumDescriptor: SerialDescriptor): number { // Replace 'any' with actual enumDescriptor type
         return getJsonNameIndexOrThrow(enumDescriptor, this.json, this.decodeString(), ` at path ${this.lexer.path.getPath()}`); // Adjust based on actual implementation
     }
 
@@ -320,7 +320,7 @@ class DiscriminatorHolder {
 
 
 function trySkip(discriminatorHolder: DiscriminatorHolder | null, unknownKey: string): boolean {
-    if (discriminatorHolder == null) return false
+    if (discriminatorHolder === null) return false
     if (discriminatorHolder.discriminatorToSkip === unknownKey) {
         discriminatorHolder.discriminatorToSkip = null
         return true

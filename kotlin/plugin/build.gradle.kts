@@ -28,7 +28,7 @@ gradlePlugin {
             implementationClass = "com.caesarealabs.rpc4k.gradle.Rpc4KPlugin"
             tags = listOf("rpc", "annotation processor", "ksp", "rpc4all")
             displayName = "Rpc4k"
-            description = "Sets up rpc4k - a framework for interfacing between services in different programming languages"
+            description = "Sets up rpc4k - a framework for interfacing between services in different programming languages. To get started view the @Api annotation docs."
         }
     }
 }

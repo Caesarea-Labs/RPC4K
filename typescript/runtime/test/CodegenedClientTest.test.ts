@@ -1,4 +1,4 @@
-import {FetchRpcClient, JsonFormat} from "../src/components";
+import {FetchRpcClient, JsonFormat} from "../src/compone";
 import dayjs from "dayjs";
 import {AllEncompassingServiceApi} from "./generated/rpc4ts_AllEncompassingServiceApi";
 import {

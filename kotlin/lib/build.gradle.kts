@@ -61,7 +61,6 @@ sourceSets.main {
 }
 
 
-//TODO: move to caesarea maven
 afterEvaluate {
     publishing {
         publications {
@@ -105,11 +104,11 @@ afterEvaluate {
 
 signing {
     useInMemoryPgpKeys(
-        System.getenv("GPG_KEY_ID"),
+        System.getenv("CLABS_GPG_KEY_ID"),
         // The ONELINE secret key contains literal '\n' in place of new lines in order to make it fit in a windows env variable.
         // We then replace the literal '\n's with actual '\n's.
-        System.getenv("GPG_SECRET_KEY_ONELINE").replace("\\n", "\n"),
-        System.getenv("GPG_KEY_PASSWORD")
+        System.getenv("CLABS_GPG_SECRET_KEY_ONELINE")?.replace("\\n", "\n"),
+        System.getenv("CLABS_GPG_KEY_PASSWORD")
     )
     sign(publishing.publications)
 }
