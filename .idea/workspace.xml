@@ -5,29 +5,9 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="9ca8770c-8d9e-44a0-b1e9-2417666ce2c1" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/runConfigurations/Build_Runtime.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/runConfigurations/Generate_Client_.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/typescript/runtime/runtime.iml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/typescript/runtime/test/serialization/TddTests.test.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/compiler.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/modules.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/vcs.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/TODO.md" beforeDir="false" afterPath="$PROJECT_DIR$/TODO.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/kotlin/build.gradle.kts" beforeDir="false" afterPath="$PROJECT_DIR$/kotlin/build.gradle.kts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/kotlin/gradle.properties" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/kotlin/gradle/libs.versions.toml" beforeDir="false" afterPath="$PROJECT_DIR$/kotlin/gradle/libs.versions.toml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/kotlin/lib/build.gradle.kts" beforeDir="false" afterPath="$PROJECT_DIR$/kotlin/lib/build.gradle.kts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/kotlin/plugin/build.gradle.kts" beforeDir="false" afterPath="$PROJECT_DIR$/kotlin/plugin/build.gradle.kts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/kotlin/testapp/src/main/java/com/caesarealabs/rpc4k/testapp/AllEncompassingService.kt" beforeDir="false" afterPath="$PROJECT_DIR$/kotlin/testapp/src/main/java/com/caesarealabs/rpc4k/testapp/AllEncompassingService.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/typescript/generator/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/typescript/generator/package-lock.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/typescript/generator/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/typescript/generator/package.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/typescript/runtime/index.ts" beforeDir="false" afterPath="$PROJECT_DIR$/typescript/runtime/index.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/typescript/runtime/package-lock.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/typescript/runtime/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/typescript/runtime/package.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/typescript/runtime/src/serialization/json/internal/StreamingJsonDecoder.ts" beforeDir="false" afterPath="$PROJECT_DIR$/typescript/runtime/src/serialization/json/internal/StreamingJsonDecoder.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/typescript/runtime/test/CodegenedClientTest.test.ts" beforeDir="false" afterPath="$PROJECT_DIR$/typescript/runtime/test/CodegenedClientTest.test.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/rpc4ts design challenges.md" beforeDir="false" afterPath="$PROJECT_DIR$/rpc4ts design challenges.md" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../ts-minimum/index.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../ts-minimum/index.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../ts-minimum/searchit/SearchitBar.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/../ts-minimum/searchit/SearchitBar.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../ts-minimum/searchit/impl/searchit.css" beforeDir="false" afterPath="$PROJECT_DIR$/../ts-minimum/searchit/impl/searchit.css" afterDir="false" />
@@ -128,7 +108,7 @@
     </option>
   </component>
   <component name="Git.Settings">
-    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/../ts-minimum" />
   </component>
   <component name="KubernetesApiProvider">{
   &quot;isMigrated&quot;: true
@@ -457,7 +437,9 @@
       <workItem from="1702566143573" duration="46000" />
       <workItem from="1702566781116" duration="1689000" />
       <workItem from="1702731210008" duration="865000" />
-      <workItem from="1702734929037" duration="2830000" />
+      <workItem from="1702734929037" duration="3629000" />
+      <workItem from="1702815909939" duration="3800000" />
+      <workItem from="1702830073852" duration="904000" />
     </task>
     <servers />
   </component>

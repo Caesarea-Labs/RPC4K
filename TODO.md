@@ -9,6 +9,21 @@ I should support an appropriate conversion for the return type of Flow<T>
 
 
 ### Think about reworking the generated typescript structure again.
+```kotlin
+sealed interface Foo {
+    
+}
+```
+
+```typescript
+export interface WithOptional {
+    x?: number
+}
+
+function someApiMethod(param1: WithOptional): Required<WithOptional> {
+    
+}
+```
 
 The best solution may be to expose everything as interfaces again, but have them extend a GeneratedModel interface, and then expose createX functions.
 The main benefit would be that the model file itself would look better. We could then add many methods like .copy() and .extend() without cluttering the file.
