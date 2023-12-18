@@ -161,3 +161,4 @@ interface Constructable2<T> {
 }
 
 type NullableArgType = GenericThing<(string | null)[] | null, string[] | null, (string | null)[]> | null
+

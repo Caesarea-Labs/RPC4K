@@ -128,7 +128,7 @@ if (maybeData.type === "data") {
    }
    ```
 
-​	And then fully qualified names by be retrieved like this:
+	And then fully qualified names by be retrieved like this:
 
 ```typescript
 export function getRpcName(model: {type: string}): string {
@@ -138,14 +138,64 @@ export function getRpcName(model: {type: string}): string {
 
 
 # Rpc4ts Runtime Design challenges
+
+## Object -> JSON conversion
+Consider this object:
+
+```typescript
+interface Data {
+   x: number
+   y: Dayjs
+   type: "Data",
+   z: "void"
+}
+
+const obj = {
+   x: 2,
+   y: dayjs(),
+   type: "Data",
+   z: "void"
+}
+```
+Converting this object to json using `JSON.stringify` would result in:
+
+```json
+{
+   "x": 2,
+   "y": "<some-iso-string>",
+   "type": "Data",
+   "z": "void"
+}
+```
+
+But the rpc spec expects something like this:
+```json5
+{
+   "x": 2,
+   "y": "<some-iso-string>",
+   "type": "com.example.Data", // Package names may be omitted in the future
+   "z": "void" 
+}
+```
+
+### Solution:
+When package names won't be necessary, the objects would be converted perfectly without the need for doing anything. 
+For now, we will use the JSON.stringify replace to fix up the `type` field (this may cause issues in the rare case someone has a `type` field and it has a value in the fully qualified name map, but this requirement will be lifted later anyway):
+```typescript
+    const stringified = JSON.stringify(obj, (key, value) => {
+        if (key === "type") {
+            return getFullName(value) ?? value
+        } else {
+            return value
+        }
+    })
+```
+
+## JSON -> Object conversion
+
 ## Requirements:
-
-1.
-
-2.
-
-3.
-
+1. we
+2. 
 ## Solution
 
 The new solution should probably go back to type adapters and use native solutions for serialization. 

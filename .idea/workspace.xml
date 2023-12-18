@@ -5,16 +5,11 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="9ca8770c-8d9e-44a0-b1e9-2417666ce2c1" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/Rpc4allSpec.md" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/typescript/runtime/test/nativeSerial/Stringify.test.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/TODO.md" beforeDir="false" afterPath="$PROJECT_DIR$/TODO.md" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/rpc4ts design challenges.md" beforeDir="false" afterPath="$PROJECT_DIR$/rpc4ts design challenges.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../ts-minimum/index.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../ts-minimum/index.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../ts-minimum/searchit/SearchitBar.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/../ts-minimum/searchit/SearchitBar.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../ts-minimum/searchit/impl/searchit.css" beforeDir="false" afterPath="$PROJECT_DIR$/../ts-minimum/searchit/impl/searchit.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../ts-minimum/state/State.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../ts-minimum/state/State.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../ts-minimum/theme/ThemeProvider.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/../ts-minimum/theme/ThemeProvider.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../ts-minimum/theme/styles.global.css" beforeDir="false" afterPath="$PROJECT_DIR$/../ts-minimum/theme/styles.global.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../ts-minimum/ts-minimum.iml" beforeDir="false" afterPath="$PROJECT_DIR$/../ts-minimum/ts-minimum.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/typescript/runtime/test/CodegenedClientTest.test.ts" beforeDir="false" afterPath="$PROJECT_DIR$/typescript/runtime/test/CodegenedClientTest.test.ts" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -108,7 +103,7 @@
     </option>
   </component>
   <component name="Git.Settings">
-    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/../ts-minimum" />
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
   <component name="KubernetesApiProvider">{
   &quot;isMigrated&quot;: true
@@ -144,6 +139,9 @@
     &quot;Jest.Codegened Client works in more cases.executor&quot;: &quot;Run&quot;,
     &quot;Jest.Codegened Client works.executor&quot;: &quot;Run&quot;,
     &quot;Jest.Standalone TS Tests.executor&quot;: &quot;Run&quot;,
+    &quot;Jest.Stringify behavior.executor&quot;: &quot;Run&quot;,
+    &quot;Jest.Stringify key value behavior.executor&quot;: &quot;Run&quot;,
+    &quot;Jest.Stringify undefined top level.executor&quot;: &quot;Run&quot;,
     &quot;Jest.Test AnotherModelHolder serialization from string.executor&quot;: &quot;Run&quot;,
     &quot;Jest.Test AnotherModelHolder serialization to string.executor&quot;: &quot;Run&quot;,
     &quot;Jest.Test Enum serialization from string.executor&quot;: &quot;Run&quot;,
@@ -220,7 +218,7 @@
       <recent name="C:\Users\natan\Desktop\RPC4K\typescript\runtime\src\serialization\core\encoding\CompositeEncoder.ts" />
     </key>
   </component>
-  <component name="RunManager" selected="Gradle.kotlin:lib [publishToSonatype]">
+  <component name="RunManager" selected="Jest.Stringify key value behavior">
     <configuration name="kotlin [uploadLibrary]" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
       <ExternalSystemSettings>
         <option name="executionName" />
@@ -265,38 +263,40 @@
       <RunAsTest>false</RunAsTest>
       <method v="2" />
     </configuration>
-    <configuration name="Can decode array of generated class" type="JavaScriptTestRunnerJest" temporary="true" nameIsGenerated="true">
+    <configuration name="Stringify behavior" type="JavaScriptTestRunnerJest" temporary="true" nameIsGenerated="true">
       <node-interpreter value="project" />
       <jest-package value="$PROJECT_DIR$/typescript/runtime/node_modules/jest" />
       <working-dir value="$PROJECT_DIR$/typescript/runtime" />
       <envs />
       <scope-kind value="TEST" />
-      <test-file value="$PROJECT_DIR$/typescript/runtime/test/serialization/TddTests.test.ts" />
+      <test-file value="$PROJECT_DIR$/typescript/runtime/test/nativeSerial/Stringify.test.ts" />
       <test-names>
-        <test-name value="Can decode array of generated class" />
+        <test-name value="Stringify behavior" />
       </test-names>
       <method v="2" />
     </configuration>
-    <configuration name="Can decode array of nested generated class" type="JavaScriptTestRunnerJest" temporary="true" nameIsGenerated="true">
+    <configuration name="Stringify key value behavior" type="JavaScriptTestRunnerJest" temporary="true" nameIsGenerated="true">
       <node-interpreter value="project" />
       <jest-package value="$PROJECT_DIR$/typescript/runtime/node_modules/jest" />
       <working-dir value="$PROJECT_DIR$/typescript/runtime" />
       <envs />
       <scope-kind value="TEST" />
-      <test-file value="$PROJECT_DIR$/typescript/runtime/test/serialization/TddTests.test.ts" />
+      <test-file value="$PROJECT_DIR$/typescript/runtime/test/nativeSerial/Stringify.test.ts" />
       <test-names>
-        <test-name value="Can decode array of nested generated class" />
+        <test-name value="Stringify key value behavior" />
       </test-names>
       <method v="2" />
     </configuration>
-    <configuration name="pub" type="js.build_tools.npm" temporary="true" nameIsGenerated="true">
-      <package-json value="$PROJECT_DIR$/typescript/runtime/package.json" />
-      <command value="run" />
-      <scripts>
-        <script value="pub" />
-      </scripts>
+    <configuration name="Stringify undefined top level" type="JavaScriptTestRunnerJest" temporary="true" nameIsGenerated="true">
       <node-interpreter value="project" />
+      <jest-package value="$PROJECT_DIR$/typescript/runtime/node_modules/jest" />
+      <working-dir value="$PROJECT_DIR$/typescript/runtime" />
       <envs />
+      <scope-kind value="TEST" />
+      <test-file value="$PROJECT_DIR$/typescript/runtime/test/nativeSerial/Stringify.test.ts" />
+      <test-names>
+        <test-name value="Stringify undefined top level" />
+      </test-names>
       <method v="2" />
     </configuration>
     <list>
@@ -305,20 +305,20 @@
       <item itemvalue="Gradle.kotlin [uploadLibrary]" />
       <item itemvalue="Gradle.kotlin:lib [publishToSonatype]" />
       <item itemvalue="Jest.Standalone TS Tests" />
-      <item itemvalue="Jest.Can decode array of nested generated class" />
-      <item itemvalue="Jest.Can decode array of generated class" />
+      <item itemvalue="Jest.Stringify key value behavior" />
+      <item itemvalue="Jest.Stringify behavior" />
+      <item itemvalue="Jest.Stringify undefined top level" />
       <item itemvalue="Multirun.Publish TS" />
       <item itemvalue="npm.Generate Client " />
       <item itemvalue="npm.Build Runtime" />
-      <item itemvalue="npm.pub" />
     </list>
     <recent_temporary>
       <list>
+        <item itemvalue="Jest.Stringify key value behavior" />
+        <item itemvalue="Jest.Stringify undefined top level" />
+        <item itemvalue="Jest.Stringify behavior" />
         <item itemvalue="Gradle.kotlin:lib [publishToSonatype]" />
         <item itemvalue="Gradle.kotlin [uploadLibrary]" />
-        <item itemvalue="Jest.Can decode array of nested generated class" />
-        <item itemvalue="Jest.Can decode array of generated class" />
-        <item itemvalue="npm.pub" />
       </list>
     </recent_temporary>
   </component>
@@ -439,7 +439,11 @@
       <workItem from="1702731210008" duration="865000" />
       <workItem from="1702734929037" duration="3629000" />
       <workItem from="1702815909939" duration="3800000" />
-      <workItem from="1702830073852" duration="904000" />
+      <workItem from="1702830073852" duration="1882000" />
+      <workItem from="1702884009347" duration="2515000" />
+      <workItem from="1702898837219" duration="1285000" />
+      <workItem from="1702912778214" duration="2642000" />
+      <workItem from="1702919368589" duration="609000" />
     </task>
     <servers />
   </component>
