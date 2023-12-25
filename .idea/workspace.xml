@@ -5,11 +5,10 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="9ca8770c-8d9e-44a0-b1e9-2417666ce2c1" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/Rpc4allSpec.md" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/typescript/runtime/test/nativeSerial/Stringify.test.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/typescript/runtime/test/nativeSerial/parse.test.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/rpc4ts design challenges.md" beforeDir="false" afterPath="$PROJECT_DIR$/rpc4ts design challenges.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/typescript/runtime/test/CodegenedClientTest.test.ts" beforeDir="false" afterPath="$PROJECT_DIR$/typescript/runtime/test/CodegenedClientTest.test.ts" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -69,23 +68,20 @@
               <path>
                 <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
                 <item name="RPC4K" type="f1a62948:ProjectNode" />
-                <item name="RPC4K" type="2d1252cf:ModuleNode" />
-                <item name="lib" type="2d1252cf:ModuleNode" />
+                <item name="plugin" type="2d1252cf:ModuleNode" />
               </path>
               <path>
                 <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
                 <item name="RPC4K" type="f1a62948:ProjectNode" />
-                <item name="RPC4K" type="2d1252cf:ModuleNode" />
-                <item name="lib" type="2d1252cf:ModuleNode" />
+                <item name="plugin" type="2d1252cf:ModuleNode" />
                 <item name="Tasks" type="e4a08cd1:TasksNode" />
               </path>
               <path>
                 <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
                 <item name="RPC4K" type="f1a62948:ProjectNode" />
-                <item name="RPC4K" type="2d1252cf:ModuleNode" />
-                <item name="lib" type="2d1252cf:ModuleNode" />
+                <item name="plugin" type="2d1252cf:ModuleNode" />
                 <item name="Tasks" type="e4a08cd1:TasksNode" />
-                <item name="publishing" type="c8890929:TasksNode$1" />
+                <item name="plugin portal" type="c8890929:TasksNode$1" />
               </path>
             </expand>
             <select />
@@ -131,6 +127,7 @@
     &quot;Gradle.Kotlin Tests.executor&quot;: &quot;Run&quot;,
     &quot;Gradle.Test Server.executor&quot;: &quot;Run&quot;,
     &quot;Gradle.Upload Rpc4k.executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.kotlin [:plugin:publishPlugins].executor&quot;: &quot;Run&quot;,
     &quot;Gradle.kotlin [uploadLibrary].executor&quot;: &quot;Run&quot;,
     &quot;Gradle.kotlin:lib [publishToSonatype].executor&quot;: &quot;Run&quot;,
     &quot;Jest.Can decode array of generated class.executor&quot;: &quot;Run&quot;,
@@ -138,6 +135,7 @@
     &quot;Jest.Codegened Client works in all cases.executor&quot;: &quot;Run&quot;,
     &quot;Jest.Codegened Client works in more cases.executor&quot;: &quot;Run&quot;,
     &quot;Jest.Codegened Client works.executor&quot;: &quot;Run&quot;,
+    &quot;Jest.Parse behavior.executor&quot;: &quot;Run&quot;,
     &quot;Jest.Standalone TS Tests.executor&quot;: &quot;Run&quot;,
     &quot;Jest.Stringify behavior.executor&quot;: &quot;Run&quot;,
     &quot;Jest.Stringify key value behavior.executor&quot;: &quot;Run&quot;,
@@ -167,7 +165,7 @@
     &quot;git-widget-placeholder&quot;: &quot;main&quot;,
     &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
     &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
-    &quot;last_opened_file_path&quot;: &quot;C:/Users/natan/Desktop/ts-minimum&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/Users/natan/Desktop/RPC4K&quot;,
     &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
     &quot;node.js.detected.package.standard&quot;: &quot;true&quot;,
     &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
@@ -199,11 +197,11 @@
 }</component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\Users\natan\Desktop\RPC4K\kotlin\plugin" />
       <recent name="C:\Users\natan\Desktop\RPC4K\exampleapp\kotlin" />
       <recent name="C:\Users\natan\Desktop\RPC4K\typescript\runtime\test\serialization" />
       <recent name="C:\Users\natan\Desktop\RPC4K\typescript\runtime\src" />
       <recent name="C:\Users\natan\Desktop\RPC4K\kotlin\testerrors" />
-      <recent name="C:\Users\natan\Desktop\RPC4K\typescript\testprodapp\test" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
       <recent name="C:\Users\natan\Desktop\RPC4K\kotlin\testapp\src\main\java\com\clabs\rpc4k\testapp" />
@@ -218,8 +216,8 @@
       <recent name="C:\Users\natan\Desktop\RPC4K\typescript\runtime\src\serialization\core\encoding\CompositeEncoder.ts" />
     </key>
   </component>
-  <component name="RunManager" selected="Jest.Stringify key value behavior">
-    <configuration name="kotlin [uploadLibrary]" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
+  <component name="RunManager" selected="Jest.Parse behavior">
+    <configuration name="kotlin [:plugin:publishPlugins]" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
       <ExternalSystemSettings>
         <option name="executionName" />
         <option name="externalProjectPath" value="$PROJECT_DIR$/kotlin" />
@@ -230,7 +228,7 @@
         </option>
         <option name="taskNames">
           <list>
-            <option value="uploadLibrary" />
+            <option value=":plugin:publishPlugins" />
           </list>
         </option>
         <option name="vmOptions" />
@@ -241,26 +239,16 @@
       <RunAsTest>false</RunAsTest>
       <method v="2" />
     </configuration>
-    <configuration name="kotlin:lib [publishToSonatype]" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
-      <ExternalSystemSettings>
-        <option name="executionName" />
-        <option name="externalProjectPath" value="$PROJECT_DIR$/kotlin/lib" />
-        <option name="externalSystemIdString" value="GRADLE" />
-        <option name="scriptParameters" />
-        <option name="taskDescriptions">
-          <list />
-        </option>
-        <option name="taskNames">
-          <list>
-            <option value="publishToSonatype" />
-          </list>
-        </option>
-        <option name="vmOptions" />
-      </ExternalSystemSettings>
-      <ExternalSystemDebugServerProcess>true</ExternalSystemDebugServerProcess>
-      <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
-      <DebugAllEnabled>false</DebugAllEnabled>
-      <RunAsTest>false</RunAsTest>
+    <configuration name="Parse behavior" type="JavaScriptTestRunnerJest" temporary="true" nameIsGenerated="true">
+      <node-interpreter value="project" />
+      <jest-package value="$PROJECT_DIR$/typescript/runtime/node_modules/jest" />
+      <working-dir value="$PROJECT_DIR$/typescript/runtime" />
+      <envs />
+      <scope-kind value="TEST" />
+      <test-file value="$PROJECT_DIR$/typescript/runtime/test/nativeSerial/parse.test.ts" />
+      <test-names>
+        <test-name value="Parse behavior" />
+      </test-names>
       <method v="2" />
     </configuration>
     <configuration name="Stringify behavior" type="JavaScriptTestRunnerJest" temporary="true" nameIsGenerated="true">
@@ -302,30 +290,29 @@
     <list>
       <item itemvalue="Gradle.Test Server" />
       <item itemvalue="Gradle.Kotlin Tests" />
-      <item itemvalue="Gradle.kotlin [uploadLibrary]" />
-      <item itemvalue="Gradle.kotlin:lib [publishToSonatype]" />
+      <item itemvalue="Gradle.kotlin [:plugin:publishPlugins]" />
       <item itemvalue="Jest.Standalone TS Tests" />
+      <item itemvalue="Jest.Parse behavior" />
       <item itemvalue="Jest.Stringify key value behavior" />
       <item itemvalue="Jest.Stringify behavior" />
       <item itemvalue="Jest.Stringify undefined top level" />
-      <item itemvalue="Multirun.Publish TS" />
       <item itemvalue="npm.Generate Client " />
       <item itemvalue="npm.Build Runtime" />
     </list>
     <recent_temporary>
       <list>
+        <item itemvalue="Jest.Parse behavior" />
+        <item itemvalue="Gradle.kotlin [:plugin:publishPlugins]" />
         <item itemvalue="Jest.Stringify key value behavior" />
         <item itemvalue="Jest.Stringify undefined top level" />
         <item itemvalue="Jest.Stringify behavior" />
-        <item itemvalue="Gradle.kotlin:lib [publishToSonatype]" />
-        <item itemvalue="Gradle.kotlin [uploadLibrary]" />
       </list>
     </recent_temporary>
   </component>
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
-        <option value="jdk-17.0.9-corretto-17.0.9-3183f394aec4-8f899f12" />
+        <option value="jdk-17.0.9-corretto-17.0.9-249ae16d76d6-98297cd8" />
       </set>
     </attachedChunks>
   </component>
@@ -443,7 +430,10 @@
       <workItem from="1702884009347" duration="2515000" />
       <workItem from="1702898837219" duration="1285000" />
       <workItem from="1702912778214" duration="2642000" />
-      <workItem from="1702919368589" duration="609000" />
+      <workItem from="1702919368589" duration="705000" />
+      <workItem from="1702969884005" duration="963000" />
+      <workItem from="1703495364326" duration="8731000" />
+      <workItem from="1703514926273" duration="3188000" />
     </task>
     <servers />
   </component>

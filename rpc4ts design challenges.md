@@ -178,8 +178,65 @@ But the rpc spec expects something like this:
 }
 ```
 
-### Solution:
-When package names won't be necessary, the objects would be converted perfectly without the need for doing anything. 
+
+
+## JSON -> Object conversion
+
+Consider this JSON:
+
+```typescript
+interface Data {
+   x: number
+   y: Dayjs
+   type: "Data",
+   z: "void"
+}
+
+const json = `
+{
+   "x": 2,
+   "y": "<some-iso-string>",
+   "type": "com.example.Data",
+   "z": "void"
+}
+`
+
+
+```
+
+Converting this json to object using `JSON.parse` would result in:
+
+```typescript
+const converted = {
+   x: 2,
+   y: "<some-iso-string>",
+   type: "com.example.Data",
+   z: "void"
+}
+```
+
+But we expect something like this:
+
+```typescript
+const converted = {
+   x: 2,
+   y: dayJs(...),
+   type: "Data",
+   z: "void"
+}
+```
+
+## Additional requirements
+### The same solution should work for all formats
+Once we build a solution, it should work or be easy to implement for JSON, protobuf, etc. 
+
+## Solution
+Typescriptx.serialization. Using serializers and formats we can convert anything from and to objects.
+ 
+
+
+### Possible Solution 1:
+When package names won't be necessary, the objects would be converted perfectly without the need for doing anything.
 For now, we will use the JSON.stringify replace to fix up the `type` field (this may cause issues in the rare case someone has a `type` field and it has a value in the fully qualified name map, but this requirement will be lifted later anyway):
 ```typescript
     const stringified = JSON.stringify(obj, (key, value) => {
@@ -191,7 +248,15 @@ For now, we will use the JSON.stringify replace to fix up the `type` field (this
     })
 ```
 
-## JSON -> Object conversion
+#### Issues:
+- Doesn't solve the issue of JSON -> Object
+
+### Possible Solution 2:
+Type Adapters. 
+### Issues:
+- Less efficient that other alternatives because it requires mapping over entire objects
+- Code is messy and doesn't scale very well with many different custom types. 
+
 
 ## Requirements:
 1. we
@@ -199,3 +264,4 @@ For now, we will use the JSON.stringify replace to fix up the `type` field (this
 ## Solution
 
 The new solution should probably go back to type adapters and use native solutions for serialization. 
+
