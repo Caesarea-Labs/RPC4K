@@ -136,13 +136,18 @@ function addUnionSerializer(code: CodeBuilder, unionModel: RpcUnionModel, modelM
 
         const subclassSerializers = uniqueSubclasses.map(type => buildSerializer(type, typeParameterValues, serviceName))
 
+        // BLOCKED: once we don't need full type names we can remove this
+        const fullTypeMap = "{" +
+            subclassNames.map(name => `"${name.removeBeforeLastExclusive(".")}": "${name}"`).join(",")
+            + "}"
 
         builder.addReturningFunctionCall(concat("new ", UNION_SERIALIZER, "<", unionType, ">"), [
             `"${unionName}"`,
             `"${unionName}"`, // Not entirely accurate but should work because the implementation doesn't actually consider what is passed here
             // (it should be the runtime name of the union)
-            `[${subclassNames.join(", ")}]`,
-            concat("[", join(subclassSerializers, ", "), "]")
+            `[${subclassNames.map(name => `"${name}"`).join(", ")}]`,
+            concat("[", join(subclassSerializers, ", "), "]"),
+            fullTypeMap
         ])
     })
 }
@@ -192,10 +197,10 @@ export function serializerName(typeName: string): string {
     return `rpc4ts_serializer_${modelName(typeName)}`
 }
 
-function serializerDeclaration(modelName: string, typeArguments: TsType[]): MaybeFormattedString {
-    if (typeArguments.length === 0) return serializerName(modelName)
-    return concat(serializerName(modelName) + "<", ...typeArguments, ">")
-}
+// function serializerDeclaration(modelName: string, typeArguments: TsType[]): MaybeFormattedString {
+//     if (typeArguments.length === 0) return serializerName(modelName)
+//     return concat(serializerName(modelName) + "<", ...typeArguments, ">")
+// }
 
 
 function addStructSerializer(code: CodeBuilder, struct: RpcStructModel, serviceName: string) {
@@ -223,14 +228,17 @@ function addStructSerializer(code: CodeBuilder, struct: RpcStructModel, serviceN
             return concat(`${prop.name}: `, deferredSerializer);
         }), ", ")
         const typeArgumentParamNames = parameters.map(([name]) => name).join(", ")
+        const args = [
+            `"${structRuntimeName(struct)}"`,
+            concat("{", serializers, "}"),
+            `[${typeArgumentParamNames}]`,
+            // concat(`(params) => new `, structType, `(params)`)
+        ]
+        // Last parameter is optional and specifies the type discriminator
+        if (struct.hasTypeDiscriminator) args.push(`"${struct.name.removeBeforeLastExclusive(".")}"`)
         func.addReturningFunctionCall(
-            concat("new ", GENERATED_SERIALIZER_IMPL),
-            [
-                structRuntimeName(struct),
-                concat("{", serializers, "}"),
-                `[${typeArgumentParamNames}]`,
-                concat(`(params) => new `, structType, `(params)`)
-            ]
+            concat("new ", GENERATED_SERIALIZER_IMPL, "<", structType, ">"),
+            args
         )
     })
 }

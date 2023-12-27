@@ -12,7 +12,7 @@
         <list>
           <option value=":testapp:test" />
           <option value="--tests" />
-          <option value="&quot;io.github.natanfudge.rpc4k.testserver.TestServers.allEncompassingService&quot;" />
+          <option value="&quot;com.caesarealabs.rpc4k.testserver.TestServers.allEncompassingService&quot;" />
         </list>
       </option>
       <option name="vmOptions" />

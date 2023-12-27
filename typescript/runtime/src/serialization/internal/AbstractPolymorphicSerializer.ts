@@ -2,8 +2,9 @@ import {DeserializationStrategy, SerializationStrategy, TsSerializer} from "../T
 import {SerialDescriptor} from "../core/SerialDescriptor";
 import {CompositeDecoder, Decoder, DECODER_DECODE_DONE} from "../core/encoding/Decoding";
 import {Encoder} from "../core/encoding/Encoder";
-import {getTsClass, TsClass} from "../polyfills/TsClass";
+import {TsClass} from "../polyfills/TsClass";
 import {SerializationException} from "../core/SerializationException";
+import {RpcTypeDiscriminator} from "../../impl/RpcTypeUtils";
 
 /**
  * Base class for providing multiplatform polymorphic serialization.
@@ -22,6 +23,12 @@ export abstract class AbstractPolymorphicSerializer<T> implements TsSerializer<T
      * Base class for all classes that this polymorphic serializer can serialize or deserialize.
      */
     public abstract baseClass: TsClass;
+
+    /**
+     * Extends the 'type' value to include the fully qualified rpc type name.
+     * In the future we won't need to do this because package names may be omitted.
+     */
+    abstract resolveRpcType(shortName: string): string
 
     public serialize(encoder: Encoder, value: T) {
         const actualSerializer = this.findPolymorphicSerializer(encoder, value);
@@ -90,12 +97,20 @@ export abstract class AbstractPolymorphicSerializer<T> implements TsSerializer<T
      * May use context from the encoder.
      */
     public findPolymorphicSerializerOrNullForValue(
-        encoder: Encoder,  // Replace 'any' with the appropriate type for your encoder
+        encoder: Encoder,
         value: T
-    ): SerializationStrategy<T> | null {  // Replace 'any' with the appropriate type for your serialization strategy
-        // Implement the logic to find the serializer based on the value and encoder context
-        // This is a placeholder implementation
-        return encoder.serializersModule?.getPolymorphicSerialization(this.baseClass, value) ?? null;
+    ): SerializationStrategy<T> | null {
+        return encoder.serializersModule?.getPolymorphicSerialization(this.baseClass, value, this.getTsClass(value)) ?? null;
+    }
+
+    getTsClass(value: T): string {
+        if (typeof value === "object" && value !== null && RpcTypeDiscriminator in value) {
+            const discriminator = value[RpcTypeDiscriminator]
+            if (typeof discriminator !== "string") throw new Error(`Non-string type discriminator: ${JSON.stringify(discriminator)}`)
+            return this.resolveRpcType(discriminator)
+        } else {
+            throw new Error(`Missing type discriminator in polymorphic value: ${JSON.stringify(value)}`)
+        }
     }
 
     findPolymorphicDeserializer(decoder: CompositeDecoder, klassName: string | null): DeserializationStrategy<T> {
@@ -103,7 +118,7 @@ export abstract class AbstractPolymorphicSerializer<T> implements TsSerializer<T
     }
 
     findPolymorphicSerializer(encoder: Encoder, value: T): SerializationStrategy<T> {
-        return this.findPolymorphicSerializerOrNullForValue(encoder, value) ?? throwSubtypeNotRegistered(getTsClass(value), this.baseClass);
+        return this.findPolymorphicSerializerOrNullForValue(encoder, value) ?? throwSubtypeNotRegistered(this.getTsClass(value), this.baseClass);
     }
 
 }

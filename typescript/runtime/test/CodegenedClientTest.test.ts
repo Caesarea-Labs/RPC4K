@@ -1,4 +1,4 @@
-import {FetchRpcClient, JsonFormat} from "../src/compone";
+import {FetchRpcClient, JsonFormat} from "../src/components";
 import dayjs from "dayjs";
 import {AllEncompassingServiceApi} from "./generated/rpc4ts_AllEncompassingServiceApi";
 import {
@@ -25,8 +25,8 @@ import duration from "dayjs/plugin/duration";
 test("Codegened Client works", async () => {
 
     const client = new AllEncompassingServiceApi(new FetchRpcClient("http://localhost:8080"), JsonFormat)
-    const res = await client.createLobby(new PlayerId({num: 2}), "asdf")
-    expect(res).toEqual(new CreateLobbyResponse({id: 6}))
+    const res = await client.createLobby(({num: 2}), "asdf")
+    expect(res).toEqual(({id: 6}))
 })
 
 test("Codegened Client works in more cases", async () => {
@@ -44,10 +44,10 @@ test("Codegened Client works in all cases", async () => {
     const res = await client.test([1, 2])
     expect(res).toEqual([[1, 2, "3"], 4])
 
-    expect(await client.createLobby(new PlayerId({num: 123}), "alo"))
+    expect(await client.createLobby(({num: 123}), "alo"))
         .toEqual({id: 126})
 
-    expect(await client.killSomeone(111, new PlayerId({num: 5}))).toEqual(116)
+    expect(await client.killSomeone(111, ({num: 5}))).toEqual(116)
 
     await client.someShit(1, 2);
     await client.someShit(1, 2);
@@ -55,7 +55,7 @@ test("Codegened Client works in all cases", async () => {
         [],
         [],
         [1, 2],
-        [undefined, new PlayerId({num: 1}), ""],
+        [undefined, ({num: 1}), ""],
         [1, 1]
     );
 
@@ -70,8 +70,8 @@ test("Codegened Client works in all cases", async () => {
     await client.genericTest("");
 
     expect(await client.heavyNullable("EntirelyNull")).toEqual<NullableArgType>(null)
-    expect(await client.heavyNullable("NullList")).toEqual<NullableArgType>(new GenericThing({x: null, y: null, z: [], w: []}))
-    expect(await client.heavyNullable("NullString")).toEqual<NullableArgType>(new GenericThing({x: [null, "test"], y: null, z: [], w: []}))
+    expect(await client.heavyNullable("NullList")).toEqual<NullableArgType>(({x: null, y: null, z: [], w: []}))
+    expect(await client.heavyNullable("NullString")).toEqual<NullableArgType>(({x: [null, "test"], y: null, z: [], w: []}))
 
     const error1 = (await expectThrows(() => client.errorTest(), RpcResponseError))
     error1.toHaveProperty("code", 500)
@@ -80,27 +80,27 @@ test("Codegened Client works in all cases", async () => {
     error2.toHaveProperty("code", 400)
 
     const y = "Asdf"
-    expect(await client.withNullsTest(new WithNulls<string>({x: ["2", null], y}))).toEqual({x: [1, null], y});
+    expect(await client.withNullsTest(({x: ["2", null], y}))).toEqual({x: [1, null], y});
 
     expect(await client.enumArgsTest("Option1")).toEqual("Option5");
 
-    expect(await client.directObjectTest(new TheObject({}))).toEqual({});
+    expect(await client.directObjectTest(({}))).toEqual({});
 
-    const thing: PolymorphicThing = new PolymorphicThingOption2({})
+    const thing: PolymorphicThing = ({type: "Option2"})
     expect(await client.polymorphicTest(thing)).toEqual(thing);
 
-    const direct: PolymorphicThingOption1 = new PolymorphicThingOption1({x: 2})
+    const direct: PolymorphicThingOption1 = ({x: 2, type: "Option1"})
     expect(await client.directPolymorphicAccess(direct)).toEqual(direct);
 
-    const polymorphicClass: PolymorphicClassOption4 = new PolymorphicClassOption4({x: 3})
+    const polymorphicClass: PolymorphicClassOption4 = ({x: 3, type: "Option4"})
     expect(await client.polymorphicClassTest(polymorphicClass)).toEqual(polymorphicClass);
 
 
-    expect(await client.someBuiltinTypes(new SomeBuiltinTypes({p: [15, 16]}))).toEqual({p: [15, 16]})
+    expect(await client.someBuiltinTypes(({p: [15, 16]}))).toEqual({p: [15, 16]})
 
-    expect(await client.someMap(new SomeMap({map: {1: 3.4}}))).toEqual(new SomeMap({map: {1: 3.4}}))
+    expect(await client.someMap(({map: {1: 3.4}}))).toEqual(({map: {1: 3.4}}))
 
-    const everything: EveryBuiltinType = new EveryBuiltinType({
+    const everything: EveryBuiltinType = ({
         // Adjusted with simplified array literals
         a: false, b: 1, c: 2, d: 3, e: 4, f: '5', g: "6",
         h: [7], i: [8], j: [9], k: [10], l: ['@'],
@@ -125,12 +125,12 @@ test("Codegened Client works in all cases", async () => {
 
     expect(await client.returningDataEnum("Option1")).toEqual("Option1")
 
-    expect(await client.inlineHolder(new InlineHolder2({value: 2}))).toEqual({value: 2})
-    expect(await client.typeField(new TypeField({type: "wef"}))).toEqual({type: "wef"})
+    expect(await client.inlineHolder(({value: 2}))).toEqual({value: 2})
+    expect(await client.typeField(({type: "wef"}))).toEqual({type: "wef"})
 
     expect(await client.nullDate(null)).toEqual(null)
 
-    const mutable: MutableThings = new MutableThings({
+    const mutable: MutableThings = ({
         map: {
             "1": 2
         },
@@ -140,7 +140,7 @@ test("Codegened Client works in all cases", async () => {
     expect(await client.mutableThings(mutable)).toEqual(mutable)
     expect(await client.mutableThingsAsParams({"1": 2}, [3])).toEqual([1, 2, 3])
 
-    expect(await client.largeHierarchy(new PolymorphicThingOption1({x: 1}))).toEqual(new PolymorphicThingOption1({x: 1}))
+    expect(await client.largeHierarchy(({x: 1, type: "Option1"}))).toEqual(({x: 1, type: "Option1"}))
 
     //NiceToHave: Respect @SerialName
     // expect(await client.serialName({}))

@@ -314,6 +314,10 @@ export class InterfaceBuilder {
         return this
     }
 
+    addNewline(): InterfaceBuilder {
+        this.codegen._addLineOfCode("")
+        return this
+    }
 
 }
 

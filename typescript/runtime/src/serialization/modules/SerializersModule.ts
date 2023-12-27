@@ -1,7 +1,7 @@
 /*
  * Copyright 2017-2020 JetBrains s.r.o. Use of this source code is governed by the Apache 2.0 license.
  */
-import {getTsClass, TsClass} from "../polyfills/TsClass";
+import {TsClass} from "../polyfills/TsClass";
 import {DeserializationStrategy, SerializationStrategy, TsSerializer} from "../TsSerializer";
 
 
@@ -13,7 +13,7 @@ export abstract class SerializersModule {
         typeArgumentsSerializers?: TsSerializer<unknown>[]
     ): TsSerializer<T> | null;
 
-    abstract getPolymorphicSerialization<T>(baseClass: TsClass, value: T): SerializationStrategy<T> | null;
+    abstract getPolymorphicSerialization<T>(baseClass: TsClass, value: T, valueType: TsClass): SerializationStrategy<T> | null;
 
     abstract getPolymorphicDeserialization<T>(
         baseClass: TsClass,
@@ -46,9 +46,9 @@ export class SerialModuleImpl extends SerializersModule{
         this.polyBase2DefaultDeserializerProvider = polyBase2DefaultDeserializerProvider;
     }
 
-    getPolymorphicSerialization<T>(baseClass: TsClass, value: T): SerializationStrategy<T> | null {
+    getPolymorphicSerialization<T>(baseClass: TsClass, value: T, valueType: TsClass): SerializationStrategy<T> | null {
         // Registered
-        const registered = this.polyBase2Serializers.get(baseClass)?.get(getTsClass(value)) as SerializationStrategy<T>;
+        const registered = this.polyBase2Serializers.get(baseClass)?.get(valueType) as SerializationStrategy<T>;
         if (registered !== undefined) return registered;
         // Default
         return this.polyBase2DefaultSerializerProvider.get(baseClass)?.(value) ?? null;

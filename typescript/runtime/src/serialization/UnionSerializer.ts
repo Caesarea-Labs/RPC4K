@@ -1,6 +1,6 @@
 import {AbstractPolymorphicSerializer} from "./internal/AbstractPolymorphicSerializer";
 import {DeserializationStrategy, SerializationStrategy, TsSerializer} from "./TsSerializer";
-import {getTsClass, TsClass} from "./polyfills/TsClass";
+import {TsClass} from "./polyfills/TsClass";
 import {SerialDescriptor} from "./core/SerialDescriptor";
 import {buildSerialDescriptor} from "./descriptors/SerialDescriptors";
 import {OtherSerialType, PolymorphicKind} from "./core/SerialKind";
@@ -8,16 +8,26 @@ import {StringSerializer} from "./BuiltinSerializers";
 import {CompositeDecoder} from "./core/encoding/Decoding";
 import {Encoder} from "./core/encoding/Encoder";
 
+
 export class UnionSerializer<T> extends AbstractPolymorphicSerializer<T> {
-    private class2Serializer: Map<TsClass, TsSerializer<T>>;
-    private serialName2Serializer: Map<string, TsSerializer<T>>;
+    private class2Serializer: Map<TsClass, TsSerializer<T>>
+    private serialName2Serializer: Map<string, TsSerializer<T>> = new Map();
     private _descriptor: SerialDescriptor | undefined;
+
+    resolveRpcType(shortName: string): string {
+        const resolved = this.fullTypeNames[shortName]
+        if (resolved === undefined) {
+            throw new Error(`Unknown type name: ${shortName}, Available names: ${Object.keys(this.fullTypeNames)}`)
+        }
+        return resolved
+    }
 
     constructor(
         private serialName: string,
         public baseClass: TsClass,
-        private subclasses: TsClass[],
-        private subclassSerializers: TsSerializer<T>[]
+        subclasses: TsClass[],
+        subclassSerializers: TsSerializer<T>[],
+        private fullTypeNames: Record<string, string>
     ) {
         super();
         if (subclasses.length !== subclassSerializers.length) {
@@ -26,8 +36,6 @@ export class UnionSerializer<T> extends AbstractPolymorphicSerializer<T> {
 
         this.class2Serializer = new Map(subclasses.map((subclass, index) => [subclass, subclassSerializers[index]]));
 
-        // Constructing serialName2Serializer
-        this.serialName2Serializer = new Map();
         this.class2Serializer.forEach((serializer, kClass) => {
             const serialName = serializer.descriptor.serialName;
             if (this.serialName2Serializer.has(serialName)) {
@@ -46,13 +54,13 @@ export class UnionSerializer<T> extends AbstractPolymorphicSerializer<T> {
 
     private buildDescriptor(): SerialDescriptor {
         // Assuming buildSerialDescriptor and String.serializer().descriptor are implemented
-        const elementDescriptor = buildSerialDescriptor(`kotlinx.serialization.Sealed<${this.baseClass}>`, OtherSerialType.CONTEXTUAL, [],(builder) => {
+        const elementDescriptor = buildSerialDescriptor(`kotlinx.serialization.Sealed<${this.baseClass}>`, OtherSerialType.CONTEXTUAL, [], (builder) => {
             this.serialName2Serializer.forEach((serializer, name) => {
                 builder.element(name, serializer.descriptor)
             });
         });
 
-        return buildSerialDescriptor(this.serialName, PolymorphicKind.SEALED, [],(builder) => {
+        return buildSerialDescriptor(this.serialName, PolymorphicKind.SEALED, [], (builder) => {
             builder.element("type", StringSerializer.descriptor)
             builder.element("value", elementDescriptor)
         });
@@ -63,7 +71,7 @@ export class UnionSerializer<T> extends AbstractPolymorphicSerializer<T> {
     }
 
     override findPolymorphicSerializerOrNullForValue(encoder: Encoder, value: T): SerializationStrategy<T> | null {
-        return this.class2Serializer.get(getTsClass(value)) ?? super.findPolymorphicSerializerOrNullForValue(encoder, value);
+        return this.class2Serializer.get(this.getTsClass(value)) ?? super.findPolymorphicSerializerOrNullForValue(encoder, value);
     }
 
 }

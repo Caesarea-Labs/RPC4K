@@ -1,7 +1,14 @@
-### Upload gradle plugin to the correct account once the request has been rejected by gradle.
-1. Add "gradle-verification=HK394O2OJA4800GL72U9OALP4D51O" to dns
-2. Publish again
 
+### Do not allow duplicate type names an a sealed hierarchy
+So this should not be allowed:
+```sealed interface Foo {
+    Bar {
+    Baz {}
+    }
+    Baz {}
+}
+```
+Because we have switched to using the simple type name for each subtype, so Foo.Bar.Baz and Foo.Baz would conflict. 
 
 ### Support Streaming
 

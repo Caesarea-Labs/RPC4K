@@ -21,9 +21,8 @@ export function encodePolymorphically<T>(
         serializer.serialize(encoder, value);
         return;
     }
-    const casted = serializer as AbstractPolymorphicSerializer<any>;
     const baseClassDiscriminator = classDiscriminator(serializer.descriptor, encoder.json);
-    const actualSerializer = casted.findPolymorphicSerializer(encoder, value);
+    const actualSerializer = serializer.findPolymorphicSerializer(encoder, value);
     validateIfSealed(serializer, actualSerializer, baseClassDiscriminator);
     checkKind(actualSerializer.descriptor.kind);
     ifPolymorphic(baseClassDiscriminator);

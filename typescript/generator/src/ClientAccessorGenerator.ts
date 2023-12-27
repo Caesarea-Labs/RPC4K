@@ -3,11 +3,14 @@ import {Rpc4TsClientGenerationOptions} from "./ClientGenerator"
 import {ApiDefinition, RpcModelKind, RpcType, RpcTypeNames} from "rpc4ts-runtime";
 import {isBuiltinType, modelType, typescriptRpcType} from "./Rpc4tsType"
 import {buildSerializer} from "./SerializerGenerator"
-import {TsTypes, TsNamespace, MaybeFormattedString, concat, join} from "./codegen/FormatString"
+import {TsTypes, TsNamespace, MaybeFormattedString, concat, join, TsType} from "./codegen/FormatString"
 
 
  const RPC_CLIENT = TsTypes.library("RpcClient", "RpcClient")
  const SERIALIZATION_FORMAT = TsTypes.library("SerializationFormat", "SerializationFormat")
+function RESPONSE(responseType: TsType): TsType {
+    return TsTypes.library("Response", "Response", responseType)
+}
 
 /**
  * @param api definition with default values
@@ -27,7 +30,7 @@ export function generateAccessor(api: ApiDefinition, rawApi: ApiDefinition, opti
         for (const method of api.methods) {
             const nonPromiseReturnType = typescriptRpcType(method.returnType, api.name)
             // We wrap the return type with a promise because api methods are network calls
-            const returnType = TsTypes.promise(nonPromiseReturnType)
+            const returnType = RESPONSE(nonPromiseReturnType)
 
             clazz.addFunction(
                 method.name,

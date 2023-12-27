@@ -4,11 +4,12 @@ import {Encoder} from "./core/encoding/Encoder";
 import {Decoder, DECODER_DECODE_DONE} from "./core/encoding/Decoding";
 import {GeneratedSerializer, PluginGeneratedSerialDescriptor} from "./internal/PluginGeneratedSerializer";
 import {mapRecordValues, recordForEach, recordToArray} from "ts-minimum";
+import {RpcTypeDiscriminator, RpcTypeNames} from "../impl/RpcTypeUtils";
 
 /**
  * Serializers may be lazy so that recursively defined serializers may be used
  */
-export type SerializerMap<T> = Record<keyof T, (() => TsSerializer<unknown>) | TsSerializer<unknown>>
+export type SerializerMap<T> = Omit<Record<keyof T, (() => TsSerializer<unknown>) | TsSerializer<unknown>>, "type">
 
 export class GeneratedSerializerImpl<T> extends GeneratedSerializer<T> {
     private readonly serializers: SerializerMap<T>
@@ -18,9 +19,9 @@ export class GeneratedSerializerImpl<T> extends GeneratedSerializer<T> {
      * @private
      */
     private getSerializerMap(): Record<keyof T, TsSerializer<unknown>> {
-       return mapRecordValues(this.serializers,
+        return mapRecordValues(this.serializers,
             (_, serializer) => typeof serializer === "function" ? serializer() : serializer
-        ) 
+        ) as Record<keyof T, TsSerializer<unknown>>
     }
 
     private readonly typeParamSerializers: TsSerializer<unknown>[]
@@ -30,13 +31,17 @@ export class GeneratedSerializerImpl<T> extends GeneratedSerializer<T> {
     }
 
     private readonly elementIndices: (keyof T)[]
-    private readonly construct: (params: unknown) => T
+
+
+
+    // private readonly construct: (params: unknown) => T
 
     public childSerializers(): TsSerializer<unknown>[] {
         return Object.values(this.serializers)
     }
+
     // eslint-disable-next-line
-    constructor(name: string, serializers: SerializerMap<T>, typeParameterSerializers: TsSerializer<unknown>[], constructor: (params: any) => T) {
+    constructor(name: string, serializers: SerializerMap<T>, typeParameterSerializers: TsSerializer<unknown>[],  private readonly typeDiscriminator?: string) {
         super()
         this.typeParamSerializers = typeParameterSerializers
         this.serializers = serializers
@@ -54,7 +59,6 @@ export class GeneratedSerializerImpl<T> extends GeneratedSerializer<T> {
         //         })
         //     })
         this.elementIndices = recordToArray(serializers, (k) => k)
-        this.construct = constructor
     }
 
 
@@ -96,7 +100,10 @@ export class GeneratedSerializerImpl<T> extends GeneratedSerializer<T> {
                 throw new Error(`Missing field: ${key}`);
             }
         }
-        return this.construct(values)
+        if (this.typeDiscriminator !== undefined) {
+            (values as unknown as {[RpcTypeDiscriminator]: string})[RpcTypeDiscriminator] = this.typeDiscriminator
+        }
+        return values as T
     }
 
 }
