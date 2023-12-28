@@ -23,19 +23,19 @@ class AllEncompassingTest {
     companion object {
         @JvmField
         @RegisterExtension
-        val allEncompassingExtension = rpcExtension(_root_ide_package_.com.caesarealabs.rpc4k.testapp.AllEncompassingService())
+        val allEncompassingExtension = rpcExtension(AllEncompassingService())
 
         @JvmField
         @RegisterExtension
-        val simpleExtension = rpcExtension(_root_ide_package_.com.caesarealabs.rpc4k.testapp.SimpleProtocol())
+        val simpleExtension = rpcExtension(SimpleProtocol())
     }
 
     @Test
     fun testUsage(): Unit = runBlocking {
         val protocol = allEncompassingExtension.api
-        val response = protocol.createLobby(_root_ide_package_.com.caesarealabs.rpc4k.testapp.PlayerId(123), "alo")
-        assertEquals(_root_ide_package_.com.caesarealabs.rpc4k.testapp.CreateLobbyResponse(126), response)
-        val response2 = protocol.killSomeone(111, _root_ide_package_.com.caesarealabs.rpc4k.testapp.PlayerId(5), Unit)
+        val response = protocol.createLobby(PlayerId(123), "alo")
+        assertEquals(CreateLobbyResponse(126), response)
+        val response2 = protocol.killSomeone(111, PlayerId(5), Unit)
         assertEquals(116.toUInt(), response2)
         protocol.someShit(1, 2)
         protocol.someShit(1, 2)
@@ -44,7 +44,7 @@ class AllEncompassingTest {
             listOf(),
             listOf(),
             1 to 2,
-            Triple(Unit, _root_ide_package_.com.caesarealabs.rpc4k.testapp.PlayerId(1), ""),
+            Triple(Unit, PlayerId(1), ""),
             mapForEntry.entries.first()
         )
         val result = protocol.test(1 to 2)
@@ -60,12 +60,10 @@ class AllEncompassingTest {
     @Test
     fun testNullableTypes(): Unit = runBlocking {
         val protocol = allEncompassingExtension.api
-        expectThat(protocol.heavyNullable(_root_ide_package_.com.caesarealabs.rpc4k.testapp.AllEncompassingService.HeavyNullableTestMode.EntirelyNull)).isEqualTo(null)
-        expectThat(protocol.heavyNullable(_root_ide_package_.com.caesarealabs.rpc4k.testapp.AllEncompassingService.HeavyNullableTestMode.NullList)).isEqualTo(
-            _root_ide_package_.com.caesarealabs.rpc4k.testapp.GenericThing(null, null, listOf())
-        )
-        expectThat(protocol.heavyNullable(_root_ide_package_.com.caesarealabs.rpc4k.testapp.AllEncompassingService.HeavyNullableTestMode.NullString)).isEqualTo(
-            _root_ide_package_.com.caesarealabs.rpc4k.testapp.GenericThing(
+        expectThat(protocol.heavyNullable(AllEncompassingService.HeavyNullableTestMode.EntirelyNull)).isEqualTo(null)
+        expectThat(protocol.heavyNullable(AllEncompassingService.HeavyNullableTestMode.NullList)).isEqualTo(GenericThing(null, null, listOf()))
+        expectThat(protocol.heavyNullable(AllEncompassingService.HeavyNullableTestMode.NullString)).isEqualTo(
+            GenericThing(
                 listOf(null, "test"),
                 null,
                 listOf()
@@ -95,20 +93,20 @@ class AllEncompassingTest {
     fun testExoticTypes(): Unit = runBlocking {
         val y = "Asdf"
         val protocol = allEncompassingExtension.api
-        expectThat(protocol.withNullsTest(_root_ide_package_.com.caesarealabs.rpc4k.testapp.WithNulls(listOf("2", null), y = y)))
-            .isEqualTo(_root_ide_package_.com.caesarealabs.rpc4k.testapp.WithNulls(listOf(1, null), y))
+        expectThat(protocol.withNullsTest(WithNulls(listOf("2", null), y = y)))
+            .isEqualTo(WithNulls(listOf(1, null), y))
 
-        expectThat(protocol.enumArgsTest(_root_ide_package_.com.caesarealabs.rpc4k.testapp.EnumArgs.Option1)).isEqualTo(_root_ide_package_.com.caesarealabs.rpc4k.testapp.EnumArgs.Option5)
+        expectThat(protocol.enumArgsTest(EnumArgs.Option1)).isEqualTo(EnumArgs.Option5)
 
-        expectThat(protocol.directObjectTest(_root_ide_package_.com.caesarealabs.rpc4k.testapp.TheObject)).isEqualTo(_root_ide_package_.com.caesarealabs.rpc4k.testapp.TheObject)
+        expectThat(protocol.directObjectTest(TheObject)).isEqualTo(TheObject)
 
-        val thing: _root_ide_package_.com.caesarealabs.rpc4k.testapp.PolymorphicThing = _root_ide_package_.com.caesarealabs.rpc4k.testapp.PolymorphicThing.Option2
+        val thing: PolymorphicThing = PolymorphicThing.Option2
         expectThat(protocol.polymorphicTest(thing)).isEqualTo(thing)
-        val direct: _root_ide_package_.com.caesarealabs.rpc4k.testapp.PolymorphicThing.Option1 = _root_ide_package_.com.caesarealabs.rpc4k.testapp.PolymorphicThing.Option1(2)
+        val direct: PolymorphicThing.Option1 = PolymorphicThing.Option1(2)
         expectThat(protocol.directPolymorphicAccess(direct)).isEqualTo(direct)
-        val polymorphicClass = _root_ide_package_.com.caesarealabs.rpc4k.testapp.PolymorphicClass.Option4(3)
+        val polymorphicClass = PolymorphicClass.Option4(3)
         expectThat(protocol.polymorphicClassTest(polymorphicClass)).isEqualTo(polymorphicClass)
-        val everything = _root_ide_package_.com.caesarealabs.rpc4k.testapp.EveryBuiltinType(
+        val everything = EveryBuiltinType(
             false, 1, 2, 3, 4, '5', "6",
             byteArrayOf(7), ShortArray(8), IntArray(9), longArrayOf(10), charArrayOf('@'),
             listOf(11), mapOf(12 to 13), setOf(14), 15 to 16, Triple(17, 18, 19), Unit,
@@ -129,34 +127,19 @@ class AllEncompassingTest {
             )
         ).isEqualTo(Triple(17, 18, 19))
 
-        expectThat(protocol.genericInline(_root_ide_package_.com.caesarealabs.rpc4k.testapp.GenericInline(2))).isEqualTo(
-            _root_ide_package_.com.caesarealabs.rpc4k.testapp.GenericInline(
-                2
-            )
-        )
-        val inlineHolder =
-            _root_ide_package_.com.caesarealabs.rpc4k.testapp.InlineHolder2(_root_ide_package_.com.caesarealabs.rpc4k.testapp.InlineId(2))
+        expectThat(protocol.genericInline(GenericInline(2))).isEqualTo(GenericInline(2))
+        val inlineHolder = InlineHolder2(InlineId(2))
         expectThat(protocol.inlineHolder(inlineHolder)).isEqualTo(inlineHolder)
-        expectThat(protocol.typeField(_root_ide_package_.com.caesarealabs.rpc4k.testapp.TypeField("wef"))).isEqualTo(
-            _root_ide_package_.com.caesarealabs.rpc4k.testapp.TypeField(
-                "wef"
-            )
-        )
+        expectThat(protocol.typeField(TypeField("wef"))).isEqualTo(TypeField("wef"))
 
 
-        expectThat(protocol.tree(
-            _root_ide_package_.com.caesarealabs.rpc4k.testapp.Tree(
-                2,
-                listOf()
-            )
-        )).isEqualTo(_root_ide_package_.com.caesarealabs.rpc4k.testapp.Tree(2, listOf()))
+        expectThat(protocol.tree(Tree(2, listOf()))).isEqualTo(Tree(2, listOf()))
 
-        val mutable = _root_ide_package_.com.caesarealabs.rpc4k.testapp.MutableThings(mutableMapOf("1" to 2), mutableListOf(3), mutableSetOf(4))
+        val mutable = MutableThings(mutableMapOf("1" to 2), mutableListOf(3), mutableSetOf(4))
         expectThat(protocol.mutableThings(mutable)).isEqualTo(mutable)
         expectThat(protocol.mutableThingsAsParams(mutableMapOf(1 to 2), mutableListOf(3))).isEqualTo(mutableSetOf(1, 2, 3))
 
-        expectThat(protocol.largeHierarchy(_root_ide_package_.com.caesarealabs.rpc4k.testapp.PolymorphicThing.Option1(1))).isEqualTo(
-            _root_ide_package_.com.caesarealabs.rpc4k.testapp.PolymorphicThing.Option1(1))
+        expectThat(protocol.largeHierarchy(PolymorphicThing.Option1(1))).isEqualTo(PolymorphicThing.Option1(1))
 
 //        expectThat(protocol.defaultValue(WithDefaultValue())).isEqualTo(WithDefaultValue())
 

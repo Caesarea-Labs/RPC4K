@@ -16,7 +16,7 @@ import {RpcResponseError} from "../src/RpcClientError";
 import duration from "dayjs/plugin/duration";
 
 // test("Test constructor dynamics", () => {
-//     const x: CreateLobbyResponse = new CreateLobbyResponse({})
+//     const x: CreateLobbyResponse = ({})
 //     console.log(`X instance: ${x instanceof CreateLobbyResponse}`)
 //     const y: CreateLobbyResponse = {id: 2}
 //     console.log(`Y instance: ${y instanceof CreateLobbyResponse}`)

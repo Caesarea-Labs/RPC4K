@@ -10,7 +10,7 @@ import {
 
 test("Test fromString", () => {
     const string = `{"x":1,"y":"hello","z":false}`
-    const obj = new Foo({x:1,y: "hello",z: false})
+    const obj = ({x:1,y: "hello",z: false})
     const json = new Json()
 
     const res = json.decodeFromString(Rpc4tsSerializers.foo(), string)
@@ -23,7 +23,7 @@ test("Test fromString", () => {
 
 test("Test GenericThing serialization from string", () => {
     const string = `{"x":1,"w":["Asdf"],"a":"3"}`
-    const obj = new GenericThing({x: 1, w: ["Asdf"], a: "3"})
+    const obj = ({x: 1, w: ["Asdf"], a: "3"})
     const json = new Json()
     const res = json.decodeFromString(Rpc4tsSerializers.genericThing(NumberSerializer, StringSerializer), string)
     expect(res).toEqual(obj)
@@ -33,7 +33,7 @@ test("Test GenericThing serialization from string", () => {
 
 test("Test AnotherModelHolder serialization from string", () => {
     const string = `{"t":{"x":1,"w":["Asdf"],"a":"3"}}`
-    const obj = new AnotherModelHolder({t: new GenericThing({x: 1, w: ["Asdf"], a: "3"})})
+    const obj = ({t: ({x: 1, w: ["Asdf"], a: "3"})})
     const json = new Json()
     const res = json.decodeFromString( Rpc4tsSerializers.anotherModelHolder(NumberSerializer), string)
     expect(res).toEqual(obj)
@@ -74,8 +74,8 @@ test("Test Enum serialization from string", () => {
 })
 
 test("Test Polymorphic serialization from string", () => {
-    const obj: TestUnion<string> = new AnotherModelHolder({
-        t: new GenericThing<string, string>({
+    const obj: TestUnion<string> = ({
+        t: ({
             x: "Sdf",
             w: ["123"],
             a :"we"

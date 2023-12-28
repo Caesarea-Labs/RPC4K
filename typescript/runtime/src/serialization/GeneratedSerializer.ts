@@ -3,16 +3,15 @@ import {SerialDescriptor} from "./core/SerialDescriptor";
 import {Encoder} from "./core/encoding/Encoder";
 import {Decoder, DECODER_DECODE_DONE} from "./core/encoding/Decoding";
 import {GeneratedSerializer, PluginGeneratedSerialDescriptor} from "./internal/PluginGeneratedSerializer";
-import {mapRecordValues, recordForEach, recordToArray} from "ts-minimum";
+import {mapRecordValues, Optional, recordForEach, recordToArray} from "ts-minimum";
 import {RpcTypeDiscriminator, RpcTypeNames} from "../impl/RpcTypeUtils";
-
 /**
  * Serializers may be lazy so that recursively defined serializers may be used
  */
-export type SerializerMap<T> = Omit<Record<keyof T, (() => TsSerializer<unknown>) | TsSerializer<unknown>>, "type">
+export type SerializerMap = Record<string, (() => TsSerializer<unknown>) | TsSerializer<unknown>>
 
 export class GeneratedSerializerImpl<T> extends GeneratedSerializer<T> {
-    private readonly serializers: SerializerMap<T>
+    private readonly serializers: SerializerMap
 
     /**
      * Resolve lazy serializers, so it should only be used when the serializer is actually used
@@ -33,15 +32,11 @@ export class GeneratedSerializerImpl<T> extends GeneratedSerializer<T> {
     private readonly elementIndices: (keyof T)[]
 
 
-
-    // private readonly construct: (params: unknown) => T
-
     public childSerializers(): TsSerializer<unknown>[] {
-        return Object.values(this.serializers)
+        return Object.values(this.getSerializerMap())
     }
 
-    // eslint-disable-next-line
-    constructor(name: string, serializers: SerializerMap<T>, typeParameterSerializers: TsSerializer<unknown>[],  private readonly typeDiscriminator?: string) {
+    constructor(name: string, serializers: SerializerMap, typeParameterSerializers: TsSerializer<unknown>[],  private readonly typeDiscriminator?: string) {
         super()
         this.typeParamSerializers = typeParameterSerializers
         this.serializers = serializers
@@ -58,7 +53,7 @@ export class GeneratedSerializerImpl<T> extends GeneratedSerializer<T> {
         //             builder.element(elementName, serializer.descriptor)
         //         })
         //     })
-        this.elementIndices = recordToArray(serializers, (k) => k)
+        this.elementIndices = recordToArray(serializers, (k) => k) as (keyof T)[]
     }
 
 

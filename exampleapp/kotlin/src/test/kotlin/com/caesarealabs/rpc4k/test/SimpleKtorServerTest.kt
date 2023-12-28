@@ -1,6 +1,7 @@
 package com.caesarealabs.rpc4k.test
 
 import com.caesarealabs.rpc4k.runtime.api.testing.rpcExtension
+import com.caesarealabs.rpc4k.testapp.SimpleProtocol
 import kotlinx.coroutines.runBlocking
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.extension.RegisterExtension
@@ -10,7 +11,7 @@ class SimpleKtorServerTest {
     companion object {
         @JvmField
         @RegisterExtension
-        val extension = rpcExtension(_root_ide_package_.com.caesarealabs.rpc4k.testapp.SimpleProtocol())
+        val extension = rpcExtension(SimpleProtocol())
     }
 
 

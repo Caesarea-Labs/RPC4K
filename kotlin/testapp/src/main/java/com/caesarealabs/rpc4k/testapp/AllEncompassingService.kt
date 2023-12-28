@@ -309,6 +309,10 @@ open class AllEncompassingService(val value: Int = 1) {
         return obj
     }
 
+    open suspend fun modelWithType(type: ModelWithType): ModelWithType {
+        return type
+    }
+
 //NiceToHave: Respect @SerialName
 //    open suspend fun serialName(obj: SerialNameTest): SerialNameTest {
 //        return obj
@@ -461,7 +465,8 @@ sealed class PolymorphicClass: LargeHierarchy {
     data object Option3 : PolymorphicClass()
 }
 
-
+@Serializable
+data class ModelWithType(val type: String, val other: Int)
 
 
 @Serializable data class MutableThings(val map: MutableMap<String, Int>, val list: MutableList<Int>, val set: MutableSet<Int>)

@@ -4,14 +4,14 @@ import {rpc4ts_serializer_CreateLobbyResponse, rpc4ts_serializer_NestingObject} 
 import {ArraySerializer} from "../../src/serialization/BuiltinSerializers";
 
 test("Can decode array of generated class", () => {
-    const obj = [new CreateLobbyResponse({id: 2})]
+    const obj = [({id: 2})]
     const json = new Json()
     const serializer = new ArraySerializer(rpc4ts_serializer_CreateLobbyResponse())
 
     expect(json.decodeFromString(serializer, json.encodeToString(serializer,obj))).toEqual(obj)
 })
 test("Can decode array of nested generated class", () => {
-    const obj = [new NestingObject({nested: new NestedObject({x: 2})})]
+    const obj = [({nested: ({x: 2})})]
     const json = new Json()
     const serializer = new ArraySerializer(rpc4ts_serializer_NestingObject())
 

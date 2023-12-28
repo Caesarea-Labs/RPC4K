@@ -24,7 +24,7 @@ import kotlin.time.Duration
 value class GenericInline<T>(val num: T)
 
 @Serializable
-data class InlineHolder2(val value: com.caesarealabs.rpc4k.testapp.InlineId)
+data class InlineHolder2(val value: InlineId)
 
 
 @Serializable
@@ -46,7 +46,7 @@ open class SimpleProtocol {
     }
 }
 
-typealias AliasTest = com.caesarealabs.rpc4k.testapp.CreateLobbyResponse
+typealias AliasTest = CreateLobbyResponse
 
 @Api(true)
 open class AllEncompassingService(val value: Int = 1) {
@@ -62,12 +62,12 @@ open class AllEncompassingService(val value: Int = 1) {
     class Distraction5
 
 
-    open suspend fun createLobby(createdBy: com.caesarealabs.rpc4k.testapp.PlayerId, otherThing: String): com.caesarealabs.rpc4k.testapp.CreateLobbyResponse {
+    open suspend fun createLobby(createdBy: PlayerId, otherThing: String): CreateLobbyResponse {
         println("Handled createLobby! $createdBy")
-        return _root_ide_package_.com.caesarealabs.rpc4k.testapp.CreateLobbyResponse(createdBy.num + otherThing.length)
+        return CreateLobbyResponse(createdBy.num + otherThing.length)
     }
 
-    open suspend fun killSomeone(killer: Int, shit: com.caesarealabs.rpc4k.testapp.PlayerId, bar: Unit): UInt {
+    open suspend fun killSomeone(killer: Int, shit: PlayerId, bar: Unit): UInt {
         return (killer + shit.num).toUInt()
     }
 
@@ -82,12 +82,12 @@ open class AllEncompassingService(val value: Int = 1) {
     }
 
     open suspend fun moreTypes(
-        list: List<com.caesarealabs.rpc4k.testapp.PlayerId>,
+        list: List<PlayerId>,
         double: List<Set<String>>,
         pair: Pair<Int, Long>,
-        triple: Triple<Unit, com.caesarealabs.rpc4k.testapp.PlayerId, String>,
+        triple: Triple<Unit, PlayerId, String>,
         entry: Map.Entry<Int, Int>
-    ): Map<Long, Map<com.caesarealabs.rpc4k.testapp.InlineId, Double>> {
+    ): Map<Long, Map<InlineId, Double>> {
         return mapOf()
     }
 
@@ -98,7 +98,7 @@ open class AllEncompassingService(val value: Int = 1) {
     }
 
 
-    open suspend fun nullable(mayNull: List<com.caesarealabs.rpc4k.testapp.PlayerId>?, mayNull2: List<com.caesarealabs.rpc4k.testapp.PlayerId?>) {
+    open suspend fun nullable(mayNull: List<PlayerId>?, mayNull2: List<PlayerId?>) {
 
     }
 
@@ -109,15 +109,15 @@ open class AllEncompassingService(val value: Int = 1) {
         NullString
     }
 
-    open suspend fun heavyNullable(mode: com.caesarealabs.rpc4k.testapp.AllEncompassingService.HeavyNullableTestMode): com.caesarealabs.rpc4k.testapp.GenericThing<List<String?>?, List<String>?, List<String?>>? {
+    open suspend fun heavyNullable(mode: AllEncompassingService.HeavyNullableTestMode): GenericThing<List<String?>?, List<String>?, List<String?>>? {
         return when (mode) {
-            _root_ide_package_.com.caesarealabs.rpc4k.testapp.AllEncompassingService.HeavyNullableTestMode.EntirelyNull -> null
-            _root_ide_package_.com.caesarealabs.rpc4k.testapp.AllEncompassingService.HeavyNullableTestMode.NullList -> _root_ide_package_.com.caesarealabs.rpc4k.testapp.GenericThing(
+            AllEncompassingService.HeavyNullableTestMode.EntirelyNull -> null
+            AllEncompassingService.HeavyNullableTestMode.NullList -> GenericThing(
                 null,
                 null,
                 listOf()
             )
-            _root_ide_package_.com.caesarealabs.rpc4k.testapp.AllEncompassingService.HeavyNullableTestMode.NullString -> _root_ide_package_.com.caesarealabs.rpc4k.testapp.GenericThing(
+            AllEncompassingService.HeavyNullableTestMode.NullString -> GenericThing(
                 listOf(null, "test"),
                 null,
                 listOf()
@@ -134,8 +134,8 @@ open class AllEncompassingService(val value: Int = 1) {
 //        return flow.stateIn(CoroutineScope(currentCoroutineContext()))
 //    }
 
-    open suspend fun genericTest(thing: String): com.caesarealabs.rpc4k.testapp.GenericThing<String, Int, Long> {
-        return _root_ide_package_.com.caesarealabs.rpc4k.testapp.GenericThing("", 2, 3)
+    open suspend fun genericTest(thing: String): GenericThing<String, Int, Long> {
+        return GenericThing("", 2, 3)
     }
 
     open suspend fun errorTest() {
@@ -156,35 +156,35 @@ open class AllEncompassingService(val value: Int = 1) {
     }
 
 
-    open suspend fun withNullsTest(withNulls: com.caesarealabs.rpc4k.testapp.WithNulls<String>): com.caesarealabs.rpc4k.testapp.WithNulls<Int> {
-        return _root_ide_package_.com.caesarealabs.rpc4k.testapp.WithNulls(x = listOf(1, null), y = withNulls.y)
+    open suspend fun withNullsTest(withNulls: WithNulls<String>): WithNulls<Int> {
+        return WithNulls(x = listOf(1, null), y = withNulls.y)
     }
 
-    open suspend fun enumArgsTest(enumArgs: com.caesarealabs.rpc4k.testapp.EnumArgs): com.caesarealabs.rpc4k.testapp.EnumArgs {
+    open suspend fun enumArgsTest(enumArgs: EnumArgs): EnumArgs {
         return when (enumArgs) {
             Option1 -> Option5
             Option5 -> Option1
         }
     }
 
-    open suspend fun directObjectTest(obj: com.caesarealabs.rpc4k.testapp.TheObject): com.caesarealabs.rpc4k.testapp.TheObject {
+    open suspend fun directObjectTest(obj: TheObject): TheObject {
         return obj
     }
 
 
-    open suspend fun polymorphicTest(obj: com.caesarealabs.rpc4k.testapp.PolymorphicThing): com.caesarealabs.rpc4k.testapp.PolymorphicThing {
+    open suspend fun polymorphicTest(obj: PolymorphicThing): PolymorphicThing {
         return obj
     }
 
-    open suspend fun directPolymorphicAccess(obj: com.caesarealabs.rpc4k.testapp.PolymorphicThing.Option1): _root_ide_package_.com.caesarealabs.rpc4k.testapp.PolymorphicThing.Option1 {
+    open suspend fun directPolymorphicAccess(obj: PolymorphicThing.Option1): PolymorphicThing.Option1 {
         return obj
     }
 
-    open suspend fun polymorphicClassTest(obj: _root_ide_package_.com.caesarealabs.rpc4k.testapp.PolymorphicClass): _root_ide_package_.com.caesarealabs.rpc4k.testapp.PolymorphicClass {
+    open suspend fun polymorphicClassTest(obj: PolymorphicClass): PolymorphicClass {
         return obj
     }
 
-    open suspend fun everyBuiltinType(obj: _root_ide_package_.com.caesarealabs.rpc4k.testapp.EveryBuiltinType): _root_ide_package_.com.caesarealabs.rpc4k.testapp.EveryBuiltinType {
+    open suspend fun everyBuiltinType(obj: EveryBuiltinType): EveryBuiltinType {
         return obj
     }
 
@@ -230,35 +230,35 @@ open class AllEncompassingService(val value: Int = 1) {
         return q
     }
 
-    open suspend fun someBuiltinTypes(types: _root_ide_package_.com.caesarealabs.rpc4k.testapp.SomeBuiltinTypes): _root_ide_package_.com.caesarealabs.rpc4k.testapp.SomeBuiltinTypes {
+    open suspend fun someBuiltinTypes(types: SomeBuiltinTypes): SomeBuiltinTypes {
         return types
     }
 
-    open suspend fun returningDataEnum(args: _root_ide_package_.com.caesarealabs.rpc4k.testapp.EnumArgs): _root_ide_package_.com.caesarealabs.rpc4k.testapp.EnumArgs {
+    open suspend fun returningDataEnum(args: EnumArgs): EnumArgs {
         return args
     }
 
-    open suspend fun aliasTest(aliasTest: _root_ide_package_.com.caesarealabs.rpc4k.testapp.AliasTest): _root_ide_package_.com.caesarealabs.rpc4k.testapp.AliasTest {
+    open suspend fun aliasTest(aliasTest: AliasTest): AliasTest {
         return aliasTest
     }
 
-    open suspend fun aliasReferenceTest(ref: _root_ide_package_.com.caesarealabs.rpc4k.testapp.TypeAliasReference): _root_ide_package_.com.caesarealabs.rpc4k.testapp.TypeAliasReference {
+    open suspend fun aliasReferenceTest(ref: TypeAliasReference): TypeAliasReference {
         return ref
     }
 
-    open suspend fun genericsReferenceTest(ref: _root_ide_package_.com.caesarealabs.rpc4k.testapp.SomeGeneric): _root_ide_package_.com.caesarealabs.rpc4k.testapp.SomeGeneric {
+    open suspend fun genericsReferenceTest(ref: SomeGeneric): SomeGeneric {
         return ref
     }
 
-    open suspend fun genericInline(inline: _root_ide_package_.com.caesarealabs.rpc4k.testapp.GenericInline<Int>): _root_ide_package_.com.caesarealabs.rpc4k.testapp.GenericInline<Int> {
+    open suspend fun genericInline(inline: GenericInline<Int>): GenericInline<Int> {
         return inline
     }
 
-    open suspend fun inlineHolder(inline: _root_ide_package_.com.caesarealabs.rpc4k.testapp.InlineHolder2): _root_ide_package_.com.caesarealabs.rpc4k.testapp.InlineHolder2 {
+    open suspend fun inlineHolder(inline: InlineHolder2): InlineHolder2 {
         return inline
     }
 
-    open suspend fun typeField(type: _root_ide_package_.com.caesarealabs.rpc4k.testapp.TypeField): _root_ide_package_.com.caesarealabs.rpc4k.testapp.TypeField {
+    open suspend fun typeField(type: TypeField): TypeField {
         return type
     }
 
@@ -284,7 +284,7 @@ open class AllEncompassingService(val value: Int = 1) {
 //        return obj
 //    }
 
-    open suspend fun tree(tree: _root_ide_package_.com.caesarealabs.rpc4k.testapp.Tree<Int>): _root_ide_package_.com.caesarealabs.rpc4k.testapp.Tree<Int> {
+    open suspend fun tree(tree: Tree<Int>): Tree<Int> {
         return tree
     }
 
@@ -292,7 +292,7 @@ open class AllEncompassingService(val value: Int = 1) {
 //        return obj
 //    }
 //
-    open suspend fun mutableThings(obj: _root_ide_package_.com.caesarealabs.rpc4k.testapp.MutableThings): _root_ide_package_.com.caesarealabs.rpc4k.testapp.MutableThings {
+    open suspend fun mutableThings(obj: MutableThings): MutableThings {
         return obj
     }
 
@@ -300,15 +300,15 @@ open class AllEncompassingService(val value: Int = 1) {
         return mutableSetOf(1,2,3)
     }
 
-    open suspend fun modelsInDifferentFiles(service: _root_ide_package_.com.caesarealabs.rpc4k.testapp.ServiceSealedInterfaceInOtherFile) : _root_ide_package_.com.caesarealabs.rpc4k.testapp.ServiceSealedInterfaceInOtherFile {
+    open suspend fun modelsInDifferentFiles(service: ServiceSealedInterfaceInOtherFile) : ServiceSealedInterfaceInOtherFile {
         return service
     }
 
-    open suspend fun largeHierarchy(obj: _root_ide_package_.com.caesarealabs.rpc4k.testapp.LargeHierarchy): _root_ide_package_.com.caesarealabs.rpc4k.testapp.LargeHierarchy {
+    open suspend fun largeHierarchy(obj: LargeHierarchy): LargeHierarchy {
         return obj
     }
 
-    open suspend fun someMap(map: _root_ide_package_.com.caesarealabs.rpc4k.testapp.SomeMap): _root_ide_package_.com.caesarealabs.rpc4k.testapp.SomeMap {
+    open suspend fun someMap(map: SomeMap): SomeMap {
         return map
     }
 
@@ -325,20 +325,20 @@ open class AllEncompassingService(val value: Int = 1) {
 }
 
 @Serializable
-data class Tree<T>(val item: T, val children: List<_root_ide_package_.com.caesarealabs.rpc4k.testapp.Tree<T>>)
+data class Tree<T>(val item: T, val children: List<Tree<T>>)
 
 @Serializable
 data class TypeField(val type: String)
 
 @Serializable
 data class OnlyReferencedThroughGenerics(val x: Int)
-typealias SomeGeneric = List<_root_ide_package_.com.caesarealabs.rpc4k.testapp.OnlyReferencedThroughGenerics>
+typealias SomeGeneric = List<OnlyReferencedThroughGenerics>
 
 
 @Serializable
 data class OnlyTypeAliased(val str: String)
 
-typealias TypeAliasReference = _root_ide_package_.com.caesarealabs.rpc4k.testapp.OnlyTypeAliased
+typealias TypeAliasReference = OnlyTypeAliased
 
 @Serializable
 data class SomeBuiltinTypes(@Contextual val p: Pair<Int, Int>)
@@ -387,7 +387,7 @@ class EveryBuiltinType(
         if (this === other) return true
         if (javaClass != other?.javaClass) return false
 
-        other as _root_ide_package_.com.caesarealabs.rpc4k.testapp.EveryBuiltinType
+        other as EveryBuiltinType
 
         if (a != other.a) return false
         if (b != other.b) return false
@@ -429,7 +429,7 @@ class EveryBuiltinType(
 }
 @Serializable
 sealed interface InlineSealedParent
-@Serializable @JvmInline value class InlineSealedChild(val value: Int): _root_ide_package_.com.caesarealabs.rpc4k.testapp.InlineSealedParent
+@Serializable @JvmInline value class InlineSealedChild(val value: Int): InlineSealedParent
 
 
 @Serializable
@@ -446,21 +446,21 @@ object TheObject
 sealed interface LargeHierarchy
 
 @Serializable
-sealed interface PolymorphicThing: _root_ide_package_.com.caesarealabs.rpc4k.testapp.LargeHierarchy {
+sealed interface PolymorphicThing: LargeHierarchy {
     @Serializable
-    data class Option1(val x: Int) : _root_ide_package_.com.caesarealabs.rpc4k.testapp.PolymorphicThing
+    data class Option1(val x: Int) : PolymorphicThing
 
     @Serializable
-    data object Option2 : _root_ide_package_.com.caesarealabs.rpc4k.testapp.PolymorphicThing
+    data object Option2 : PolymorphicThing
 }
 
 @Serializable
-sealed class PolymorphicClass: _root_ide_package_.com.caesarealabs.rpc4k.testapp.LargeHierarchy {
+sealed class PolymorphicClass: LargeHierarchy {
     @Serializable
-    data class Option4(val x: Int) : _root_ide_package_.com.caesarealabs.rpc4k.testapp.PolymorphicClass()
+    data class Option4(val x: Int) : PolymorphicClass()
 
     @Serializable
-    data object Option3 : _root_ide_package_.com.caesarealabs.rpc4k.testapp.PolymorphicClass()
+    data object Option3 : PolymorphicClass()
 }
 
 

@@ -6,6 +6,7 @@ import com.caesarealabs.rpc4k.generated.server
 import com.caesarealabs.rpc4k.runtime.api.RpcServerSetup
 import com.caesarealabs.rpc4k.runtime.api.createServer
 import com.caesarealabs.rpc4k.test.BasicApi
+import com.caesarealabs.rpc4k.testapp.AllEncompassingService
 import kotlin.test.Test
 
 class TestServers {
@@ -16,6 +17,6 @@ class TestServers {
 
     @Test
     fun allEncompassingService() {
-        RpcServerSetup.managedKtor(_root_ide_package_.com.caesarealabs.rpc4k.testapp.AllEncompassingService(), _root_ide_package_.com.caesarealabs.rpc4k.testapp.AllEncompassingService.server()).createServer().start(wait = true)
+        RpcServerSetup.managedKtor(AllEncompassingService(),AllEncompassingService.server()).createServer().start(wait = true)
     }
 }

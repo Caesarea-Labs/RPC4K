@@ -8,7 +8,7 @@ import {
 } from "./TestModels";
 
 test("Test toString", () => {
-    const obj = new Foo({x: 1, y: "hello", z: false})
+    const obj = ({x: 1, y: "hello", z: false})
     const json = new Json(new JsonConfiguration())
 
     const res = json.encodeToString(Rpc4tsSerializers.foo(), obj)
@@ -19,14 +19,14 @@ test("Test toString", () => {
 })
 
 test("Test GenericThing serialization to string", () => {
-    const obj = new GenericThing({x:1,w: ["Asdf"],a: "3"})
+    const obj = ({x:1,w: ["Asdf"],a: "3"})
     const json = new Json(new JsonConfiguration())
     const res = json.encodeToString(Rpc4tsSerializers.genericThing(NumberSerializer, StringSerializer), obj)
     expect(res).toEqual(`{"x":1,"w":["Asdf"],"a":"3"}`)
 })
 
 test("Test AnotherModelHolder serialization to string", () => {
-    const obj = new AnotherModelHolder({t: new GenericThing({x: 1, w: ["Asdf"], a: "3"})})
+    const obj = ({t: ({x: 1, w: ["Asdf"], a: "3"})})
     const json = new Json(new JsonConfiguration())
     const res = json.encodeToString(Rpc4tsSerializers.anotherModelHolder(NumberSerializer), obj)
     expect(res).toEqual(`{"t":{"x":1,"w":["Asdf"],"a":"3"}}`)
@@ -65,8 +65,8 @@ test("Test Enum serialization to string", () => {
 
 
 test("Test Polymorphic serialization to string", () => {
-    const obj: TestUnion<string> = new AnotherModelHolder({
-        t: new GenericThing<string, string>({
+    const obj: TestUnion<string> = ({
+        t: ({
             x: "Sdf",
             w: ["123"],
             a :"we"
