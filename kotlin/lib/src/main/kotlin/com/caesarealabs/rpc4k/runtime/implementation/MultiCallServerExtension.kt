@@ -9,7 +9,7 @@ import org.junit.jupiter.api.extension.Extension
 import org.junit.jupiter.api.extension.ExtensionContext
 
 
-class MultiCallServerExtension(setup: RpcServerSetup<*, RpcServerEngine.MultiCall>) : Extension, BeforeAllCallback, AfterAllCallback {
+internal class MultiCallServerExtension<Api, I>(setup: RpcServerSetup<Api, RpcServerEngine.MultiCall, I>) : Extension, BeforeAllCallback, AfterAllCallback {
     private val server = setup.createServer()
     override fun beforeAll(context: ExtensionContext?) {
         server.start(wait = false)

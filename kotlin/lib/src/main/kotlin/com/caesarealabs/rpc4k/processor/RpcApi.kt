@@ -12,27 +12,50 @@ import kotlinx.serialization.encoding.Encoder
 
 
 @Serializable
-data class RpcApi(
+internal data class RpcApi(
     /**
      * We need the full name in kotlin , and only want the simple name in other languages accessing the generated file.
      *
      * Note: maybe this means i should have a different model for the generated stuff?
      */
     @Serializable(SimpleNameOnlyKotlinNameSerializer::class) val name: KotlinClassName,
-    val methods: List<RpcDefinition>,
+    val methods: List<RpcFunction>,
+    val events: List<RpcEventEndpoint>,
     val models: List<RpcModel>
 )
 
+internal sealed interface RpcEndpoint {
+    val name: String
+//    val parameters: List<RpcParameter>
+    val returnType: KotlinTypeReference
+}
 
 @Serializable
-data class RpcDefinition(val name: String, val parameters: List<RpcParameter>, val returnType: KotlinTypeReference)
+internal data class RpcFunction(override val name: String,  val parameters: List<RpcParameter>,override  val returnType: KotlinTypeReference): RpcEndpoint
+
+@Serializable
+internal data class EventParameter(
+    /**
+     * Whether this is new data that is involved whenever the event is invoked
+     *
+     * TODO: expand...
+     */
+    val isDispatch: Boolean,
+    val value: RpcParameter
+)
+
+@Serializable internal data class RpcEventEndpoint(
+    override val name: String,  val parameters: List<EventParameter>,override  val returnType: KotlinTypeReference
+): RpcEndpoint {
+//    override val parameters: List<RpcParameter> = eventParameters.map { it.value }
+}
 
 @Serializable
 //NiceToHave: support optional parameters
-data class RpcParameter(val name: String, val type: KotlinTypeReference, /*val isOptional: Boolean*//* = false*/)
+internal data class RpcParameter(val name: String, val type: KotlinTypeReference, /*val isOptional: Boolean*//* = false*/)
 
 @Serializable
-sealed interface RpcModel {
+internal sealed interface RpcModel {
     val name: String
     val typeParameters: List<String>
 
@@ -83,7 +106,7 @@ sealed interface RpcModel {
  * and uses kotlin class names and not RPC class names
  */
 @Serializable(with = KotlinTypeReferenceSerializer::class)
-data class KotlinTypeReference(
+internal data class KotlinTypeReference(
     val name: KotlinClassName,
 //    val packageName: String,
 //    val simpleName: String,
@@ -101,9 +124,9 @@ data class KotlinTypeReference(
     // Inner classes are dot seperated
 //    val qualifiedName = "$packageName.$simpleName"
 
-    val poetName = name.kotlinPoet
+    val rawTypeName = name.kotlinPoet
 
-    val typeName: TypeName = poetName.let { name ->
+    val typeName: TypeName = rawTypeName.let { name ->
         if (typeArguments.isEmpty()) name else name.parameterizedBy(typeArguments.map { it.typeName })
     }.copy(nullable = isNullable)
     val isUnit get() = name.isUnit
@@ -112,7 +135,7 @@ data class KotlinTypeReference(
 
 // BLOCKED: get rid of packageName here
 @Serializable
-data class RpcType(
+internal data class RpcType(
     val name: String,
     val isTypeParameter: Boolean = false,
     val isNullable: Boolean = false,
@@ -159,13 +182,13 @@ data class RpcType(
 }
 
 
-const val GeneratedModelsPackage = "${GeneratedCodeUtils.Package}.models"
+internal const val GeneratedModelsPackage = "${GeneratedCodeUtils.Package}.models"
 
 
 /**
  * [KotlinTypeReference] is serialized to a [RpcType]
  */
-class KotlinTypeReferenceSerializer : KSerializer<KotlinTypeReference> {
+internal class KotlinTypeReferenceSerializer : KSerializer<KotlinTypeReference> {
     override val descriptor = RpcType.serializer().descriptor
 
     override fun deserialize(decoder: Decoder): KotlinTypeReference {
@@ -228,7 +251,7 @@ private fun KotlinTypeReference.toBuiltinRpcType(): RpcType {
                 "IntArray", "UIntArray" -> RpcType.I32
                 "LongArray", "ULongArray" -> RpcType.I64
                 "CharArray" -> RpcType.Char
-                else -> error("Impossible class name $poetName")
+                else -> error("Impossible class name $rawTypeName")
             }
             val typeArgument = RpcType(name = typeArgumentName)
             buildRpcType(name = RpcType.Array, typeArguments = listOf(typeArgument))
@@ -241,7 +264,7 @@ private fun KotlinTypeReference.toBuiltinRpcType(): RpcType {
         }
 
         else -> error(
-            "Unexpected kotlin builtin type: ${poetName}." +
+            "Unexpected kotlin builtin type: ${rawTypeName}." +
                 " Was a custom class declared in kotlin.*? This is probably a bug in RPC4K."
         )
     }
@@ -253,7 +276,7 @@ private fun KotlinTypeReference.toBuiltinCollectionType(): RpcType {
         "Map", "MutableMap" -> RpcType.Record
         "Map.Entry" -> RpcType.Tuple
         else -> error(
-            "Unexpected kotlin builtin collection type: ${poetName}." +
+            "Unexpected kotlin builtin collection type: ${rawTypeName}." +
                 " Was a custom class declared in kotlin.collections.*? This is probably a bug in RPC4K."
         )
     }

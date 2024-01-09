@@ -17,7 +17,7 @@ import kotlinx.serialization.encoding.encodeCollection
 /**
  * Serializes a pair as an array of two elements
  */
-fun <K, V> TuplePairSerializer(keySerializer: KSerializer<K>, valueSerializer: KSerializer<V>): KSerializer<Pair<K, V>> = BuiltinTupleSerializer(
+public fun <K, V> TuplePairSerializer(keySerializer: KSerializer<K>, valueSerializer: KSerializer<V>): KSerializer<Pair<K, V>> = BuiltinTupleSerializer(
     listOf(keySerializer, valueSerializer), { listOf(it.first, it.second) }, { it[0] as K to it[1] as V }
 )
 
@@ -25,7 +25,7 @@ fun <K, V> TuplePairSerializer(keySerializer: KSerializer<K>, valueSerializer: K
 /**
  * Serializes a triple as an array of three elements
  */
-fun <T1, T2, T3> TupleTripleSerializer(
+public fun <T1, T2, T3> TupleTripleSerializer(
     firstSerializer: KSerializer<T1>, secondSerializer: KSerializer<T2>, thirdSerializer: KSerializer<T3>
 ): KSerializer<Triple<T1, T2, T3>> = BuiltinTupleSerializer(
     listOf(firstSerializer, secondSerializer, thirdSerializer),
@@ -37,7 +37,7 @@ fun <T1, T2, T3> TupleTripleSerializer(
 /**
  * Serializes a map entry the same way as a pair - array of two elements
  */
-fun <K, V> TupleMapEntrySerializer(keySerializer: KSerializer<K>, valueSerializer: KSerializer<V>): KSerializer<Map.Entry<K, V>> = BuiltinTupleSerializer(
+public fun <K, V> TupleMapEntrySerializer(keySerializer: KSerializer<K>, valueSerializer: KSerializer<V>): KSerializer<Map.Entry<K, V>> = BuiltinTupleSerializer(
     listOf(keySerializer, valueSerializer), { listOf(it.key, it.value) }, { MapEntryImpl(it[0] as K, it[1] as V) }
 )
 
@@ -84,7 +84,7 @@ private class BuiltinTupleSerializer<T>(elementSerializers: List<KSerializer<*>>
  * Adapted from [kotlinx.serialization.internal.CollectionLikeSerializer], [kotlinx.serialization.internal.CollectionSerializer]
  * and [kotlinx.serialization.internal.ArrayListSerializer]
  */
-class TupleSerializer(private val elementSerializers: List<KSerializer<*>>) : KSerializer<List<*>> {
+public class TupleSerializer(private val elementSerializers: List<KSerializer<*>>) : KSerializer<List<*>> {
     override val descriptor: SerialDescriptor = TupleDescriptor(elementSerializers.map { it.descriptor })
 
     override fun deserialize(decoder: Decoder): List<*> {

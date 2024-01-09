@@ -79,7 +79,7 @@ internal class Rpc4kProcessor(private val env: SymbolProcessorEnvironment) : Sym
 
 }
 
-fun KSClassDeclaration.shouldGenerateClient(): Boolean {
+internal fun KSClassDeclaration.shouldGenerateClient(): Boolean {
     // Checks if the @Api annotation has the only argument (generateClient) set to true
     return annotations.first { it.shortName.asString() == Api::class.simpleName }.arguments[0].value == true
 }

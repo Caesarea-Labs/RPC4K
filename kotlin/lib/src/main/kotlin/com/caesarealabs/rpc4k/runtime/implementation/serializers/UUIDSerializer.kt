@@ -12,7 +12,7 @@ import java.util.*
 /**
  * 128 bit ints are represented normally as a string.
  */
-object UUIDSerializer : KSerializer<UUID> {
+public object UUIDSerializer : KSerializer<UUID> {
     override val descriptor: SerialDescriptor = String.serializer().descriptor
 
     override fun deserialize(decoder: Decoder): UUID {

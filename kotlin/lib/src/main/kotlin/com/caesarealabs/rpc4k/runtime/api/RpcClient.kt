@@ -6,7 +6,7 @@ import kotlinx.serialization.KSerializer
  * Generic interface for anything that sends information across the network.
  * Examples: HTTP Client, HTTP Server, WebSocket client/server.
  */
-interface RpcClient {
+public interface RpcClient {
     /**
      * Sends something across the network.
      * The transmitter should use the specified [format] with the specified [serializers] to serialize the arguments of [rpc].
@@ -14,7 +14,7 @@ interface RpcClient {
      *
      * @return The response body's bytes.
      */
-    suspend fun send(rpc: Rpc, format: SerializationFormat, serializers: List<KSerializer<*>>): ByteArray
+    public suspend fun send(rpc: Rpc, format: SerializationFormat, serializers: List<KSerializer<*>>): ByteArray
 }
 
 

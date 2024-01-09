@@ -23,7 +23,7 @@ internal val Rpc4kSerializers: List<Rpc4kSerializer<*>> = Rpc4kSerializersModule
 }.build()
 
 @Suppress("UNCHECKED_CAST")
-val Rpc4kSerializersModule = SerializersModule {
+public val Rpc4kSerializersModule: SerializersModule = SerializersModule {
     for (serializer in Rpc4kSerializers) {
         when (val provider = serializer.provider) {
             is ContextualProvider.Argless -> contextual(serializer.kClass as KClass<Any>, provider.serializer as KSerializer<Any>)
@@ -33,7 +33,7 @@ val Rpc4kSerializersModule = SerializersModule {
 }
 
 // This could become a public api in the future
-class Rpc4kSerializersModuleBuilder {
+private class Rpc4kSerializersModuleBuilder {
     @PublishedApi
     internal val serializers = mutableListOf<Rpc4kSerializer<*>>()
 

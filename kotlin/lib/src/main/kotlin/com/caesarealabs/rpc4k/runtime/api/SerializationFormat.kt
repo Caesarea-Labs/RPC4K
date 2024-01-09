@@ -9,8 +9,8 @@ import kotlinx.serialization.json.Json
  * For example [Json] or Protobuf
  * Must use the [Rpc4kSerializersModule]
  */
-interface SerializationFormat {
-    fun <T> encode(serializer: SerializationStrategy<T>, value: T): ByteArray
-    fun <T> decode(serializer: DeserializationStrategy<T>, raw: ByteArray): T
+public interface SerializationFormat {
+    public fun <T> encode(serializer: SerializationStrategy<T>, value: T): ByteArray
+    public fun <T> decode(serializer: DeserializationStrategy<T>, raw: ByteArray): T
 }
 

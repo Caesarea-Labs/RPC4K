@@ -1,6 +1,6 @@
 package com.caesarealabs.rpc4k.runtime.api
 
-import com.caesarealabs.rpc4k.runtime.implementation.InvalidRpcRequestException
+import com.caesarealabs.rpc4k.runtime.implementation.fastConcat
 import com.caesarealabs.rpc4k.runtime.implementation.serializers.TupleSerializer
 import kotlinx.serialization.KSerializer
 
@@ -8,8 +8,8 @@ import kotlinx.serialization.KSerializer
 /**
  * Data representing a Remote Procedure Call.
  */
-data class Rpc(val method: String, val arguments: List<*>) {
-    companion object {
+public data class Rpc(val method: String, val arguments: List<*>) {
+    internal companion object {
         private val Encoding = Charsets.UTF_8
 
         fun fromByteArray(bytes: ByteArray, format: SerializationFormat, argDeserializers: List<KSerializer<*>>): Rpc {
@@ -19,7 +19,7 @@ data class Rpc(val method: String, val arguments: List<*>) {
             return Rpc(method, arguments)
         }
 
-        private const val ColonCode: Byte = 58 // :
+         const val ColonCode: Byte = 58 // :
 
         fun peekMethodName(rpcBytes: ByteArray): String {
             return readMethodName(rpcBytes).first
@@ -57,8 +57,8 @@ data class Rpc(val method: String, val arguments: List<*>) {
     /**
      * See docs/rpc_format.png
      */
-    fun toByteArray(format: SerializationFormat, serializers: List<KSerializer<*>>): ByteArray {
-        return (method.toByteArray(Encoding) + ColonCode) + format.encode(TupleSerializer(serializers), arguments)
+    public fun toByteArray(format: SerializationFormat, serializers: List<KSerializer<*>>): ByteArray {
+        return method.toByteArray(Encoding).fastConcat(ColonCode, format.encode(TupleSerializer(serializers), arguments))
     }
 
 }

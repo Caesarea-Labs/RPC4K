@@ -15,7 +15,7 @@ import kotlin.time.Duration
 /**
  * Easier representation of a KSerializer that differentiates between different types.
  */
-sealed interface KotlinSerializer {
+internal sealed interface KotlinSerializer {
     val isNullable: Boolean
     val typeArguments: List<KotlinSerializer>
 
@@ -53,7 +53,7 @@ private fun KSType.isAnnotatedBySerializable() =
     declaration.annotations.any { it.annotationType.resolve().declaration.getQualifiedName() == serializableClassName }
 
 
-fun KSType.isBuiltinSerializableType() = declaration.qualifiedName?.asString() in builtinSerializableClasses
+internal fun KSType.isBuiltinSerializableType() = declaration.qualifiedName?.asString() in builtinSerializableClasses
 
 private val rpc4kSerializerMap = Rpc4kSerializers.associateBy {
     it.kClass.kotlinName

@@ -1,5 +1,6 @@
 package com.caesarealabs.rpc4k.test
 
+import com.caesarealabs.rpc4k.generated.SimpleProtocolEventInvoker
 import com.caesarealabs.rpc4k.testapp.SimpleProtocol
 import com.caesarealabs.rpc4k.runtime.api.testing.rpcExtension
 import kotlinx.coroutines.runBlocking
@@ -11,7 +12,7 @@ class SimpleKtorServerTest {
     companion object {
         @JvmField
         @RegisterExtension
-        val extension = rpcExtension(SimpleProtocol())
+        val extension = rpcExtension<SimpleProtocol, SimpleProtocolEventInvoker>({ SimpleProtocol() })
     }
 
 

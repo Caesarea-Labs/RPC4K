@@ -45,11 +45,14 @@ import com.caesarealabs.rpc4k.runtime.implementation.kotlinPoet
  *
  * Which makes running client code much easier.
  */
-object ApiDefinitionToClientCode {
+internal object ApiDefinitionToClientCode {
     private const val ClientPropertyName = "client"
     private const val FormatPropertyName = "format"
     private val sendMethod = GeneratedCodeUtils::class.methodName("send")
     private val requestMethod = GeneratedCodeUtils::class.methodName("request")
+
+    //TODO:
+
 
 //    context(JvmContext)
     /**
@@ -122,7 +125,7 @@ object ApiDefinitionToClientCode {
             addStatement("return $generatedClassName($ClientPropertyName, $FormatPropertyName)")
         }
 
-    private fun convertMethod(rpcDefinition: RpcDefinition): FunSpec = funSpec(rpcDefinition.name) {
+    private fun convertMethod(rpcDefinition: RpcFunction): FunSpec = funSpec(rpcDefinition.name) {
         // We need to call network methods in this
         addModifiers(KModifier.SUSPEND, KModifier.OVERRIDE)
 
@@ -147,8 +150,8 @@ object ApiDefinitionToClientCode {
             ClientPropertyName,
             FormatPropertyName,
             "%S".formatWith(rpcDefinition.name),
-            ApiDefinitionConverters.listOfFunction.withArgumentList(rpcDefinition.parameters.map { it.name }),
-            ApiDefinitionConverters.listOfSerializers(rpcDefinition),
+            ApiDefinitionUtils.listOfFunction.withArgumentList(rpcDefinition.parameters.map { it.name }),
+            ApiDefinitionUtils.listOfSerializers(rpcDefinition),
         )
 
         if (returnsValue) arguments.add(rpcDefinition.returnType.toSerializerString())

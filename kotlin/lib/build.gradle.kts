@@ -33,6 +33,8 @@ dependencies {
     implementation(libs.okhttp.sse)
     implementation(libs.ktor.netty)
     implementation(libs.ktor.logging)
+    implementation("io.ktor:ktor-server-core-jvm:2.2.4")
+    implementation("io.ktor:ktor-server-websockets-jvm:2.2.4")
 
     testImplementation(libs.kotlin.test)
     testImplementation(libs.compile.testing.ksp)
@@ -46,7 +48,9 @@ java {
     withJavadocJar()
 }
 
-
+kotlin {
+    explicitApi()
+}
 
 
 tasks.test {

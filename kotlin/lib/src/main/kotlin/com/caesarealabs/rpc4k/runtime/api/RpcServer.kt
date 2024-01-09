@@ -1,45 +1,46 @@
 package com.caesarealabs.rpc4k.runtime.api
 
-import com.caesarealabs.rpc4k.runtime.implementation.InvalidRpcRequestException
 
+//TODO: document this interface
+public sealed interface RpcServerEngine {
+    public val eventManager: EventManager<*>
 
-sealed interface RpcServerEngine {
-    sealed interface SingleCall<I, O> : RpcServerEngine {
-        suspend fun read(input: I): ByteArray
-        interface Returning<I, O> : SingleCall<I, O> {
-            suspend fun respond(bytes: ByteArray): O
-            suspend fun respondError(message: String, errorType: RpcError): O
+    public sealed interface SingleCall<I, O> : RpcServerEngine {
+        public suspend fun read(input: I): ByteArray
+        public interface Returning<I, O> : SingleCall<I, O> {
+            public suspend fun respond(body: ByteArray): O
+            public suspend fun respondError(message: String, errorType: RpcError): O
         }
 
-        interface Writing<I, O> : SingleCall<I, O> {
-            suspend fun write(bytes: ByteArray, output: O)
-            suspend fun writeError(message: String, errorType: RpcError, output: O)
+        public interface Writing<I, O> : SingleCall<I, O> {
+            public suspend fun write(body: ByteArray, output: O)
+            public suspend fun writeError(message: String, errorType: RpcError, output: O)
         }
     }
 
-    interface MultiCall : RpcServerEngine {
-        interface Instance {
-            fun start(wait: Boolean)
-            fun stop()
+    public interface MultiCall : RpcServerEngine {
+        public interface Instance {
+            public fun start(wait: Boolean)
+            public fun stop()
         }
 
-        fun create(setup: RpcServerSetup<*, *>): Instance
+        public fun <RpcDef>create(setup: RpcSetupOf<RpcDef>): Instance
     }
 }
 
-
+//TODO: add more documentation here
 /**
  * SECURITY NOTE - the message will be sent to clients. Make sure to not leak sensitive info.
  * Use this to verify inputs in service methods.
  * If verification failed the correct error will be sent to the client.
  */
-inline fun serverRequirement(condition: Boolean, message: () -> String) {
+public inline fun serverRequirement(condition: Boolean, message: () -> String) {
     if (!condition) {
         throw InvalidRpcRequestException(message())
     }
 }
 
-enum class RpcError {
+public enum class RpcError {
     InvalidRequest,
     InternalError
 }

@@ -1,13 +1,11 @@
 package com.caesarealabs.rpc4k.processor
 
-import com.google.devtools.ksp.getAllSuperTypes
-import com.google.devtools.ksp.getDeclaredProperties
-import com.google.devtools.ksp.isOpen
 import com.google.devtools.ksp.processing.Resolver
 import com.google.devtools.ksp.processing.SymbolProcessorEnvironment
 import com.google.devtools.ksp.symbol.*
-import com.google.devtools.ksp.validate
 import com.caesarealabs.rpc4k.processor.utils.*
+import com.caesarealabs.rpc4k.runtime.api.RpcEvent
+import com.google.devtools.ksp.*
 import kotlinx.serialization.Contextual
 
 private const val TypeDiscriminatorField = "type"
@@ -15,9 +13,9 @@ private const val TypeDiscriminatorField = "type"
 /**
  * The methods of this class evaluate all checks to reveal all errors, not just stop at one.
  */
-class ApiClassValidator(private val env: SymbolProcessorEnvironment, private val resolver: Resolver) {
+internal class ApiClassValidator(private val env: SymbolProcessorEnvironment, private val resolver: Resolver) {
     fun validate(apiClass: KSClassDeclaration): Boolean {
-        if (!apiClass.validate()) return false
+//        if (!apiClass.validate()) return false
         var valid = checkApiClassIsValid(apiClass)
         if (apiClass.shouldGenerateClient()) {
             // Servers don't need to be suspendOpen, only clients
@@ -143,6 +141,7 @@ class ApiClassValidator(private val env: SymbolProcessorEnvironment, private val
         return apiClass.getPublicApiFunctions().evaluateAll { checkIsSuspendOpen(it, method = true) } && classOpen
     }
 
+    @OptIn(KspExperimental::class)
     private fun checkIsSuspendOpen(node: KSDeclaration, method: Boolean): Boolean {
         val messagePrefix = if (method) "Public API method in "
         else ""
@@ -155,7 +154,8 @@ class ApiClassValidator(private val env: SymbolProcessorEnvironment, private val
                 "$messagePrefix@Api client class must be suspending and open for inheritance"
             }
 
-            !isOpen -> node.checkRequirement(env, false) {
+            // RpcEvents don't need to be open because they are not invoked in the same way they are declared
+            !isOpen && !node.isAnnotationPresent(RpcEvent::class) -> node.checkRequirement(env, false) {
                 "$messagePrefix@Api client class must be open for inheritance"
             }
 

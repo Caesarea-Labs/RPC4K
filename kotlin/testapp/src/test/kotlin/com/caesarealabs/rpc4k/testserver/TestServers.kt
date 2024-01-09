@@ -12,11 +12,11 @@ import kotlin.test.Test
 class TestServers {
     @Test
     fun myApi() {
-        RpcServerSetup.managedKtor(BasicApi(), BasicApi.server()).startServer(wait = true)
+        RpcServerSetup.managedKtor({ BasicApi() }, BasicApi.server()).startServer(wait = true)
     }
 
     @Test
     fun allEncompassingService() {
-        RpcServerSetup.managedKtor(AllEncompassingService(), AllEncompassingService.server()).startServer(wait = true)
+        RpcServerSetup.managedKtor({ AllEncompassingService(invoker = it) }, AllEncompassingService.server()).startServer(wait = true)
     }
 }

@@ -8,7 +8,7 @@ import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 
 
-object ApiDefinitionWriter {
+internal object ApiDefinitionWriter {
     private val json = Json {
         prettyPrint = true
     }

@@ -14,27 +14,27 @@ import org.junit.jupiter.api.extension.Extension
 import org.junit.jupiter.api.extension.ExtensionContext
 import kotlin.reflect.full.companionObjectInstance
 
-fun <API> rpcExtension(
-    serverHandler: API,
+public fun <API, Invoker> rpcExtension(
+    serverHandler: (Invoker) ->  API,
     port: Int = PortPool.get(),
-    generatedClass: GeneratedServerHelper<API>,
+    generatedClass: GeneratedServerHelper<API, Invoker>,
     generatedClient: GeneratedClientImplFactory<API>,
     format: SerializationFormat = JsonFormat(),
     server: RpcServerEngine.MultiCall = KtorManagedRpcServer(port = port),
     client: RpcClientFactory<API> = RpcClientFactory.OkHttp(),
-): ClientServerExtension<API> {
+): ClientServerExtension<API, Invoker> {
     val url = "http://localhost:${port}"
     val serverSetup = RpcServerSetup(serverHandler, generatedClass, server, format)
     return ClientServerExtension(serverSetup, generatedClient.build(client.build(url), format))
 }
 
-inline fun <reified API> rpcExtension(
-    serverHandler: API,
+public inline fun <reified API, I> rpcExtension(
+    noinline serverHandler: (I) ->  API,
     port: Int = PortPool.get(),
     format: SerializationFormat = JsonFormat(),
     server: RpcServerEngine.MultiCall = KtorManagedRpcServer(port = port),
     client: RpcClientFactory<API> = RpcClientFactory.OkHttp()
-): ClientServerExtension<API> {
+): ClientServerExtension<API, I> {
     return rpcExtension(serverHandler, port, generatedServer(), apiClientFactory(), format, server, client)
 }
 
@@ -47,15 +47,17 @@ internal inline fun <reified API> apiClientFactory(): GeneratedClientImplFactory
 
 @Suppress("UNCHECKED_CAST")
 @PublishedApi
-internal inline fun <reified API> generatedServer(): GeneratedServerHelper<API> {
+internal inline fun <reified API, Invoker> generatedServer(): GeneratedServerHelper<API, Invoker> {
     return Class.forName(GeneratedCodeUtils.Package + "." + API::class.simpleName + GeneratedCodeUtils.ServerSuffix)
-        .constructors[0].newInstance() as GeneratedServerHelper<API>
+        .constructors[0].newInstance() as GeneratedServerHelper<API, Invoker>
 }
 
 
-class ClientServerExtension<API>(serverSetup: RpcServerSetup<API, RpcServerEngine.MultiCall>, val api: API) : Extension, BeforeAllCallback,
+public class ClientServerExtension<API, I>(serverSetup: RpcServerSetup<API, RpcServerEngine.MultiCall, I>,
+                                           public val api: API) : Extension, BeforeAllCallback,
     AfterAllCallback {
     private val serverExtension = MultiCallServerExtension(serverSetup)
+    public val service: API = serverSetup.handler
     override fun beforeAll(context: ExtensionContext) {
         serverExtension.beforeAll(context)
     }
@@ -71,10 +73,10 @@ class ClientServerExtension<API>(serverSetup: RpcServerSetup<API, RpcServerEngin
  * This interface is useful because it's often easier to specify a [RpcClient] than an instance of a [ServerExtension] because [ServerExtension]
  * often have many parameters.
  */
-interface RpcClientFactory<API> {
-    fun build(url: String): RpcClient
+public interface RpcClientFactory<API> {
+    public fun build(url: String): RpcClient
 
-    class OkHttp<API>(private val client: OkHttpClient = OkHttpClient()) : RpcClientFactory<API> {
+    public class OkHttp<API>(private val client: OkHttpClient = OkHttpClient()) : RpcClientFactory<API> {
         override fun build(url: String): RpcClient = OkHttpRpcClient(url, client)
     }
 }

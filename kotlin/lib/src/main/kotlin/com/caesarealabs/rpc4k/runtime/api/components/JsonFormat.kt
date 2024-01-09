@@ -13,7 +13,7 @@ import kotlinx.serialization.modules.plus
 /**
  * [JsonConfiguration.allowStructuredMapKeys] is not supported.
  */
-class JsonFormat(config: JsonBuilder.() -> Unit = {}) : SerializationFormat {
+public class JsonFormat(config: JsonBuilder.() -> Unit = {}) : SerializationFormat {
     private val json = Json {
         config()
 //        // NiceToHave: Support optional parameters and properties

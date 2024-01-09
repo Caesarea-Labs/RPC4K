@@ -15,22 +15,22 @@ import java.time.ZonedDateTime
 /**
  * We serialize instant as an iso string
  */
-object InstantIsoSerializer : KSerializer<Instant> {
+public object InstantIsoSerializer : KSerializer<Instant> {
     override val descriptor: SerialDescriptor = String.serializer().descriptor
 
     override fun deserialize(decoder: Decoder): Instant = Instant.parse(decoder.decodeString())
 
-    override fun serialize(encoder: Encoder, value: Instant) = encoder.encodeString(value.toString())
+    override fun serialize(encoder: Encoder, value: Instant): Unit = encoder.encodeString(value.toString())
 }
 
 
 /**
  * We serialize ZonedDateTime as an iso string
  */
-object ZonedDateTimeIsoSerializer : KSerializer<ZonedDateTime> {
+public object ZonedDateTimeIsoSerializer : KSerializer<ZonedDateTime> {
     override val descriptor: SerialDescriptor = String.serializer().descriptor
 
     override fun deserialize(decoder: Decoder): ZonedDateTime = ZonedDateTime.parse(decoder.decodeString())
 
-    override fun serialize(encoder: Encoder, value: ZonedDateTime) = encoder.encodeString(value.toString())
+    override fun serialize(encoder: Encoder, value: ZonedDateTime): Unit = encoder.encodeString(value.toString())
 }

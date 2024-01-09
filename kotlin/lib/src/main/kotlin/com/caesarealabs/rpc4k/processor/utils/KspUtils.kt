@@ -13,7 +13,7 @@ import kotlin.reflect.KClass
  * Asserts that only classes have this annotation. Make sure the annotation is declared to only support class use site.
  */
 @Suppress("UNCHECKED_CAST")
-fun Resolver.getClassesWithAnnotation(annotation: KClass<*>): Sequence<KSClassDeclaration> = getSymbolsWithAnnotation(annotation.qualifiedName!!)
+internal fun Resolver.getClassesWithAnnotation(annotation: KClass<*>): Sequence<KSClassDeclaration> = getSymbolsWithAnnotation(annotation.qualifiedName!!)
         as Sequence<KSClassDeclaration>
 
 
@@ -23,13 +23,13 @@ internal fun KSClassDeclaration.getPublicApiFunctions() = getDeclaredFunctions()
 /**
  * Only checks the short name of annotations for performance, may not work well with annotation name conflicts.
  */
-fun KSAnnotated.hasAnnotation(annotation: KClass<*>) = annotations.any { it.shortName.asString() == annotation.simpleName }
+internal fun KSAnnotated.hasAnnotation(annotation: KClass<*>) = annotations.any { it.shortName.asString() == annotation.simpleName }
 
 
 /**
  * Extract from `com.foo.bar.Inner$Thing` the pair `[com.foo.bar, inner.Thing]`
  */
-fun KSDeclaration.getKotlinName(): KotlinClassName? {
+internal fun KSDeclaration.getKotlinName(): KotlinClassName? {
     val qualifiedName = getQualifiedName()
     val packageName = packageName.asString()
     val className = qualifiedName?.removePrefix("$packageName.") ?: return null
@@ -39,7 +39,7 @@ fun KSDeclaration.getKotlinName(): KotlinClassName? {
 /**
  * Extract from `com.foo.bar.Inner$Thing` , `Inner.Thing`
  */
-fun KSDeclaration.getSimpleName(): String? = if (this is KSClassDeclaration) {
+internal fun KSDeclaration.getSimpleName(): String? = if (this is KSClassDeclaration) {
     val qualifiedName = getQualifiedName()
     val packageName = packageName.asString()
     qualifiedName?.removePrefix("$packageName.")
@@ -50,7 +50,7 @@ fun KSDeclaration.getSimpleName(): String? = if (this is KSClassDeclaration) {
 /**
  * Extract from `com.foo.bar.Inner$Thing` , `Thing`
  */
-fun KSDeclaration.getTopLevelSimpleName(): String = simpleName.asString()
+internal fun KSDeclaration.getTopLevelSimpleName(): String = simpleName.asString()
 
 
 /**
@@ -61,19 +61,19 @@ internal inline fun KSNode.checkRequirement(environment: SymbolProcessorEnvironm
     return requirement
 }
 
-fun KSTypeArgument.nonNullType() =
+internal fun KSTypeArgument.nonNullType() =
     type
         ?: error(
             "There's no reason why a type of a type argument would be null. If you encounter this error, open a bug report ASAP! This happened for '$this'."
         )
 
-fun KSDeclaration.getQualifiedName() =
+internal fun KSDeclaration.getQualifiedName() =
     qualifiedName?.asString()
 //        ?: error(
 //            "There's no reason why the qualified name of a type would be null. If you encounter this error, open a bug report ASAP! This happened for '$this'."
 //        )
 
-fun KSFunctionDeclaration.nonNullReturnType() =
+internal fun KSFunctionDeclaration.nonNullReturnType() =
     returnType
         ?: error(
             "There's no reason why the return type of a function would be null. If you encounter this error, open a bug report ASAP! This happened for '$this'."
@@ -82,7 +82,7 @@ fun KSFunctionDeclaration.nonNullReturnType() =
 /**
  * Handles type aliases as well
  */
-fun KSTypeReference.resolveToUnderlying(): KSType {
+internal fun KSTypeReference.resolveToUnderlying(): KSType {
     var candidate = resolve()
     var declaration = candidate.declaration
     while (declaration is KSTypeAlias) {
@@ -93,7 +93,7 @@ fun KSTypeReference.resolveToUnderlying(): KSType {
 }
 
 
-fun CodeGenerator.writeFile(
+internal fun CodeGenerator.writeFile(
     contents: String,
     dependencies: Dependencies,
     path: String,
@@ -112,7 +112,7 @@ fun CodeGenerator.writeFile(
  *
  * @param filter Allows denying certain classes, which will make it so things they have referenced will not get visited.
  */
-fun KSClassDeclaration.getReferencedClasses(resolver: Resolver, filter: (KSTypeReference) -> Boolean = { true }): Set<KSClassDeclaration> {
+internal fun KSClassDeclaration.getReferencedClasses(resolver: Resolver, filter: (KSTypeReference) -> Boolean = { true }): Set<KSClassDeclaration> {
     val types = hashSetOf<KSClassDeclaration>()
     // Add things referenced in methods
     for (method in getPublicApiFunctions()) {
@@ -180,7 +180,7 @@ private fun addReferencedTypes(
  * This version does not cause the cache to be invalidated.
  *
  */
-@OptIn(KspExperimental::class) fun KSClassDeclaration.fastGetSealedSubclasses(resolver: Resolver): Sequence<KSClassDeclaration> {
+@OptIn(KspExperimental::class) internal fun KSClassDeclaration.fastGetSealedSubclasses(resolver: Resolver): Sequence<KSClassDeclaration> {
     if (Modifier.SEALED !in modifiers) return emptySequence()
     val packageName = containingFile?.packageName ?: return emptySequence()
 

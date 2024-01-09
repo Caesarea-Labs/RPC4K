@@ -1,4 +1,4 @@
-package com.caesarealabs.rpc4k.runtime.implementation
+package com.caesarealabs.rpc4k.runtime.api
 
 import com.caesarealabs.rpc4k.runtime.api.serverRequirement
 
@@ -7,4 +7,4 @@ import com.caesarealabs.rpc4k.runtime.api.serverRequirement
  * May be thrown by an RPC server handler to signal an invalid request.
  * @see [serverRequirement]
  */
-class InvalidRpcRequestException(override val message: String, cause: Throwable? = null) : RuntimeException(message, cause)
+public class InvalidRpcRequestException(override val message: String, cause: Throwable? = null) : RuntimeException(message, cause)

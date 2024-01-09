@@ -1,6 +1,7 @@
 package com.caesarealabs.rpc4k.runtime.api.components
 
 import com.caesarealabs.rpc4k.runtime.api.*
+import com.caesarealabs.rpc4k.runtime.api.Rpc
 import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlinx.serialization.KSerializer
 import okhttp3.*
@@ -9,7 +10,7 @@ import okhttp3.RequestBody.Companion.toRequestBody
 import okio.IOException
 import kotlin.coroutines.resume
 
-class OkHttpRpcClient(private val url: String, private val client: OkHttpClient = OkHttpClient()) : RpcClient {
+public class OkHttpRpcClient(private val url: String, private val client: OkHttpClient = OkHttpClient()) : RpcClient {
 
     override suspend fun send(rpc: Rpc, format: SerializationFormat, serializers: List<KSerializer<*>>): ByteArray {
         val data = rpc.toByteArray(format, serializers)

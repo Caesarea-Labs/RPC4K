@@ -7,7 +7,7 @@ import kotlin.reflect.KClass
  * KotlinPoet doesn't have native support for constructor properties, but it allows generating them by merging parameters of the primary constructor
  * with properties of the class.
  */
-class PrimaryConstructorBuilder {
+internal class PrimaryConstructorBuilder {
     private data class ConstructorProperty(val name: String, val type: TypeName, val modifiers: List<KModifier>)
 
     private val properties = mutableListOf<ConstructorProperty>()
@@ -47,6 +47,6 @@ class PrimaryConstructorBuilder {
     }
 }
 
-fun TypeSpec.Builder.addPrimaryConstructor(builder: PrimaryConstructorBuilder.() -> Unit) {
+internal fun TypeSpec.Builder.addPrimaryConstructor(builder: PrimaryConstructorBuilder.() -> Unit) {
     PrimaryConstructorBuilder().apply(builder).__addToType(this)
 }

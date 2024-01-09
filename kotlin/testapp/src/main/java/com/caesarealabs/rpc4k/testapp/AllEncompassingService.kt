@@ -3,9 +3,12 @@
 
 package com.caesarealabs.rpc4k.testapp
 
+import com.caesarealabs.rpc4k.generated.AllEncompassingServiceEventInvoker
 import com.caesarealabs.rpc4k.testapp.EnumArgs.Option1
 import com.caesarealabs.rpc4k.testapp.EnumArgs.Option5
 import com.caesarealabs.rpc4k.runtime.api.Api
+import com.caesarealabs.rpc4k.runtime.api.Dispatch
+import com.caesarealabs.rpc4k.runtime.api.RpcEvent
 import com.caesarealabs.rpc4k.runtime.api.serverRequirement
 import kotlinx.serialization.Contextual
 import kotlinx.serialization.Serializable
@@ -49,12 +52,12 @@ open class SimpleProtocol {
 
 typealias AliasTest = CreateLobbyResponse
 
+//TODO: document this pattern of assigning the default constructor to the invoker
 @Api(true)
-open class AllEncompassingService(val value: Int = 1) {
+open class AllEncompassingService(val value: Int = 1, val invoker: AllEncompassingServiceEventInvoker = AllEncompassingServiceEventInvoker(null)) {
     companion object {
         fun distraction1() {}
         val distraction2: String = ""
-
     }
 
     val distraction3 = 2
@@ -117,15 +120,6 @@ open class AllEncompassingService(val value: Int = 1) {
             HeavyNullableTestMode.NullString -> GenericThing(listOf(null, "test"), null, listOf())
         }
     }
-
-//    open suspend fun flowTest(thing: Int): Flow<List<PlayerId>?> {
-//        return flowOf(listOf(PlayerId(thing.toLong())))
-//    }
-//
-//    open suspend fun sharedFlowTest(thing: Int): Flow<List<PlayerId>?> {
-//        val flow = flowOf(listOf(PlayerId(thing.toLong())))
-//        return flow.stateIn(CoroutineScope(currentCoroutineContext()))
-//    }
 
     open suspend fun genericTest(thing: String): GenericThing<String, Int, Long> {
         return GenericThing("", 2, 3)
@@ -311,6 +305,16 @@ open class AllEncompassingService(val value: Int = 1) {
 
     open suspend fun modelWithType(type: ModelWithType): ModelWithType {
         return type
+    }
+
+    @RpcEvent
+    suspend fun eventTest(@Dispatch dispatchParam: Int, normalParam: String): String {
+        return normalParam + dispatchParam
+    }
+
+    open suspend fun tinkerWithEvents() {
+        invoker.invokeEventTest(5)
+//        invoker.
     }
 
 //NiceToHave: Respect @SerialName

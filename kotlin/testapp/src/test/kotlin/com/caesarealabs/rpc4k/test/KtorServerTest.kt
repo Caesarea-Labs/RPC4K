@@ -1,5 +1,6 @@
 package com.caesarealabs.rpc4k.test
 
+import com.caesarealabs.rpc4k.generated.BasicApiEventInvoker
 import com.caesarealabs.rpc4k.runtime.api.Api
 import com.caesarealabs.rpc4k.runtime.api.testing.rpcExtension
 import kotlinx.coroutines.runBlocking
@@ -14,7 +15,7 @@ class KtorServerTest {
     companion object {
         @JvmField
         @RegisterExtension
-        val extension = rpcExtension(BasicApi())
+        val extension = rpcExtension<BasicApi,BasicApiEventInvoker>({ BasicApi() })
     }
 
     @Test

@@ -1,29 +1,59 @@
 package com.caesarealabs.rpc4k.processor
 
 import com.caesarealabs.rpc4k.processor.utils.*
+import com.caesarealabs.rpc4k.runtime.api.Dispatch
+import com.caesarealabs.rpc4k.runtime.api.RpcEvent
+import com.google.devtools.ksp.KspExperimental
 import com.google.devtools.ksp.getAllSuperTypes
 import com.google.devtools.ksp.getDeclaredProperties
+import com.google.devtools.ksp.isAnnotationPresent
 import com.google.devtools.ksp.processing.Resolver
 import com.google.devtools.ksp.symbol.*
 import com.google.devtools.ksp.symbol.ClassKind.*
 
-class KspToApiDefinition(private val resolver: Resolver) {
+internal class KspToApiDefinition(private val resolver: Resolver) {
     fun toApiDefinition(kspClass: KSClassDeclaration): RpcApi? {
+        val functions = kspClass.getPublicApiFunctions()
+        val endpoints = functions.map { toRpc(it) }.toList().allOrNothing() ?: return null
+
         return RpcApi(
             // Doesn't quite fit, but good enough to represent the name as an KotlinTypeReference
             name = kspClass.getKotlinName() ?: return null,
-            methods = kspClass.getPublicApiFunctions().map { toRpc(it) }.toList().allOrNothing() ?: return null,
-            getRpcModels(kspClass) ?: return null
+            methods = endpoints.filterIsInstance<RpcFunction>(),
+            models = getRpcModels(kspClass) ?: return null,
+            events = endpoints.filterIsInstance<RpcEventEndpoint>()
         )
     }
 
-    private fun toRpc(kspMethod: KSFunctionDeclaration): RpcDefinition? {
-        return RpcDefinition(
-            kspMethod.simpleName.getShortName(),
-            parameters = kspMethod.parameters.map { toRpcParameter(it) }.toList().allOrNothing() ?: return null,
-            returnType = toKotlinTypeReference(kspMethod.nonNullReturnType()) ?: return null
-        )
+    //TODO: validate that events have only one receiver
+
+    //TODO: validate @Dispatch and @WatchedValue doesn't appear on non-event endpoints
+
+    //TODO: validate @Dispatch and @WatchedValue are mutually exclusive
+
+    @OptIn(KspExperimental::class)
+    private fun toRpc(kspMethod: KSFunctionDeclaration): RpcEndpoint? {
+        val name = kspMethod.simpleName.getShortName()
+        val returnType = toKotlinTypeReference(kspMethod.nonNullReturnType()) ?: return null
+        if (kspMethod.isAnnotationPresent(RpcEvent::class)) {
+            val parameters = getRpcEventParameters(kspMethod) ?: return null
+            return RpcEventEndpoint(name, parameters, returnType)
+        } else {
+            val parameters = kspMethod.parameters.map { toRpcParameter(it) }.toList().allOrNothing() ?: return null
+            return RpcFunction(name, parameters, returnType)
+        }
+
     }
+
+    @OptIn(KspExperimental::class)
+    private fun getRpcEventParameters(kspMethod: KSFunctionDeclaration) = kspMethod.parameters.map {
+        val param = toRpcParameter(it)
+        EventParameter(
+            isDispatch = it.isAnnotationPresent(Dispatch::class),
+            param ?: return null
+        )
+    }.toList().allOrNothing()
+
 
     private fun toRpcParameter(parameter: KSValueParameter): RpcParameter? {
         return RpcParameter(

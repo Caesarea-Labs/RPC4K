@@ -6,5 +6,19 @@ package com.caesarealabs.rpc4k.runtime.api
  */
 @Target(AnnotationTarget.CLASS)
 @Retention(AnnotationRetention.SOURCE)
-annotation class Api(@Suppress("unused") val generateClient: Boolean = false)
+public annotation class Api(val generateClient: Boolean = false)
 
+//TODO: document
+@Target(AnnotationTarget.FUNCTION)
+@Retention(AnnotationRetention.SOURCE)
+public annotation class RpcEvent
+
+//TODO: document
+@Target(AnnotationTarget.VALUE_PARAMETER)
+@Retention(AnnotationRetention.SOURCE)
+public annotation class WatchedValue
+
+//TODO: document
+@Target(AnnotationTarget.VALUE_PARAMETER)
+@Retention(AnnotationRetention.SOURCE)
+public annotation class Dispatch
