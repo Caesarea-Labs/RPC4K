@@ -10,7 +10,7 @@ import java.util.concurrent.ConcurrentLinkedQueue
 //TODO: setup tests once we complete the ktor impl
 
 
-internal class KtorWebsocketEventConnection(private val session: DefaultWebSocketSession): EventConnection {
+public class KtorWebsocketEventConnection(private val session: DefaultWebSocketSession): EventConnection {
     override val id: String = UUID.randomUUID().toString()
     override suspend fun send(bytes: ByteArray) {
         session.send(Frame.Text(true, bytes))
@@ -32,7 +32,7 @@ internal class KtorEventManager: EventManager<KtorWebsocketEventConnection> {
         return list.removeIf { it.info.listenerId == listenerId }
     }
 
-     fun dropClient(connection: KtorWebsocketEventConnection) {
+     override suspend fun dropClient(connection: KtorWebsocketEventConnection) {
         for (list in subscriptions.values) {
             //TODO: test this still works
             list.removeIf { it.connection == connection }
@@ -44,7 +44,7 @@ internal class KtorEventManager: EventManager<KtorWebsocketEventConnection> {
         if (watchedObjectId == null) return subscribers.toList() // No specific object - return all
 
         // Specific object - return matching
-        return subscribers.filter { it.info.watchedObjectId == watchedObjectId }
+        return subscribers.filter { it.info.target == watchedObjectId }
     }
 }
 

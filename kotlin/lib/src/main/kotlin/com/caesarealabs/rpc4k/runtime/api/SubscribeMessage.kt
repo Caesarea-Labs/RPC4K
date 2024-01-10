@@ -14,22 +14,14 @@ public sealed interface EventMessage {
          */
         val data: ByteArray,
         /**
-         * This is a performance precaution to make invoking events faster.
-         * Consider Google had a Google Sheets event called 'sheet_changed'.
-         * If for every change in any sheet, all sheets would need to be checked in the event transformer, that would be extremely slow.
-         * However, if a singular sheet would receive a unique 'sheet-id', then whenever the sheet changes only subscriptions to the same
-         * sheet would be considered and it would be very efficient.
-         * We can see, that for any event there should be some way to focus the events onto some specific object.
+         * @see EventTarget
          */
-        val watchedObjectId: String?) : EventMessage
+        val target: String?) : EventMessage
 
     public data class Unsubscribe(val event: String, val listenerId: String) : EventMessage
 
 
     public companion object {
-//        fun fromWebsocketMessage(message: String): EventMessage {
-//
-//        }
 
         //TODO: test this together with toByteArray
         internal fun fromByteArray(bytes: ByteArray): EventMessage {
@@ -42,7 +34,7 @@ public sealed interface EventMessage {
                     val listenerId = reader.readPart("listener id").decodeToString()
                     val watchedObjectId = reader.readPart("watched object id").decodeToString()
                     val data = reader.readPart("payload", finalPart = true)
-                    return Subscribe(event, listenerId, data, watchedObjectId = watchedObjectId.ifEmpty { null })
+                    return Subscribe(event, listenerId, data, target = watchedObjectId.ifEmpty { null })
                 }
 
                 "unsub" -> {

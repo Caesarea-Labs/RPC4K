@@ -28,8 +28,7 @@ public class KtorManagedRpcServer(
 ) : RpcServerEngine.MultiCall {
 
     private val singleRoute = KtorSingleRouteRpcServer()
-    private val manager = KtorEventManager()
-    override val eventManager: EventManager<*> = manager
+    override val eventManager: EventManager<KtorWebsocketEventConnection> = KtorEventManager()
 
     private fun <RpcDef> Application.configImpl(setup: RpcSetupOf<RpcDef>) {
         install(CallLogging)
@@ -51,8 +50,7 @@ public class KtorManagedRpcServer(
                     }
                 } finally {
                     Rpc4K.Logger.info("Removing connection ${connection.id}")
-                    //TODO: make sure we do this as well in aws in $disconnect
-                    manager.dropClient(connection)
+                    eventManager.dropClient(connection)
                 }
             }
         }

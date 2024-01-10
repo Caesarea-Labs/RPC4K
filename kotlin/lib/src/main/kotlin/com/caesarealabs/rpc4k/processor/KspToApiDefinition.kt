@@ -24,13 +24,6 @@ internal class KspToApiDefinition(private val resolver: Resolver) {
             events = endpoints.filterIsInstance<RpcEventEndpoint>()
         )
     }
-
-    //TODO: validate that events have only one receiver
-
-    //TODO: validate @Dispatch and @WatchedValue doesn't appear on non-event endpoints
-
-    //TODO: validate @Dispatch and @WatchedValue are mutually exclusive
-
     @OptIn(KspExperimental::class)
     private fun toRpc(kspMethod: KSFunctionDeclaration): RpcEndpoint? {
         val name = kspMethod.simpleName.getShortName()

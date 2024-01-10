@@ -4,61 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="9ca8770c-8d9e-44a0-b1e9-2417666ce2c1" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/kotlin/lib/src/main/kotlin/com/caesarealabs/rpc4k/runtime/api/EventManager.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/kotlin/lib/src/main/kotlin/com/caesarealabs/rpc4k/runtime/api/SubscribeMessage.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/kotlin/lib/src/main/kotlin/com/caesarealabs/rpc4k/runtime/implementation/KtorEventManager.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/kotlin/lib/src/main/kotlin/com/caesarealabs/rpc4k/runtime/implementation/RpcEventData.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/kotlin/lib/src/main/kotlin/com/caesarealabs/rpc4k/runtime/implementation/Utils.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/kotlin/lib/build.gradle.kts" beforeDir="false" afterPath="$PROJECT_DIR$/kotlin/lib/build.gradle.kts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/kotlin/lib/src/main/kotlin/com/caesarealabs/rpc4k/processor/ApiClassValidator.kt" beforeDir="false" afterPath="$PROJECT_DIR$/kotlin/lib/src/main/kotlin/com/caesarealabs/rpc4k/processor/ApiClassValidator.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/kotlin/lib/src/main/kotlin/com/caesarealabs/rpc4k/processor/ApiDefinitionConverters.kt" beforeDir="false" afterPath="$PROJECT_DIR$/kotlin/lib/src/main/kotlin/com/caesarealabs/rpc4k/processor/ApiDefinitionUtils.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/kotlin/lib/src/main/kotlin/com/caesarealabs/rpc4k/processor/ApiDefinitionToClientCode.kt" beforeDir="false" afterPath="$PROJECT_DIR$/kotlin/lib/src/main/kotlin/com/caesarealabs/rpc4k/processor/ApiDefinitionToClientCode.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/kotlin/lib/src/main/kotlin/com/caesarealabs/rpc4k/processor/ApiDefinitionToServerCode.kt" beforeDir="false" afterPath="$PROJECT_DIR$/kotlin/lib/src/main/kotlin/com/caesarealabs/rpc4k/processor/ApiDefinitionToServerCode.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/kotlin/lib/src/main/kotlin/com/caesarealabs/rpc4k/processor/ApiDefinitionWriter.kt" beforeDir="false" afterPath="$PROJECT_DIR$/kotlin/lib/src/main/kotlin/com/caesarealabs/rpc4k/processor/ApiDefinitionWriter.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/kotlin/lib/src/main/kotlin/com/caesarealabs/rpc4k/processor/KspToApiDefinition.kt" beforeDir="false" afterPath="$PROJECT_DIR$/kotlin/lib/src/main/kotlin/com/caesarealabs/rpc4k/processor/KspToApiDefinition.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/kotlin/lib/src/main/kotlin/com/caesarealabs/rpc4k/processor/Rpc4kProcessorProvider.kt" beforeDir="false" afterPath="$PROJECT_DIR$/kotlin/lib/src/main/kotlin/com/caesarealabs/rpc4k/processor/Rpc4kProcessorProvider.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/kotlin/lib/src/main/kotlin/com/caesarealabs/rpc4k/processor/RpcApi.kt" beforeDir="false" afterPath="$PROJECT_DIR$/kotlin/lib/src/main/kotlin/com/caesarealabs/rpc4k/processor/RpcApi.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/kotlin/lib/src/main/kotlin/com/caesarealabs/rpc4k/processor/utils/KspUtils.kt" beforeDir="false" afterPath="$PROJECT_DIR$/kotlin/lib/src/main/kotlin/com/caesarealabs/rpc4k/processor/utils/KspUtils.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/kotlin/lib/src/main/kotlin/com/caesarealabs/rpc4k/processor/utils/SerializationUtils.kt" beforeDir="false" afterPath="$PROJECT_DIR$/kotlin/lib/src/main/kotlin/com/caesarealabs/rpc4k/processor/utils/SerializationUtils.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/kotlin/lib/src/main/kotlin/com/caesarealabs/rpc4k/processor/utils/Utils.kt" beforeDir="false" afterPath="$PROJECT_DIR$/kotlin/lib/src/main/kotlin/com/caesarealabs/rpc4k/processor/utils/Utils.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/kotlin/lib/src/main/kotlin/com/caesarealabs/rpc4k/processor/utils/poet/PrimaryConstructorBuilder.kt" beforeDir="false" afterPath="$PROJECT_DIR$/kotlin/lib/src/main/kotlin/com/caesarealabs/rpc4k/processor/utils/poet/PrimaryConstructorBuilder.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/kotlin/lib/src/main/kotlin/com/caesarealabs/rpc4k/runtime/RpcClientSetup.kt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/kotlin/lib/src/main/kotlin/com/caesarealabs/rpc4k/runtime/api/Api.kt" beforeDir="false" afterPath="$PROJECT_DIR$/kotlin/lib/src/main/kotlin/com/caesarealabs/rpc4k/runtime/api/Api.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/kotlin/lib/src/main/kotlin/com/caesarealabs/rpc4k/runtime/api/GeneratedInterfaces.kt" beforeDir="false" afterPath="$PROJECT_DIR$/kotlin/lib/src/main/kotlin/com/caesarealabs/rpc4k/runtime/api/GeneratedInterfaces.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/kotlin/lib/src/main/kotlin/com/caesarealabs/rpc4k/runtime/api/Rpc.kt" beforeDir="false" afterPath="$PROJECT_DIR$/kotlin/lib/src/main/kotlin/com/caesarealabs/rpc4k/runtime/api/Rpc.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/kotlin/lib/src/main/kotlin/com/caesarealabs/rpc4k/runtime/api/Rpc4K.kt" beforeDir="false" afterPath="$PROJECT_DIR$/kotlin/lib/src/main/kotlin/com/caesarealabs/rpc4k/runtime/implementation/Rpc4K.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/kotlin/lib/src/main/kotlin/com/caesarealabs/rpc4k/runtime/api/RpcClient.kt" beforeDir="false" afterPath="$PROJECT_DIR$/kotlin/lib/src/main/kotlin/com/caesarealabs/rpc4k/runtime/api/RpcClient.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/kotlin/lib/src/main/kotlin/com/caesarealabs/rpc4k/runtime/api/RpcClientException.kt" beforeDir="false" afterPath="$PROJECT_DIR$/kotlin/lib/src/main/kotlin/com/caesarealabs/rpc4k/runtime/api/RpcClientException.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/kotlin/lib/src/main/kotlin/com/caesarealabs/rpc4k/runtime/api/RpcServer.kt" beforeDir="false" afterPath="$PROJECT_DIR$/kotlin/lib/src/main/kotlin/com/caesarealabs/rpc4k/runtime/api/RpcServer.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/kotlin/lib/src/main/kotlin/com/caesarealabs/rpc4k/runtime/api/RpcServerSetup.kt" beforeDir="false" afterPath="$PROJECT_DIR$/kotlin/lib/src/main/kotlin/com/caesarealabs/rpc4k/runtime/api/RpcServerSetup.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/kotlin/lib/src/main/kotlin/com/caesarealabs/rpc4k/runtime/api/SerializationFormat.kt" beforeDir="false" afterPath="$PROJECT_DIR$/kotlin/lib/src/main/kotlin/com/caesarealabs/rpc4k/runtime/api/SerializationFormat.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/kotlin/lib/src/main/kotlin/com/caesarealabs/rpc4k/runtime/api/components/JsonFormat.kt" beforeDir="false" afterPath="$PROJECT_DIR$/kotlin/lib/src/main/kotlin/com/caesarealabs/rpc4k/runtime/api/components/JsonFormat.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/kotlin/lib/src/main/kotlin/com/caesarealabs/rpc4k/runtime/api/components/KtorManagedRpcServer.kt" beforeDir="false" afterPath="$PROJECT_DIR$/kotlin/lib/src/main/kotlin/com/caesarealabs/rpc4k/runtime/api/components/KtorManagedRpcServer.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/kotlin/lib/src/main/kotlin/com/caesarealabs/rpc4k/runtime/api/components/KtorSingleRouteRpcServer.kt" beforeDir="false" afterPath="$PROJECT_DIR$/kotlin/lib/src/main/kotlin/com/caesarealabs/rpc4k/runtime/api/components/KtorSingleRouteRpcServer.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/kotlin/lib/src/main/kotlin/com/caesarealabs/rpc4k/runtime/api/components/OkHttpRpcClient.kt" beforeDir="false" afterPath="$PROJECT_DIR$/kotlin/lib/src/main/kotlin/com/caesarealabs/rpc4k/runtime/api/components/OkHttpRpcClient.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/kotlin/lib/src/main/kotlin/com/caesarealabs/rpc4k/runtime/api/testing/RpcExtension.kt" beforeDir="false" afterPath="$PROJECT_DIR$/kotlin/lib/src/main/kotlin/com/caesarealabs/rpc4k/runtime/api/testing/RpcExtension.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/kotlin/lib/src/main/kotlin/com/caesarealabs/rpc4k/runtime/implementation/ByteUtils.kt" beforeDir="false" afterPath="$PROJECT_DIR$/kotlin/lib/src/main/kotlin/com/caesarealabs/rpc4k/runtime/implementation/ByteUtils.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/kotlin/lib/src/main/kotlin/com/caesarealabs/rpc4k/runtime/implementation/GeneratedCodeUtils.kt" beforeDir="false" afterPath="$PROJECT_DIR$/kotlin/lib/src/main/kotlin/com/caesarealabs/rpc4k/runtime/implementation/GeneratedCodeUtils.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/kotlin/lib/src/main/kotlin/com/caesarealabs/rpc4k/runtime/implementation/InvalidRpcRequestException.kt" beforeDir="false" afterPath="$PROJECT_DIR$/kotlin/lib/src/main/kotlin/com/caesarealabs/rpc4k/runtime/api/InvalidRpcRequestException.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/kotlin/lib/src/main/kotlin/com/caesarealabs/rpc4k/runtime/implementation/KotlinName.kt" beforeDir="false" afterPath="$PROJECT_DIR$/kotlin/lib/src/main/kotlin/com/caesarealabs/rpc4k/runtime/implementation/KotlinName.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/kotlin/lib/src/main/kotlin/com/caesarealabs/rpc4k/runtime/implementation/MultiCallServerExtension.kt" beforeDir="false" afterPath="$PROJECT_DIR$/kotlin/lib/src/main/kotlin/com/caesarealabs/rpc4k/runtime/implementation/MultiCallServerExtension.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/kotlin/lib/src/main/kotlin/com/caesarealabs/rpc4k/runtime/implementation/PortPool.kt" beforeDir="false" afterPath="$PROJECT_DIR$/kotlin/lib/src/main/kotlin/com/caesarealabs/rpc4k/runtime/implementation/PortPool.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/kotlin/lib/src/main/kotlin/com/caesarealabs/rpc4k/runtime/implementation/ServerUtils.kt" beforeDir="false" afterPath="$PROJECT_DIR$/kotlin/lib/src/main/kotlin/com/caesarealabs/rpc4k/runtime/implementation/ServerUtils.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/kotlin/lib/src/main/kotlin/com/caesarealabs/rpc4k/runtime/implementation/serializers/DateSerializers.kt" beforeDir="false" afterPath="$PROJECT_DIR$/kotlin/lib/src/main/kotlin/com/caesarealabs/rpc4k/runtime/implementation/serializers/DateSerializers.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/kotlin/lib/src/main/kotlin/com/caesarealabs/rpc4k/runtime/implementation/serializers/HeterogeneousListSerializers.kt" beforeDir="false" afterPath="$PROJECT_DIR$/kotlin/lib/src/main/kotlin/com/caesarealabs/rpc4k/runtime/implementation/serializers/TupleSerializers.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/kotlin/lib/src/main/kotlin/com/caesarealabs/rpc4k/runtime/implementation/serializers/MutableSerializers.kt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/kotlin/lib/src/main/kotlin/com/caesarealabs/rpc4k/runtime/implementation/serializers/Rpc4kSerializers.kt" beforeDir="false" afterPath="$PROJECT_DIR$/kotlin/lib/src/main/kotlin/com/caesarealabs/rpc4k/runtime/implementation/serializers/Rpc4kSerializers.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/kotlin/lib/src/main/kotlin/com/caesarealabs/rpc4k/runtime/implementation/serializers/UUIDSerializer.kt" beforeDir="false" afterPath="$PROJECT_DIR$/kotlin/lib/src/main/kotlin/com/caesarealabs/rpc4k/runtime/implementation/serializers/UUIDSerializer.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/kotlin/lib/src/main/kotlin/com/caesarealabs/rpc4k/runtime/implementation/serializers/VoidUnitSerializer.kt" beforeDir="false" afterPath="$PROJECT_DIR$/kotlin/lib/src/main/kotlin/com/caesarealabs/rpc4k/runtime/implementation/serializers/VoidUnitSerializer.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/kotlin/testapp/src/main/java/com/caesarealabs/rpc4k/testapp/AllEncompassingService.kt" beforeDir="false" afterPath="$PROJECT_DIR$/kotlin/testapp/src/main/java/com/caesarealabs/rpc4k/testapp/AllEncompassingService.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/kotlin/testapp/src/test/kotlin/com/caesarealabs/rpc4k/test/AllEncompassingTest.kt" beforeDir="false" afterPath="$PROJECT_DIR$/kotlin/testapp/src/test/kotlin/com/caesarealabs/rpc4k/test/AllEncompassingTest.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/kotlin/testapp/src/test/kotlin/com/caesarealabs/rpc4k/test/KtorServerTest.kt" beforeDir="false" afterPath="$PROJECT_DIR$/kotlin/testapp/src/test/kotlin/com/caesarealabs/rpc4k/test/KtorServerTest.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/kotlin/testapp/src/test/kotlin/com/caesarealabs/rpc4k/test/SimpleKtorServerTest.kt" beforeDir="false" afterPath="$PROJECT_DIR$/kotlin/testapp/src/test/kotlin/com/caesarealabs/rpc4k/test/SimpleKtorServerTest.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/kotlin/testapp/src/test/kotlin/com/caesarealabs/rpc4k/test/TestComp.kt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/kotlin/testapp/src/test/kotlin/com/caesarealabs/rpc4k/testserver/TestServers.kt" beforeDir="false" afterPath="$PROJECT_DIR$/kotlin/testapp/src/test/kotlin/com/caesarealabs/rpc4k/testserver/TestServers.kt" afterDir="false" />
-    </list>
+    <list default="true" id="9ca8770c-8d9e-44a0-b1e9-2417666ce2c1" name="Changes" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -177,91 +123,91 @@
     <option name="showLibraryContents" value="true" />
     <option name="showModules" value="false" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "Gradle.AllEncompassingTest (1).executor": "Run",
-    "Gradle.AllEncompassingTest.executor": "Run",
-    "Gradle.AllEncompassingTest.testEvents (1).executor": "Run",
-    "Gradle.AllEncompassingTest.testEvents.executor": "Debug",
-    "Gradle.AllEncompassingTest.testExoticTypes (1).executor": "Run",
-    "Gradle.AllEncompassingTest.testExoticTypes.executor": "Run",
-    "Gradle.Build kotlin.executor": "Run",
-    "Gradle.DirectProcessorTest.Symbol processor success.executor": "Debug",
-    "Gradle.Kotlin Tests.executor": "Run",
-    "Gradle.KtorServerTest.Basic RPCs work.executor": "Run",
-    "Gradle.Test Server.executor": "Run",
-    "Gradle.TestServers.allEncompassingService.executor": "Run",
-    "Gradle.Upload Rpc4k.executor": "Run",
-    "Gradle.kotlin [:plugin:publishPlugins].executor": "Run",
-    "Gradle.kotlin [uploadLibrary].executor": "Run",
-    "Gradle.kotlin:lib [publishToSonatype].executor": "Run",
-    "JUnit.DirectProcessorTest.Symbol processor success.executor": "Debug",
-    "Jest.Can decode array of generated class.executor": "Run",
-    "Jest.Can decode array of nested generated class.executor": "Run",
-    "Jest.Codegened Client works in all cases (1).executor": "Run",
-    "Jest.Codegened Client works in all cases.executor": "Run",
-    "Jest.Codegened Client works in more cases.executor": "Run",
-    "Jest.Codegened Client works.executor": "Run",
-    "Jest.Parse behavior.executor": "Run",
-    "Jest.Standalone TS Tests.executor": "Run",
-    "Jest.Stringify behavior.executor": "Run",
-    "Jest.Stringify key value behavior.executor": "Run",
-    "Jest.Stringify undefined top level.executor": "Run",
-    "Jest.Test AnotherModelHolder serialization from string.executor": "Run",
-    "Jest.Test AnotherModelHolder serialization to string.executor": "Run",
-    "Jest.Test Enum serialization from string.executor": "Run",
-    "Jest.Test Enum serialization to string.executor": "Run",
-    "Jest.Test GenericThing serialization from string.executor": "Run",
-    "Jest.Test GenericThing serialization.executor": "Run",
-    "Jest.Test Polymorphic serialization from string.executor": "Run",
-    "Jest.Test Polymorphic serialization to string.executor": "Run",
-    "Jest.Test Tree serialization to string (1).executor": "Run",
-    "Jest.Test Tree serialization to string.executor": "Run",
-    "Jest.Test constructor dynamics.executor": "Run",
-    "Jest.Test enum values.executor": "Run",
-    "Jest.Test fromString.executor": "Debug",
-    "Jest.Test toString (1).executor": "Run",
-    "Kotlin.SerializationTestKt.executor": "Debug",
-    "Kotlin.ServiceModelsInOtherFileKt.executor": "Run",
-    "Kotlin.TestCompKt.executor": "Run",
-    "Kotlin.UnrelatedTestKt.executor": "Run",
-    "RunOnceActivity.OpenProjectViewOnStart": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
-    "WebServerToolWindowFactoryState": "false",
-    "git-widget-placeholder": "main",
-    "ignore.virus.scanning.warn.message": "true",
-    "kotlin-language-version-configured": "true",
-    "last_opened_file_path": "C:/Users/natan/Desktop/RPC4K",
-    "node.js.detected.package.eslint": "true",
-    "node.js.detected.package.standard": "true",
-    "node.js.detected.package.tslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.standard": "",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "nodejs.jest.jest_package": "C:/Users/natan/Desktop/RPC4K/exampleapp/typescript/node_modules/jest",
-    "nodejs_package_manager_path": "npm",
-    "npm.Build Runtime.executor": "Run",
-    "npm.Generate Client .executor": "Run",
-    "npm.Generate Client.executor": "Run",
-    "npm.build (1).executor": "Run",
-    "npm.build.executor": "Run",
-    "npm.build:main (1).executor": "Run",
-    "npm.build:main.executor": "Run",
-    "npm.generateClient.executor": "Run",
-    "npm.pub (1).executor": "Run",
-    "npm.pub.executor": "Run",
-    "npm.pubNoBump (1).executor": "Run",
-    "npm.pubNoBump (2).executor": "Run",
-    "npm.pubNoBump.executor": "Run",
-    "project.structure.last.edited": "Modules",
-    "project.structure.proportion": "0.0",
-    "project.structure.side.proportion": "0.2",
-    "settings.editor.selected.configurable": "preferences.toDoOptions",
-    "ts.external.directory.path": "C:\\Users\\natan\\Desktop\\ts-minimum\\node_modules\\typescript\\lib",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;Gradle.AllEncompassingTest (1).executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.AllEncompassingTest.executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.AllEncompassingTest.testEvents (1).executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.AllEncompassingTest.testEvents.executor&quot;: &quot;Debug&quot;,
+    &quot;Gradle.AllEncompassingTest.testExoticTypes (1).executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.AllEncompassingTest.testExoticTypes.executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.Build kotlin.executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.DirectProcessorTest.Symbol processor success.executor&quot;: &quot;Debug&quot;,
+    &quot;Gradle.Kotlin Tests.executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.KtorServerTest.Basic RPCs work.executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.Test Server.executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.TestServers.allEncompassingService.executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.Upload Rpc4k.executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.kotlin [:plugin:publishPlugins].executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.kotlin [uploadLibrary].executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.kotlin:lib [publishToSonatype].executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.DirectProcessorTest.Symbol processor success.executor&quot;: &quot;Debug&quot;,
+    &quot;Jest.Can decode array of generated class.executor&quot;: &quot;Run&quot;,
+    &quot;Jest.Can decode array of nested generated class.executor&quot;: &quot;Run&quot;,
+    &quot;Jest.Codegened Client works in all cases (1).executor&quot;: &quot;Run&quot;,
+    &quot;Jest.Codegened Client works in all cases.executor&quot;: &quot;Run&quot;,
+    &quot;Jest.Codegened Client works in more cases.executor&quot;: &quot;Run&quot;,
+    &quot;Jest.Codegened Client works.executor&quot;: &quot;Run&quot;,
+    &quot;Jest.Parse behavior.executor&quot;: &quot;Run&quot;,
+    &quot;Jest.Standalone TS Tests.executor&quot;: &quot;Run&quot;,
+    &quot;Jest.Stringify behavior.executor&quot;: &quot;Run&quot;,
+    &quot;Jest.Stringify key value behavior.executor&quot;: &quot;Run&quot;,
+    &quot;Jest.Stringify undefined top level.executor&quot;: &quot;Run&quot;,
+    &quot;Jest.Test AnotherModelHolder serialization from string.executor&quot;: &quot;Run&quot;,
+    &quot;Jest.Test AnotherModelHolder serialization to string.executor&quot;: &quot;Run&quot;,
+    &quot;Jest.Test Enum serialization from string.executor&quot;: &quot;Run&quot;,
+    &quot;Jest.Test Enum serialization to string.executor&quot;: &quot;Run&quot;,
+    &quot;Jest.Test GenericThing serialization from string.executor&quot;: &quot;Run&quot;,
+    &quot;Jest.Test GenericThing serialization.executor&quot;: &quot;Run&quot;,
+    &quot;Jest.Test Polymorphic serialization from string.executor&quot;: &quot;Run&quot;,
+    &quot;Jest.Test Polymorphic serialization to string.executor&quot;: &quot;Run&quot;,
+    &quot;Jest.Test Tree serialization to string (1).executor&quot;: &quot;Run&quot;,
+    &quot;Jest.Test Tree serialization to string.executor&quot;: &quot;Run&quot;,
+    &quot;Jest.Test constructor dynamics.executor&quot;: &quot;Run&quot;,
+    &quot;Jest.Test enum values.executor&quot;: &quot;Run&quot;,
+    &quot;Jest.Test fromString.executor&quot;: &quot;Debug&quot;,
+    &quot;Jest.Test toString (1).executor&quot;: &quot;Run&quot;,
+    &quot;Kotlin.SerializationTestKt.executor&quot;: &quot;Debug&quot;,
+    &quot;Kotlin.ServiceModelsInOtherFileKt.executor&quot;: &quot;Run&quot;,
+    &quot;Kotlin.TestCompKt.executor&quot;: &quot;Run&quot;,
+    &quot;Kotlin.UnrelatedTestKt.executor&quot;: &quot;Run&quot;,
+    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
+    &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
+    &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
+    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/Users/natan/Desktop/RPC4K&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.standard&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.standard&quot;: &quot;&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs.jest.jest_package&quot;: &quot;C:/Users/natan/Desktop/RPC4K/exampleapp/typescript/node_modules/jest&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;npm.Build Runtime.executor&quot;: &quot;Run&quot;,
+    &quot;npm.Generate Client .executor&quot;: &quot;Run&quot;,
+    &quot;npm.Generate Client.executor&quot;: &quot;Run&quot;,
+    &quot;npm.build (1).executor&quot;: &quot;Run&quot;,
+    &quot;npm.build.executor&quot;: &quot;Run&quot;,
+    &quot;npm.build:main (1).executor&quot;: &quot;Run&quot;,
+    &quot;npm.build:main.executor&quot;: &quot;Run&quot;,
+    &quot;npm.generateClient.executor&quot;: &quot;Run&quot;,
+    &quot;npm.pub (1).executor&quot;: &quot;Run&quot;,
+    &quot;npm.pub.executor&quot;: &quot;Run&quot;,
+    &quot;npm.pubNoBump (1).executor&quot;: &quot;Run&quot;,
+    &quot;npm.pubNoBump (2).executor&quot;: &quot;Run&quot;,
+    &quot;npm.pubNoBump.executor&quot;: &quot;Run&quot;,
+    &quot;project.structure.last.edited&quot;: &quot;Modules&quot;,
+    &quot;project.structure.proportion&quot;: &quot;0.0&quot;,
+    &quot;project.structure.side.proportion&quot;: &quot;0.2&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.toDoOptions&quot;,
+    &quot;ts.external.directory.path&quot;: &quot;C:\\Users\\natan\\Desktop\\ts-minimum\\node_modules\\typescript\\lib&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
-}]]></component>
+}</component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="C:\Users\natan\Desktop\RPC4K\kotlin\plugin" />
@@ -351,13 +297,12 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration default="true" type="Remote">
-      <option name="USE_SOCKET_TRANSPORT" value="true" />
-      <option name="SERVER_MODE" value="false" />
-      <option name="SHMEM_ADDRESS" value="javadebug" />
-      <option name="HOST" value="localhost" />
-      <option name="PORT" value="5005" />
-      <option name="AUTO_RESTART" value="false" />
+    <configuration default="true" type="aws.lambda" factoryName="Remote">
+      <option name="credentialProviderId" />
+      <option name="regionId" />
+      <option name="functionName" />
+      <option name="input" />
+      <option name="inputIsFile" value="false" />
       <method v="2" />
     </configuration>
     <configuration name="pub" type="js.build_tools.npm" temporary="true" nameIsGenerated="true">
@@ -537,6 +482,7 @@
       <workItem from="1704706180319" duration="393000" />
       <workItem from="1704706584093" duration="557000" />
       <workItem from="1704729724395" duration="1367000" />
+      <workItem from="1704870196163" duration="115000" />
     </task>
     <servers />
   </component>

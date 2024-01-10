@@ -1,5 +1,5 @@
 
-### Do not allow duplicate type names an a sealed hierarchy
+### Make sure we do not allow duplicate type names an a sealed hierarchy
 So this should not be allowed:
 ```sealed interface Foo {
     Bar {
@@ -14,101 +14,17 @@ Because we have switched to using the simple type name for each subtype, so Foo.
 
 I should support an appropriate conversion for the return type of Flow<T>
 
+## Events - support watched object id
 
-### Think about reworking the generated typescript structure again.
-```kotlin
-sealed interface Foo {
-    
-}
-```
+Watched Object id is a performance precaution to make invoking events faster.
 
-```typescript
-export interface WithOptional {
-    x?: number
-}
+Consider Google had a Google Sheets event called 'sheet_changed'.If for every change in any sheet, all sheets would need to be checked in the event transformer, that would be extremely slow. However, if a singular sheet would receive a unique 'sheet-id', then whenever the sheet changes only subscriptions to the samesheet would be considered and it would be very efficient.
 
-function someApiMethod(param1: WithOptional): Required<WithOptional> {
-    
-}
-```
+We can see, that for any event there should be some way to focus the events onto some specific object.
 
-The best solution may be to expose everything as interfaces again, but have them extend a GeneratedModel interface, and then expose createX functions.
-The main benefit would be that the model file itself would look better. We could then add many methods like .copy() and .extend() without cluttering the file.
-In addition this would avoid issues with branding and such. 
-Every interface will have a private class that is used to implement that interface. 
-We'll also bring back `type` for union types.
-
-```typescript
-class MyGenedClass implements GeneratedModel<MyGenedClass> {
-    _x?: number
-
-    constructor({x}: { x?: number }) {
-        this._x = x
-    }
-
-    get x(): number {
-        GeneratedCodeUtils.checkDefined(this._x, "x", this)
-        return this._x
-    }
-    
-    copy(props: Partial<MyGenedClass>): MyGenedClass {
-        const newObj = new MyGenedClassImpl(props)
-        recordForEach(props, (k,v) => {
-            newObj[[k]] = v
-        })
-        return newObj
-    }
-}
-// The _rpc_name is applied to be used in the rpc implementation
-MyGenedClassImpl.prototype._rpc_name = "com.example.MyGenedClass"
-```
-```typescript
-export function extendModel<T, M extends GeneratedModel<T>, E>(model: M, extension: E): M & E {
-    const copy: M = model.copy({})
-    return Object.assign<T, E>(copy, extension)
-}
-```
-GeneratedModel defined like so:
-
-```typescript
-interface GeneratedModel<T> {
-    //TODO: need to see if i allow the "copy" fields on anything. If so, i shouldn't because it wouldn't work with this. 
-    // Alternatively, make copy be _copy. 
-    copy(props: Partial<Omit<T, "copy">>): T
-}
-```
-/////////////////
+### 
 
 
-### Stop emitting _brand = undefined in runtime. Ith should be a compile-only thing. 
-
-### Support easy construction of nested objects
-consider adding special constructor that make it easier to create nested objects
-instead of:
-AnotherModelHolder (t: new GenericThing({...}) )
- do:
- AnotherModelHolder (t: {...} )
-
-### Split model file into .d.ts and .js 
-Because the .js file would include many implementation details such as assigning values in the constructor, which makes the file much longer. 
-
-
-### Refine PlainObject<>
-We currently use that utility to convert rpc classes into plain objects. We need to think if it's good as-is or maybe it can be improved. 
-
-
-### Add a .extend({} method)
-Some utility like this is useful: 
-```typescript
-extendObject<E>(extension: E): MyModel & E {
-    const copy: MyModel = new MyModel({...this})
-    return Object.assign<T, E>(copy, extension)
-}
-
-```
-
-### Add a .copy({}) method
-obj.copy({x: 2}) to replace x with the value 2
 
 # 2. Low Priority - Do later
 

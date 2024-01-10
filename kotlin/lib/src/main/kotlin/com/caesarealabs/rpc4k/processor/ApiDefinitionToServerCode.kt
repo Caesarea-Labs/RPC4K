@@ -180,7 +180,6 @@ internal object ApiDefinitionToServerCode {
     private const val SubscriptionDataParamName = "subscriptionData"
     private const val EventParamName = "event"
 
-    //TODO: only add handlers for @Event methods
     /**
      * Produces
      * ```
@@ -331,7 +330,7 @@ internal object ApiDefinitionToServerCode {
         for (parameter in dispatchParameters) {
             addParameter(parameter.name, parameter.type.typeName)
         }
-        //TODO: watched object id
+        //NiceToHave: watched object id
         addCode(
             "%T.invokeEvent(%S, listOf(${dispatchParameters.joinToString { it.name }}), null, ${SetupParamName}!!)",
             GeneratedCodeUtils::class,

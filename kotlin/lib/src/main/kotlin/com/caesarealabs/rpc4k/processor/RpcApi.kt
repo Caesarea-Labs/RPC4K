@@ -3,6 +3,7 @@ package com.caesarealabs.rpc4k.processor
 import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy
 import com.squareup.kotlinpoet.TypeName
 import com.caesarealabs.rpc4k.processor.utils.appendIf
+import com.caesarealabs.rpc4k.runtime.api.Dispatch
 import com.caesarealabs.rpc4k.runtime.implementation.*
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.SerialName
@@ -36,9 +37,7 @@ internal data class RpcFunction(override val name: String,  val parameters: List
 @Serializable
 internal data class EventParameter(
     /**
-     * Whether this is new data that is involved whenever the event is invoked
-     *
-     * TODO: expand...
+     * Whether this parameter is annotated with [Dispatch]
      */
     val isDispatch: Boolean,
     val value: RpcParameter

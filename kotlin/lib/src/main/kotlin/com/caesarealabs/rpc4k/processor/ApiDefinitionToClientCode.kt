@@ -50,11 +50,6 @@ internal object ApiDefinitionToClientCode {
     private const val FormatPropertyName = "format"
     private val sendMethod = GeneratedCodeUtils::class.methodName("send")
     private val requestMethod = GeneratedCodeUtils::class.methodName("request")
-
-    //TODO:
-
-
-//    context(JvmContext)
     /**
      * @param userClassIsInterface When we are generating both a client and a server, it's useful to make the generated class
      * extend the user class. We need to know if the user class is an interface or not to properly extend/implement it.

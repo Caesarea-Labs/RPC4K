@@ -19,6 +19,11 @@ public interface EventManager<C: EventConnection> {
      * Returns subscriptions to the given event, watching the given object id
      */
     public suspend fun match(event: String, watchedObjectId: String?): List<EventSubscription<C>>
+
+    /**
+     * Removes all subscriptions of the given connection
+     */
+    public suspend fun dropClient(connection: C)
 }
 
 public data class EventSubscription<C: EventConnection>(val connection: C, val info: EventMessage.Subscribe)
