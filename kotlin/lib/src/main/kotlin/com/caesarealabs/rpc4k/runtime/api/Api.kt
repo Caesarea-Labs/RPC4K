@@ -3,6 +3,22 @@ package com.caesarealabs.rpc4k.runtime.api
 
 /**
  * Generates a class that may be used to access an RPC server.
+ *
+ * Commonly, your @[Api] class will want to accept the generated Invoker as a parameter.
+ * A good way to do it is like so:
+ * ```kotlin
+ * @Api
+ * open class MyService(val invoker: MyServiceEventInvoker = MyServiceEventInvoker(null)) {
+ *  // ...
+ * }
+ * ```
+ * This way, when the service is created as a client a stub invoker will exist but won't be used.
+ * When the service is created as a server explicitly by you,
+ * you should pass the Invoker provided by the lambda in the RpcServerSetup instead,
+ * as that invoker can actually invoke events, and can be used in your service implementation:
+ * ```kotlin
+ * val setup = RpcServerSetup({ MyService(it) }, ...)
+ *```
  */
 @Target(AnnotationTarget.CLASS)
 @Retention(AnnotationRetention.SOURCE)

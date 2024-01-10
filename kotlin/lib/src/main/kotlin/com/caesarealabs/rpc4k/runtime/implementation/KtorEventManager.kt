@@ -7,7 +7,6 @@ import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.ConcurrentLinkedQueue
 
 
-//TODO: setup tests once we complete the ktor impl
 
 
 public class KtorWebsocketEventConnection(private val session: DefaultWebSocketSession): EventConnection {
@@ -23,7 +22,6 @@ internal class KtorEventManager: EventManager<KtorWebsocketEventConnection> {
     private val subscriptions: MutableMap<String, ConcurrentLinkedQueue<KtorSubscription>> = ConcurrentHashMap()
 
     override suspend fun subscribe(subscription: EventMessage.Subscribe, connection: KtorWebsocketEventConnection) {
-        println("Subscribing: ${subscription}")
         subscriptions.concurrentAdd(subscription.event, KtorSubscription(connection, subscription))
     }
 
@@ -34,7 +32,6 @@ internal class KtorEventManager: EventManager<KtorWebsocketEventConnection> {
 
      override suspend fun dropClient(connection: KtorWebsocketEventConnection) {
         for (list in subscriptions.values) {
-            //TODO: test this still works
             list.removeIf { it.connection == connection }
         }
     }

@@ -1,29 +1,44 @@
-@file:Suppress("ArrayInDataClass")
-
 package com.caesarealabs.rpc4k.runtime.api
+
+import com.caesarealabs.rpc4k.runtime.implementation.fastConcat
 
 public sealed interface EventMessage {
     public data class Subscribe(
-        val event: String,
+        public val event: String,
         /**
          * Unique identifier for the exact client function that requested this subscription. The client needs this to know where to route events.
          */
-        val listenerId: String,
+        public val listenerId: String,
         /**
          * The data by which the subscription was made. This information is exposed as parameters in the event transformer.
          */
-        val data: ByteArray,
+        public val data: ByteArray,
         /**
          * @see EventTarget
          */
-        val target: String?) : EventMessage
+        public val target: String?) : EventMessage {
+        override fun equals(other: Any?): Boolean {
+            return other is Subscribe && event == other.event && listenerId == other.listenerId
+                && data.contentEquals(other.data) && target == other.target
+        }
+
+        init {
+            if (target != null) require(target.isNotEmpty()) { "If the target is specified it must not be blank." }
+        }
+
+        override fun hashCode(): Int {
+            var result = event.hashCode()
+            result = 31 * result + listenerId.hashCode()
+            result = 31 * result + data.contentHashCode()
+            result = 31 * result + (target?.hashCode() ?: 0)
+            return result
+        }
+    }
 
     public data class Unsubscribe(val event: String, val listenerId: String) : EventMessage
 
 
     public companion object {
-
-        //TODO: test this together with toByteArray
         internal fun fromByteArray(bytes: ByteArray): EventMessage {
             serverRequirement(bytes.isNotEmpty()) { "Event message is empty" }
             val reader = MessageReader(bytes)
@@ -49,7 +64,13 @@ public sealed interface EventMessage {
     }
 
     public fun toByteArray(): ByteArray {
-        TODO()
+        return when (this) {
+            is Subscribe -> "sub".toByteArray()
+                .fastConcat(Rpc.ColonCode, event.toByteArray(), listenerId.toByteArray(), (target ?: "").toByteArray(), data)
+
+            is Unsubscribe -> "unsub".toByteArray()
+                .fastConcat(Rpc.ColonCode, event.toByteArray(), listenerId.toByteArray())
+        }
     }
 
 }

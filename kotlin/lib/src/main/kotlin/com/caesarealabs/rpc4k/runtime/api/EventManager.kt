@@ -6,7 +6,6 @@ public interface EventConnection {
     public suspend fun send(bytes: ByteArray)
 }
 
-//TODO: I think we should add dropClient to the public API
 public interface EventManager<C: EventConnection> {
     public suspend fun subscribe(subscription: EventMessage.Subscribe, connection: C)
 

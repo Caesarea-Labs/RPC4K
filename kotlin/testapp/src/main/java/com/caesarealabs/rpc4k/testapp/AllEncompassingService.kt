@@ -52,7 +52,6 @@ open class SimpleProtocol {
 
 typealias AliasTest = CreateLobbyResponse
 
-//TODO: document this pattern of assigning the default constructor to the invoker
 @Api(true)
 open class AllEncompassingService(val value: Int = 1, val invoker: AllEncompassingServiceEventInvoker = AllEncompassingServiceEventInvoker(null)) {
     companion object {

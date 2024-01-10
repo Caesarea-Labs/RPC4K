@@ -14,7 +14,7 @@ Because we have switched to using the simple type name for each subtype, so Foo.
 
 I should support an appropriate conversion for the return type of Flow<T>
 
-## Events - support watched object id
+### Events - support watched object id
 
 Watched Object id is a performance precaution to make invoking events faster.
 
@@ -22,7 +22,20 @@ Consider Google had a Google Sheets event called 'sheet_changed'.If for every ch
 
 We can see, that for any event there should be some way to focus the events onto some specific object.
 
-### 
+#### 1. Pass Watched Object Id in typescript client
+
+#### 2. Accept Watched Object Id in Kotlin 
+
+#### 3. Allow marking parameter as watched using @Watched annotation
+
+#### 4. Respect Watched object Id in EventManager implementations
+
+
+
+### Validate Event annotations
+
+1. Verify @Watched is unique, not @Dispatch and exists only on @RpcEvents
+2. 
 
 
 
@@ -285,6 +298,12 @@ serialization with our specific serializer using @Serializable (with = OurSerial
 
 # 4. Nice to have - Will be done much later
 
+### Attempt to simplify  the `RpcServerEngine` interface
+
+That interface is currently very complicated. It may be possible to make it into something much simpler and integrate unique extension methods for every engine so that it remains concise to use them. 
+
+It may best to have utility methods for the common cases, then for each engine to have an extension method that is the entrypoint.
+
 ### Add Reflection helpers for generated classes
 For example, when doing:
 
@@ -481,6 +500,10 @@ generation tasks for each source set separately.
 ### Graph QL-like calls
 It should be possible to expand the protocol to allow complex calls that for example retrieve some object that contains an id,
 then use that id to make another request, without doing any extra round-trips. 
+
+### Allow splitting rpc server definitions across multiple classes/files
+
+@Api classes can get big and unwieldy, it should be possible to split them. 
 
 # 5. Alpha
 

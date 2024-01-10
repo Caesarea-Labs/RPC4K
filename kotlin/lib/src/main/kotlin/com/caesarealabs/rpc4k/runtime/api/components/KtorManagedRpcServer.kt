@@ -13,7 +13,6 @@ import io.ktor.server.routing.*
 import io.ktor.server.websocket.*
 import io.ktor.websocket.*
 
-//TODO: allow splitting rpc server definitions across multiple classes/files
 
 
 

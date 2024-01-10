@@ -15,7 +15,6 @@ public interface GeneratedServerHelper<T, Invoker> {
 
 
 
-//TODO: consider replacing client with something that doesn't require a factory
 /**
  * All generated client classes have a Factory that implement this interface, and that factory of course creates the [Api]
  * with the given format, and RpcClient.

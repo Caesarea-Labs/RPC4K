@@ -1,7 +1,7 @@
 package com.caesarealabs.rpc4k.runtime.api
 
 
-//TODO: document this interface
+// LOWPRIO: try to simplify this
 public sealed interface RpcServerEngine {
     public val eventManager: EventManager<*>
 
@@ -28,11 +28,11 @@ public sealed interface RpcServerEngine {
     }
 }
 
-//TODO: add more documentation here
 /**
- * SECURITY NOTE - the message will be sent to clients. Make sure to not leak sensitive info.
+ * If the condition is not true, the current RPC call will return and error signaling that there is some problem with the input of the client.
+ *
+ * **SECURITY NOTE** - the message will be sent to clients. Make sure to not leak sensitive info.
  * Use this to verify inputs in service methods.
- * If verification failed the correct error will be sent to the client.
  */
 public inline fun serverRequirement(condition: Boolean, message: () -> String) {
     if (!condition) {

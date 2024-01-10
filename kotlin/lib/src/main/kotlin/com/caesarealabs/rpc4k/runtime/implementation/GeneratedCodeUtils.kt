@@ -74,7 +74,7 @@ public object GeneratedCodeUtils {
 
     public suspend fun invokeEvent(event: String, dispatcherData: List<*>, watchedObjectId: String?, setup: AnyRpcServerSetup) {
         for (subscriber in setup.engine.eventManager.match(event, watchedObjectId)) {
-            val transformed = setup.transformEvent(dispatcherData, subscriber.info) ?: TODO("Handle missing route")
+            val transformed = setup.transformEvent(dispatcherData, subscriber.info) ?: error("RPC4k Error: could not find invoked event '${event}'")
             subscriber.connection.send(transformed)
         }
     }

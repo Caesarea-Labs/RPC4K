@@ -43,10 +43,3 @@ internal suspend fun AnyRpcServerSetup.transformEvent(dispatcherData: List<*>, s
     return RpcEventData.Emitted(subscription.event, subscription.listenerId, result).toByteArray()
 }
 
-
-internal suspend fun invoke(event: String, dispatcherData: List<*>, watchedObjectId: String?, setup: AnyRpcServerSetup) {
-    for (subscriber in setup.engine.eventManager.match(event, watchedObjectId)) {
-        val transformed = setup.transformEvent(dispatcherData,subscriber.info) ?: TODO("Handle missing route")
-        subscriber.connection.send(transformed)
-    }
-}
