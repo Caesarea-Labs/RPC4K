@@ -12,7 +12,7 @@ export class FetchRpcClient implements RpcClient {
         this.url = url
     }
 
-    async send(rpc: Rpc, format: SerializationFormat, argSerializers: TsSerializer<any>[]): Promise<Uint8Array> {
+    async send(rpc: Rpc, format: SerializationFormat, argSerializers: TsSerializer<unknown>[]): Promise<Uint8Array> {
         const data = rpc.toByteArray(format, argSerializers);
         let response: Response
         try {
