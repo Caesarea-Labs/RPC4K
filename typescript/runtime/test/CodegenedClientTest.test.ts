@@ -162,3 +162,7 @@ interface Constructable2<T> {
 
 type NullableArgType = GenericThing<(string | null)[] | null, string[] | null, (string | null)[]> | null
 
+//    subscribeToTest(query: string, page: number): Observable<ModelWithType> {
+//         return GeneratedCodeUtils.createObservable(this.client, this.format, "subscribeToTest", [query, page], [StringSerializer, NumberSerializer],
+//             rpc4ts_serializer_ModelWithType())
+//     }

@@ -1,6 +1,7 @@
 import {Json} from "../serialization/json/Json"
+import {EventClient, Observable} from "../RpcClient"
 
-export class WebSocketClient {
+export class WebSocketEventClient implements EventClient {
     private messageListeners: Record<string, (message: string) => void> = {}
     /**
      * A minor array keeping track of function calls that happened before the connection was opened, and are waiting for it be opened.
@@ -48,6 +49,35 @@ export class WebSocketClient {
         }
     }
 
+    async send(message: string): Promise<void> {
+        await this.waitForOpen().catch(e => {
+            console.log(e)
+        })
+        this.socket.send(message)
+    }
+
+    createObservable(subscribeMessage: string, unsubscribeMessage: string, listenerId: string): Observable<string> {
+        let observed = false
+        return new Observable<string>(
+            (callback: (newValue: string) => void) => {
+                // Tell the server to update us about this event
+                void this.sendMessage(subscribeMessage)
+
+                // Register the given callback to be invoked whenever a new event is received
+                this.messageListeners[listenerId] = callback
+                observed = true
+            },
+            () => {
+                if (observed) {
+                    // Clean up callback listener
+                    delete this.messageListeners[listenerId]
+                    // Tell the server to not update us about this event anymore
+                    void this.sendMessage(unsubscribeMessage)
+                }
+            }
+        )
+    }
+
 
     private async sendMessage(message: string): Promise<void> {
         await this.waitForOpen().catch(e => {
@@ -70,53 +100,6 @@ export class WebSocketClient {
         }
 
     }
-
-    listen(event: string, watchedObjectId: string | undefined, args: unknown): Observable<string> {
-        const id = crypto.randomUUID()
-        let observed = false
-        return new Observable<string>(
-            (callback: (newValue: string) => void) => {
-                // Tell the server to update us about this event
-                void this.sendMessage(`sub:${event}:${id}:${watchedObjectId ?? ""}:${JSON.stringify(args)}`)
-
-                // Register the given callback to be invoked whenever a new event is received
-                this.messageListeners[id] = callback
-                observed = true
-            },
-            () => {
-                if (observed) {
-                    // Clean up callback listener
-                    delete this.messageListeners[id]
-                    // Tell the server to not update us about this event anymore
-                    void this.sendMessage(`unsub:${event}:${id}`)
-                }
-            }
-        )
-    }
-
-    json = new Json()
-
-    subscribeToActionHistory(query: string, page: number): Observable<TestEventResponse> {
-        return this.listen("subscribeToActionHistory", undefined, [query, page])
-            .map(value => ({}))
-    }
-}
-
-interface TestEventResponse {
-
 }
 
 
-class Observable<T> {
-    constructor(public observe: (callback: (newValue: T) => void) => void, public close: () => void) {
-    }
-
-    map<R>(transform: (value: T) => R): Observable<R> {
-        const newObserve: (callback: (newValue: R) => void) => void = (callback) => {
-            this.observe(newValue => {
-                callback(transform(newValue))
-            })
-        }
-        return new Observable<R>(newObserve, this.close)
-    }
-}
