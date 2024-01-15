@@ -1,7 +1,9 @@
 import {RpcType, RpcTypeNames} from "rpc4ts-runtime";
 import {tsReferenceToString, TsType, TsTypes} from "./codegen/FormatString"
 
-
+/**
+ * Requires the service name to resolve import paths of API models
+ */
 export function typescriptRpcType(type: RpcType, serviceName: string): TsType {
     // if (type.inlinedType !== undefined) return typescriptRpcType(type.inlinedType)
     // Handle | null adding

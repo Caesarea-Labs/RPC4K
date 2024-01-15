@@ -1,10 +1,11 @@
-import {Observable, RpcClient} from "../RpcClient"
+import {RpcClient} from "../RpcClient"
 import {SerializationFormat} from "../SerializationFormat"
 import {Rpc} from "./Rpc"
 import {TsSerializer} from "../serialization/TsSerializer"
 import dayjs from "dayjs"
 import duration from "dayjs/plugin/duration"
 import {TupleSerializer} from "../serialization/BuiltinSerializers"
+import {Observable} from "../Observable";
 
 dayjs.extend(duration)
 
@@ -31,18 +32,20 @@ export namespace GeneratedCodeUtils {
     }
 
     const textEncoder = new TextEncoder()
+    const textDecoder = new TextDecoder()
 
     export function createObservable<T>(client: RpcClient, format: SerializationFormat, event: string, args: unknown[],
                                         argSerializers: TsSerializer<unknown>[], eventSerializer: TsSerializer<T>,
                                         watchedObjectId?: string): Observable<T> {
-        const listenerId = crypto.randomUUID()
+        const listenerId = client.events.generateUuid()
         const payload = format.encode(new TupleSerializer(argSerializers), args)
         return client.events.createObservable(
             //TODO: this probably breaks in binary formats
-            `sub:${event}:${listenerId}:${watchedObjectId ?? ""}:${payload}`,
+            // This byte -> string conversion is prob inefficient
+            `sub:${event}:${listenerId}:${watchedObjectId ?? ""}:${textDecoder.decode(payload)}`,
             `unsub:${event}:${listenerId}`,
             listenerId
-            //TODO: this string -> bytes conversion is prob inefficient
+            //TODO: this string -> bytes conversion is also inefficient
         ).map((value) => format.decode(eventSerializer, textEncoder.encode(value)))
     }
 

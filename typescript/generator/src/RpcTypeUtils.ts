@@ -36,7 +36,6 @@ export namespace RpcTypeNames {
     export const Time = "date"
     export const Str = "string"
 }
-export const RpcTypeDiscriminator = "type"
 export namespace RpcTypes {
     export const Void: RpcType = createRpcType({name: RpcTypeNames.Void})
     export const Str: RpcType = createRpcType({name: RpcTypeNames.Str})

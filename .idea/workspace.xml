@@ -4,7 +4,42 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="9ca8770c-8d9e-44a0-b1e9-2417666ce2c1" name="Changes" comment="" />
+    <list default="true" id="9ca8770c-8d9e-44a0-b1e9-2417666ce2c1" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/typescript/runtime/src/Observable.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/typescript/runtime/src/components/BrowserWebsocket.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/typescript/runtime/src/components/GenericWebsocket.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/typescript/runtime/src/components/NodejsWebsocket.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/typescript/runtime/src/impl/RpcTypeDiscriminator.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/runConfigurations/Test_Server.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/TODO.md" beforeDir="false" afterPath="$PROJECT_DIR$/TODO.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/kotlin/lib/src/main/kotlin/com/caesarealabs/rpc4k/runtime/api/EventManager.kt" beforeDir="false" afterPath="$PROJECT_DIR$/kotlin/lib/src/main/kotlin/com/caesarealabs/rpc4k/runtime/api/EventManager.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/kotlin/lib/src/main/kotlin/com/caesarealabs/rpc4k/runtime/api/EventMessage.kt" beforeDir="false" afterPath="$PROJECT_DIR$/kotlin/lib/src/main/kotlin/com/caesarealabs/rpc4k/runtime/api/EventMessage.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/kotlin/lib/src/main/kotlin/com/caesarealabs/rpc4k/runtime/implementation/GeneratedCodeUtils.kt" beforeDir="false" afterPath="$PROJECT_DIR$/kotlin/lib/src/main/kotlin/com/caesarealabs/rpc4k/runtime/implementation/GeneratedCodeUtils.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/kotlin/testapp/src/main/java/com/caesarealabs/rpc4k/testapp/AllEncompassingService.kt" beforeDir="false" afterPath="$PROJECT_DIR$/kotlin/testapp/src/main/java/com/caesarealabs/rpc4k/testapp/AllEncompassingService.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/typescript/generator/src/ApiDefinitionsDefaults.ts" beforeDir="false" afterPath="$PROJECT_DIR$/typescript/generator/src/ApiDefinitionsDefaults.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/typescript/generator/src/ClientAccessorGenerator.ts" beforeDir="false" afterPath="$PROJECT_DIR$/typescript/generator/src/ClientAccessorGenerator.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/typescript/generator/src/ClientGenerator.ts" beforeDir="false" afterPath="$PROJECT_DIR$/typescript/generator/src/ClientGenerator.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/typescript/generator/src/Rpc4tsType.ts" beforeDir="false" afterPath="$PROJECT_DIR$/typescript/generator/src/Rpc4tsType.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/typescript/generator/test/codegen.test.ts" beforeDir="false" afterPath="$PROJECT_DIR$/typescript/generator/test/codegen.test.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/typescript/runtime/index.ts" beforeDir="false" afterPath="$PROJECT_DIR$/typescript/runtime/index.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/typescript/runtime/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/typescript/runtime/package-lock.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/typescript/runtime/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/typescript/runtime/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/typescript/runtime/src/RpcClient.ts" beforeDir="false" afterPath="$PROJECT_DIR$/typescript/runtime/src/RpcClient.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/typescript/runtime/src/components/FetchRpcClient.ts" beforeDir="false" afterPath="$PROJECT_DIR$/typescript/runtime/src/components/FetchRpcClient.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/typescript/runtime/src/components/WebsocketEventClient.ts" beforeDir="false" afterPath="$PROJECT_DIR$/typescript/runtime/src/components/WebsocketEventClient.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/typescript/runtime/src/impl/ApiDefinition.ts" beforeDir="false" afterPath="$PROJECT_DIR$/typescript/generator/src/ApiDefinition.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/typescript/runtime/src/impl/GeneratedCodeUtils.ts" beforeDir="false" afterPath="$PROJECT_DIR$/typescript/runtime/src/impl/GeneratedCodeUtils.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/typescript/runtime/src/impl/ModelName.ts" beforeDir="false" afterPath="$PROJECT_DIR$/typescript/generator/src/ModelName.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/typescript/runtime/src/impl/Rpc4aTypeAdapter.ts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/typescript/runtime/src/impl/RpcTypeUtils.ts" beforeDir="false" afterPath="$PROJECT_DIR$/typescript/generator/src/RpcTypeUtils.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/typescript/runtime/src/impl/Util.ts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/typescript/runtime/src/serialization/GeneratedSerializer.ts" beforeDir="false" afterPath="$PROJECT_DIR$/typescript/runtime/src/serialization/GeneratedSerializer.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/typescript/runtime/src/serialization/internal/AbstractPolymorphicSerializer.ts" beforeDir="false" afterPath="$PROJECT_DIR$/typescript/runtime/src/serialization/internal/AbstractPolymorphicSerializer.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/typescript/runtime/test/CodegenedClientTest.test.ts" beforeDir="false" afterPath="$PROJECT_DIR$/typescript/runtime/test/CodegenedClientTest.test.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/typescript/runtime/test/serialization/StringToJsonTest.test.ts" beforeDir="false" afterPath="$PROJECT_DIR$/typescript/runtime/test/serialization/StringToJsonTest.test.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/typescript/runtime/test/serialization/TestModels.ts" beforeDir="false" afterPath="$PROJECT_DIR$/typescript/runtime/test/serialization/TestModels.ts" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -136,6 +171,7 @@
     &quot;Gradle.Kotlin Tests.executor&quot;: &quot;Run&quot;,
     &quot;Gradle.KtorServerTest.Basic RPCs work.executor&quot;: &quot;Run&quot;,
     &quot;Gradle.Test Server.executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.TestServers.allEncompassingService (1).executor&quot;: &quot;Run&quot;,
     &quot;Gradle.TestServers.allEncompassingService.executor&quot;: &quot;Run&quot;,
     &quot;Gradle.Upload Rpc4k.executor&quot;: &quot;Run&quot;,
     &quot;Gradle.kotlin [:plugin:publishPlugins].executor&quot;: &quot;Run&quot;,
@@ -148,6 +184,7 @@
     &quot;Jest.Codegened Client works in all cases.executor&quot;: &quot;Run&quot;,
     &quot;Jest.Codegened Client works in more cases.executor&quot;: &quot;Run&quot;,
     &quot;Jest.Codegened Client works.executor&quot;: &quot;Run&quot;,
+    &quot;Jest.Complex events.executor&quot;: &quot;Run&quot;,
     &quot;Jest.Parse behavior.executor&quot;: &quot;Run&quot;,
     &quot;Jest.Standalone TS Tests.executor&quot;: &quot;Run&quot;,
     &quot;Jest.Stringify behavior.executor&quot;: &quot;Run&quot;,
@@ -163,8 +200,10 @@
     &quot;Jest.Test Polymorphic serialization to string.executor&quot;: &quot;Run&quot;,
     &quot;Jest.Test Tree serialization to string (1).executor&quot;: &quot;Run&quot;,
     &quot;Jest.Test Tree serialization to string.executor&quot;: &quot;Run&quot;,
+    &quot;Jest.Test codegen.executor&quot;: &quot;Run&quot;,
     &quot;Jest.Test constructor dynamics.executor&quot;: &quot;Run&quot;,
     &quot;Jest.Test enum values.executor&quot;: &quot;Run&quot;,
+    &quot;Jest.Test events.executor&quot;: &quot;Run&quot;,
     &quot;Jest.Test fromString.executor&quot;: &quot;Debug&quot;,
     &quot;Jest.Test toString (1).executor&quot;: &quot;Run&quot;,
     &quot;Kotlin.SerializationTestKt.executor&quot;: &quot;Debug&quot;,
@@ -178,14 +217,14 @@
     &quot;git-widget-placeholder&quot;: &quot;main&quot;,
     &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
     &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
-    &quot;last_opened_file_path&quot;: &quot;C:/Users/natan/Desktop/RPC4K&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/Users/natan/Desktop/RPC4K/typescript/runtime/src/impl&quot;,
     &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
     &quot;node.js.detected.package.standard&quot;: &quot;true&quot;,
     &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
     &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
     &quot;node.js.selected.package.standard&quot;: &quot;&quot;,
     &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
-    &quot;nodejs.jest.jest_package&quot;: &quot;C:/Users/natan/Desktop/RPC4K/exampleapp/typescript/node_modules/jest&quot;,
+    &quot;nodejs.jest.jest_package&quot;: &quot;C:/Users/natan/Desktop/RPC4K/typescript/generator/node_modules/jest&quot;,
     &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
     &quot;npm.Build Runtime.executor&quot;: &quot;Run&quot;,
     &quot;npm.Generate Client .executor&quot;: &quot;Run&quot;,
@@ -210,20 +249,21 @@
 }</component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\Users\natan\Desktop\RPC4K\typescript\runtime\src\impl" />
       <recent name="C:\Users\natan\Desktop\RPC4K\kotlin\plugin" />
       <recent name="C:\Users\natan\Desktop\RPC4K\exampleapp\kotlin" />
       <recent name="C:\Users\natan\Desktop\RPC4K\typescript\runtime\test\serialization" />
       <recent name="C:\Users\natan\Desktop\RPC4K\typescript\runtime\src" />
-      <recent name="C:\Users\natan\Desktop\RPC4K\kotlin\testerrors" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\natan\Desktop\RPC4K\typescript\generator\src" />
       <recent name="C:\Users\natan\Desktop\RPC4K\kotlin\testapp\src\main\java\com\clabs\rpc4k\testapp" />
       <recent name="C:\Users\natan\Desktop\RPC4K\typescript\generator\src\code" />
       <recent name="C:\Users\natan\Desktop\RPC4K\typescript\runtime\src\serialization\modules" />
       <recent name="C:\Users\natan\Desktop\RPC4K\typescript\runtime\src\serialization" />
-      <recent name="C:\Users\natan\Desktop\RPC4K\typescript\runtime\src\serialization\json\internal" />
     </key>
     <key name="es6.move.members.recent.items">
+      <recent name="C:\Users\natan\Desktop\RPC4K\typescript\runtime\src\Observable.ts" />
       <recent name="C:\Users\natan\Desktop\RPC4K\typescript\runtime\src\serialization\BuiltinSerializers.ts" />
       <recent name="C:\Users\natan\Desktop\RPC4K\typescript\runtime\src\serialization\builtins\PrimitiveSerialDescriptor.ts" />
       <recent name="C:\Users\natan\Desktop\RPC4K\typescript\runtime\src\serialization\core\encoding\CompositeEncoder.ts" />
@@ -232,31 +272,7 @@
       <recent name="com.caesarealabs.rpc4k.test" />
     </key>
   </component>
-  <component name="RunManager" selected="Gradle.Kotlin Tests">
-    <configuration name="AllEncompassingTest.testEvents (1)" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
-      <ExternalSystemSettings>
-        <option name="executionName" />
-        <option name="externalProjectPath" value="$PROJECT_DIR$/kotlin" />
-        <option name="externalSystemIdString" value="GRADLE" />
-        <option name="scriptParameters" value="" />
-        <option name="taskDescriptions">
-          <list />
-        </option>
-        <option name="taskNames">
-          <list>
-            <option value=":testapp:test" />
-            <option value="--tests" />
-            <option value="&quot;com.caesarealabs.rpc4k.test.AllEncompassingTest.testEvents&quot;" />
-          </list>
-        </option>
-        <option name="vmOptions" />
-      </ExternalSystemSettings>
-      <ExternalSystemDebugServerProcess>false</ExternalSystemDebugServerProcess>
-      <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
-      <DebugAllEnabled>false</DebugAllEnabled>
-      <RunAsTest>true</RunAsTest>
-      <method v="2" />
-    </configuration>
+  <component name="RunManager" selected="Jest.Standalone TS Tests">
     <configuration name="KtorServerTest.Basic RPCs work" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
       <ExternalSystemSettings>
         <option name="executionName" />
@@ -281,69 +297,84 @@
       <RunAsTest>true</RunAsTest>
       <method v="2" />
     </configuration>
-    <configuration name="DirectProcessorTest.Symbol processor success" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
-      <module name="RPC4K.lib.test" />
-      <extension name="coverage">
-        <pattern>
-          <option name="PATTERN" value="com.caesarealabs.rpc4k.test.*" />
-          <option name="ENABLED" value="true" />
-        </pattern>
-      </extension>
-      <option name="PACKAGE_NAME" value="com.caesarealabs.rpc4k.test" />
-      <option name="MAIN_CLASS_NAME" value="com.caesarealabs.rpc4k.test.DirectProcessorTest" />
-      <option name="METHOD_NAME" value="Symbol processor success" />
-      <option name="TEST_OBJECT" value="method" />
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
-    <configuration default="true" type="aws.lambda" factoryName="Remote">
-      <option name="credentialProviderId" />
-      <option name="regionId" />
-      <option name="functionName" />
-      <option name="input" />
-      <option name="inputIsFile" value="false" />
+    <configuration name="TestServers.allEncompassingService (1)" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
+      <ExternalSystemSettings>
+        <option name="executionName" />
+        <option name="externalProjectPath" value="$PROJECT_DIR$/kotlin" />
+        <option name="externalSystemIdString" value="GRADLE" />
+        <option name="scriptParameters" value="" />
+        <option name="taskDescriptions">
+          <list />
+        </option>
+        <option name="taskNames">
+          <list>
+            <option value=":testapp:test" />
+            <option value="--tests" />
+            <option value="&quot;com.caesarealabs.rpc4k.testserver.TestServers.allEncompassingService&quot;" />
+          </list>
+        </option>
+        <option name="vmOptions" />
+      </ExternalSystemSettings>
+      <ExternalSystemDebugServerProcess>false</ExternalSystemDebugServerProcess>
+      <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
+      <DebugAllEnabled>false</DebugAllEnabled>
+      <RunAsTest>true</RunAsTest>
       <method v="2" />
     </configuration>
-    <configuration name="pub" type="js.build_tools.npm" temporary="true" nameIsGenerated="true">
-      <package-json value="$PROJECT_DIR$/typescript/runtime/package.json" />
-      <command value="run" />
-      <scripts>
-        <script value="pub" />
-      </scripts>
+    <configuration name="Complex events" type="JavaScriptTestRunnerJest" temporary="true" nameIsGenerated="true">
       <node-interpreter value="project" />
+      <jest-package value="$PROJECT_DIR$/typescript/runtime/node_modules/jest" />
+      <working-dir value="$PROJECT_DIR$/typescript/runtime" />
       <envs />
+      <scope-kind value="TEST" />
+      <test-file value="$PROJECT_DIR$/typescript/runtime/test/CodegenedClientTest.test.ts" />
+      <test-names>
+        <test-name value="Complex events" />
+      </test-names>
       <method v="2" />
     </configuration>
-    <configuration name="pubNoBump" type="js.build_tools.npm" temporary="true" nameIsGenerated="true">
-      <package-json value="$PROJECT_DIR$/typescript/runtime/package.json" />
-      <command value="run" />
-      <scripts>
-        <script value="pubNoBump" />
-      </scripts>
+    <configuration name="Test codegen" type="JavaScriptTestRunnerJest" temporary="true" nameIsGenerated="true">
       <node-interpreter value="project" />
+      <jest-package value="$PROJECT_DIR$/typescript/generator/node_modules/jest" />
+      <working-dir value="$PROJECT_DIR$/typescript/generator" />
       <envs />
+      <scope-kind value="TEST" />
+      <test-file value="$PROJECT_DIR$/typescript/generator/test/codegen.test.ts" />
+      <test-names>
+        <test-name value="Test codegen" />
+      </test-names>
+      <method v="2" />
+    </configuration>
+    <configuration name="Test events" type="JavaScriptTestRunnerJest" temporary="true" nameIsGenerated="true">
+      <node-interpreter value="project" />
+      <jest-package value="$PROJECT_DIR$/typescript/runtime/node_modules/jest" />
+      <working-dir value="$PROJECT_DIR$/typescript/runtime" />
+      <envs />
+      <scope-kind value="TEST" />
+      <test-file value="$PROJECT_DIR$/typescript/runtime/test/CodegenedClientTest.test.ts" />
+      <test-names>
+        <test-name value="Test events" />
+      </test-names>
       <method v="2" />
     </configuration>
     <list>
       <item itemvalue="Gradle.Kotlin Tests" />
-      <item itemvalue="Gradle.Test Server" />
-      <item itemvalue="Gradle.AllEncompassingTest.testEvents (1)" />
+      <item itemvalue="Gradle.TestServers.allEncompassingService (1)" />
       <item itemvalue="Gradle.KtorServerTest.Basic RPCs work" />
       <item itemvalue="Jest.Standalone TS Tests" />
-      <item itemvalue="JUnit.DirectProcessorTest.Symbol processor success" />
+      <item itemvalue="Jest.Complex events" />
+      <item itemvalue="Jest.Test codegen" />
+      <item itemvalue="Jest.Test events" />
       <item itemvalue="npm.Build Runtime" />
       <item itemvalue="npm.Generate Client " />
-      <item itemvalue="npm.pubNoBump" />
-      <item itemvalue="npm.pub" />
     </list>
     <recent_temporary>
       <list>
+        <item itemvalue="Gradle.TestServers.allEncompassingService (1)" />
+        <item itemvalue="Jest.Test codegen" />
+        <item itemvalue="Jest.Complex events" />
+        <item itemvalue="Jest.Test events" />
         <item itemvalue="Gradle.KtorServerTest.Basic RPCs work" />
-        <item itemvalue="Gradle.AllEncompassingTest.testEvents (1)" />
-        <item itemvalue="JUnit.DirectProcessorTest.Symbol processor success" />
-        <item itemvalue="npm.pubNoBump" />
-        <item itemvalue="npm.pub" />
       </list>
     </recent_temporary>
   </component>
@@ -483,6 +514,13 @@
       <workItem from="1704706584093" duration="557000" />
       <workItem from="1704729724395" duration="1367000" />
       <workItem from="1704870196163" duration="115000" />
+      <workItem from="1704995588562" duration="1686000" />
+      <workItem from="1705154907349" duration="1162000" />
+      <workItem from="1705179815517" duration="2490000" />
+      <workItem from="1705183030687" duration="723000" />
+      <workItem from="1705184009674" duration="103000" />
+      <workItem from="1705215257573" duration="1996000" />
+      <workItem from="1705224699712" duration="1482000" />
     </task>
     <servers />
   </component>
@@ -498,9 +536,28 @@
           <option name="timeStamp" value="29" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="kotlin-line">
-          <url>file://$PROJECT_DIR$/kotlin/lib/src/main/kotlin/com/caesarealabs/rpc4k/runtime/implementation/KtorEventManager.kt</url>
-          <line>42</line>
+          <url>file://$PROJECT_DIR$/kotlin/lib/src/main/kotlin/com/caesarealabs/rpc4k/runtime/implementation/GeneratedCodeUtils.kt</url>
+          <line>83</line>
+          <option name="timeStamp" value="32" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="kotlin-line">
+          <url>file://$PROJECT_DIR$/kotlin/lib/src/main/kotlin/com/caesarealabs/rpc4k/runtime/api/components/KtorManagedRpcServer.kt</url>
+          <line>47</line>
+          <option name="timeStamp" value="36" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="kotlin-line">
+          <url>file://$PROJECT_DIR$/kotlin/lib/src/main/kotlin/com/caesarealabs/rpc4k/runtime/api/RpcServerSetup.kt</url>
+          <line>65</line>
           <option name="timeStamp" value="37" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="javascript">
+          <url>file://$PROJECT_DIR$/typescript/generator/src/ClientAccessorGenerator.ts</url>
+          <option name="timeStamp" value="30" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="javascript">
+          <url>file://$PROJECT_DIR$/typescript/runtime/src/components/NodejsWebsocket.ts</url>
+          <line>24</line>
+          <option name="timeStamp" value="35" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>

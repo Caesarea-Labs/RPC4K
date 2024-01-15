@@ -15,14 +15,14 @@ export class AnotherModelHolder<T> {
         this.t = t;
     }
 
-    private _rpc_name = "AnotherModelHolder"
 }
 
 export namespace Rpc4tsSerializers {
     export function testUnion<T>(argSerializer: TsSerializer<T>): TsSerializer<TestUnion<T>> {
         return new UnionSerializer<TestUnion<T>>("TestUnion",  "TestUnion",
             ["AnotherModelHolder",  "GenericThing"],
-            [anotherModelHolder(StringSerializer), genericThing(argSerializer, NumberSerializer)]
+            [anotherModelHolder(StringSerializer), genericThing(argSerializer, NumberSerializer)],
+            {"AnotherModelHolder": "AnotherModelHolder", "GenericThing" :"GenericThing"}
         )
     }
 
@@ -34,8 +34,7 @@ export namespace Rpc4tsSerializers {
         return new GeneratedSerializerImpl<AnotherModelHolder<T>>(
             "AnotherModelHolder",
             {t: genericThing(typeArgument1, StringSerializer)},
-            [typeArgument1],
-            (params) => new AnotherModelHolder(params)
+            [typeArgument1]
         )
     }
 
@@ -44,7 +43,6 @@ export namespace Rpc4tsSerializers {
             "GenericThing",
             {x: typeArgument1, w: new ArraySerializer(typeArgument2), a: StringSerializer},
             [typeArgument1],
-            (params) => new GenericThing(params)
         )
     }
 
@@ -53,7 +51,6 @@ export namespace Rpc4tsSerializers {
             "Foo",
             {x: NumberSerializer, y: StringSerializer, z: BooleanSerializer},
             [],
-            (params) => new Foo(params)
         )
     }
 
@@ -65,7 +62,6 @@ export namespace Rpc4tsSerializers {
                 children: () => new ArraySerializer(rpc4ts_serializer_Tree(typeArg0))
             },
             [typeArg0],
-            params => params
         )
     }
 }
@@ -85,7 +81,6 @@ export class GenericThing<T1, T2> {
         this.w = w
         this.a = a
     }
-    private _rpc_name = "AnotherModelHolder"
 }
 
 

@@ -14,23 +14,20 @@ import {PolymorphicClassOption4} from "./generated/rpc4ts_AllEncompassingService
 import JestMatchers = jest.JestMatchers;
 import {RpcResponseError} from "../src/RpcClientError";
 import duration from "dayjs/plugin/duration";
+import {NodejsWebsocket} from "../src/components/NodejsWebsocket"
+import {GeneratedCodeUtils} from "../src/impl/GeneratedCodeUtils"
+import {StringSerializer} from "../src/serialization/BuiltinSerializers"
+import {Observable} from "../src/Observable";
 
-// test("Test constructor dynamics", () => {
-//     const x: CreateLobbyResponse = ({})
-//     console.log(`X instance: ${x instanceof CreateLobbyResponse}`)
-//     const y: CreateLobbyResponse = {id: 2}
-//     console.log(`Y instance: ${y instanceof CreateLobbyResponse}`)
-// })
 
 test("Codegened Client works", async () => {
-
-    const client = new AllEncompassingServiceApi(new FetchRpcClient("http://localhost:8080"), JsonFormat)
+    const client = new AllEncompassingServiceApi(new FetchRpcClient("http://localhost:8080", new NodejsWebsocket("http://localhost:8080/events")), JsonFormat)
     const res = await client.createLobby(({num: 2}), "asdf")
     expect(res).toEqual(({id: 6}))
 })
 
 test("Codegened Client works in more cases", async () => {
-    const client = new AllEncompassingServiceApi(new FetchRpcClient("http://localhost:8080"), JsonFormat)
+    const client = new AllEncompassingServiceApi(new FetchRpcClient("http://localhost:8080", new NodejsWebsocket("http://localhost:8080/events")), JsonFormat)
     const res = await client.test([1, 2])
     expect(res).toEqual([[1, 2, "3"], 4])
 })
@@ -39,8 +36,53 @@ test("Test enum values", () => {
     expect(EnumArgsValues).toEqual(["Option1", "Option5"])
 })
 
+//TODO: add a more complex event test with complex models
+
+test("Test events", async () => {
+    const fetch = new FetchRpcClient("http://localhost:8080", new NodejsWebsocket("http://localhost:8080/events"))
+    const format = JsonFormat
+    const client = new AllEncompassingServiceApi(fetch,format)
+
+    let actualMessage: string | null = null
+    client.eventTest("test").observe(value => {
+        actualMessage = value
+    })
+    await wait(1000)
+
+    await client.tinkerWithEvents()
+
+    await wait(1000)
+
+    expect(actualMessage).toEqual("test5")
+})
+
+test("Complex events", async () => {
+    const fetch = new FetchRpcClient("http://localhost:8080", new NodejsWebsocket("http://localhost:8080/events"))
+    const format = JsonFormat
+    const client = new AllEncompassingServiceApi(fetch,format)
+
+    let actualMessage: TypeField | null = null
+    client.complexEventTest(["foo", {type: "23", other: 4}],{type: "414"}).observe(value => {
+        actualMessage = value
+    })
+    await wait(1000)
+
+    await client.invokeComplexEventTest()
+
+    await wait(1000)
+
+    expect(actualMessage).toEqual({type: "414"})
+})
+
+
+function wait(delay: number): Promise<void> {
+    return new Promise(exec => {
+        setTimeout(exec, delay)
+    })
+}
+
 test("Codegened Client works in all cases", async () => {
-    const client = new AllEncompassingServiceApi(new FetchRpcClient("http://localhost:8080"), JsonFormat)
+    const client = new AllEncompassingServiceApi(new FetchRpcClient("http://localhost:8080", new NodejsWebsocket("http://localhost:8080/events") ), JsonFormat)
     const res = await client.test([1, 2])
     expect(res).toEqual([[1, 2, "3"], 4])
 
@@ -162,7 +204,3 @@ interface Constructable2<T> {
 
 type NullableArgType = GenericThing<(string | null)[] | null, string[] | null, (string | null)[]> | null
 
-//    subscribeToTest(query: string, page: number): Observable<ModelWithType> {
-//         return GeneratedCodeUtils.createObservable(this.client, this.format, "subscribeToTest", [query, page], [StringSerializer, NumberSerializer],
-//             rpc4ts_serializer_ModelWithType())
-//     }

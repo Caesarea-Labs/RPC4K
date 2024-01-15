@@ -4,7 +4,7 @@ import {CompositeDecoder, Decoder, DECODER_DECODE_DONE} from "../core/encoding/D
 import {Encoder} from "../core/encoding/Encoder";
 import {TsClass} from "../polyfills/TsClass";
 import {SerializationException} from "../core/SerializationException";
-import {RpcTypeDiscriminator} from "../../impl/RpcTypeUtils";
+import {RpcTypeDiscriminator} from "../../impl/RpcTypeDiscriminator";
 
 /**
  * Base class for providing multiplatform polymorphic serialization.

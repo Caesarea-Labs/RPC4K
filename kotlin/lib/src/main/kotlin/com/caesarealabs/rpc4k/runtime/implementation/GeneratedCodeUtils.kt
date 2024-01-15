@@ -8,11 +8,16 @@ import kotlinx.serialization.*
  * These functions are used by generated code and code that interacts with them
  */
 public object GeneratedCodeUtils {
-    @PublishedApi internal const val FactoryName: String = "Factory"
-    @PublishedApi internal const val ClientSuffix: String = "ClientImpl"
-    @PublishedApi internal const val ServerSuffix: String = "ServerImpl"
-    @PublishedApi internal const val Group: String = "com.caesarealabs"
-    @PublishedApi internal const val Package: String = "${Group}.rpc4k.generated"
+    @PublishedApi
+    internal const val FactoryName: String = "Factory"
+    @PublishedApi
+    internal const val ClientSuffix: String = "ClientImpl"
+    @PublishedApi
+    internal const val ServerSuffix: String = "ServerImpl"
+    @PublishedApi
+    internal const val Group: String = "com.caesarealabs"
+    @PublishedApi
+    internal const val Package: String = "${Group}.rpc4k.generated"
 
 
     /**
@@ -34,8 +39,10 @@ public object GeneratedCodeUtils {
     /**
      * Sends a value, not caring about the result
      */
-    public suspend fun send(client: RpcClient, format: SerializationFormat, methodName: String, args: List<Any?>,
-                            argSerializers: List<KSerializer<*>>) {
+    public suspend fun send(
+        client: RpcClient, format: SerializationFormat, methodName: String, args: List<Any?>,
+        argSerializers: List<KSerializer<*>>
+    ) {
         val rpc = Rpc(methodName, args)
         client.send(rpc, format, argSerializers)
     }

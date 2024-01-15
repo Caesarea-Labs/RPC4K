@@ -1,16 +1,10 @@
 import {Json} from "../../src/serialization/json/Json";
 import {NumberSerializer, StringSerializer} from "../../src/serialization/BuiltinSerializers";
-import {JsonConfiguration} from "../../src/serialization/json/JsonConfiguration";
-import {
-    AnotherModelHolder,
-    Foo,
-    GenericThing,
-    Rpc4tsSerializers, TestEnum, TestUnion, Tree
-} from "./TestModels";
+import {Rpc4tsSerializers, TestEnum, TestUnion, Tree} from "./TestModels";
 
 test("Test fromString", () => {
     const string = `{"x":1,"y":"hello","z":false}`
-    const obj = ({x:1,y: "hello",z: false})
+    const obj = ({x: 1, y: "hello", z: false})
     const json = new Json()
 
     const res = json.decodeFromString(Rpc4tsSerializers.foo(), string)
@@ -35,13 +29,13 @@ test("Test AnotherModelHolder serialization from string", () => {
     const string = `{"t":{"x":1,"w":["Asdf"],"a":"3"}}`
     const obj = ({t: ({x: 1, w: ["Asdf"], a: "3"})})
     const json = new Json()
-    const res = json.decodeFromString( Rpc4tsSerializers.anotherModelHolder(NumberSerializer), string)
+    const res = json.decodeFromString(Rpc4tsSerializers.anotherModelHolder(NumberSerializer), string)
     expect(res).toEqual(obj)
 })
 
 test("Test Tree serialization from string", () => {
     const string = `{"item":"test","children":[{"item":"foo","children":[{"item":"Bar","children":[]}]},{"item":"Biz","children":[]}]}`
-    const obj: Tree<string> =  {
+    const obj: Tree<string> = {
         item: "test",
         children: [
             {
@@ -66,7 +60,7 @@ test("Test Tree serialization from string", () => {
 
 
 test("Test Enum serialization from string", () => {
-    const string =  `"a"`
+    const string = `"a"`
     const enumValue: TestEnum = "a"
     const json = new Json()
     const res = json.decodeFromString(Rpc4tsSerializers.testEnum(), string)
@@ -78,10 +72,10 @@ test("Test Polymorphic serialization from string", () => {
         t: ({
             x: "Sdf",
             w: ["123"],
-            a :"we"
+            a: "we"
         })
     })
-    const string =  `{"type":"AnotherModelHolder","t":{"x":"Sdf","w":["123"],"a":"we"}}`
+    const string = `{"type":"AnotherModelHolder","t":{"x":"Sdf","w":["123"],"a":"we"}}`
     const json = new Json()
     const res = json.decodeFromString(Rpc4tsSerializers.testUnion(StringSerializer), string)
     expect(res).toEqual(obj)

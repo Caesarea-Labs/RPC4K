@@ -2,6 +2,7 @@ export interface ApiDefinition {
     name: string;
     methods: RpcDefinition[];
     models: RpcModel[];
+    events: RpcEventEndpoint[]
 }
 
 export interface RpcDefinition {
@@ -9,6 +10,18 @@ export interface RpcDefinition {
     parameters: RpcParameter[];
     returnType: RpcType;
 }
+
+export interface RpcEventEndpoint {
+    name: string
+    parameters: EventParameter[]
+    returnType: RpcType
+}
+
+export interface EventParameter {
+    isDispatch: boolean
+    value: RpcParameter
+}
+
 
 export type RpcModel = RpcEnumModel | RpcStructModel | RpcUnionModel | RpcInlineModel
 

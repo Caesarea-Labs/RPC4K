@@ -1,4 +1,5 @@
-import {ApiDefinition, createRpcType, RpcDefinition, RpcModel, RpcModelKind} from "rpc4ts-runtime";
+import {ApiDefinition, RpcDefinition, RpcEventEndpoint, RpcModel, RpcModelKind} from "./ApiDefinition";
+import {createRpcType} from "./RpcTypeUtils";
 
 
 export function fillDefaultApiDefinitionValues(partialDefinition: ApiDefinition): ApiDefinition {
@@ -6,7 +7,8 @@ export function fillDefaultApiDefinitionValues(partialDefinition: ApiDefinition)
     return {
         name: partialDefinition.name,
         models: partialDefinition.models.map(model => fillDefaultModelValues(model)),
-        methods: partialDefinition.methods.map(method => fillDefaultMethodValues(method))
+        methods: partialDefinition.methods.map(method => fillDefaultMethodValues(method)),
+        events: partialDefinition.events.map(event => fillDefaultEventValues(event))
     }
 }
 
@@ -52,6 +54,15 @@ export function fillDefaultMethodValues(partialMethod: RpcDefinition): RpcDefini
     return {
         name: partialMethod.name,
         parameters: partialMethod.parameters.map(param => ({name: param.name, type: createRpcType(param.type)})),
+        returnType: createRpcType(partialMethod.returnType)
+    }
+}
+
+
+export function fillDefaultEventValues(partialMethod: RpcEventEndpoint): RpcEventEndpoint {
+    return {
+        name: partialMethod.name,
+        parameters: partialMethod.parameters.map(param => ({isDispatch: param.isDispatch, value: ({name: param.value.name, type: createRpcType(param.value.type)})})),
         returnType: createRpcType(partialMethod.returnType)
     }
 }

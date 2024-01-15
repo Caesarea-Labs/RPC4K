@@ -7,6 +7,8 @@ public interface EventConnection {
 }
 
 public interface EventManager<C: EventConnection> {
+    //TODO: consider validating subscriptions. Maybe benchmark how much time it takes. It's a good idea for correctness
+    // but not that important.
     public suspend fun subscribe(subscription: EventMessage.Subscribe, connection: C)
 
     /**

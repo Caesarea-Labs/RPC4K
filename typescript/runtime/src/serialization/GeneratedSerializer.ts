@@ -4,7 +4,7 @@ import {Encoder} from "./core/encoding/Encoder";
 import {Decoder, DECODER_DECODE_DONE} from "./core/encoding/Decoding";
 import {GeneratedSerializer, PluginGeneratedSerialDescriptor} from "./internal/PluginGeneratedSerializer";
 import {mapRecordValues, Optional, recordForEach, recordToArray} from "ts-minimum";
-import {RpcTypeDiscriminator, RpcTypeNames} from "../impl/RpcTypeUtils";
+import {RpcTypeDiscriminator} from "../impl/RpcTypeDiscriminator";
 /**
  * Serializers may be lazy so that recursively defined serializers may be used
  */

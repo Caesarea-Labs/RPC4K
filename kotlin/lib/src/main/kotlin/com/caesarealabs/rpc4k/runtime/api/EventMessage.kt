@@ -80,7 +80,7 @@ private class MessageReader(private val bytes: ByteArray) {
     private var i = 0
     fun readPart(partName: String, finalPart: Boolean = false): ByteArray {
         val startIndex = i
-        while (bytes[i] != Rpc.ColonCode) {
+        while (bytes[i] != Rpc.ColonCode || finalPart) {
             i++
             if (i >= bytes.size) {
                 if (finalPart) break

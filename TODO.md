@@ -1,4 +1,7 @@
-
+### Handle erroneous event subscriptions
+1. If invoking an event fails, remove it from the subscription list and send an error message to the client signaling an error occurred. Make sure to pass a listener id. 
+- If it's a format error with the subscription data, send a format error detailing what went wrong. If it's an internal error, simply say that there is an internal error. 
+2. Handle format/internal error events in the client - print an error and remove from the listener lists. 
 ### Make sure we do not allow duplicate type names an a sealed hierarchy
 So this should not be allowed:
 ```sealed interface Foo {

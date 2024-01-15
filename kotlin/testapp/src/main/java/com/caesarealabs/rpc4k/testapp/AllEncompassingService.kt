@@ -313,8 +313,18 @@ open class AllEncompassingService(val value: Int = 1, val invoker: AllEncompassi
 
     open suspend fun tinkerWithEvents() {
         invoker.invokeEventTest(5)
-//        invoker.
     }
+
+    @RpcEvent
+    open suspend fun complexEventTest(param1: Pair<String, ModelWithType>, @Dispatch param2: Tree<Int>, param3: TypeField): TypeField {
+        return param3
+    }
+
+    open suspend fun invokeComplexEventTest() {
+        invoker.invokeComplexEventTest(Tree(2, listOf()))
+    }
+
+
 
 //NiceToHave: Respect @SerialName
 //    open suspend fun serialName(obj: SerialNameTest): SerialNameTest {
