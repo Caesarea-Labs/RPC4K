@@ -56,6 +56,7 @@ class AllEncompassingTest {
                 actualMessage = text
             }
         })
+        
 
         webSocket.send("sub:eventTest:121b9a71-20f6-4d6c-91a2-4f0f1550d9ac::[\"Test string\"]")
         delay(1000)

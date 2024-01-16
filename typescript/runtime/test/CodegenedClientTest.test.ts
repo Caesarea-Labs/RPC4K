@@ -2,22 +2,18 @@ import {FetchRpcClient, JsonFormat} from "../src/components";
 import dayjs from "dayjs";
 import {AllEncompassingServiceApi} from "./generated/rpc4ts_AllEncompassingServiceApi";
 import {
-    CreateLobbyResponse,
     EnumArgsValues,
     EveryBuiltinType,
-    GenericThing, InlineHolder2,
-    MutableThings, PlayerId,
+    GenericThing,
+    MutableThings,
+    PolymorphicClassOption4,
     PolymorphicThing,
-    PolymorphicThingOption1, PolymorphicThingOption2, SomeBuiltinTypes, SomeMap, TheObject, TypeField, WithNulls
+    PolymorphicThingOption1,
+    TypeField
 } from "./generated/rpc4ts_AllEncompassingServiceModels";
-import {PolymorphicClassOption4} from "./generated/rpc4ts_AllEncompassingServiceModels";
-import JestMatchers = jest.JestMatchers;
 import {RpcResponseError} from "../src/RpcClientError";
-import duration from "dayjs/plugin/duration";
 import {NodejsWebsocket} from "../src/components/NodejsWebsocket"
-import {GeneratedCodeUtils} from "../src/impl/GeneratedCodeUtils"
-import {StringSerializer} from "../src/serialization/BuiltinSerializers"
-import {Observable} from "../src/Observable";
+import JestMatchers = jest.JestMatchers;
 
 
 test("Codegened Client works", async () => {
@@ -41,7 +37,7 @@ test("Test enum values", () => {
 test("Test events", async () => {
     const fetch = new FetchRpcClient("http://localhost:8080", new NodejsWebsocket("http://localhost:8080/events"))
     const format = JsonFormat
-    const client = new AllEncompassingServiceApi(fetch,format)
+    const client = new AllEncompassingServiceApi(fetch, format)
 
     let actualMessage: string | null = null
     client.eventTest("test").observe(value => {
@@ -59,10 +55,10 @@ test("Test events", async () => {
 test("Complex events", async () => {
     const fetch = new FetchRpcClient("http://localhost:8080", new NodejsWebsocket("http://localhost:8080/events"))
     const format = JsonFormat
-    const client = new AllEncompassingServiceApi(fetch,format)
+    const client = new AllEncompassingServiceApi(fetch, format)
 
     let actualMessage: TypeField | null = null
-    client.complexEventTest(["foo", {type: "23", other: 4}],{type: "414"}).observe(value => {
+    client.complexEventTest(["foo", {type: "23", other: 4}], {type: "414"}).observe(value => {
         actualMessage = value
     })
     await wait(1000)
@@ -82,7 +78,7 @@ function wait(delay: number): Promise<void> {
 }
 
 test("Codegened Client works in all cases", async () => {
-    const client = new AllEncompassingServiceApi(new FetchRpcClient("http://localhost:8080", new NodejsWebsocket("http://localhost:8080/events") ), JsonFormat)
+    const client = new AllEncompassingServiceApi(new FetchRpcClient("http://localhost:8080", new NodejsWebsocket("http://localhost:8080/events")), JsonFormat)
     const res = await client.test([1, 2])
     expect(res).toEqual([[1, 2, "3"], 4])
 

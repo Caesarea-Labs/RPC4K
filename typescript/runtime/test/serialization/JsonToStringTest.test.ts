@@ -66,6 +66,7 @@ test("Test Enum serialization to string", () => {
 
 test("Test Polymorphic serialization to string", () => {
     const obj: TestUnion<string> = ({
+        type: "AnotherModelHolder",
         t: ({
             x: "Sdf",
             w: ["123"],

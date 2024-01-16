@@ -2,7 +2,7 @@ import {TsSerializer} from "./TsSerializer";
 import {SerialDescriptor} from "./core/SerialDescriptor";
 import {Encoder} from "./core/encoding/Encoder";
 import {Decoder, DECODER_DECODE_DONE} from "./core/encoding/Decoding";
-import {GeneratedSerializer, PluginGeneratedSerialDescriptor} from "./internal/PluginGeneratedSerializer";
+import {GeneratedSerializer, PluginGeneratedSerialDescriptor} from "./internal/PluginGeneratedSerialDescriptor";
 import {mapRecordValues, Optional, recordForEach, recordToArray} from "ts-minimum";
 import {RpcTypeDiscriminator} from "../impl/RpcTypeDiscriminator";
 /**

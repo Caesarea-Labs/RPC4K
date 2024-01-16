@@ -1,4 +1,4 @@
-import {PluginGeneratedSerialDescriptor} from "./PluginGeneratedSerializer";
+import {PluginGeneratedSerialDescriptor} from "./PluginGeneratedSerialDescriptor";
 import {SerialDescriptor} from "../core/SerialDescriptor";
 import {OtherSerialType, StructureKind} from "../core/SerialKind";
 import {buildSerialDescriptor, getDescriptorElementNames} from "../descriptors/SerialDescriptors";

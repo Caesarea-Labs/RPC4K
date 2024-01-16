@@ -10,9 +10,11 @@ export type TestUnion<T> = AnotherModelHolder<string> | GenericThing<T, number>
 
 export class AnotherModelHolder<T> {
     readonly t: GenericThing<T, string>
+    type: "AnotherModelHolder"
 
-    constructor({t}: { t: GenericThing<T, string> }) {
+    constructor({t, type}: { t: GenericThing<T, string>, type: "AnotherModelHolder" }) {
         this.t = t;
+        this.type = type
     }
 
 }

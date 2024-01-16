@@ -13,9 +13,8 @@ export class PluginGeneratedSerialDescriptor extends SerialDescriptor {
     private readonly names: string[];
     private readonly elementsOptionality: boolean[];
     private indices = new Map<string, number>();
-    private readonly childSerializers: TsSerializer<any>[];
 
-    constructor(serialName: string, generatedSerializer: GeneratedSerializer<any> | null = null, elementsCount: number) {
+    constructor(serialName: string, generatedSerializer: GeneratedSerializer<unknown> | null = null, elementsCount: number) {
         super()
         this.serialName = serialName;
         this.generatedSerializer = generatedSerializer;
@@ -24,7 +23,6 @@ export class PluginGeneratedSerialDescriptor extends SerialDescriptor {
         this.kind = StructureKind.CLASS
         this.names = Array(elementsCount).fill("[UNINITIALIZED]");
         this.elementsOptionality = Array(elementsCount).fill(false);
-        this.childSerializers = this.generatedSerializer ? this.generatedSerializer.childSerializers() : [];
     }
 
     public addElement(name: string, isOptional: boolean = false): void {
@@ -37,7 +35,7 @@ export class PluginGeneratedSerialDescriptor extends SerialDescriptor {
 
 
     public getElementDescriptor(index: number): SerialDescriptor {
-        return this.childSerializers[index].descriptor; // Assuming getChecked logic is handled in array access
+        return this.generatedSerializer!.childSerializers()[index].descriptor;
     }
 
     // Convert 'isElementOptional' function
