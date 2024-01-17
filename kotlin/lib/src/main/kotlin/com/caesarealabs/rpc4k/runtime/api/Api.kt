@@ -40,8 +40,10 @@ public annotation class Api(val generateClient: Boolean = false)
 public annotation class RpcEvent
 
 /**
- * Marks a primitive value as the target of the event, meaning if the event is invoked for target X, only subscriptions that
+ * Marks a value as the target of the event, meaning if the event is invoked for target X, only subscriptions that
  * have specified their target as X will be invoked.
+ *
+ * This is mainly meant for [String]s, but any type can be used and will be converted to a [String] via [toString].
  *
  * This allows increasing the performance of certain events significantly.
  * Consider Google had a Google Sheets event called 'sheet_changed'.

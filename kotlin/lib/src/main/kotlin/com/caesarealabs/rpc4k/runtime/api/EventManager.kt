@@ -18,8 +18,10 @@ public interface EventManager<C: EventConnection> {
 
     /**
      * Returns subscriptions to the given event, watching the given object id
+     * @param target If a non-null value is provided then only subscriptions matching that target will be returned
+     * if null is passed, all subscriptions of the event will be returned.
      */
-    public suspend fun match(event: String, watchedObjectId: String?): List<EventSubscription<C>>
+    public suspend fun match(event: String, target: String?): List<EventSubscription<C>>
 
     /**
      * Removes all subscriptions of the given connection

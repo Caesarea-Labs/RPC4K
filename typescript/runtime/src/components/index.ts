@@ -1,2 +1,6 @@
 export * from "./FetchRpcClient"
 export * from "./JsonFormat"
+export * from "./GenericWebsocket"
+export * from "./NodejsWebsocket"
+export * from "./BrowserWebsocket"
+export * from "./WebsocketEventClient"

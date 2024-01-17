@@ -12,7 +12,10 @@ import {
     TypeField
 } from "./generated/rpc4ts_AllEncompassingServiceModels";
 import {RpcResponseError} from "../src/RpcClientError";
-import {NodejsWebsocket} from "../src/components/NodejsWebsocket"
+import {NodejsWebsocket} from "../src/components"
+import {GeneratedCodeUtils} from "../src/impl/GeneratedCodeUtils";
+import {Observable} from "../src/Observable";
+import {NumberSerializer, StringSerializer} from "../src/serialization/BuiltinSerializers";
 import JestMatchers = jest.JestMatchers;
 
 
@@ -32,7 +35,6 @@ test("Test enum values", () => {
     expect(EnumArgsValues).toEqual(["Option1", "Option5"])
 })
 
-//TODO: add a more complex event test with complex models
 
 test("Test events", async () => {
     const fetch = new FetchRpcClient("http://localhost:8080", new NodejsWebsocket("http://localhost:8080/events"))
@@ -50,6 +52,39 @@ test("Test events", async () => {
     await wait(1000)
 
     expect(actualMessage).toEqual("test5")
+})
+
+test("Test targeted event", async () => {
+    const fetch = new FetchRpcClient("http://localhost:8080", new NodejsWebsocket("http://localhost:8080/events"))
+    const format = JsonFormat
+    const client = new AllEncompassingServiceApi(fetch, format)
+
+    function manualEventTargetTest(normal: string, target: number): Observable<string> {
+        return GeneratedCodeUtils.createObservable(fetch, format, "eventTargetTest", [normal, target], [StringSerializer, NumberSerializer], StringSerializer, target)
+    }
+
+    let actualMessage1: string | null = null
+    let actualMessage2: string | null = null
+    manualEventTargetTest("test 123", 1).observe(value => {
+        actualMessage1 = value
+    })
+    manualEventTargetTest("test 123", 2).observe(value => {
+        actualMessage2 = value
+    })
+    await wait(1000)
+
+    // 		return GeneratedCodeUtils.createObservable(this.client, this.format, "eventTargetTest", [normal, target], [StringSerializer, NumberSerializer], StringSerializer, target)
+    await client.invokeEventTargetTest(1)
+
+    await wait(1000)
+
+    expect(actualMessage1).toEqual("test 123 1 1234.0")
+    expect(actualMessage2).toEqual(null)
+    await client.invokeEventTargetTest(2)
+    await wait(1000)
+
+    expect(actualMessage1).toEqual("test 123 1 1234.0")
+    expect(actualMessage2).toEqual("test 123 2 1234.0")
 })
 
 test("Complex events", async () => {

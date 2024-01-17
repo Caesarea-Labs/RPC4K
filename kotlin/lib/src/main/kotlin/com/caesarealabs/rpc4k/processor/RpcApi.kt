@@ -4,6 +4,7 @@ import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy
 import com.squareup.kotlinpoet.TypeName
 import com.caesarealabs.rpc4k.processor.utils.appendIf
 import com.caesarealabs.rpc4k.runtime.api.Dispatch
+import com.caesarealabs.rpc4k.runtime.api.EventTarget
 import com.caesarealabs.rpc4k.runtime.implementation.*
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.SerialName
@@ -27,12 +28,19 @@ internal data class RpcApi(
 
 internal sealed interface RpcEndpoint {
     val name: String
-//    val parameters: List<RpcParameter>
     val returnType: KotlinTypeReference
 }
 
 @Serializable
 internal data class RpcFunction(override val name: String,  val parameters: List<RpcParameter>,override  val returnType: KotlinTypeReference): RpcEndpoint
+
+
+
+@Serializable internal data class RpcEventEndpoint(
+    override val name: String,  val parameters: List<EventParameter>,override  val returnType: KotlinTypeReference
+): RpcEndpoint {
+    val targetParameter get() = parameters.find { it.isTarget }?.value
+}
 
 @Serializable
 internal data class EventParameter(
@@ -40,14 +48,12 @@ internal data class EventParameter(
      * Whether this parameter is annotated with [Dispatch]
      */
     val isDispatch: Boolean,
-    val value: RpcParameter
+    val value: RpcParameter,
+    /**
+     * Whether this parameter is annotated with [EventTarget]
+     */
+    val isTarget: Boolean
 )
-
-@Serializable internal data class RpcEventEndpoint(
-    override val name: String,  val parameters: List<EventParameter>,override  val returnType: KotlinTypeReference
-): RpcEndpoint {
-//    override val parameters: List<RpcParameter> = eventParameters.map { it.value }
-}
 
 @Serializable
 //NiceToHave: support optional parameters

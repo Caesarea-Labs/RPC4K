@@ -4,12 +4,9 @@
 package com.caesarealabs.rpc4k.testapp
 
 import com.caesarealabs.rpc4k.generated.AllEncompassingServiceEventInvoker
+import com.caesarealabs.rpc4k.runtime.api.*
 import com.caesarealabs.rpc4k.testapp.EnumArgs.Option1
 import com.caesarealabs.rpc4k.testapp.EnumArgs.Option5
-import com.caesarealabs.rpc4k.runtime.api.Api
-import com.caesarealabs.rpc4k.runtime.api.Dispatch
-import com.caesarealabs.rpc4k.runtime.api.RpcEvent
-import com.caesarealabs.rpc4k.runtime.api.serverRequirement
 import kotlinx.serialization.Contextual
 import kotlinx.serialization.Serializable
 import java.time.Instant
@@ -323,6 +320,30 @@ open class AllEncompassingService(val value: Int = 1, val invoker: AllEncompassi
     open suspend fun invokeComplexEventTest() {
         invoker.invokeComplexEventTest(Tree(2, listOf()))
     }
+
+    //TODO: 1.
+    // 3. Document EventTarget being both dispatch and sub
+    // 4. Implement dispatch/subscription gen for EventTarget
+
+    @RpcEvent
+    open suspend fun eventTargetTest(normal: String, @EventTarget target: Int,@Dispatch dispatch: Float): String {
+        return "${normal} ${target} ${dispatch}"
+    }
+
+    open suspend fun invokeEventTargetTest(target: Int): String {
+        invoker.invokeEventTargetTest(target, 1234f)
+        return "12345"
+    }
+
+    @RpcEvent suspend fun noArgsTest() {
+
+    }
+
+
+//
+
+
+
 
 
 

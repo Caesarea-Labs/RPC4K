@@ -25,13 +25,11 @@ internal class Rpc4kProcessorProvider : SymbolProcessorProvider {
 internal class Rpc4kProcessor(private val env: SymbolProcessorEnvironment) : SymbolProcessor {
     private var processed = false
 
-    @OptIn(KspExperimental::class)
     override fun process(resolver: Resolver): List<KSAnnotated> = with(env) {
         if (processed) return listOf()
         processed = true
         val validator = ApiClassValidator(env, resolver)
 
-//        env.logger.warn("Classes in example package: " + resolver.getDeclarationsFromPackage("com.example").toList())
 
         val time = measureTimeMillis {
             val apiClasses = resolver.getClassesWithAnnotation(Api::class)

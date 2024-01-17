@@ -1,16 +1,4 @@
-import {
-    BooleanSerializer,
-    NumberSerializer,
-    RpcEnumModel,
-    RpcModel,
-    RpcModelKind,
-    RpcStructModel,
-    RpcType,
-    RpcTypeNames,
-    RpcUnionModel,
-    StringSerializer,
-    TupleSerializer
-} from "rpc4ts-runtime";
+import {RpcEnumModel, RpcModel, RpcModelKind, RpcStructModel, RpcType, RpcUnionModel} from "rpc4ts-runtime";
 // import {CodeBuilder} from "./codegen/CodeBuilder";
 import {Rpc4TsClientGenerationOptions} from "./ClientGenerator"
 // import {buildRecord} from "rpc4ts-runtime";
@@ -19,43 +7,16 @@ import {concat, join, MaybeFormattedString, resolveMaybeFormatString, TsFunction
 import {modelName, modelType} from "./Rpc4tsType"
 import "ts-minimum"
 import {CodeBuilder} from "./codegen/CodeBuilder"
-import {GeneratedSerializerImpl} from "rpc4ts-runtime/src/serialization/GeneratedSerializer";
+import {RpcTypeNames} from "./RpcTypeUtils";
 
-
-// export function addSerializerImports(codeBuilder: CodeBuilder, options: Rpc4TsClientGenerationOptions): CodeBuilder {
-//     return codeBuilder.addImport(
-//         [
-//             "BooleanSerializer", "StringSerializer", "NumberSerializer", "ArraySerializer",
-//             "DayjsSerializer", "DurationSerializer", "NullableSerializer", "VoidSerializer",
-//             "RecordSerializer", "TupleSerializer"
-//         ],
-//         libraryPath("serialization/BuiltinSerializers", options)
-//     )
-//         .addImport(["EnumSerializer"], libraryPath("serialization/EnumSerializer", options))
-//         .addImport(["UnionSerializer"], libraryPath("serialization/UnionSerializer", options))
-// }
 
 /**
  *
  * @param models
  */
 export function generateSerializers(models: RpcModel[], options: Rpc4TsClientGenerationOptions, serviceName: string) {
-
-    // const modelNames = models.map(model => modelName(model.name))
-
     const builder = new CodeBuilder(options.localLibPaths)
         .ignoreAnyWarnings()
-    // .addImport(
-    //     ["TsSerializer"],
-    //     libraryPath("serialization/TsSerializer", options)
-    // )
-    // .addImport(
-    //     ["GeneratedSerializerImpl"],
-    //     libraryPath("serialization/GeneratedSerializer", options)
-    // )
-    // .addImport(modelNames, "./rpc4ts_AllEncompassingServiceModels")
-
-    // addSerializerImports(builder, options)
 
     const modelMap = models.toRecord((model) => [model.name, model])
 
@@ -110,10 +71,7 @@ function addUnionSerializer(code: CodeBuilder, unionModel: RpcUnionModel, modelM
     const unionName = modelName(unionModel.name)
     // Name type arguments 'T{i}`
     const typeArguments = unionModel.typeParameters.map((_, i) => TsTypes.typeParameter(TypeParameterPrefix + i))
-    // const typeArguments = unionModel.typeParameters.length === 0 ? "" :
-    //     "<" + unionModel.typeParameters.map((_, i) => `T${i}`) + ">"
     const unionType = modelType(unionModel.name, serviceName, typeArguments)
-    // const modelType2 = `<${unionName}${typeArguments}>`
     const typeParameterValues = mapTypeParametersValues(unionModel)
     code.addTopLevelFunction(serializerName(unionModel.name), typeArguments, [], TS_SERIALIZER(unionType), (builder) => {
 
@@ -185,39 +143,21 @@ function addChild(type: RpcType, to: NonUnionModels, modelMap: ModelMap, parentN
     }
 }
 
-//     export function testUnion<T>(argSerializer: TsSerializer<T>): TsSerializer<TestUnion<T>> {
-//         return new UnionSerializer<TestUnion<T>>("TestUnion",  "TestUnion",
-//             ["AnotherModelHolder",  "GenericThing"],
-//             [anotherModelHolder(StringSerializer), genericThing(argSerializer, NumberSerializer)]
-//         )
-//     }
-
-
 export function serializerName(typeName: string): string {
     return `rpc4ts_serializer_${modelName(typeName)}`
 }
 
-// function serializerDeclaration(modelName: string, typeArguments: TsType[]): MaybeFormattedString {
-//     if (typeArguments.length === 0) return serializerName(modelName)
-//     return concat(serializerName(modelName) + "<", ...typeArguments, ">")
-// }
-
 
 function addStructSerializer(code: CodeBuilder, struct: RpcStructModel, serviceName: string) {
     const typeParameterValues = mapTypeParametersValues(struct)
-    // const structName = modelName(struct.name)
     // Name type argument serializers 'typeArg{i}`
     const parameters: [string, TsType][] = struct.typeParameters
         .map((_, i) => [`typeArg${i}`, TS_SERIALIZER(TsTypes.typeParameter(TypeParameterPrefix + i))])
     // Name type arguments 'T{i}`
-    // const typeArguments = struct.typeParameters.length === 0 ? "" :
-    //     "<" + struct.typeParameters.map((_, i) => `T${i}`) + ">"
     const typeArguments = struct.typeParameters.map((_, i) => TsTypes.typeParameter(TypeParameterPrefix + i))
 
     const structType = modelType(struct.name, serviceName, typeArguments)
-    // const structName2 = modelName2(struct.name)
 
-    // const modelType = `<${structName}${typeArguments}>`
     const serializeName = serializerName(struct.name)
     code.addTopLevelFunction(serializerName(struct.name), typeArguments, parameters, TS_SERIALIZER(structType), (func) => {
         const serializers = join(struct.properties.map(prop => {
@@ -232,7 +172,6 @@ function addStructSerializer(code: CodeBuilder, struct: RpcStructModel, serviceN
             `"${structRuntimeName(struct)}"`,
             concat("{", serializers, "}"),
             `[${typeArgumentParamNames}]`,
-            // concat(`(params) => new `, structType, `(params)`)
         ]
         // Last parameter is optional and specifies the type discriminator
         if (struct.hasTypeDiscriminator) args.push(`"${struct.name.removeBeforeLastExclusive(".")}"`)
@@ -251,9 +190,6 @@ function mapTypeParametersValues(model: RpcUnionModel | RpcStructModel): Record<
         (param, i) => [param, TypeParameterSerializerPrefix + i]
     )
 }
-
-
-// }
 
 /**
  * A serializer requires all type parameters to be fulfilled.
@@ -369,35 +305,6 @@ const ARRAY_SERIALIZER = TsTypes.library("ArraySerializer", "serialization/Built
 const RECORD_SERIALIZER = TsTypes.library("RecordSerializer", "serialization/BuiltinSerializers")
 const TUPLE_SERIALIZER = TsTypes.library("TupleSerializer", "serialization/BuiltinSerializers")
 const VOID_SERIALIZER = TsTypes.library("VoidSerializer", "serialization/BuiltinSerializers")
-
-//             case "bool" :
-//                 return "BooleanSerializer"
-//             case "i8":
-//             case "i16":
-//             case "i32":
-//             case "i64":
-//             case "f32":
-//             case "f64":
-//                 return "NumberSerializer"
-//             case "char":
-//             case "string":
-//             case "uuid":
-//                 return "StringSerializer"
-//             case "duration":
-//                 // Durations are Dayjs.Duration in typescript
-//                 return "DurationSerializer"
-//             case  RpcTypeNames.Time:
-//                 // Dates are Dayjs in typescript
-//                 return "DayjsSerializer"
-// //         [
-// //             "BooleanSerializer", "StringSerializer", "NumberSerializer", "ArraySerializer",
-// //             "DayjsSerializer", "DurationSerializer", "NullableSerializer", "VoidSerializer",
-// //             "RecordSerializer", "TupleSerializer"
-// //         ],
-// //         libraryPath("serialization/BuiltinSerializers", options)
-// //     )
-// //         .addImport(["EnumSerializer"], libraryPath("serialization/EnumSerializer", options))
-// //         .addImport(["UnionSerializer"], libraryPath("serialization/UnionSerializer", options))
 
 export function SERIALIZERS_FILE(serviceName: string): string {
     return `./rpc4ts_${serviceName}Serializers`

@@ -36,12 +36,12 @@ internal class KtorEventManager: EventManager<KtorWebsocketEventConnection> {
         }
     }
 
-    override suspend fun match(event: String, watchedObjectId: String?): List<KtorSubscription> {
+    override suspend fun match(event: String, target: String?): List<KtorSubscription> {
         val subscribers = subscriptions[event] ?: listOf()
-        if (watchedObjectId == null) return subscribers.toList() // No specific object - return all
+        if (target == null) return subscribers.toList() // No specific object - return all
 
         // Specific object - return matching
-        return subscribers.filter { it.info.target == watchedObjectId }
+        return subscribers.filter { it.info.target == target }
     }
 }
 

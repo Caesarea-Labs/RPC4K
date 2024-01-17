@@ -1,5 +1,6 @@
-import {RpcType, RpcTypeNames} from "rpc4ts-runtime";
+import {RpcType} from "rpc4ts-runtime";
 import {tsReferenceToString, TsType, TsTypes} from "./codegen/FormatString"
+import {RpcTypeNames} from "./RpcTypeUtils";
 
 /**
  * Requires the service name to resolve import paths of API models

@@ -1,5 +1,6 @@
 package com.caesarealabs.rpc4k.processor
 
+import com.caesarealabs.rpc4k.processor.ApiDefinitionUtils.ignoreExperimentalWarnings
 import com.squareup.kotlinpoet.*
 import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy
 import com.caesarealabs.rpc4k.processor.utils.poet.*
@@ -8,6 +9,7 @@ import com.caesarealabs.rpc4k.runtime.api.RpcClient
 import com.caesarealabs.rpc4k.runtime.api.SerializationFormat
 import com.caesarealabs.rpc4k.runtime.implementation.GeneratedCodeUtils
 import com.caesarealabs.rpc4k.runtime.implementation.kotlinPoet
+import kotlinx.serialization.ExperimentalSerializationApi
 
 /**
  * Converts
@@ -61,6 +63,7 @@ internal object ApiDefinitionToClientCode {
             addImport("kotlinx.serialization.builtins", "serializer")
             addImport("kotlinx.serialization.builtins", "nullable")
 
+            ignoreExperimentalWarnings()
 
             addFunction(clientConstructorExtension(apiDefinition, className))
 

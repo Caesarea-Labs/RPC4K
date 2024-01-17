@@ -36,13 +36,13 @@ export namespace GeneratedCodeUtils {
 
     export function createObservable<T>(client: RpcClient, format: SerializationFormat, event: string, args: unknown[],
                                         argSerializers: TsSerializer<unknown>[], eventSerializer: TsSerializer<T>,
-                                        watchedObjectId?: string): Observable<T> {
+                                        target?: unknown): Observable<T> {
         const listenerId = client.events.generateUuid()
         const payload = format.encode(new TupleSerializer(argSerializers), args)
         return client.events.createObservable(
             //TODO: this probably breaks in binary formats
             // This byte -> string conversion is prob inefficient
-            `sub:${event}:${listenerId}:${watchedObjectId ?? ""}:${textDecoder.decode(payload)}`,
+            `sub:${event}:${listenerId}:${String(target) ?? ""}:${textDecoder.decode(payload)}`,
             `unsub:${event}:${listenerId}`,
             listenerId
             //TODO: this string -> bytes conversion is also inefficient

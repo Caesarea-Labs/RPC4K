@@ -1,5 +1,6 @@
 package com.caesarealabs.rpc4k.processor
 
+import com.caesarealabs.rpc4k.processor.ApiDefinitionUtils.ignoreExperimentalWarnings
 import com.caesarealabs.rpc4k.processor.utils.poet.*
 import com.caesarealabs.rpc4k.runtime.api.GeneratedServerHelper
 import com.caesarealabs.rpc4k.runtime.implementation.GeneratedCodeUtils
@@ -64,6 +65,7 @@ internal object ApiDefinitionToServerCode {
         return fileSpec(GeneratedCodeUtils.Package, className) {
             // I know what I'm doing, Kotlin!
             addAnnotation(AnnotationSpec.builder(Suppress::class).addMember("%S", "UNCHECKED_CAST").build())
+            ignoreExperimentalWarnings()
 
             // KotlinPoet doesn't handle extension methods well
             addImport("kotlinx.serialization.builtins", "serializer")
@@ -285,8 +287,10 @@ internal object ApiDefinitionToServerCode {
         var eventIndex = 0
         var dispatchIndex = 0
         return rpc.parameters.map { parameter ->
-            val targetList = if (parameter.isDispatch) DispatcherDataParamName else "it"
-            val index = if (parameter.isDispatch) dispatchIndex++ else eventIndex++
+            val dispatchValue = parameter.isDispatch || parameter.isTarget
+            // We use the dispatch value for the @EventTarget value, which allows us to have the real value without serialization.
+            val targetList = if (dispatchValue) DispatcherDataParamName else "it"
+            val index = if (dispatchValue) dispatchIndex++ else eventIndex++
             "$targetList[$index] as %T".formatWith(parameter.value.type.typeName)
         }
     }
@@ -325,14 +329,23 @@ internal object ApiDefinitionToServerCode {
 
 
     private fun eventInvoker(event: RpcEventEndpoint) = funSpec("invoke${event.name.replaceFirstChar { it.uppercaseChar() }}") {
-        val dispatchParameters = event.parameters.filter { it.isDispatch }.map { it.value }
+        val dispatchParameters = event.parameters.filter { it.isDispatch || it.isTarget }.map { it.value }
         addModifiers(KModifier.SUSPEND)
         for (parameter in dispatchParameters) {
             addParameter(parameter.name, parameter.type.typeName)
         }
         //NiceToHave: watched object id
+
+        val targetParameter = event.targetParameter?.name
+
+        // Type inference fails when there are no params so we need to explicitly pass <Nothing> as the type param
+        val listOfCall = if(dispatchParameters.isEmpty()) "listOf<Nothing>()"
+        else "listOf(${dispatchParameters.joinToString { it.name }})"
+
+        val codeUtilsFunction = if(targetParameter != null) "invokeTargetedEvent" else "invokeEvent"
+
         addCode(
-            "%T.invokeEvent(%S, listOf(${dispatchParameters.joinToString { it.name }}), null, ${SetupParamName}!!)",
+            "%T.${codeUtilsFunction}(%S, ${listOfCall}, ${SetupParamName}!!, ${targetParameter ?: ""})",
             GeneratedCodeUtils::class,
             event.name
         )

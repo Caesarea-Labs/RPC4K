@@ -2,6 +2,7 @@ package com.caesarealabs.rpc4k.processor
 
 import com.caesarealabs.rpc4k.processor.utils.*
 import com.caesarealabs.rpc4k.runtime.api.Dispatch
+import com.caesarealabs.rpc4k.runtime.api.EventTarget
 import com.caesarealabs.rpc4k.runtime.api.RpcEvent
 import com.google.devtools.ksp.KspExperimental
 import com.google.devtools.ksp.getAllSuperTypes
@@ -17,7 +18,6 @@ internal class KspToApiDefinition(private val resolver: Resolver) {
         val endpoints = functions.map { toRpc(it) }.toList().allOrNothing() ?: return null
 
         return RpcApi(
-            // Doesn't quite fit, but good enough to represent the name as an KotlinTypeReference
             name = kspClass.getKotlinName() ?: return null,
             methods = endpoints.filterIsInstance<RpcFunction>(),
             models = getRpcModels(kspClass) ?: return null,
@@ -43,7 +43,8 @@ internal class KspToApiDefinition(private val resolver: Resolver) {
         val param = toRpcParameter(it)
         EventParameter(
             isDispatch = it.isAnnotationPresent(Dispatch::class),
-            param ?: return null
+            isTarget = it.isAnnotationPresent(EventTarget::class),
+            value = param ?: return null
         )
     }.toList().allOrNothing()
 

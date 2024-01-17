@@ -64,6 +64,7 @@ public suspend fun <I, O, Engine : RpcServerEngine.SingleCall.Returning<I, O>> R
 
 public suspend fun AnyRpcServerSetup.acceptEventSubscription(bytes: ByteArray, connection: EventConnection) {
     val eventManager = engine.eventManager as EventManager<EventConnection>
+    println("Accept event subscription: ${bytes.decodeToString()}")
     try {
         when (val message = EventMessage.fromByteArray(bytes)) {
             is EventMessage.Subscribe -> eventManager.subscribe(message, connection)
