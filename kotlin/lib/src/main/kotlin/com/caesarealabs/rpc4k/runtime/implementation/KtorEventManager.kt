@@ -21,7 +21,7 @@ public class KtorWebsocketEventConnection(private val session: DefaultWebSocketS
 internal class KtorEventManager: EventManager<KtorWebsocketEventConnection> {
     private val subscriptions: MutableMap<String, ConcurrentLinkedQueue<KtorSubscription>> = ConcurrentHashMap()
 
-    override suspend fun subscribe(subscription: EventMessage.Subscribe, connection: KtorWebsocketEventConnection) {
+    override suspend fun subscribe(subscription: C2SEventMessage.Subscribe, connection: KtorWebsocketEventConnection) {
         subscriptions.concurrentAdd(subscription.event, KtorSubscription(connection, subscription))
     }
 

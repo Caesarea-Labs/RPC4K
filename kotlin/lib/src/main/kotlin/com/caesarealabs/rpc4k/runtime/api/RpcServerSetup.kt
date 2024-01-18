@@ -5,7 +5,6 @@ package com.caesarealabs.rpc4k.runtime.api
 import com.caesarealabs.rpc4k.runtime.api.components.JsonFormat
 import com.caesarealabs.rpc4k.runtime.api.components.KtorManagedRpcServer
 import com.caesarealabs.rpc4k.runtime.implementation.Rpc4K
-import com.caesarealabs.rpc4k.runtime.implementation.RpcEventData
 import com.caesarealabs.rpc4k.runtime.implementation.handleImpl
 
 
@@ -66,17 +65,17 @@ public suspend fun AnyRpcServerSetup.acceptEventSubscription(bytes: ByteArray, c
     val eventManager = engine.eventManager as EventManager<EventConnection>
     println("Accept event subscription: ${bytes.decodeToString()}")
     try {
-        when (val message = EventMessage.fromByteArray(bytes)) {
-            is EventMessage.Subscribe -> eventManager.subscribe(message, connection)
-            is EventMessage.Unsubscribe -> eventManager.unsubscribe(message.event, message.listenerId)
+        when (val message = C2SEventMessage.fromByteArray(bytes)) {
+            is C2SEventMessage.Subscribe -> eventManager.subscribe(message, connection)
+            is C2SEventMessage.Unsubscribe -> eventManager.unsubscribe(message.event, message.listenerId)
         }
     } catch (e: InvalidRpcRequestException) {
         Rpc4K.Logger.warn("Invalid client event message", e)
         // RpcServerException messages are trustworthy
-        connection.send(RpcEventData.SubscriptionError("Invalid client event message: ${e.message}").toByteArray())
+        connection.send(S2CEventMessage.SubscriptionError("Invalid client event message: ${e.message}").toByteArray())
     } catch (e: Throwable) {
         Rpc4K.Logger.error("Failed to handle request", e)
-        connection.send(RpcEventData.SubscriptionError("Server failed to process subscription").toByteArray())
+        connection.send(S2CEventMessage.SubscriptionError("Server failed to process subscription").toByteArray())
     }
 }
 

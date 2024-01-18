@@ -9,7 +9,7 @@ public interface EventConnection {
 public interface EventManager<C: EventConnection> {
     //TODO: consider validating subscriptions. Maybe benchmark how much time it takes. It's a good idea for correctness
     // but not that important.
-    public suspend fun subscribe(subscription: EventMessage.Subscribe, connection: C)
+    public suspend fun subscribe(subscription: C2SEventMessage.Subscribe, connection: C)
 
     /**
      * Returns whether there was something to actually unsubscribe to matching the criteria.
@@ -29,4 +29,4 @@ public interface EventManager<C: EventConnection> {
     public suspend fun dropClient(connection: C)
 }
 
-public data class EventSubscription<C: EventConnection>(val connection: C, val info: EventMessage.Subscribe)
+public data class EventSubscription<C: EventConnection>(val connection: C, val info: C2SEventMessage.Subscribe)

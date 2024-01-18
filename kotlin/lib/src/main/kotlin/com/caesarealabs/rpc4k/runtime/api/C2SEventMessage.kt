@@ -2,7 +2,7 @@ package com.caesarealabs.rpc4k.runtime.api
 
 import com.caesarealabs.rpc4k.runtime.implementation.fastConcat
 
-public sealed interface EventMessage {
+public sealed interface C2SEventMessage {
     public data class Subscribe(
         public val event: String,
         /**
@@ -16,7 +16,7 @@ public sealed interface EventMessage {
         /**
          * @see EventTarget
          */
-        public val target: String?) : EventMessage {
+        public val target: String?) : C2SEventMessage {
         override fun equals(other: Any?): Boolean {
             return other is Subscribe && event == other.event && listenerId == other.listenerId
                 && data.contentEquals(other.data) && target == other.target
@@ -35,11 +35,11 @@ public sealed interface EventMessage {
         }
     }
 
-    public data class Unsubscribe(val event: String, val listenerId: String) : EventMessage
+    public data class Unsubscribe(val event: String, val listenerId: String) : C2SEventMessage
 
 
     public companion object {
-        internal fun fromByteArray(bytes: ByteArray): EventMessage {
+        internal fun fromByteArray(bytes: ByteArray): C2SEventMessage {
             serverRequirement(bytes.isNotEmpty()) { "Event message is empty" }
             val reader = MessageReader(bytes)
             val type = reader.readPart("type").decodeToString()
@@ -91,23 +91,3 @@ private class MessageReader(private val bytes: ByteArray) {
         return bytes.copyOfRange(startIndex, i++)
     }
 }
-//
-///**
-// * AWS provides a way to handle websocket messages in a serverless manner.
-// * Unfortunately, it works by accepting all messages as a json, reading the 'action' field and distributing to the correct
-// * serverless function that maps to the value of the action.
-// * For example:
-// * action: dogMessage -> Lambda Function 1
-// * action: catMessage -> Lambda Function 2
-// * etc...
-// *
-// *
-// */
-//@Serializable
-//private data class WebsocketMessage(
-//    /**
-//     * The action is ignored, since in AWS it's always 'sendMessage'.
-//     */
-//    val action: String,
-//    val message: String
-//)

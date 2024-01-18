@@ -23,7 +23,7 @@ export class WebsocketEventClient implements EventClient {
                         if (listener !== undefined) {
                             listener(payload.join(":"))
                         } else {
-                            console.warn(`Could not find listener for id '${listenerId}', is the subscription still open on the server?`, message)
+                            console.warn(`Could not find listener for id '${listenerId}', the subscription may still open on the server`, message)
                         }
                         break
                     }

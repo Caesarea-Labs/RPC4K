@@ -19,6 +19,7 @@ export interface RpcEventEndpoint {
 
 export interface EventParameter {
     isDispatch: boolean
+    isTarget: boolean
     value: RpcParameter
 }
 

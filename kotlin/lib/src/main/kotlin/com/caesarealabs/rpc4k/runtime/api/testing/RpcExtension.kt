@@ -24,8 +24,9 @@ public fun <API, Invoker> rpcExtension(
     client: RpcClientFactory<API> = RpcClientFactory.OkHttp(),
 ): ClientServerExtension<API, Invoker> {
     val url = "http://localhost:${port}"
+    val websocketUrl = "$url/events"
     val serverSetup = RpcServerSetup(serverHandler, generatedClass, server, format)
-    return ClientServerExtension(serverSetup, generatedClient.build(client.build(url), format))
+    return ClientServerExtension(serverSetup, generatedClient.build(client.build(url, websocketUrl), format))
 }
 
 public inline fun <reified API, I> rpcExtension(
@@ -74,9 +75,9 @@ public class ClientServerExtension<API, I>(serverSetup: RpcServerSetup<API, RpcS
  * often have many parameters.
  */
 public interface RpcClientFactory<API> {
-    public fun build(url: String): RpcClient
+    public fun build(url: String, websocketUrl: String): RpcClient
 
     public class OkHttp<API>(private val client: OkHttpClient = OkHttpClient()) : RpcClientFactory<API> {
-        override fun build(url: String): RpcClient = OkHttpRpcClient(url, client)
+        override fun build(url: String, websocketUrl: String): RpcClient = OkHttpRpcClient(url,websocketUrl, client)
     }
 }

@@ -15,6 +15,7 @@ public interface RpcClient {
      * @return The response body's bytes.
      */
     public suspend fun send(rpc: Rpc, format: SerializationFormat, serializers: List<KSerializer<*>>): ByteArray
+    public val events: EventClient
 }
 
 

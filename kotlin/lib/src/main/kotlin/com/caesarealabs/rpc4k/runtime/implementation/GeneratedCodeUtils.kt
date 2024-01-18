@@ -2,11 +2,15 @@ package com.caesarealabs.rpc4k.runtime.implementation
 
 import com.caesarealabs.rpc4k.runtime.api.*
 import com.caesarealabs.rpc4k.runtime.implementation.serializers.TupleSerializer
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
 import kotlinx.serialization.*
+import java.util.*
 
 /**
  * These functions are used by generated code and code that interacts with them
  */
+//TODO: consider making the C2S functions be in a instance method, this would allow storing the format and client and reduce codegen.
 public object GeneratedCodeUtils {
     @PublishedApi
     internal const val FactoryName: String = "Factory"
@@ -49,6 +53,37 @@ public object GeneratedCodeUtils {
     ) {
         val rpc = Rpc(methodName, args)
         client.send(rpc, format, argSerializers)
+    }
+//        export function createObservable<T>(client: RpcClient, format: SerializationFormat, event: string, args: unknown[],
+//                                        argSerializers: TsSerializer<unknown>[], eventSerializer: TsSerializer<T>,
+//                                        target?: unknown): Observable<T> {
+//        const listenerId = client.events.generateUuid()
+//        const payload = format.encode(new TupleSerializer(argSerializers), args)
+//        return client.events.createObservable(
+//            //TODO: this probably breaks in binary formats
+//            // This byte -> string conversion is prob inefficient
+//            `sub:${event}:${listenerId}:${String(target) ?? ""}:${textDecoder.decode(payload)}`,
+//            `unsub:${event}:${listenerId}`,
+//            listenerId
+//            //TODO: this string -> bytes conversion is also inefficient
+//        ).map((value) => format.decode(eventSerializer, textEncoder.encode(value)))
+//    }
+
+    public suspend fun <T> createFlow(
+        client: RpcClient,
+        format: SerializationFormat,
+        event: String,
+        args: List<*>,
+        argSerializers: List<KSerializer<*>>,
+        eventSerializer: KSerializer<T>,
+        target: Any? = null
+    ): Flow<T> {
+        val listenerId = UUID.randomUUID().toString()
+        val payload = format.encode(TupleSerializer(argSerializers), args)
+        val subscriptionMessage = C2SEventMessage.Subscribe(event = event, listenerId = listenerId, payload, target.toString())
+        val unsubMessage = C2SEventMessage.Unsubscribe(event = event, listenerId = listenerId)
+        return client.events.createFlow(subscriptionMessage.toByteArray(), unsubMessage.toByteArray(), listenerId)
+            .map { format.decode(eventSerializer, it) }
     }
 
     /**

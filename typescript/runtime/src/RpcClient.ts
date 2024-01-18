@@ -9,8 +9,13 @@ export interface RpcClient {
 }
 
 export interface EventClient {
+    //TODO: maybe this should be a ByteArray or something
     send(message: string): Promise<void>
     createObservable(subscribeMessage: string, unsubscribeMessage: string, listenerId: string): Observable<string>
+
+    /**
+     * Since UUID sources are different in browser and in node we need to generate a uuid differently per client
+     */
     generateUuid(): string
 }
 

@@ -1,6 +1,7 @@
 package com.caesarealabs.rpc4k.test;
 
-import com.caesarealabs.rpc4k.runtime.api.EventMessage
+import com.caesarealabs.rpc4k.runtime.api.C2SEventMessage
+import com.caesarealabs.rpc4k.runtime.api.S2CEventMessage
 import org.junit.jupiter.api.Test;
 import strikt.api.expectThat
 import strikt.assertions.isEqualTo
@@ -8,17 +9,26 @@ import strikt.assertions.isEqualTo
 class EventMessageEncodingTest {
     @Test
     fun testSubscribe() {
-        val sub = EventMessage.Subscribe("event-123", "waefawef", byteArrayOf(814,114,124,5,5),null)
-        expectThat(EventMessage.fromByteArray(sub.toByteArray()) ).isEqualTo(sub)
+        val sub = C2SEventMessage.Subscribe("event-123", "waefawef", byteArrayOf(814,114,124,5,5),null)
+        expectThat(C2SEventMessage.fromByteArray(sub.toByteArray()) ).isEqualTo(sub)
 
-        val sub2 = EventMessage.Subscribe("event-123", "waefawef", byteArrayOf(814,114,124,5,5),"test 123")
-        expectThat(EventMessage.fromByteArray(sub2.toByteArray()) ).isEqualTo(sub2)
+        val sub2 = C2SEventMessage.Subscribe("event-123", "waefawef", byteArrayOf(814,114,124,5,5),"test 123")
+        expectThat(C2SEventMessage.fromByteArray(sub2.toByteArray()) ).isEqualTo(sub2)
     }
     @Test
     fun testUnsubscribe() {
-        val sub = EventMessage.Unsubscribe("event-123", "waefawef")
-        expectThat(EventMessage.fromByteArray(sub.toByteArray()) ).isEqualTo(sub)
+        val sub = C2SEventMessage.Unsubscribe("event-123", "waefawef")
+        expectThat(C2SEventMessage.fromByteArray(sub.toByteArray()) ).isEqualTo(sub)
     }
+    @Test
+    fun testS2C() {
+        val emitted = S2CEventMessage.Emitted("ID1234141", "wfe:#!213".toByteArray())
+        expectThat(S2CEventMessage.fromString(emitted.toByteArray().decodeToString()) ).isEqualTo(emitted)
+        val error = S2CEventMessage.SubscriptionError("waefawef")
+        expectThat(S2CEventMessage.fromString(error.toByteArray().decodeToString()) ).isEqualTo(error)
+
+    }
+
 }
 
 private fun byteArrayOf(vararg ints: Int) = byteArrayOf(*ints.map { it.toByte() }.toByteArray())

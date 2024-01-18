@@ -59,21 +59,16 @@ test("Test targeted event", async () => {
     const format = JsonFormat
     const client = new AllEncompassingServiceApi(fetch, format)
 
-    function manualEventTargetTest(normal: string, target: number): Observable<string> {
-        return GeneratedCodeUtils.createObservable(fetch, format, "eventTargetTest", [normal, target], [StringSerializer, NumberSerializer], StringSerializer, target)
-    }
-
     let actualMessage1: string | null = null
     let actualMessage2: string | null = null
-    manualEventTargetTest("test 123", 1).observe(value => {
+    client.eventTargetTest("test 123", 1).observe(value => {
         actualMessage1 = value
     })
-    manualEventTargetTest("test 123", 2).observe(value => {
+    client.eventTargetTest("test 123", 2).observe(value => {
         actualMessage2 = value
     })
     await wait(1000)
 
-    // 		return GeneratedCodeUtils.createObservable(this.client, this.format, "eventTargetTest", [normal, target], [StringSerializer, NumberSerializer], StringSerializer, target)
     await client.invokeEventTargetTest(1)
 
     await wait(1000)

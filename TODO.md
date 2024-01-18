@@ -13,35 +13,7 @@ So this should not be allowed:
     Baz {}
 }
 ```
-Because we have switched to using the simple type name for each subtype, so Foo.Bar.Baz and Foo.Baz would conflict. 
-
-### Support Streaming
-
-I should support an appropriate conversion for the return type of Flow<T>
-
-### Events - support watched object id
-
-Watched Object id is a performance precaution to make invoking events faster.
-
-Consider Google had a Google Sheets event called 'sheet_changed'.If for every change in any sheet, all sheets would need to be checked in the event transformer, that would be extremely slow. However, if a singular sheet would receive a unique 'sheet-id', then whenever the sheet changes only subscriptions to the samesheet would be considered and it would be very efficient.
-
-We can see, that for any event there should be some way to focus the events onto some specific object.
-
-#### 1. Pass Watched Object Id in typescript client
-
-#### 2. Accept Watched Object Id in Kotlin 
-
-#### 3. Allow marking parameter as watched using @Watched annotation
-
-#### 4. Respect Watched object Id in EventManager implementations
-
-
-
-### Validate Event annotations
-
-1. Verify @Watched is unique, not @Dispatch and exists only on @RpcEvents
-2. 
-
+Because we have switched to using the simple type name for each subtype, so Foo.Bar.Baz and Foo.Baz would conflict.
 
 
 # 2. Low Priority - Do later
@@ -509,6 +481,14 @@ then use that id to make another request, without doing any extra round-trips.
 ### Allow splitting rpc server definitions across multiple classes/files
 
 @Api classes can get big and unwieldy, it should be possible to split them. 
+
+### Think of a way to simplify the "simple event" pattern:
+These types of events may be very common:
+```kotlin
+@RpcEvent fun foo(@Dispatch value: SomeType): SomeType {
+    return value
+}
+```
 
 # 5. Alpha
 

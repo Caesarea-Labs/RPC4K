@@ -56,7 +56,7 @@ internal class Rpc4kProcessor(private val env: SymbolProcessorEnvironment) : Sym
                 return
             }
 
-            val nameDuplicate = api.models.findDuplicate { it.name }
+            val nameDuplicate = api.models.findDuplicate { it.name.substringAfterLast(".") }
 
             // Since models are not namespaced, they cannot contain duplicate names
             apiClass.checkRequirement(env, nameDuplicate == null) { "There's two types with the name '$nameDuplicate', which is not allowed" }

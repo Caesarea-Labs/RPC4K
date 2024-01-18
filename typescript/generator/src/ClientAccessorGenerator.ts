@@ -62,6 +62,8 @@ function addEventSubscriber(event: RpcEventEndpoint, api: ApiDefinition, clazz: 
             // Return value serializers
             buildSerializer(event.returnType, {}, api.name)
         ]
+        const targetParam = subscriptionParams.find(param => param.isTarget)
+        if (targetParam !== undefined) args.push(targetParam.value.name)
         body.addReturningFunctionCall(GENERATED_CODE_UTILS_CREATE_OBSERVABLE, args)
     })
 }

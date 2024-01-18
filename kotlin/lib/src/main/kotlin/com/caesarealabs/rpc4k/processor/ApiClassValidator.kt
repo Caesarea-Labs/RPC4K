@@ -1,11 +1,15 @@
+@file:OptIn(KspExperimental::class)
+
 package com.caesarealabs.rpc4k.processor
 
+import com.caesarealabs.rpc4k.processor.utils.*
+import com.caesarealabs.rpc4k.runtime.api.Dispatch
+import com.caesarealabs.rpc4k.runtime.api.EventTarget
+import com.caesarealabs.rpc4k.runtime.api.RpcEvent
+import com.google.devtools.ksp.*
 import com.google.devtools.ksp.processing.Resolver
 import com.google.devtools.ksp.processing.SymbolProcessorEnvironment
 import com.google.devtools.ksp.symbol.*
-import com.caesarealabs.rpc4k.processor.utils.*
-import com.caesarealabs.rpc4k.runtime.api.RpcEvent
-import com.google.devtools.ksp.*
 import kotlinx.serialization.Contextual
 
 private const val TypeDiscriminatorField = "type"
@@ -118,7 +122,10 @@ internal class ApiClassValidator(private val env: SymbolProcessorEnvironment, pr
     }
 
     private fun checkApiClassIsValid(apiClass: KSClassDeclaration): Boolean {
-        val serializable = apiClass.getPublicApiFunctions().evaluateAll { checkIsSerializable(it) }
+        val serializable = apiClass.getPublicApiFunctions().evaluateAll {
+            val serializable = checkIsSerializable(it)
+            checkAnnotationsAreValid(it) && serializable
+        }
         return checkHasCompanionClass(apiClass) && serializable
     }
 
@@ -141,7 +148,6 @@ internal class ApiClassValidator(private val env: SymbolProcessorEnvironment, pr
         return apiClass.getPublicApiFunctions().evaluateAll { checkIsSuspendOpen(it, method = true) } && classOpen
     }
 
-    @OptIn(KspExperimental::class)
     private fun checkIsSuspendOpen(node: KSDeclaration, method: Boolean): Boolean {
         val messagePrefix = if (method) "Public API method in "
         else ""
@@ -164,6 +170,33 @@ internal class ApiClassValidator(private val env: SymbolProcessorEnvironment, pr
             }
 
             else -> true
+        }
+    }
+
+    //TODO: test these validations
+    private fun checkAnnotationsAreValid(function: KSFunctionDeclaration): Boolean {
+        if (function.isAnnotationPresent(RpcEvent::class)) {
+            val annotatedWithTargetCount = function.parameters.count { it.isAnnotationPresent(EventTarget::class) }
+            function.checkRequirement(env, annotatedWithTargetCount <= 1) {
+                "only one parameter may be annotated with @EventTarget"
+            }
+            return function.parameters.evaluateAll {
+                val annotatedByBoth = it.isAnnotationPresent(EventTarget::class) && it.isAnnotationPresent(Dispatch::class)
+                it.checkRequirement(env, !annotatedByBoth) {
+                    "@Dispatch and @EventTarget are mutually exclusive"
+                }
+            }
+        } else {
+            // No RpcEvent - disallow @Target/@Dispatch
+            return function.parameters.evaluateAll {
+                val target = it.checkRequirement(env, !it.isAnnotationPresent(EventTarget::class)) {
+                    "@EventTarget is only relevant on functions annotated with @RpcEvent"
+                }
+                val dispatch = it.checkRequirement(env, !it.isAnnotationPresent(Dispatch::class)) {
+                    "@Dispatch is only relevant on functions annotated with @RpcEvent"
+                }
+                target && dispatch
+            }
         }
     }
 

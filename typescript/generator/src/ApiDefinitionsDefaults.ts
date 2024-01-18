@@ -62,7 +62,7 @@ export function fillDefaultMethodValues(partialMethod: RpcDefinition): RpcDefini
 export function fillDefaultEventValues(partialMethod: RpcEventEndpoint): RpcEventEndpoint {
     return {
         name: partialMethod.name,
-        parameters: partialMethod.parameters.map(param => ({isDispatch: param.isDispatch, value: ({name: param.value.name, type: createRpcType(param.value.type)})})),
+        parameters: partialMethod.parameters.map(param => ({isDispatch: param.isDispatch, isTarget: param.isTarget, value: ({name: param.value.name, type: createRpcType(param.value.type)})})),
         returnType: createRpcType(partialMethod.returnType)
     }
 }
