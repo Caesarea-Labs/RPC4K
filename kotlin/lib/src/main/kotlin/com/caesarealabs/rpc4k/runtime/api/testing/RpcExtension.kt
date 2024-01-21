@@ -14,36 +14,36 @@ import org.junit.jupiter.api.extension.Extension
 import org.junit.jupiter.api.extension.ExtensionContext
 import kotlin.reflect.full.companionObjectInstance
 
-public fun <API, Invoker> rpcExtension(
+public fun <API, Invoker, C> rpcExtension(
     serverHandler: (Invoker) ->  API,
     port: Int = PortPool.get(),
     generatedClass: GeneratedServerHelper<API, Invoker>,
-    generatedClient: GeneratedClientImplFactory<API>,
+    generatedClient: GeneratedClientImplFactory<C>,
     format: SerializationFormat = JsonFormat(),
     server: RpcServerEngine.MultiCall = KtorManagedRpcServer(port = port),
     client: RpcClientFactory<API> = RpcClientFactory.OkHttp(),
-): ClientServerExtension<API, Invoker> {
+): ClientServerExtension<API, Invoker, C> {
     val url = "http://localhost:${port}"
     val websocketUrl = "$url/events"
     val serverSetup = RpcServerSetup(serverHandler, generatedClass, server, format)
     return ClientServerExtension(serverSetup, generatedClient.build(client.build(url, websocketUrl), format))
 }
 
-public inline fun <reified API, I> rpcExtension(
+public inline fun <reified API, I, C> rpcExtension(
     noinline serverHandler: (I) ->  API,
     port: Int = PortPool.get(),
     format: SerializationFormat = JsonFormat(),
     server: RpcServerEngine.MultiCall = KtorManagedRpcServer(port = port),
     client: RpcClientFactory<API> = RpcClientFactory.OkHttp()
-): ClientServerExtension<API, I> {
-    return rpcExtension(serverHandler, port, generatedServer(), apiClientFactory(), format, server, client)
+): ClientServerExtension<API, I, C> {
+    return rpcExtension(serverHandler, port, generatedServer(), apiClientFactory<API, C>(), format, server, client)
 }
 
 @Suppress("UNCHECKED_CAST")
 @PublishedApi
-internal inline fun <reified API> apiClientFactory(): GeneratedClientImplFactory<API> {
+internal inline fun <reified API, C> apiClientFactory(): GeneratedClientImplFactory<C> {
     return Class.forName(GeneratedCodeUtils.Package + "." + API::class.simpleName + GeneratedCodeUtils.ClientSuffix)
-        .kotlin.companionObjectInstance as GeneratedClientImplFactory<API>
+        .kotlin.companionObjectInstance as GeneratedClientImplFactory<C>
 }
 
 @Suppress("UNCHECKED_CAST")
@@ -54,8 +54,8 @@ internal inline fun <reified API, Invoker> generatedServer(): GeneratedServerHel
 }
 
 
-public class ClientServerExtension<API, I>(serverSetup: RpcServerSetup<API, RpcServerEngine.MultiCall, I>,
-                                           public val api: API) : Extension, BeforeAllCallback,
+public class ClientServerExtension<API, I, C>(serverSetup: RpcServerSetup<API, RpcServerEngine.MultiCall, I>,
+                                           public val client: C) : Extension, BeforeAllCallback,
     AfterAllCallback {
     private val serverExtension = MultiCallServerExtension(serverSetup)
     public val service: API = serverSetup.handler

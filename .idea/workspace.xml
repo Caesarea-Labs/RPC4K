@@ -5,30 +5,24 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="9ca8770c-8d9e-44a0-b1e9-2417666ce2c1" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/kotlin/lib/src/main/kotlin/com/caesarealabs/rpc4k/runtime/api/EventClient.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/kotlin/testerrors/BadAnnotations.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/kotlin/testerrors/TestDuplicateTypeName.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/kotlin/testapp/src/main/java/com/caesarealabs/rpc4k/testapp/EventsTest.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/compiler.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/gradle.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/gradle.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/TODO.md" beforeDir="false" afterPath="$PROJECT_DIR$/TODO.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/kotlin/lib/src/main/kotlin/com/caesarealabs/rpc4k/processor/ApiClassValidator.kt" beforeDir="false" afterPath="$PROJECT_DIR$/kotlin/lib/src/main/kotlin/com/caesarealabs/rpc4k/processor/ApiClassValidator.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/kotlin/lib/src/main/kotlin/com/caesarealabs/rpc4k/processor/Rpc4kProcessorProvider.kt" beforeDir="false" afterPath="$PROJECT_DIR$/kotlin/lib/src/main/kotlin/com/caesarealabs/rpc4k/processor/Rpc4kProcessorProvider.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/kotlin/lib/src/main/kotlin/com/caesarealabs/rpc4k/runtime/api/EventManager.kt" beforeDir="false" afterPath="$PROJECT_DIR$/kotlin/lib/src/main/kotlin/com/caesarealabs/rpc4k/runtime/api/EventManager.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/kotlin/lib/src/main/kotlin/com/caesarealabs/rpc4k/runtime/api/EventMessage.kt" beforeDir="false" afterPath="$PROJECT_DIR$/kotlin/lib/src/main/kotlin/com/caesarealabs/rpc4k/runtime/api/C2SEventMessage.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/kotlin/lib/src/main/kotlin/com/caesarealabs/rpc4k/runtime/api/RpcClient.kt" beforeDir="false" afterPath="$PROJECT_DIR$/kotlin/lib/src/main/kotlin/com/caesarealabs/rpc4k/runtime/api/RpcClient.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/kotlin/lib/src/main/kotlin/com/caesarealabs/rpc4k/runtime/api/RpcServerSetup.kt" beforeDir="false" afterPath="$PROJECT_DIR$/kotlin/lib/src/main/kotlin/com/caesarealabs/rpc4k/runtime/api/RpcServerSetup.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/kotlin/lib/src/main/kotlin/com/caesarealabs/rpc4k/runtime/api/components/OkHttpRpcClient.kt" beforeDir="false" afterPath="$PROJECT_DIR$/kotlin/lib/src/main/kotlin/com/caesarealabs/rpc4k/runtime/api/components/OkHttpRpcClient.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/kotlin/lib/src/main/kotlin/com/caesarealabs/rpc4k/processor/ApiDefinitionToClientCode.kt" beforeDir="false" afterPath="$PROJECT_DIR$/kotlin/lib/src/main/kotlin/com/caesarealabs/rpc4k/processor/ApiDefinitionToClientCode.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/kotlin/lib/src/main/kotlin/com/caesarealabs/rpc4k/processor/ApiDefinitionToServerCode.kt" beforeDir="false" afterPath="$PROJECT_DIR$/kotlin/lib/src/main/kotlin/com/caesarealabs/rpc4k/processor/ApiDefinitionToServerCode.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/kotlin/lib/src/main/kotlin/com/caesarealabs/rpc4k/processor/ApiDefinitionUtils.kt" beforeDir="false" afterPath="$PROJECT_DIR$/kotlin/lib/src/main/kotlin/com/caesarealabs/rpc4k/processor/ApiDefinitionUtils.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/kotlin/lib/src/main/kotlin/com/caesarealabs/rpc4k/runtime/api/Api.kt" beforeDir="false" afterPath="$PROJECT_DIR$/kotlin/lib/src/main/kotlin/com/caesarealabs/rpc4k/runtime/api/Api.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/kotlin/lib/src/main/kotlin/com/caesarealabs/rpc4k/runtime/api/GeneratedInterfaces.kt" beforeDir="false" afterPath="$PROJECT_DIR$/kotlin/lib/src/main/kotlin/com/caesarealabs/rpc4k/runtime/api/GeneratedInterfaces.kt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/kotlin/lib/src/main/kotlin/com/caesarealabs/rpc4k/runtime/api/testing/RpcExtension.kt" beforeDir="false" afterPath="$PROJECT_DIR$/kotlin/lib/src/main/kotlin/com/caesarealabs/rpc4k/runtime/api/testing/RpcExtension.kt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/kotlin/lib/src/main/kotlin/com/caesarealabs/rpc4k/runtime/implementation/GeneratedCodeUtils.kt" beforeDir="false" afterPath="$PROJECT_DIR$/kotlin/lib/src/main/kotlin/com/caesarealabs/rpc4k/runtime/implementation/GeneratedCodeUtils.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/kotlin/lib/src/main/kotlin/com/caesarealabs/rpc4k/runtime/implementation/KtorEventManager.kt" beforeDir="false" afterPath="$PROJECT_DIR$/kotlin/lib/src/main/kotlin/com/caesarealabs/rpc4k/runtime/implementation/KtorEventManager.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/kotlin/lib/src/main/kotlin/com/caesarealabs/rpc4k/runtime/implementation/RpcEventData.kt" beforeDir="false" afterPath="$PROJECT_DIR$/kotlin/lib/src/main/kotlin/com/caesarealabs/rpc4k/runtime/api/S2CEventMessage.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/kotlin/lib/src/main/kotlin/com/caesarealabs/rpc4k/runtime/implementation/ServerUtils.kt" beforeDir="false" afterPath="$PROJECT_DIR$/kotlin/lib/src/main/kotlin/com/caesarealabs/rpc4k/runtime/implementation/ServerUtils.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/kotlin/lib/src/test/kotlin/com/caesarealabs/rpc4k/test/EventMessageEncodingTest.kt" beforeDir="false" afterPath="$PROJECT_DIR$/kotlin/lib/src/test/kotlin/com/caesarealabs/rpc4k/test/EventMessageEncodingTest.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/typescript/generator/src/ApiDefinition.ts" beforeDir="false" afterPath="$PROJECT_DIR$/typescript/generator/src/ApiDefinition.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/typescript/generator/src/ApiDefinitionsDefaults.ts" beforeDir="false" afterPath="$PROJECT_DIR$/typescript/generator/src/ApiDefinitionsDefaults.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/kotlin/testapp/src/main/java/com/caesarealabs/rpc4k/testapp/AllEncompassingService.kt" beforeDir="false" afterPath="$PROJECT_DIR$/kotlin/testapp/src/main/java/com/caesarealabs/rpc4k/testapp/AllEncompassingService.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/kotlin/testapp/src/test/kotlin/com/caesarealabs/rpc4k/test/AllEncompassingTest.kt" beforeDir="false" afterPath="$PROJECT_DIR$/kotlin/testapp/src/test/kotlin/com/caesarealabs/rpc4k/test/AllEncompassingTest.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/kotlin/testapp/src/test/kotlin/com/caesarealabs/rpc4k/test/KtorServerTest.kt" beforeDir="false" afterPath="$PROJECT_DIR$/kotlin/testapp/src/test/kotlin/com/caesarealabs/rpc4k/test/KtorServerTest.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/kotlin/testapp/src/test/kotlin/com/caesarealabs/rpc4k/test/SimpleKtorServerTest.kt" beforeDir="false" afterPath="$PROJECT_DIR$/kotlin/testapp/src/test/kotlin/com/caesarealabs/rpc4k/test/SimpleKtorServerTest.kt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/typescript/generator/src/ClientAccessorGenerator.ts" beforeDir="false" afterPath="$PROJECT_DIR$/typescript/generator/src/ClientAccessorGenerator.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/typescript/runtime/src/RpcClient.ts" beforeDir="false" afterPath="$PROJECT_DIR$/typescript/runtime/src/RpcClient.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/typescript/runtime/src/components/WebsocketEventClient.ts" beforeDir="false" afterPath="$PROJECT_DIR$/typescript/runtime/src/components/WebsocketEventClient.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/typescript/generator/src/ClientGenerator.ts" beforeDir="false" afterPath="$PROJECT_DIR$/typescript/generator/src/ClientGenerator.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/typescript/runtime/test/CodegenedClientTest.test.ts" beforeDir="false" afterPath="$PROJECT_DIR$/typescript/runtime/test/CodegenedClientTest.test.ts" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -73,46 +67,12 @@
             <expand>
               <path>
                 <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
-                <item name="kotlin" type="f1a62948:ProjectNode" />
-              </path>
-              <path>
-                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
-                <item name="kotlin" type="f1a62948:ProjectNode" />
-                <item name="Tasks" type="e4a08cd1:TasksNode" />
-              </path>
-              <path>
-                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
                 <item name="RPC4K" type="f1a62948:ProjectNode" />
               </path>
               <path>
                 <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
                 <item name="RPC4K" type="f1a62948:ProjectNode" />
                 <item name="RPC4K" type="2d1252cf:ModuleNode" />
-              </path>
-              <path>
-                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
-                <item name="RPC4K" type="f1a62948:ProjectNode" />
-                <item name="RPC4K" type="2d1252cf:ModuleNode" />
-                <item name="Tasks" type="e4a08cd1:TasksNode" />
-              </path>
-              <path>
-                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
-                <item name="RPC4K" type="f1a62948:ProjectNode" />
-                <item name="RPC4K" type="2d1252cf:ModuleNode" />
-                <item name="Tasks" type="e4a08cd1:TasksNode" />
-                <item name="upload" type="c8890929:TasksNode$1" />
-              </path>
-              <path>
-                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
-                <item name="RPC4K" type="f1a62948:ProjectNode" />
-                <item name="RPC4K" type="2d1252cf:ModuleNode" />
-                <item name="lib" type="2d1252cf:ModuleNode" />
-              </path>
-              <path>
-                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
-                <item name="RPC4K" type="f1a62948:ProjectNode" />
-                <item name="RPC4K" type="2d1252cf:ModuleNode" />
-                <item name="testapp" type="2d1252cf:ModuleNode" />
               </path>
             </expand>
             <select />
@@ -158,6 +118,8 @@
     "Gradle.AllEncompassingTest.testEvents.executor": "Debug",
     "Gradle.AllEncompassingTest.testExoticTypes (1).executor": "Run",
     "Gradle.AllEncompassingTest.testExoticTypes.executor": "Run",
+    "Gradle.AllEncompassingTest.testGeneratedEvents (1).executor": "Run",
+    "Gradle.AllEncompassingTest.testGeneratedEvents.executor": "Run",
     "Gradle.Build kotlin.executor": "Run",
     "Gradle.DirectProcessorTest.Symbol processor success.executor": "Debug",
     "Gradle.Download Sources.executor": "Run",
@@ -271,7 +233,31 @@
       <recent name="com.caesarealabs.rpc4k.test" />
     </key>
   </component>
-  <component name="RunManager" selected="Gradle.EventMessageEncodingTest.testS2C">
+  <component name="RunManager" selected="Gradle.AllEncompassingTest.testGeneratedEvents (1)">
+    <configuration name="AllEncompassingTest.testGeneratedEvents (1)" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
+      <ExternalSystemSettings>
+        <option name="executionName" />
+        <option name="externalProjectPath" value="$PROJECT_DIR$/kotlin" />
+        <option name="externalSystemIdString" value="GRADLE" />
+        <option name="scriptParameters" value="" />
+        <option name="taskDescriptions">
+          <list />
+        </option>
+        <option name="taskNames">
+          <list>
+            <option value=":testapp:test" />
+            <option value="--tests" />
+            <option value="&quot;com.caesarealabs.rpc4k.test.AllEncompassingTest.testGeneratedEvents&quot;" />
+          </list>
+        </option>
+        <option name="vmOptions" />
+      </ExternalSystemSettings>
+      <ExternalSystemDebugServerProcess>false</ExternalSystemDebugServerProcess>
+      <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
+      <DebugAllEnabled>false</DebugAllEnabled>
+      <RunAsTest>true</RunAsTest>
+      <method v="2" />
+    </configuration>
     <configuration name="EventMessageEncodingTest.testS2C" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
       <ExternalSystemSettings>
         <option name="executionName" />
@@ -351,18 +337,9 @@
       <envs />
       <method v="2" />
     </configuration>
-    <configuration name="pubNoBump (1)" type="js.build_tools.npm" temporary="true" nameIsGenerated="true">
-      <package-json value="$PROJECT_DIR$/typescript/generator/package.json" />
-      <command value="run" />
-      <scripts>
-        <script value="pubNoBump" />
-      </scripts>
-      <node-interpreter value="project" />
-      <envs />
-      <method v="2" />
-    </configuration>
     <list>
       <item itemvalue="Gradle.Kotlin Tests" />
+      <item itemvalue="Gradle.AllEncompassingTest.testGeneratedEvents (1)" />
       <item itemvalue="Gradle.EventMessageEncodingTest.testS2C" />
       <item itemvalue="Gradle.TestServers.allEncompassingService (1)" />
       <item itemvalue="Jest.Standalone TS Tests" />
@@ -371,15 +348,14 @@
       <item itemvalue="npm.Build Runtime" />
       <item itemvalue="npm.Generate Client " />
       <item itemvalue="npm.pub" />
-      <item itemvalue="npm.pubNoBump (1)" />
     </list>
     <recent_temporary>
       <list>
-        <item itemvalue="Gradle.EventMessageEncodingTest.testS2C" />
-        <item itemvalue="Jest.Test targeted event" />
+        <item itemvalue="Gradle.AllEncompassingTest.testGeneratedEvents (1)" />
         <item itemvalue="Gradle.TestServers.allEncompassingService (1)" />
+        <item itemvalue="Jest.Test targeted event" />
+        <item itemvalue="Gradle.EventMessageEncodingTest.testS2C" />
         <item itemvalue="npm.pub" />
-        <item itemvalue="npm.pubNoBump (1)" />
       </list>
     </recent_temporary>
   </component>
@@ -534,7 +510,14 @@
       <workItem from="1705479561649" duration="1461000" />
       <workItem from="1705503245988" duration="3683000" />
       <workItem from="1705506939559" duration="2843000" />
-      <workItem from="1705558315358" duration="9089000" />
+      <workItem from="1705558315358" duration="9105000" />
+      <workItem from="1705652704461" duration="1333000" />
+      <workItem from="1705747789919" duration="49000" />
+      <workItem from="1705755145880" duration="307000" />
+      <workItem from="1705820088065" duration="2808000" />
+      <workItem from="1705853643788" duration="2319000" />
+      <workItem from="1705855974150" duration="1640000" />
+      <workItem from="1705868161044" duration="3447000" />
     </task>
     <servers />
   </component>

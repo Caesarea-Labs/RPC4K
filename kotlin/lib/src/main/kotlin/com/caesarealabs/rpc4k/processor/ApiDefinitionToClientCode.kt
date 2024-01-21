@@ -1,15 +1,15 @@
 package com.caesarealabs.rpc4k.processor
 
 import com.caesarealabs.rpc4k.processor.ApiDefinitionUtils.ignoreExperimentalWarnings
-import com.squareup.kotlinpoet.*
-import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy
 import com.caesarealabs.rpc4k.processor.utils.poet.*
 import com.caesarealabs.rpc4k.runtime.api.GeneratedClientImplFactory
 import com.caesarealabs.rpc4k.runtime.api.RpcClient
 import com.caesarealabs.rpc4k.runtime.api.SerializationFormat
 import com.caesarealabs.rpc4k.runtime.implementation.GeneratedCodeUtils
 import com.caesarealabs.rpc4k.runtime.implementation.kotlinPoet
-import kotlinx.serialization.ExperimentalSerializationApi
+import com.squareup.kotlinpoet.*
+import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy
+import kotlinx.coroutines.flow.Flow
 
 /**
  * Converts
@@ -52,6 +52,8 @@ internal object ApiDefinitionToClientCode {
     private const val FormatPropertyName = "format"
     private val sendMethod = GeneratedCodeUtils::class.methodName("send")
     private val requestMethod = GeneratedCodeUtils::class.methodName("request")
+    private val subscribe = GeneratedCodeUtils::class.methodName("subscribe")
+
     /**
      * @param userClassIsInterface When we are generating both a client and a server, it's useful to make the generated class
      * extend the user class. We need to know if the user class is an interface or not to properly extend/implement it.
@@ -74,9 +76,10 @@ internal object ApiDefinitionToClientCode {
                     addConstructorProperty(ClientPropertyName, type = RpcClient::class, KModifier.PRIVATE)
                     addConstructorProperty(FormatPropertyName, type = SerializationFormat::class, KModifier.PRIVATE)
                 }
-                val userClassName = apiDefinition.name.kotlinPoet
-                if (userClassIsInterface) addSuperinterface(userClassName) else superclass(userClassName)
-                for (method in apiDefinition.methods) addFunction(convertMethod(method))
+//                val userClassName = apiDefinition.name.kotlinPoet
+//                if (userClassIsInterface) addSuperinterface(userClassName) else superclass(userClassName)
+                for (method in apiDefinition.methods) addFunction(requestMethod(method))
+                for (event in apiDefinition.events) addFunction(eventSubMethod(event))
             }
         }
     }
@@ -95,12 +98,13 @@ internal object ApiDefinitionToClientCode {
      */
 //    context(JvmContext)
     private fun factoryCompanionObject(api: RpcApi, generatedClassName: String) = companionObject(GeneratedCodeUtils.FactoryName) {
-        addSuperinterface(GeneratedClientImplFactory::class.asClassName().parameterizedBy(api.name.kotlinPoet))
+        val generatedClientClass = ClassName(GeneratedCodeUtils.Package,generatedClassName)
+        addSuperinterface(GeneratedClientImplFactory::class.asClassName().parameterizedBy(generatedClientClass))
         addFunction("build") {
             addModifiers(KModifier.OVERRIDE)
             addParameter(ClientPropertyName, RpcClient::class)
             addParameter(FormatPropertyName, SerializationFormat::class)
-            returns(api.name.kotlinPoet)
+            returns(generatedClientClass)
             addStatement("return $generatedClassName($ClientPropertyName, $FormatPropertyName)")
         }
     }
@@ -123,11 +127,12 @@ internal object ApiDefinitionToClientCode {
             addStatement("return $generatedClassName($ClientPropertyName, $FormatPropertyName)")
         }
 
-    private fun convertMethod(rpcDefinition: RpcFunction): FunSpec = funSpec(rpcDefinition.name) {
-        // We need to call network methods in this
-        addModifiers(KModifier.SUSPEND, KModifier.OVERRIDE)
 
-        for (argument in rpcDefinition.parameters) addParameter(convertArgument(argument))
+    private fun requestMethod(rpcDefinition: RpcFunction): FunSpec = funSpec(rpcDefinition.name) {
+        // We need to call network methods in this
+        addModifiers(KModifier.SUSPEND/*, KModifier.OVERRIDE*/)
+
+        for (argument in rpcDefinition.parameters) addParameter(requestParameter(argument))
         val returnType = rpcDefinition.returnType
         returns(returnType.typeName)
 
@@ -157,9 +162,49 @@ internal object ApiDefinitionToClientCode {
         this.addStatement("return ".plusFormat(method.withArgumentList(arguments)))
     }
 
-    private fun convertArgument(arg: RpcParameter): ParameterSpec {
+
+    private fun requestParameter(arg: RpcParameter): ParameterSpec {
         return ParameterSpec(arg.name, arg.type.typeName)
     }
-}
 
+    /**
+     * Creates a method akin to
+     * ```kotlin
+     *         suspend fun eventTargetTest(normal: String, target: Int): Flow<String> {
+     *         return createFlow(client, format, "eventTargetTest", listOf(normal), listOf(String.serializer()), String.serializer(), target)
+     *     }
+     * ```
+     */
+    private fun eventSubMethod(event: RpcEventEndpoint): FunSpec = funSpec(event.name) {
+        // We need to call network methods in this
+        addModifiers(KModifier.SUSPEND)
+
+        for (argument in event.parameters) {
+            if (!argument.isDispatch) addParameter(requestParameter(argument.value))
+        }
+        val returnType = Flow::class.asClassName().parameterizedBy(event.returnType.typeName)
+        returns(returnType)
+
+        val normalArgs = event.parameters.filter { !it.isDispatch && !it.isTarget }.map { it.value.name }
+
+
+        val arguments = mutableListOf(
+            ClientPropertyName,
+            FormatPropertyName,
+            "%S".formatWith(event.name),
+//            We only need the dispatch parameters
+            if (normalArgs.isEmpty()) "listOf<Nothing>()" else ApiDefinitionUtils.listOfFunction.withArgumentList(normalArgs),
+            ApiDefinitionUtils.listOfEventSerializers(event),
+            event.returnType.toSerializerString()
+        )
+
+        val targetParameter = event.parameters.find { it.isTarget }
+
+        // Pass the target if its relevant
+        if (targetParameter != null) arguments.add(targetParameter.value.name)
+
+        this.addStatement("return ".plusFormat(subscribe.withArgumentList(arguments)))
+    }
+
+}
 

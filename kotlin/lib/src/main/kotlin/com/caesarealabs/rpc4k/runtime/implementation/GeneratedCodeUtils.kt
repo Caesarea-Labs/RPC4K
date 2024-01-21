@@ -54,22 +54,13 @@ public object GeneratedCodeUtils {
         val rpc = Rpc(methodName, args)
         client.send(rpc, format, argSerializers)
     }
-//        export function createObservable<T>(client: RpcClient, format: SerializationFormat, event: string, args: unknown[],
-//                                        argSerializers: TsSerializer<unknown>[], eventSerializer: TsSerializer<T>,
-//                                        target?: unknown): Observable<T> {
-//        const listenerId = client.events.generateUuid()
-//        const payload = format.encode(new TupleSerializer(argSerializers), args)
-//        return client.events.createObservable(
-//            //TODO: this probably breaks in binary formats
-//            // This byte -> string conversion is prob inefficient
-//            `sub:${event}:${listenerId}:${String(target) ?? ""}:${textDecoder.decode(payload)}`,
-//            `unsub:${event}:${listenerId}`,
-//            listenerId
-//            //TODO: this string -> bytes conversion is also inefficient
-//        ).map((value) => format.decode(eventSerializer, textEncoder.encode(value)))
-//    }
 
-    public suspend fun <T> createFlow(
+    /**
+     * @param target Note that here we don't have an issue with 'empty string' conflicting with 'no target' because
+     * the server already defines when a target is necessary. When a target is needed, empty string is interpreted as empty string,
+     * when a target is not needed, empty string, null, or anything else will be treated as 'no target'.
+     */
+    public suspend fun <T> subscribe(
         client: RpcClient,
         format: SerializationFormat,
         event: String,
@@ -114,6 +105,7 @@ public object GeneratedCodeUtils {
         resultSerializer: KSerializer<T>,
         transform: suspend (args: List<*>) -> T
     ): ByteArray {
+        //TODO: try/catch deserialization to discard bad events
         val parsed = setup.format.decode(TupleSerializer(argDeserializers), subscriptionData)
         return setup.format.encode(resultSerializer, transform(parsed))
     }

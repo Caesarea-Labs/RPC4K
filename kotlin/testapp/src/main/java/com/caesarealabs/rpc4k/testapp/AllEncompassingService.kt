@@ -322,12 +322,11 @@ open class AllEncompassingService(val value: Int = 1, val invoker: AllEncompassi
     }
 
     //TODO: 1.
-    // 3. Document EventTarget being both dispatch and sub
     // 4. Implement dispatch/subscription gen for EventTarget
 
     @RpcEvent
-    open suspend fun eventTargetTest(normal: String, @EventTarget target: Int,@Dispatch dispatch: Float): String {
-        return "${normal} ${target} ${dispatch}"
+    open suspend fun eventTargetTest(normal: String, @EventTarget target: Int,@Dispatch dispatch: Float, normalAfterTarget: Foo): String {
+        return "${normal} ${target} ${dispatch} ${normalAfterTarget.x}"
     }
 
     open suspend fun invokeEventTargetTest(target: Int): String {
@@ -341,8 +340,8 @@ open class AllEncompassingService(val value: Int = 1, val invoker: AllEncompassi
 
 
 //
-
-
+@Serializable
+data class Foo(val x: Int)
 
 
 

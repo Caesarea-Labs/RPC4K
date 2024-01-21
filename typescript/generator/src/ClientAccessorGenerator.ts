@@ -47,18 +47,22 @@ export function generateAccessor(api: ApiDefinition, rawApi: ApiDefinition, opti
 }
 
 function addEventSubscriber(event: RpcEventEndpoint, api: ApiDefinition, clazz: ClassBuilder) {
+    // Dispatch is passed by the invoker on the server
     const subscriptionParams = event.parameters.filter(param => !param.isDispatch)
     const params: [string, TsType][] = subscriptionParams
         .map(param => [param.value.name, typescriptRpcType(param.value.type, api.name)])
 
     const returnType = OBSERVABLE(typescriptRpcType(event.returnType, api.name))
 
+    //  (the target is passed separately)
+    const normalParams = subscriptionParams.filter(param => !param.isTarget)
+
     clazz.addFunction(event.name, params, returnType, (body) => {
         const args = [
             "this.client", "this.format", `"${event.name}"`,
-            arrayLiteral(params.map(([name]) => name)),
+            arrayLiteral(normalParams.map((param) => param.value.name)),
             // Param serializers
-            arrayLiteral(subscriptionParams.map((param) => buildSerializer(param.value.type, {}, api.name))),
+            arrayLiteral(normalParams.map((param) => buildSerializer(param.value.type, {}, api.name))),
             // Return value serializers
             buildSerializer(event.returnType, {}, api.name)
         ]

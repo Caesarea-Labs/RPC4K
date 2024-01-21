@@ -81,9 +81,11 @@ internal object ApiDefinitionToServerCode {
     private fun FileSpec.Builder.addApiHelperClass(className: String, apiDefinition: RpcApi) {
         addClass(className) {
             addSuperinterface(
-                GeneratedServerHelper::class.asClassName().parameterizedBy(apiDefinition.name.kotlinPoet, ClassName(GeneratedCodeUtils.Package,
-                    invokerClassName(apiDefinition)
-                )
+                GeneratedServerHelper::class.asClassName().parameterizedBy(
+                    apiDefinition.name.kotlinPoet, ClassName(
+                        GeneratedCodeUtils.Package,
+                        invokerClassName(apiDefinition)
+                    )
                 )
             )
             addFunction(handleRequestMethod(apiDefinition))
@@ -339,10 +341,10 @@ internal object ApiDefinitionToServerCode {
         val targetParameter = event.targetParameter?.name
 
         // Type inference fails when there are no params so we need to explicitly pass <Nothing> as the type param
-        val listOfCall = if(dispatchParameters.isEmpty()) "listOf<Nothing>()"
+        val listOfCall = if (dispatchParameters.isEmpty()) "listOf<Nothing>()"
         else "listOf(${dispatchParameters.joinToString { it.name }})"
 
-        val codeUtilsFunction = if(targetParameter != null) "invokeTargetedEvent" else "invokeEvent"
+        val codeUtilsFunction = if (targetParameter != null) "invokeTargetedEvent" else "invokeEvent"
 
         addCode(
             "%T.${codeUtilsFunction}(%S, ${listOfCall}, ${SetupParamName}!!, ${targetParameter ?: ""})",

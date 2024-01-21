@@ -3,12 +3,17 @@
 
 package com.caesarealabs.rpc4k.test
 
+import com.caesarealabs.rpc4k.generated.AllEncompassingServiceClientImpl
 import com.caesarealabs.rpc4k.generated.AllEncompassingServiceEventInvoker
+import com.caesarealabs.rpc4k.generated.SimpleProtocolClientImpl
 import com.caesarealabs.rpc4k.generated.SimpleProtocolEventInvoker
-import com.caesarealabs.rpc4k.runtime.api.RpcResponseException
+import com.caesarealabs.rpc4k.runtime.api.*
 import com.caesarealabs.rpc4k.runtime.api.testing.rpcExtension
 import com.caesarealabs.rpc4k.testapp.*
+import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import okhttp3.HttpUrl.Companion.toHttpUrl
 import okhttp3.OkHttpClient
@@ -29,15 +34,49 @@ import kotlin.test.assertEquals
 import kotlin.time.Duration.Companion.milliseconds
 
 
+//TODO: Invokers should accept a AnyRpcServerSetup instead of a specific one
+
+
+class Rpc4kSuite<Server, Client, Invoker>(val server: Server, val networkClient: Client, val memoryClient: Client, val invoker: Invoker)
+
+//TODO: get rid of other factories in favor of this
+//TODO: integrate this to simplify dealing with generated classes
+interface GeneratedSuiteFactory<Server, Client, Invoker> {
+    val createNetworkClient: (rpcClient: RpcClient, format: SerializationFormat) -> Client
+    val createMemoryClient: (server: Server) -> Client
+    val createInvoker: (RpcSetupOf<Server>) -> Invoker
+//    fun createMemoryClient()
+//    fun create(serverSetup: AnyRpcServerSetup, clientSetup: RpcClient): GeneratedRpc4kSuite<Client, Invoker>
+}
+
+fun <Client, Invoker, Server> GeneratedSuiteFactory<Server, Client, Invoker>.createFull(
+    server: Server,
+    serverSetup: RpcSetupOf<Server>,
+    clientSetup: RpcClient
+): Rpc4kSuite<Server, Client, Invoker> {
+    return Rpc4kSuite(server, createNetworkClient(clientSetup,serverSetup.format), createMemoryClient(server), createInvoker(serverSetup))
+}
+
+object AllEncompassingGeneratedSuite : GeneratedSuiteFactory<AllEncompassingService, AllEncompassingServiceClientImpl, AllEncompassingServiceEventInvoker> {
+    override val createInvoker = ::AllEncompassingServiceEventInvoker
+    override val createMemoryClient get() =  TODO()
+    override val createNetworkClient = ::AllEncompassingServiceClientImpl
+}
+
+
+
+
 class AllEncompassingTest {
     companion object {
         @JvmField
         @RegisterExtension
-        val allEncompassingExtension = rpcExtension<AllEncompassingService,AllEncompassingServiceEventInvoker>({ AllEncompassingService(invoker = it) })
+        val allEncompassingExtension = rpcExtension<AllEncompassingService, AllEncompassingServiceEventInvoker, AllEncompassingServiceClientImpl>({
+            AllEncompassingService(invoker = it)
+        })
 
         @JvmField
         @RegisterExtension
-        val simpleExtension = rpcExtension<SimpleProtocol,SimpleProtocolEventInvoker>({ SimpleProtocol() })
+        val simpleExtension = rpcExtension<SimpleProtocol, SimpleProtocolEventInvoker, SimpleProtocolClientImpl>({ SimpleProtocol() })
     }
 
     @Test
@@ -47,7 +86,7 @@ class AllEncompassingTest {
         var actualMessage: String? = null
 
 
-        val webSocket = OkHttpClient().newWebSocket(Request("http://localhost:8080/events".toHttpUrl()), object: WebSocketListener() {
+        val webSocket = OkHttpClient().newWebSocket(Request("http://localhost:8080/events".toHttpUrl()), object : WebSocketListener() {
             override fun onMessage(webSocket: WebSocket, bytes: ByteString) {
                 println("Got message: ${bytes.string(Charset.defaultCharset())}")
             }
@@ -56,7 +95,7 @@ class AllEncompassingTest {
                 actualMessage = text
             }
         })
-        
+
 
         webSocket.send("sub:eventTest:121b9a71-20f6-4d6c-91a2-4f0f1550d9ac::[\"Test string\"]")
         delay(1000)
@@ -69,8 +108,30 @@ class AllEncompassingTest {
     }
 
     @Test
+    fun testGeneratedEvents(): Unit = runBlocking {
+        val server = allEncompassingExtension.service
+        val client = allEncompassingExtension.client
+        var actualMessage: String? = null
+
+        GlobalScope.launch {
+            client.eventTest("Test string").collectLatest {
+                actualMessage = it
+            }
+        }
+
+
+        delay(1000)
+
+        server.tinkerWithEvents()
+
+        delay(1000)
+
+        expectThat(actualMessage).isEqualTo("Test string5")
+    }
+
+    @Test
     fun testUsage(): Unit = runBlocking {
-        val protocol = allEncompassingExtension.api
+        val protocol = allEncompassingExtension.client
         val response = protocol.createLobby(PlayerId(123), "alo")
         assertEquals(CreateLobbyResponse(126), response)
         val response2 = protocol.killSomeone(111, PlayerId(5), Unit)
@@ -97,7 +158,7 @@ class AllEncompassingTest {
 
     @Test
     fun testNullableTypes(): Unit = runBlocking {
-        val protocol = allEncompassingExtension.api
+        val protocol = allEncompassingExtension.client
         expectThat(protocol.heavyNullable(AllEncompassingService.HeavyNullableTestMode.EntirelyNull)).isEqualTo(null)
         expectThat(protocol.heavyNullable(AllEncompassingService.HeavyNullableTestMode.NullList)).isEqualTo(GenericThing(null, null, listOf()))
         expectThat(protocol.heavyNullable(AllEncompassingService.HeavyNullableTestMode.NullString)).isEqualTo(
@@ -111,7 +172,7 @@ class AllEncompassingTest {
 
     @Test
     fun testManual(): Unit = runBlocking {
-        val protocol = simpleExtension.api
+        val protocol = simpleExtension.client
         val response = protocol.bar(2)
         assertEquals(3, response)
     }
@@ -119,18 +180,18 @@ class AllEncompassingTest {
     @Test
     fun testExceptions(): Unit = runBlocking {
         expectThrows<RpcResponseException> {
-            allEncompassingExtension.api.errorTest()
+            allEncompassingExtension.client.errorTest()
         }.get { code == 500 }
 
         expectThrows<RpcResponseException> {
-            allEncompassingExtension.api.requirementTest()
+            allEncompassingExtension.client.requirementTest()
         }.get { code == 400 }
     }
 
     @Test
     fun testExoticTypes(): Unit = runBlocking {
         val y = "Asdf"
-        val protocol = allEncompassingExtension.api
+        val protocol = allEncompassingExtension.client
         expectThat(protocol.withNullsTest(WithNulls(listOf("2", null), y = y)))
             .isEqualTo(WithNulls(listOf(1, null), y))
 

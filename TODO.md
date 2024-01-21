@@ -4,20 +4,41 @@
 2. Handle format/internal error events in the client - print an error and remove from the listener lists. 
 ### Handle flushing out old event subscriptions
 Maybe handling erronous events is good enough?
-### Make sure we do not allow duplicate type names an a sealed hierarchy
-So this should not be allowed:
-```sealed interface Foo {
-    Bar {
-    Baz {}
-    }
-    Baz {}
+
+### Consolidate generated classes:
+```kotlin
+interface Rpc4kGeneratedClasses<Server, Client, Invoker, > {
+    val server: Server
+    val networkClientFactory: GeneratedClientImplFactory<Client>
+    val memoryClientFactory: GeneratedMemoryClientFactory<Client>
+    val invoker: Invoker
+}
+
+interface GeneratedMemoryClientFactory<C, Server> {
+    fun create(server: Server): C
 }
 ```
-Because we have switched to using the simple type name for each subtype, so Foo.Bar.Baz and Foo.Baz would conflict.
+1. Rename GeneratedClientImpl to GeneratedClient
+2. Rename GeneratedClientImplFactory to GeneratedNetworkClientFactory
+3. Generate an instance of this for every service
+4. Get rid of factories - i don't think i need them anymore
+5. Use this in test frameworks in such
+
+### Lift 'open class / functions' restriction
+We no longer override the service class, so:
+1. Remove KSP checks
+2. Change classes to no longer be open
+3. Stop providing defaults value for the constructor - we don't need it anymore. 
+4. Lift EventInvoker nullability of the rpcSetup because we don't need to create a stub invoker anymore
+4. Run tests again, the 'open check' tests are no longer valid so they should be removed. 
+
 
 
 # 2. Low Priority - Do later
-
+### Improve server testing with "in-memory-server" client generation
+For every service, in addition to generating a client that interacts with the server from network, there should also be a client that 
+interacts with an actual server instance in-memory. This is because we no longer override the service class in the generated client, 
+so we need a unified interface for testing. 
 
 
 ### Support optional properties

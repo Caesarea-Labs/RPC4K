@@ -54,6 +54,9 @@ test("Test events", async () => {
     expect(actualMessage).toEqual("test5")
 })
 
+
+//TODO:  - The server is passing around the target parameter when it shouldn't
+
 test("Test targeted event", async () => {
     const fetch = new FetchRpcClient("http://localhost:8080", new NodejsWebsocket("http://localhost:8080/events"))
     const format = JsonFormat
@@ -61,10 +64,10 @@ test("Test targeted event", async () => {
 
     let actualMessage1: string | null = null
     let actualMessage2: string | null = null
-    client.eventTargetTest("test 123", 1).observe(value => {
+    client.eventTargetTest("test 123", 1, {x: 3}).observe(value => {
         actualMessage1 = value
     })
-    client.eventTargetTest("test 123", 2).observe(value => {
+    client.eventTargetTest("test 123", 2, {x: 5}).observe(value => {
         actualMessage2 = value
     })
     await wait(1000)
@@ -73,13 +76,13 @@ test("Test targeted event", async () => {
 
     await wait(1000)
 
-    expect(actualMessage1).toEqual("test 123 1 1234.0")
+    expect(actualMessage1).toEqual("test 123 1 1234.0 3")
     expect(actualMessage2).toEqual(null)
     await client.invokeEventTargetTest(2)
     await wait(1000)
 
-    expect(actualMessage1).toEqual("test 123 1 1234.0")
-    expect(actualMessage2).toEqual("test 123 2 1234.0")
+    expect(actualMessage1).toEqual("test 123 1 1234.0 3")
+    expect(actualMessage2).toEqual("test 123 2 1234.0 5")
 })
 
 test("Complex events", async () => {

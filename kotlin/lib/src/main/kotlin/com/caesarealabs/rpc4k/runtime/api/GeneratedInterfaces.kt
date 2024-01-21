@@ -21,6 +21,6 @@ public interface GeneratedServerHelper<T, Invoker> {
  * Some api methods accept this factory since it's much easier to just pass a factory rather than the [Api] instance itself
  * since actually creating a [Api] can be hard.
  */
-public interface GeneratedClientImplFactory<Api> {
-    public fun build(client: RpcClient, format: SerializationFormat): Api
+public interface GeneratedClientImplFactory<Client> {
+    public fun build(client: RpcClient, format: SerializationFormat): Client
 }

@@ -21,7 +21,8 @@ internal object ApiDefinitionUtils {
     }
 
     fun listOfEventSerializers(rpc: RpcEventEndpoint): FormattedString {
-        return listOfFunction.withArgumentList(rpc.parameters.filter { !it.isDispatch }.map { it.value.type.toSerializerString() })
+        // We don't need to deserialize the target either because we have it as a normal kotlin value coming from the invoker.
+        return listOfFunction.withArgumentList(rpc.parameters.filter { !it.isDispatch && !it.isTarget }.map { it.value.type.toSerializerString() })
     }
     fun FileSpec.Builder.ignoreExperimentalWarnings() {
         addAnnotation(AnnotationSpec.builder(optIn).addMember("%T::class, %T::class", experimentalUnsignedTypes, experimentalSerializationApi).build())

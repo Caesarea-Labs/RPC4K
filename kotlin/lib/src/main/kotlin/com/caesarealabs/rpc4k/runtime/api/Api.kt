@@ -43,6 +43,8 @@ public annotation class RpcEvent
  * Marks a value as the target of the event, meaning if the event is invoked for target X, only subscriptions that
  * have specified their target as X will be invoked.
  *
+ * Since on every invocation the EventTarget needs to be checked, an @EventTarget parameter is required both when invoking the event and when subscribing to it.
+ *
  * This is mainly meant for [String]s, but any type can be used and will be converted to a [String] via [toString].
  *
  * This allows increasing the performance of certain events significantly.

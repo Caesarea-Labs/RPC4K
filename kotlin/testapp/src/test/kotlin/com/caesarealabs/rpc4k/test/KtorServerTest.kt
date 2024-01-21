@@ -1,5 +1,6 @@
 package com.caesarealabs.rpc4k.test
 
+import com.caesarealabs.rpc4k.generated.BasicApiClientImpl
 import com.caesarealabs.rpc4k.generated.BasicApiEventInvoker
 import com.caesarealabs.rpc4k.runtime.api.Api
 import com.caesarealabs.rpc4k.runtime.api.testing.rpcExtension
@@ -15,12 +16,12 @@ class KtorServerTest {
     companion object {
         @JvmField
         @RegisterExtension
-        val extension = rpcExtension<BasicApi,BasicApiEventInvoker>({ BasicApi() })
+        val extension = rpcExtension<BasicApi,BasicApiEventInvoker, BasicApiClientImpl>({ BasicApi() })
     }
 
     @Test
     fun `Basic RPCs work`(): Unit = runBlocking {
-        val client = extension.api
+        val client = extension.client
         val dog = Dog("asdf", "shiba", 2)
         client.putDog(dog)
         val dogs = client.getDogs(2, "shiba")

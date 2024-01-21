@@ -23,7 +23,14 @@ export function generateClientModel(definitionJson: string, writeTo: string, opt
     } catch (e) {
         throw Error("Invalid json file provided for definition of API")
     }
-    const api = fillDefaultApiDefinitionValues(rawApi)
+    let api: ApiDefinition
+    try {
+        api = fillDefaultApiDefinitionValues(rawApi)
+    } catch (e) {
+        console.error(`Could not fill default values for given RPC definition: ${definitionJson}`)
+        throw "Test"
+        // throw e
+    }
     const models = generateModels(api.models, api.name, options)
     const accessor = generateAccessor(api, rawApi, options)
     const serializers = generateSerializers(api.models, options, api.name)
