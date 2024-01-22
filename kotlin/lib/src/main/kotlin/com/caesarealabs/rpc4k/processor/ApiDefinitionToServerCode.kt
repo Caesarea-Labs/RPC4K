@@ -3,6 +3,7 @@ package com.caesarealabs.rpc4k.processor
 import com.caesarealabs.rpc4k.processor.ApiDefinitionUtils.ignoreExperimentalWarnings
 import com.caesarealabs.rpc4k.processor.utils.poet.*
 import com.caesarealabs.rpc4k.runtime.api.GeneratedServerHelper
+import com.caesarealabs.rpc4k.runtime.api.Rpc4kIndex
 import com.caesarealabs.rpc4k.runtime.implementation.GeneratedCodeUtils
 import com.caesarealabs.rpc4k.runtime.implementation.kotlinPoet
 import com.squareup.kotlinpoet.*
@@ -48,20 +49,55 @@ import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy
  *
  * Which makes running client code much easier.
  */
-internal object ApiDefinitionToServerCode {
-    private const val SetupParamName: String = "setup"
-    private const val UserHandlerPropertyName = "handler"
-    private val wildcardType = WildcardTypeName.producerOf(ANY.copy(nullable = true))
-    private val rpcSetupOf = ClassName("com.caesarealabs.rpc4k.runtime.api", "RpcSetupOf")
+internal class ApiDefinitionToServerCode(private val api: RpcApi) {
+    companion object {
+        private const val SetupParamName: String = "setup"
+        private const val UserHandlerPropertyName = "handler"
+        private val wildcardType = WildcardTypeName.producerOf(ANY.copy(nullable = true))
+        private val rpcSetupOf = ClassName("com.caesarealabs.rpc4k.runtime.api", "RpcSetupOf")
 
-    private const val RequestParamName = "request"
-    private const val MethodParamName = "method"
+        private const val RequestParamName = "request"
+        private const val MethodParamName = "method"
 
-    private val respondUtilsMethod = GeneratedCodeUtils::class.methodName("respond")
-    private val transformEventUtilsMethod = GeneratedCodeUtils::class.methodName("transformEvent")
+        private val respondUtilsMethod = GeneratedCodeUtils::class.methodName("respond")
+        private val transformEventUtilsMethod = GeneratedCodeUtils::class.methodName("transformEvent")
+        private const val InvokerSuffix = "EventInvoker"
 
-    fun convert(apiDefinition: RpcApi): FileSpec {
-        val className = "${apiDefinition.name.simple}${GeneratedCodeUtils.ServerSuffix}"
+        private const val DispatcherDataParamName = "dispatcherData"
+        private const val SubscriptionDataParamName = "subscriptionData"
+        private const val EventParamName = "event"
+
+    }
+
+    private val invokerName = "${api.name.simple}${InvokerSuffix}"
+    private val invokerClassName = ClassName(GeneratedCodeUtils.Package, invokerName)
+    private val clientClassName = ClassName(GeneratedCodeUtils.Package, api.name.simple + GeneratedCodeUtils.ClientSuffix)
+    private val serverClassName = api.name.kotlinPoet
+    private val rpcSetup = rpcSetupOf.parameterizedBy(WildcardTypeName.producerOf(serverClassName))
+
+    //TODO: replace
+    //      1.
+    //  private val setup: RpcSetupOf<out AllEncompassingService> -->
+//     private val config: EventConfig<AllEncompassingService>,
+    // 2. Get rid of 'create invoker' and such, we don't need them anymore.
+    // 3. Generate this as the body of invokers:
+    //       GeneratedCodeUtils.invokeEvent(config, "eventTest",listOf(String.serializer()),String.serializer(),) {
+    //          config.handler.eventTest(dispatchParam, it[0] as String)
+    //      }
+    // - Make sure to do target.toString() when targets exist
+    // 4. Get rid of events routers
+
+    //TODO:
+    // Later...
+    // 1. Fixup broken functions and interfaces
+    // 2. Use Rpc4kIndex for tests
+    // 3. Replace the API to all be extensions on Rpc4kIndex:
+    //   MyApi.rpc4k.createServer(...)
+    //   MyApi.rpc4k.createClient(...)
+    //   MyApi.rpc4k.junitExtension(...)
+
+    fun convert(): FileSpec {
+        val className = "${api.name.simple}${GeneratedCodeUtils.ServerSuffix}"
         return fileSpec(GeneratedCodeUtils.Package, className) {
             // I know what I'm doing, Kotlin!
             addAnnotation(AnnotationSpec.builder(Suppress::class).addMember("%S", "UNCHECKED_CAST").build())
@@ -71,26 +107,24 @@ internal object ApiDefinitionToServerCode {
             addImport("kotlinx.serialization.builtins", "serializer")
             addImport("kotlinx.serialization.builtins", "nullable")
 
-            addFunction(serverConstructorExtension(apiDefinition, generatedClassName = className))
+            addFunction(serverConstructorExtension(generatedClassName = className))
+            addProperty(rpc4kGeneratedSuiteExtension())
 
-            addApiHelperClass(className, apiDefinition)
-            addInvokerClass(apiDefinition)
+            addApiHelperClass(className)
+            addInvokerClass()
         }
     }
 
-    private fun FileSpec.Builder.addApiHelperClass(className: String, apiDefinition: RpcApi) {
+    private fun FileSpec.Builder.addApiHelperClass(className: String) {
         addClass(className) {
             addSuperinterface(
                 GeneratedServerHelper::class.asClassName().parameterizedBy(
-                    apiDefinition.name.kotlinPoet, ClassName(
-                        GeneratedCodeUtils.Package,
-                        invokerClassName(apiDefinition)
-                    )
+                    serverClassName, invokerClassName
                 )
             )
-            addFunction(handleRequestMethod(apiDefinition))
-            addFunction(handleEventMethod(apiDefinition))
-            addFunction(invokerProviderFunction(apiDefinition))
+            addFunction(handleRequestMethod())
+            addFunction(handleEventMethod())
+            addFunction(invokerProviderFunction())
         }
     }
 
@@ -98,12 +132,11 @@ internal object ApiDefinitionToServerCode {
 //    return AllEncompassingServiceEventInvoker()
 //  }
 
-    private fun invokerProviderFunction(apiDefinition: RpcApi): FunSpec = funSpec("createInvoker") {
+    private fun invokerProviderFunction(): FunSpec = funSpec("createInvoker") {
         addModifiers(KModifier.OVERRIDE)
-        addParameter(SetupParamName, rpcSetupOfApi(apiDefinition))
-        val invoker = ClassName(GeneratedCodeUtils.Package, invokerClassName(apiDefinition))
-        returns(invoker)
-        addCode("return %T($SetupParamName)", invoker)
+        addParameter(SetupParamName, rpcSetup)
+        returns(invokerClassName)
+        addCode("return %T($SetupParamName)", invokerClassName)
     }
 
     /**
@@ -114,31 +147,35 @@ internal object ApiDefinitionToServerCode {
      *   fun MyApi.Companion.server(api: MyApi, format: SerializationFormat, server: RpcServer) = MyApiServerImpl(api, format, server)
      *   ```
      */
-    private fun serverConstructorExtension(api: RpcApi, generatedClassName: String) =
-        extensionFunction(api.name.kotlinPoet.companion(), "server") {
+    private fun serverConstructorExtension(generatedClassName: String) =
+        extensionFunction(serverClassName.companion(), "server") {
             returns(ClassName(GeneratedCodeUtils.Package, generatedClassName))
             addStatement("return $generatedClassName()")
         }
 
+    /**
+     * val MyApi.Companion.server = object : GeneratedSuiteFactory<MyApi, AllEncompassingServiceClientImpl, AllEncompassingServiceEventInvoker> {
+     *     override val createInvoker = ::AllEncompassingServiceEventInvoker
+     *     override val createMemoryClient get() =  TODO()
+     *     override val createNetworkClient = ::AllEncompassingServiceClientImpl
+     * }
+     *
+     */
+    private fun rpc4kGeneratedSuiteExtension(): PropertySpec {
+        val suiteType = Rpc4kIndex::class.asTypeName().parameterizedBy(serverClassName, clientClassName, invokerClassName)
+        return extensionProperty(serverClassName.companion(), "rpc4k", suiteType) {
+            addCode("""
+                            |return object: %T {
+                            |   override val createInvoker = ::%T
+                            |   override val createMemoryClient get() = TODO()
+                            |   override val createNetworkClient get() = ::%T
+                            |}
+                            |""".trimMargin(),
+                suiteType,invokerClassName, clientClassName
+            )
+        }
+    }
 
-    // Change 1:
-// public class AllEncompassingServiceServerImpl : GeneratedServerHelper<AllEncompassingService > -->
-// public class AllEncompassingServiceServerImpl : GeneratedServerHelper<AllEncompassingService,AllEncompassingServiceEventInvoker>
-
-
-// Change 2, in handleRequest:
-// setup: RpcServerSetup<AllEncompassingService, *>, -->
-// setup: RpcSetupOf<out AllEncompassingService>,
-
-    // DONE
-// Change 3, in handleEvent::
-// setup: RpcServerSetup<out AllEncompassingService, *>, ->
-// setup: RpcSetupOf<out AllEncompassingService>,
-
-// Change 4, Add:
-//   override fun createInvoker(setup: RpcSetupOf<out AllEncompassingService>): AllEncompassingServiceEventInvoker {
-//    return AllEncompassingServiceEventInvoker()
-//  }
 
 
     /**
@@ -160,13 +197,13 @@ internal object ApiDefinitionToServerCode {
      *     }
      * ```
      */
-    private fun handleRequestMethod(api: RpcApi): FunSpec = funSpec("handleRequest") {
+    private fun handleRequestMethod(): FunSpec = funSpec("handleRequest") {
         // This overrides GeneratedServerHandler
         addModifiers(KModifier.OVERRIDE, KModifier.SUSPEND)
 
         addParameter(RequestParamName, ByteArray::class)
         addParameter(MethodParamName, String::class)
-        addParameter(SetupParamName, rpcSetupOfApi(api))
+        addParameter(SetupParamName, rpcSetup)
 
         returns(BYTE_ARRAY.copy(nullable = true))
 
@@ -178,11 +215,8 @@ internal object ApiDefinitionToServerCode {
         }
     }
 
-    private fun rpcSetupOfApi(api: RpcApi) = rpcSetupOf.parameterizedBy(WildcardTypeName.producerOf(api.name.kotlinPoet))
 
-    private const val DispatcherDataParamName = "dispatcherData"
-    private const val SubscriptionDataParamName = "subscriptionData"
-    private const val EventParamName = "event"
+
 
     /**
      * Produces
@@ -211,14 +245,14 @@ internal object ApiDefinitionToServerCode {
      *
      *
      */
-    private fun handleEventMethod(api: RpcApi): FunSpec = funSpec("handleEvent") {
+    private fun handleEventMethod(): FunSpec = funSpec("handleEvent") {
         // This overrides GeneratedServerHandler
         addModifiers(KModifier.OVERRIDE, KModifier.SUSPEND)
 
         addParameter(DispatcherDataParamName, List::class.asClassName().parameterizedBy(wildcardType))
         addParameter(SubscriptionDataParamName, ByteArray::class)
         addParameter(EventParamName, String::class)
-        addParameter(SetupParamName, rpcSetupOfApi(api))
+        addParameter(SetupParamName, rpcSetup)
 
         returns(BYTE_ARRAY.copy(nullable = true))
         addControlFlow("return when($EventParamName)") {
@@ -297,9 +331,8 @@ internal object ApiDefinitionToServerCode {
         }
     }
 
-    private const val InvokerSuffix = "EventInvoker"
 
-    private fun invokerClassName(apiDefinition: RpcApi) = "${apiDefinition.name.simple}${InvokerSuffix}"
+
 
     /**
      * Generates something like this:
@@ -315,15 +348,15 @@ internal object ApiDefinitionToServerCode {
      * }
      * ```
      */
-    private fun FileSpec.Builder.addInvokerClass(apiDefinition: RpcApi) {
-        addClass(invokerClassName(apiDefinition)) {
+    private fun FileSpec.Builder.addInvokerClass() {
+        addClass(invokerName) {
 
             addPrimaryConstructor {
-                addConstructorProperty(SetupParamName, rpcSetupOfApi(apiDefinition).copy(nullable = true), KModifier.PRIVATE)
+                addConstructorProperty(SetupParamName, rpcSetup.copy(nullable = true), KModifier.PRIVATE)
             }
 //            superclass(GeneratedEventInvoker::class.asClassName().parameterizedBy(apiDefinition.name.kotlinPoet))
 
-            for (event in apiDefinition.events) {
+            for (event in api.events) {
                 addFunction(eventInvoker(event))
             }
         }

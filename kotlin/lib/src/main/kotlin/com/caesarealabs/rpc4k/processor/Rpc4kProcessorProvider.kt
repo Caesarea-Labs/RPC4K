@@ -64,11 +64,11 @@ internal class Rpc4kProcessor(private val env: SymbolProcessorEnvironment) : Sym
 
             val file = apiClass.containingFile!!
             val files = listOf(file)
-            if (apiClass.shouldGenerateClient()) {
+//            if (apiClass.shouldGenerateClient()) {
                 ApiDefinitionToClientCode.convert(api, userClassIsInterface = apiClass.classKind == ClassKind.INTERFACE)
                     .writeTo(codeGenerator, false, files)
-            }
-            ApiDefinitionToServerCode.convert(api).writeTo(codeGenerator, false, files)
+//            }
+            ApiDefinitionToServerCode(api).convert().writeTo(codeGenerator, false, files)
             ApiDefinitionWriter.writeRpcJsons(api, codeGenerator, file)
         }
 

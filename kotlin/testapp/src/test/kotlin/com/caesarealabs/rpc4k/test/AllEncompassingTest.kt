@@ -34,34 +34,20 @@ import kotlin.test.assertEquals
 import kotlin.time.Duration.Companion.milliseconds
 
 
-//TODO: Invokers should accept a AnyRpcServerSetup instead of a specific one
 
 
-class Rpc4kSuite<Server, Client, Invoker>(val server: Server, val networkClient: Client, val memoryClient: Client, val invoker: Invoker)
 
 //TODO: get rid of other factories in favor of this
 //TODO: integrate this to simplify dealing with generated classes
-interface GeneratedSuiteFactory<Server, Client, Invoker> {
-    val createNetworkClient: (rpcClient: RpcClient, format: SerializationFormat) -> Client
-    val createMemoryClient: (server: Server) -> Client
-    val createInvoker: (RpcSetupOf<Server>) -> Invoker
-//    fun createMemoryClient()
-//    fun create(serverSetup: AnyRpcServerSetup, clientSetup: RpcClient): GeneratedRpc4kSuite<Client, Invoker>
-}
+//TODO: split the suite into server only and client + server? for now i'm gonna gen client always
 
-fun <Client, Invoker, Server> GeneratedSuiteFactory<Server, Client, Invoker>.createFull(
-    server: Server,
-    serverSetup: RpcSetupOf<Server>,
-    clientSetup: RpcClient
-): Rpc4kSuite<Server, Client, Invoker> {
-    return Rpc4kSuite(server, createNetworkClient(clientSetup,serverSetup.format), createMemoryClient(server), createInvoker(serverSetup))
-}
 
-object AllEncompassingGeneratedSuite : GeneratedSuiteFactory<AllEncompassingService, AllEncompassingServiceClientImpl, AllEncompassingServiceEventInvoker> {
-    override val createInvoker = ::AllEncompassingServiceEventInvoker
-    override val createMemoryClient get() =  TODO()
-    override val createNetworkClient = ::AllEncompassingServiceClientImpl
-}
+
+//object AllEncompassingGeneratedSuite : GeneratedSuiteFactory<AllEncompassingService, AllEncompassingServiceClientImpl, AllEncompassingServiceEventInvoker> {
+//    override val createInvoker = ::AllEncompassingServiceEventInvoker
+//    override val createMemoryClient get() =  TODO()
+//    override val createNetworkClient = ::AllEncompassingServiceClientImpl
+//}
 
 
 
@@ -81,7 +67,7 @@ class AllEncompassingTest {
 
     @Test
     fun testEvents(): Unit = runBlocking {
-        val api = allEncompassingExtension.service
+        val api = allEncompassingExtension.server
 
         var actualMessage: String? = null
 
@@ -109,7 +95,7 @@ class AllEncompassingTest {
 
     @Test
     fun testGeneratedEvents(): Unit = runBlocking {
-        val server = allEncompassingExtension.service
+        val server = allEncompassingExtension.server
         val client = allEncompassingExtension.client
         var actualMessage: String? = null
 

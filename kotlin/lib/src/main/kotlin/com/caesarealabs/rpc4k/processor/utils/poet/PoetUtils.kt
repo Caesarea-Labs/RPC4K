@@ -15,6 +15,10 @@ internal inline fun extensionFunction(receiver: TypeName, name: String, builder:
     receiver(receiver)
     builder()
 }.build()
+internal inline fun extensionProperty(receiver: TypeName, name: String,propertyType: TypeName, builder: FunSpec.Builder.() -> Unit) = PropertySpec.builder(name,propertyType).apply {
+    receiver(receiver)
+    getter(FunSpec.getterBuilder().apply(builder).build())
+}.build()
 
 
 internal fun companionObject(name: String? = null, contents: TypeSpec.Builder.() -> Unit = {}) =

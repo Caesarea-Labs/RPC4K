@@ -37,9 +37,3 @@ private suspend fun <I, O> RpcServerEngine.SingleCall<I, O>.genericErrorResponde
     is RpcServerEngine.SingleCall.Writing -> writeError(message, errorType, output!!).let { null }
 }
 
-internal suspend fun AnyRpcServerSetup.transformEvent(dispatcherData: List<*>, subscription: C2SEventMessage.Subscribe): ByteArray? {
-    val helper = generatedHelper as GeneratedServerHelper<Any?, Any?>
-    val result = helper.handleEvent(dispatcherData, subscription.data, subscription.event, this) ?: return null
-    return S2CEventMessage.Emitted(subscription.listenerId, result).toByteArray()
-}
-

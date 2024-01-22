@@ -4,13 +4,13 @@ package com.caesarealabs.rpc4k.runtime.api
  * All generated server classes implement this interface, to make usage easier.
  * Some api methods use this interface, but you can also use it yourself
  */
-public interface GeneratedServerHelper<T, Invoker> {
-    public suspend fun handleRequest(request: ByteArray, method: String, setup: RpcSetupOf<out T>): ByteArray?
+public interface GeneratedServerHelper<T> {
+    public suspend fun handleRequest(request: ByteArray, method: String, setup: HandlerConfig<T>): ByteArray?
     public suspend fun handleEvent(dispatcherData: List<*>,
                                    subscriptionData: ByteArray,
                                    event: String,
-                                   setup: RpcSetupOf<out T>): ByteArray?
-    public fun createInvoker(setup: RpcSetupOf<out T>): Invoker
+                                   setup: HandlerConfig<T>): ByteArray?
+//    public fun createInvoker(setup: RpcSetupOf<out T>): Invoker
 }
 
 

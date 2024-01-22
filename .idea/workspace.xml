@@ -4,48 +4,23 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="9ca8770c-8d9e-44a0-b1e9-2417666ce2c1" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/kotlin/testapp/src/main/java/com/caesarealabs/rpc4k/testapp/EventsTest.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/compiler.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/gradle.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/gradle.xml" afterDir="false" />
+    <list default="true" id="564650a1-bc6e-416d-b8da-72123f2dbf05" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/kotlin/lib/src/main/kotlin/com/caesarealabs/rpc4k/runtime/api/Rpc4kGenerations.kt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/TODO.md" beforeDir="false" afterPath="$PROJECT_DIR$/TODO.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/kotlin/lib/src/main/kotlin/com/caesarealabs/rpc4k/processor/ApiDefinitionToClientCode.kt" beforeDir="false" afterPath="$PROJECT_DIR$/kotlin/lib/src/main/kotlin/com/caesarealabs/rpc4k/processor/ApiDefinitionToClientCode.kt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/kotlin/lib/src/main/kotlin/com/caesarealabs/rpc4k/processor/ApiDefinitionToServerCode.kt" beforeDir="false" afterPath="$PROJECT_DIR$/kotlin/lib/src/main/kotlin/com/caesarealabs/rpc4k/processor/ApiDefinitionToServerCode.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/kotlin/lib/src/main/kotlin/com/caesarealabs/rpc4k/processor/ApiDefinitionUtils.kt" beforeDir="false" afterPath="$PROJECT_DIR$/kotlin/lib/src/main/kotlin/com/caesarealabs/rpc4k/processor/ApiDefinitionUtils.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/kotlin/lib/src/main/kotlin/com/caesarealabs/rpc4k/runtime/api/Api.kt" beforeDir="false" afterPath="$PROJECT_DIR$/kotlin/lib/src/main/kotlin/com/caesarealabs/rpc4k/runtime/api/Api.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/kotlin/lib/src/main/kotlin/com/caesarealabs/rpc4k/processor/Rpc4kProcessorProvider.kt" beforeDir="false" afterPath="$PROJECT_DIR$/kotlin/lib/src/main/kotlin/com/caesarealabs/rpc4k/processor/Rpc4kProcessorProvider.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/kotlin/lib/src/main/kotlin/com/caesarealabs/rpc4k/processor/utils/poet/PoetUtils.kt" beforeDir="false" afterPath="$PROJECT_DIR$/kotlin/lib/src/main/kotlin/com/caesarealabs/rpc4k/processor/utils/poet/PoetUtils.kt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/kotlin/lib/src/main/kotlin/com/caesarealabs/rpc4k/runtime/api/GeneratedInterfaces.kt" beforeDir="false" afterPath="$PROJECT_DIR$/kotlin/lib/src/main/kotlin/com/caesarealabs/rpc4k/runtime/api/GeneratedInterfaces.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/kotlin/lib/src/main/kotlin/com/caesarealabs/rpc4k/runtime/api/RpcServerSetup.kt" beforeDir="false" afterPath="$PROJECT_DIR$/kotlin/lib/src/main/kotlin/com/caesarealabs/rpc4k/runtime/api/RpcServerSetup.kt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/kotlin/lib/src/main/kotlin/com/caesarealabs/rpc4k/runtime/api/testing/RpcExtension.kt" beforeDir="false" afterPath="$PROJECT_DIR$/kotlin/lib/src/main/kotlin/com/caesarealabs/rpc4k/runtime/api/testing/RpcExtension.kt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/kotlin/lib/src/main/kotlin/com/caesarealabs/rpc4k/runtime/implementation/GeneratedCodeUtils.kt" beforeDir="false" afterPath="$PROJECT_DIR$/kotlin/lib/src/main/kotlin/com/caesarealabs/rpc4k/runtime/implementation/GeneratedCodeUtils.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/kotlin/testapp/src/main/java/com/caesarealabs/rpc4k/testapp/AllEncompassingService.kt" beforeDir="false" afterPath="$PROJECT_DIR$/kotlin/testapp/src/main/java/com/caesarealabs/rpc4k/testapp/AllEncompassingService.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/kotlin/lib/src/main/kotlin/com/caesarealabs/rpc4k/runtime/implementation/ServerUtils.kt" beforeDir="false" afterPath="$PROJECT_DIR$/kotlin/lib/src/main/kotlin/com/caesarealabs/rpc4k/runtime/implementation/ServerUtils.kt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/kotlin/testapp/src/test/kotlin/com/caesarealabs/rpc4k/test/AllEncompassingTest.kt" beforeDir="false" afterPath="$PROJECT_DIR$/kotlin/testapp/src/test/kotlin/com/caesarealabs/rpc4k/test/AllEncompassingTest.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/kotlin/testapp/src/test/kotlin/com/caesarealabs/rpc4k/test/KtorServerTest.kt" beforeDir="false" afterPath="$PROJECT_DIR$/kotlin/testapp/src/test/kotlin/com/caesarealabs/rpc4k/test/KtorServerTest.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/kotlin/testapp/src/test/kotlin/com/caesarealabs/rpc4k/test/SimpleKtorServerTest.kt" beforeDir="false" afterPath="$PROJECT_DIR$/kotlin/testapp/src/test/kotlin/com/caesarealabs/rpc4k/test/SimpleKtorServerTest.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/typescript/generator/src/ClientAccessorGenerator.ts" beforeDir="false" afterPath="$PROJECT_DIR$/typescript/generator/src/ClientAccessorGenerator.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/typescript/generator/src/ClientGenerator.ts" beforeDir="false" afterPath="$PROJECT_DIR$/typescript/generator/src/ClientGenerator.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/typescript/runtime/test/CodegenedClientTest.test.ts" beforeDir="false" afterPath="$PROJECT_DIR$/typescript/runtime/test/CodegenedClientTest.test.ts" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
-  </component>
-  <component name="ExternalProjectsData">
-    <projectState path="$PROJECT_DIR$/exampleapp/kotlin">
-      <ProjectState />
-    </projectState>
-    <projectState path="$PROJECT_DIR$/kotlin">
-      <ProjectState />
-    </projectState>
-    <projectState path="$PROJECT_DIR$/kotlin/plugin">
-      <ProjectState />
-    </projectState>
-    <projectState path="$PROJECT_DIR$/kotlin/testprodapp">
-      <ProjectState />
-    </projectState>
-    <projectState path="$PROJECT_DIR$/testprodapp/kotlin">
-      <ProjectState />
-    </projectState>
   </component>
   <component name="ExternalProjectsManager">
     <system id="GRADLE">
@@ -53,53 +28,17 @@
         <task path="$PROJECT_DIR$/kotlin">
           <activation />
         </task>
-        <task path="$PROJECT_DIR$/kotlin/lib">
-          <activation />
-        </task>
-        <task path="$PROJECT_DIR$/exampleapp/kotlin">
-          <activation />
-        </task>
-        <task path="$PROJECT_DIR$/kotlin/testapp">
-          <activation />
-        </task>
-        <projects_view>
-          <tree_state>
-            <expand>
-              <path>
-                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
-                <item name="RPC4K" type="f1a62948:ProjectNode" />
-              </path>
-              <path>
-                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
-                <item name="RPC4K" type="f1a62948:ProjectNode" />
-                <item name="RPC4K" type="2d1252cf:ModuleNode" />
-              </path>
-            </expand>
-            <select />
-          </tree_state>
-        </projects_view>
+        <projects_view />
       </state>
     </system>
-  </component>
-  <component name="FileTemplateManagerImpl">
-    <option name="RECENT_TEMPLATES">
-      <list>
-        <option value="Kotlin File" />
-        <option value="Kotlin Class" />
-      </list>
-    </option>
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
-  <component name="KubernetesApiProvider">{
-  &quot;isMigrated&quot;: true
-}</component>
-  <component name="ProjectColorInfo">{
-  &quot;customColor&quot;: &quot;&quot;,
-  &quot;associatedIndex&quot;: 2
-}</component>
-  <component name="ProjectId" id="2XFJSSMKWQCXxDQnmpEmmpUqvQe" />
+  <component name="ProjectColorInfo"><![CDATA[{
+  "associatedIndex": 4
+}]]></component>
+  <component name="ProjectId" id="2bJrgVF4jnLUnuBfhqzD4hOeGWK" />
   <component name="ProjectLevelVcsManager">
     <ConfirmationsSetting value="2" id="Add" />
   </component>
@@ -112,436 +51,38 @@
   </component>
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
-    "Gradle.AllEncompassingTest (1).executor": "Run",
-    "Gradle.AllEncompassingTest.executor": "Run",
-    "Gradle.AllEncompassingTest.testEvents (1).executor": "Run",
-    "Gradle.AllEncompassingTest.testEvents.executor": "Debug",
-    "Gradle.AllEncompassingTest.testExoticTypes (1).executor": "Run",
-    "Gradle.AllEncompassingTest.testExoticTypes.executor": "Run",
-    "Gradle.AllEncompassingTest.testGeneratedEvents (1).executor": "Run",
-    "Gradle.AllEncompassingTest.testGeneratedEvents.executor": "Run",
-    "Gradle.Build kotlin.executor": "Run",
-    "Gradle.DirectProcessorTest.Symbol processor success.executor": "Debug",
-    "Gradle.Download Sources.executor": "Run",
-    "Gradle.EventMessageEncodingTest.testS2C.executor": "Run",
-    "Gradle.Kotlin Tests.executor": "Run",
-    "Gradle.KtorServerTest.Basic RPCs work.executor": "Run",
-    "Gradle.Test Server.executor": "Run",
-    "Gradle.TestServers.allEncompassingService (1).executor": "Run",
-    "Gradle.TestServers.allEncompassingService.executor": "Run",
-    "Gradle.Upload Rpc4k.executor": "Run",
-    "Gradle.kotlin [:plugin:publishPlugins].executor": "Run",
-    "Gradle.kotlin [uploadLibrary].executor": "Run",
-    "Gradle.kotlin:lib [publishToSonatype].executor": "Run",
-    "JUnit.DirectProcessorTest.Symbol processor success.executor": "Debug",
-    "Jest.AllEncompassing server based TS tests.executor": "Run",
-    "Jest.Can decode array of generated class.executor": "Run",
-    "Jest.Can decode array of nested generated class.executor": "Run",
-    "Jest.Codegened Client works in all cases (1).executor": "Run",
-    "Jest.Codegened Client works in all cases.executor": "Run",
-    "Jest.Codegened Client works in more cases.executor": "Run",
-    "Jest.Codegened Client works.executor": "Run",
-    "Jest.Complex events.executor": "Run",
-    "Jest.Parse behavior.executor": "Run",
-    "Jest.Standalone TS Tests.executor": "Run",
-    "Jest.Stringify behavior.executor": "Run",
-    "Jest.Stringify key value behavior.executor": "Run",
-    "Jest.Stringify undefined top level.executor": "Run",
-    "Jest.Test AnotherModelHolder serialization from string.executor": "Run",
-    "Jest.Test AnotherModelHolder serialization to string.executor": "Run",
-    "Jest.Test Enum serialization from string.executor": "Run",
-    "Jest.Test Enum serialization to string.executor": "Run",
-    "Jest.Test GenericThing serialization from string.executor": "Run",
-    "Jest.Test GenericThing serialization.executor": "Run",
-    "Jest.Test Polymorphic serialization from string.executor": "Run",
-    "Jest.Test Polymorphic serialization to string.executor": "Run",
-    "Jest.Test Tree serialization to string (1).executor": "Run",
-    "Jest.Test Tree serialization to string.executor": "Run",
-    "Jest.Test codegen.executor": "Run",
-    "Jest.Test constructor dynamics.executor": "Run",
-    "Jest.Test enum values.executor": "Run",
-    "Jest.Test events.executor": "Run",
-    "Jest.Test fromString.executor": "Debug",
-    "Jest.Test targeted event.executor": "Run",
-    "Jest.Test toString (1).executor": "Run",
-    "Kotlin.SerializationTestKt.executor": "Debug",
-    "Kotlin.ServiceModelsInOtherFileKt.executor": "Run",
-    "Kotlin.TestCompKt.executor": "Run",
-    "Kotlin.UnrelatedTestKt.executor": "Run",
     "RunOnceActivity.OpenProjectViewOnStart": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
-    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
-    "WebServerToolWindowFactoryState": "false",
     "git-widget-placeholder": "main",
-    "ignore.virus.scanning.warn.message": "true",
     "kotlin-language-version-configured": "true",
-    "last_opened_file_path": "C:/Users/natan/Desktop/RPC4K/typescript/runtime/test/CodegenedClientTest.test.ts",
     "node.js.detected.package.eslint": "true",
-    "node.js.detected.package.standard": "true",
-    "node.js.detected.package.tslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.standard": "",
     "node.js.selected.package.tslint": "(autodetect)",
-    "nodejs.jest.jest_package": "C:/Users/natan/Desktop/RPC4K/typescript/runtime/node_modules/jest",
     "nodejs_package_manager_path": "npm",
-    "npm.Build Runtime.executor": "Run",
-    "npm.Generate Client .executor": "Run",
-    "npm.Generate Client.executor": "Run",
-    "npm.build (1).executor": "Run",
-    "npm.build.executor": "Run",
-    "npm.build:main (1).executor": "Run",
-    "npm.build:main.executor": "Run",
-    "npm.generateClient.executor": "Run",
-    "npm.pub (1).executor": "Run",
-    "npm.pub.executor": "Run",
-    "npm.pubNoBump (1).executor": "Run",
-    "npm.pubNoBump (2).executor": "Run",
-    "npm.pubNoBump.executor": "Run",
-    "project.structure.last.edited": "Modules",
-    "project.structure.proportion": "0.0",
-    "project.structure.side.proportion": "0.2",
-    "settings.editor.selected.configurable": "build.tools",
-    "ts.external.directory.path": "C:\\Users\\natan\\Desktop\\ts-minimum\\node_modules\\typescript\\lib",
     "vue.rearranger.settings.migration": "true"
   }
 }]]></component>
-  <component name="RecentsManager">
-    <key name="CopyFile.RECENT_KEYS">
-      <recent name="C:\Users\natan\Desktop\RPC4K\typescript\runtime\src\impl" />
-      <recent name="C:\Users\natan\Desktop\RPC4K\kotlin\plugin" />
-      <recent name="C:\Users\natan\Desktop\RPC4K\exampleapp\kotlin" />
-      <recent name="C:\Users\natan\Desktop\RPC4K\typescript\runtime\test\serialization" />
-      <recent name="C:\Users\natan\Desktop\RPC4K\typescript\runtime\src" />
-    </key>
-    <key name="MoveFile.RECENT_KEYS">
-      <recent name="C:\Users\natan\Desktop\RPC4K\kotlin\testerrors" />
-      <recent name="C:\Users\natan\Desktop\RPC4K\kotlin\testapp\src\main\java\com\caesarealabs\rpc4k\testapp" />
-      <recent name="C:\Users\natan\Desktop\RPC4K\typescript\generator\src" />
-      <recent name="C:\Users\natan\Desktop\RPC4K\kotlin\testapp\src\main\java\com\clabs\rpc4k\testapp" />
-      <recent name="C:\Users\natan\Desktop\RPC4K\typescript\generator\src\code" />
-    </key>
-    <key name="es6.move.members.recent.items">
-      <recent name="C:\Users\natan\Desktop\RPC4K\typescript\runtime\src\Observable.ts" />
-      <recent name="C:\Users\natan\Desktop\RPC4K\typescript\runtime\src\serialization\BuiltinSerializers.ts" />
-      <recent name="C:\Users\natan\Desktop\RPC4K\typescript\runtime\src\serialization\builtins\PrimitiveSerialDescriptor.ts" />
-      <recent name="C:\Users\natan\Desktop\RPC4K\typescript\runtime\src\serialization\core\encoding\CompositeEncoder.ts" />
-    </key>
-    <key name="MoveKotlinTopLevelDeclarationsDialog.RECENTS_KEY">
-      <recent name="com.caesarealabs.rpc4k.runtime.api" />
-    </key>
-    <key name="CopyKotlinDeclarationDialog.RECENTS_KEY">
-      <recent name="com.caesarealabs.rpc4k.test" />
-    </key>
-  </component>
-  <component name="RunManager" selected="Gradle.AllEncompassingTest.testGeneratedEvents (1)">
-    <configuration name="AllEncompassingTest.testGeneratedEvents (1)" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
-      <ExternalSystemSettings>
-        <option name="executionName" />
-        <option name="externalProjectPath" value="$PROJECT_DIR$/kotlin" />
-        <option name="externalSystemIdString" value="GRADLE" />
-        <option name="scriptParameters" value="" />
-        <option name="taskDescriptions">
-          <list />
-        </option>
-        <option name="taskNames">
-          <list>
-            <option value=":testapp:test" />
-            <option value="--tests" />
-            <option value="&quot;com.caesarealabs.rpc4k.test.AllEncompassingTest.testGeneratedEvents&quot;" />
-          </list>
-        </option>
-        <option name="vmOptions" />
-      </ExternalSystemSettings>
-      <ExternalSystemDebugServerProcess>false</ExternalSystemDebugServerProcess>
-      <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
-      <DebugAllEnabled>false</DebugAllEnabled>
-      <RunAsTest>true</RunAsTest>
-      <method v="2" />
-    </configuration>
-    <configuration name="EventMessageEncodingTest.testS2C" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
-      <ExternalSystemSettings>
-        <option name="executionName" />
-        <option name="externalProjectPath" value="$PROJECT_DIR$/kotlin" />
-        <option name="externalSystemIdString" value="GRADLE" />
-        <option name="scriptParameters" value="" />
-        <option name="taskDescriptions">
-          <list />
-        </option>
-        <option name="taskNames">
-          <list>
-            <option value=":lib:test" />
-            <option value="--tests" />
-            <option value="&quot;com.caesarealabs.rpc4k.test.EventMessageEncodingTest.testS2C&quot;" />
-          </list>
-        </option>
-        <option name="vmOptions" />
-      </ExternalSystemSettings>
-      <ExternalSystemDebugServerProcess>false</ExternalSystemDebugServerProcess>
-      <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
-      <DebugAllEnabled>false</DebugAllEnabled>
-      <RunAsTest>true</RunAsTest>
-      <method v="2" />
-    </configuration>
-    <configuration name="TestServers.allEncompassingService (1)" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
-      <ExternalSystemSettings>
-        <option name="executionName" />
-        <option name="externalProjectPath" value="$PROJECT_DIR$/kotlin" />
-        <option name="externalSystemIdString" value="GRADLE" />
-        <option name="scriptParameters" value="" />
-        <option name="taskDescriptions">
-          <list />
-        </option>
-        <option name="taskNames">
-          <list>
-            <option value=":testapp:test" />
-            <option value="--tests" />
-            <option value="&quot;com.caesarealabs.rpc4k.testserver.TestServers.allEncompassingService&quot;" />
-          </list>
-        </option>
-        <option name="vmOptions" />
-      </ExternalSystemSettings>
-      <ExternalSystemDebugServerProcess>false</ExternalSystemDebugServerProcess>
-      <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
-      <DebugAllEnabled>false</DebugAllEnabled>
-      <RunAsTest>true</RunAsTest>
-      <method v="2" />
-    </configuration>
-    <configuration name="FullTest based TS tests" type="JavaScriptTestRunnerJest">
-      <node-interpreter value="project" />
-      <jest-package value="$PROJECT_DIR$/typescript/runtime/node_modules/jest" />
-      <working-dir value="$PROJECT_DIR$/typescript/runtime" />
-      <envs />
-      <scope-kind value="TEST_FILE" />
-      <test-file value="$PROJECT_DIR$/typescript/runtime/test/CodegenedClientTest.test.ts" />
-      <method v="2" />
-    </configuration>
-    <configuration name="Test targeted event" type="JavaScriptTestRunnerJest" temporary="true" nameIsGenerated="true">
-      <node-interpreter value="project" />
-      <jest-package value="$PROJECT_DIR$/typescript/runtime/node_modules/jest" />
-      <working-dir value="$PROJECT_DIR$/typescript/runtime" />
-      <envs />
-      <scope-kind value="TEST" />
-      <test-file value="$PROJECT_DIR$/typescript/runtime/test/CodegenedClientTest.test.ts" />
-      <test-names>
-        <test-name value="Test targeted event" />
-      </test-names>
-      <method v="2" />
-    </configuration>
-    <configuration name="pub" type="js.build_tools.npm" temporary="true" nameIsGenerated="true">
-      <package-json value="$PROJECT_DIR$/typescript/generator/package.json" />
-      <command value="run" />
-      <scripts>
-        <script value="pub" />
-      </scripts>
-      <node-interpreter value="project" />
-      <envs />
-      <method v="2" />
-    </configuration>
+  <component name="RunManager" selected="Gradle.Kotlin Tests">
     <list>
       <item itemvalue="Gradle.Kotlin Tests" />
-      <item itemvalue="Gradle.AllEncompassingTest.testGeneratedEvents (1)" />
-      <item itemvalue="Gradle.EventMessageEncodingTest.testS2C" />
-      <item itemvalue="Gradle.TestServers.allEncompassingService (1)" />
       <item itemvalue="Jest.Standalone TS Tests" />
-      <item itemvalue="Jest.FullTest based TS tests" />
-      <item itemvalue="Jest.Test targeted event" />
       <item itemvalue="npm.Build Runtime" />
       <item itemvalue="npm.Generate Client " />
-      <item itemvalue="npm.pub" />
     </list>
-    <recent_temporary>
-      <list>
-        <item itemvalue="Gradle.AllEncompassingTest.testGeneratedEvents (1)" />
-        <item itemvalue="Gradle.TestServers.allEncompassingService (1)" />
-        <item itemvalue="Jest.Test targeted event" />
-        <item itemvalue="Gradle.EventMessageEncodingTest.testS2C" />
-        <item itemvalue="npm.pub" />
-      </list>
-    </recent_temporary>
-  </component>
-  <component name="SharedIndexes">
-    <attachedChunks>
-      <set>
-        <option value="jdk-17.0.9-corretto-17.0.9-f644763e9732-ebaef533" />
-      </set>
-    </attachedChunks>
   </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
-      <changelist id="9ca8770c-8d9e-44a0-b1e9-2417666ce2c1" name="Changes" comment="" />
-      <created>1698218896217</created>
+      <changelist id="564650a1-bc6e-416d-b8da-72123f2dbf05" name="Changes" comment="" />
+      <created>1705944134686</created>
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
-      <updated>1698218896217</updated>
-      <workItem from="1698218899431" duration="421000" />
-      <workItem from="1698222552870" duration="2118000" />
-      <workItem from="1698224687392" duration="7577000" />
-      <workItem from="1698239361843" duration="444000" />
-      <workItem from="1698242839385" duration="781000" />
-      <workItem from="1698254324949" duration="809000" />
-      <workItem from="1698322403972" duration="3762000" />
-      <workItem from="1698327358830" duration="807000" />
-      <workItem from="1698328212801" duration="1103000" />
-      <workItem from="1698406354006" duration="53000" />
-      <workItem from="1698406613186" duration="285000" />
-      <workItem from="1698417697897" duration="876000" />
-      <workItem from="1698418980442" duration="607000" />
-      <workItem from="1698419641762" duration="1381000" />
-      <workItem from="1698479701940" duration="14001000" />
-      <workItem from="1698560325272" duration="526000" />
-      <workItem from="1698560865215" duration="4781000" />
-      <workItem from="1698565768690" duration="2945000" />
-      <workItem from="1698573893387" duration="75000" />
-      <workItem from="1698574133811" duration="1631000" />
-      <workItem from="1698586696148" duration="1061000" />
-      <workItem from="1698649431093" duration="5668000" />
-      <workItem from="1698657726095" duration="7295000" />
-      <workItem from="1698666902530" duration="1975000" />
-      <workItem from="1698669013698" duration="38000" />
-      <workItem from="1698826020552" duration="3009000" />
-      <workItem from="1699427702803" duration="91000" />
-      <workItem from="1699432784333" duration="178000" />
-      <workItem from="1699624352736" duration="115000" />
-      <workItem from="1699777159138" duration="99000" />
-      <workItem from="1699789277872" duration="804000" />
-      <workItem from="1699793974952" duration="1983000" />
-      <workItem from="1699961927797" duration="2797000" />
-      <workItem from="1700001036655" duration="849000" />
-      <workItem from="1700030478949" duration="258000" />
-      <workItem from="1700463267415" duration="1324000" />
-      <workItem from="1700765450055" duration="7083000" />
-      <workItem from="1700813724480" duration="513000" />
-      <workItem from="1700835299875" duration="2248000" />
-      <workItem from="1700913320868" duration="10035000" />
-      <workItem from="1700981877835" duration="608000" />
-      <workItem from="1700994148648" duration="96000" />
-      <workItem from="1700997737842" duration="1233000" />
-      <workItem from="1701068323210" duration="126000" />
-      <workItem from="1701080184959" duration="49000" />
-      <workItem from="1701080744405" duration="447000" />
-      <workItem from="1701083145072" duration="573000" />
-      <workItem from="1701239405621" duration="2330000" />
-      <workItem from="1701246485421" duration="6000" />
-      <workItem from="1701246681098" duration="1712000" />
-      <workItem from="1701251404126" duration="1601000" />
-      <workItem from="1701257247075" duration="3976000" />
-      <workItem from="1701269592646" duration="5216000" />
-      <workItem from="1701324820143" duration="5695000" />
-      <workItem from="1701334772121" duration="1089000" />
-      <workItem from="1701337993906" duration="899000" />
-      <workItem from="1701342174062" duration="7316000" />
-      <workItem from="1701355893816" duration="1772000" />
-      <workItem from="1701417225508" duration="1630000" />
-      <workItem from="1701450925951" duration="12088000" />
-      <workItem from="1701593443289" duration="1490000" />
-      <workItem from="1701597622036" duration="238000" />
-      <workItem from="1701604211934" duration="2802000" />
-      <workItem from="1701631694241" duration="8640000" />
-      <workItem from="1701640936571" duration="9000" />
-      <workItem from="1701687885710" duration="898000" />
-      <workItem from="1701688795572" duration="1779000" />
-      <workItem from="1701698264403" duration="7807000" />
-      <workItem from="1701719520365" duration="603000" />
-      <workItem from="1701759987180" duration="13423000" />
-      <workItem from="1701800803466" duration="1881000" />
-      <workItem from="1701849278740" duration="3565000" />
-      <workItem from="1701858800423" duration="478000" />
-      <workItem from="1701937819763" duration="9651000" />
-      <workItem from="1701960444581" duration="4327000" />
-      <workItem from="1702020237994" duration="2457000" />
-      <workItem from="1702043131036" duration="6194000" />
-      <workItem from="1702126247346" duration="2571000" />
-      <workItem from="1702203283772" duration="2785000" />
-      <workItem from="1702219409909" duration="1152000" />
-      <workItem from="1702223857475" duration="2425000" />
-      <workItem from="1702282463701" duration="615000" />
-      <workItem from="1702298637657" duration="1198000" />
-      <workItem from="1702300212443" duration="89000" />
-      <workItem from="1702307934037" duration="4098000" />
-      <workItem from="1702313582735" duration="1440000" />
-      <workItem from="1702315047849" duration="136000" />
-      <workItem from="1702315197115" duration="97000" />
-      <workItem from="1702315308420" duration="1367000" />
-      <workItem from="1702360582782" duration="3637000" />
-      <workItem from="1702376834815" duration="9309000" />
-      <workItem from="1702391679143" duration="1986000" />
-      <workItem from="1702451353715" duration="122000" />
-      <workItem from="1702452022369" duration="5980000" />
-      <workItem from="1702462506572" duration="1607000" />
-      <workItem from="1702543144663" duration="2354000" />
-      <workItem from="1702547366771" duration="27000" />
-      <workItem from="1702566143573" duration="46000" />
-      <workItem from="1702566781116" duration="1689000" />
-      <workItem from="1702731210008" duration="865000" />
-      <workItem from="1702734929037" duration="3629000" />
-      <workItem from="1702815909939" duration="3800000" />
-      <workItem from="1702830073852" duration="1882000" />
-      <workItem from="1702884009347" duration="2515000" />
-      <workItem from="1702898837219" duration="1285000" />
-      <workItem from="1702912778214" duration="2642000" />
-      <workItem from="1702919368589" duration="705000" />
-      <workItem from="1702969884005" duration="963000" />
-      <workItem from="1703495364326" duration="8731000" />
-      <workItem from="1703514926273" duration="3986000" />
-      <workItem from="1703671506499" duration="4101000" />
-      <workItem from="1703679201634" duration="3763000" />
-      <workItem from="1703688014376" duration="1403000" />
-      <workItem from="1703704049453" duration="6000" />
-      <workItem from="1703749669246" duration="2116000" />
-      <workItem from="1703770584285" duration="658000" />
-      <workItem from="1703853984205" duration="171000" />
-      <workItem from="1704706180319" duration="393000" />
-      <workItem from="1704706584093" duration="557000" />
-      <workItem from="1704729724395" duration="1367000" />
-      <workItem from="1704870196163" duration="115000" />
-      <workItem from="1704995588562" duration="1686000" />
-      <workItem from="1705154907349" duration="1162000" />
-      <workItem from="1705179815517" duration="2490000" />
-      <workItem from="1705183030687" duration="723000" />
-      <workItem from="1705184009674" duration="103000" />
-      <workItem from="1705215257573" duration="1996000" />
-      <workItem from="1705224699712" duration="1482000" />
-      <workItem from="1705399365447" duration="987000" />
-      <workItem from="1705419989777" duration="466000" />
-      <workItem from="1705420464720" duration="153000" />
-      <workItem from="1705421959840" duration="927000" />
-      <workItem from="1705474316839" duration="4303000" />
-      <workItem from="1705479561649" duration="1461000" />
-      <workItem from="1705503245988" duration="3683000" />
-      <workItem from="1705506939559" duration="2843000" />
-      <workItem from="1705558315358" duration="9105000" />
-      <workItem from="1705652704461" duration="1333000" />
-      <workItem from="1705747789919" duration="49000" />
-      <workItem from="1705755145880" duration="307000" />
-      <workItem from="1705820088065" duration="2808000" />
-      <workItem from="1705853643788" duration="2319000" />
-      <workItem from="1705855974150" duration="1640000" />
-      <workItem from="1705868161044" duration="3447000" />
+      <updated>1705944134686</updated>
+      <workItem from="1705944138059" duration="1870000" />
     </task>
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
-  </component>
-  <component name="XDebuggerManager">
-    <breakpoint-manager>
-      <breakpoints>
-        <line-breakpoint enabled="true" type="kotlin-line">
-          <url>jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.jetbrains.kotlinx/kotlinx-serialization-json-jvm/1.6.0/647e4cd4e89aa1dcb89f4ae3afb5c947d8837beb/kotlinx-serialization-json-jvm-1.6.0-sources.jar!/commonMain/kotlinx/serialization/json/internal/StreamingJsonDecoder.kt</url>
-          <line>187</line>
-          <option name="timeStamp" value="29" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="javascript">
-          <url>file://$PROJECT_DIR$/typescript/generator/src/ClientAccessorGenerator.ts</url>
-          <option name="timeStamp" value="30" />
-        </line-breakpoint>
-      </breakpoints>
-    </breakpoint-manager>
-    <watches-manager>
-      <configuration name="JavaScriptTestRunnerJest">
-        <watch expression="serialDescriptor.getElementIndex(name);" />
-      </configuration>
-    </watches-manager>
   </component>
 </project>
