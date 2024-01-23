@@ -19,12 +19,12 @@ internal sealed interface KotlinName {
 internal data class KotlinClassName(override val simple: String, override val pkg: String) : KotlinName {
     override fun toString(): String = "$pkg.$simple"
 
-    public companion object {
+    companion object {
         // MutableMap::class evaluates as kotlin.collections.Map and same goes for the other mutable collections classes.
         // Therefore, we need to explicitly define these class names.
-        public val MutableMap: KotlinClassName = KotlinClassName("MutableMap", "kotlin.collections")
-        public  val MutableSet: KotlinClassName = KotlinClassName("MutableSet", "kotlin.collections")
-        public val MutableList: KotlinClassName = KotlinClassName("MutableList", "kotlin.collections")
+        val MutableMap: KotlinClassName = KotlinClassName("MutableMap", "kotlin.collections")
+        val MutableSet: KotlinClassName = KotlinClassName("MutableSet", "kotlin.collections")
+        val MutableList: KotlinClassName = KotlinClassName("MutableList", "kotlin.collections")
     }
 }
 

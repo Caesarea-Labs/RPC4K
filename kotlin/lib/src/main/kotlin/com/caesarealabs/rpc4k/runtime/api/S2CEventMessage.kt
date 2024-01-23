@@ -57,19 +57,3 @@ internal sealed interface S2CEventMessage {
         }
     }
 }
-////TODO: optimize to not rejoin the message
-//                const [type, listenerId, ...payload] = message.split(":")
-//                switch (type) {
-//                    case "event": {
-//                        const listener = this.messageListeners[listenerId]
-//                        if (listener !== undefined) {
-//                            listener(payload.join(":"))
-//                        } else {
-//                            console.warn(`Could not find listener for id '${listenerId}', is the subscription still open on the server?`, message)
-//                        }
-//                        break
-//                    }
-//                    case "error": {
-//                        throw new Error(`Failed to subscribe to event: ${message.removePrefix("error:")}`)
-//                    }
-//                }

@@ -79,27 +79,6 @@ internal class ApiDefinitionToServerCode(private val api: RpcApi) {
     private val serverClassName = api.name.kotlinPoet
     private val handlerConfig = HandlerConfig::class.asClassName().parameterizedBy(serverClassName)
 
-    //TODO: replace
-    //      1.
-    //  private val setup: RpcSetupOf<out AllEncompassingService> -->
-//     private val config: EventConfig<AllEncompassingService>,
-    // 2. Get rid of 'create invoker' and such, we don't need them anymore.
-    // 3. Generate this as the body of invokers:
-    //       GeneratedCodeUtils.invokeEvent(config, "eventTest",listOf(String.serializer()),String.serializer(),) {
-    //          config.handler.eventTest(dispatchParam, it[0] as String)
-    //      }
-    // - Make sure to do target.toString() when targets exist
-    // 4. Get rid of events routers
-
-    //TODO:
-    // Later...
-    // 1. Fixup broken functions and interfaces
-    // 2. Use Rpc4kIndex for tests
-    // 3. Replace the API to all be extensions on Rpc4kIndex:
-    //   MyApi.rpc4k.createServer(...)
-    //   MyApi.rpc4k.createClient(...)
-    //   MyApi.rpc4k.junitExtension(...)
-
     fun convert(): FileSpec {
         return fileSpec(GeneratedCodeUtils.Package, routerName) {
             // I know what I'm doing, Kotlin!
@@ -110,7 +89,6 @@ internal class ApiDefinitionToServerCode(private val api: RpcApi) {
             addImport("kotlinx.serialization.builtins", "serializer")
             addImport("kotlinx.serialization.builtins", "nullable")
 
-//            addFunction(serverConstructorExtension(generatedClassName = className))
             addProperty(rpc4kGeneratedSuiteExtension())
 
             addRouter()
@@ -126,36 +104,8 @@ internal class ApiDefinitionToServerCode(private val api: RpcApi) {
                 )
             )
             addFunction(handleRequestMethod())
-//            addFunction(handleEventMethod())
-//            addFunction(invokerProviderFunction())
         }
     }
-
-    //   override fun createInvoker(setup: RpcSetupOf<out AllEncompassingService>): AllEncompassingServiceEventInvoker {
-//    return AllEncompassingServiceEventInvoker()
-//  }
-
-    private fun invokerProviderFunction(): FunSpec = funSpec("createInvoker") {
-        addModifiers(KModifier.OVERRIDE)
-        addParameter(Config, handlerConfig)
-        returns(invokerClassName)
-        addCode("return %T($Config)", invokerClassName)
-    }
-
-    /**
-     * Making the generated class available with an extension function makes it more resilient to name changes
-     *   since you will no longer need to directly reference the generated class.
-     *   Looks like:
-     *   ```
-     *   fun MyApi.Companion.server(api: MyApi, format: SerializationFormat, server: RpcServer) = MyApiServerImpl(api, format, server)
-     *   ```
-     */
-    private fun serverConstructorExtension(generatedClassName: String) =
-        extensionFunction(serverClassName.companion(), "server") {
-            returns(ClassName(GeneratedCodeUtils.Package, generatedClassName))
-            addStatement("return $generatedClassName()")
-        }
-
     /**
      * val MyApi.Companion.server = object : GeneratedSuiteFactory<MyApi, AllEncompassingServiceClientImpl, AllEncompassingServiceEventInvoker> {
      *     override val createInvoker = ::AllEncompassingServiceEventInvoker
@@ -219,52 +169,6 @@ internal class ApiDefinitionToServerCode(private val api: RpcApi) {
         }
     }
 
-
-    /**
-     * Produces
-     * ```
-     *     override suspend fun handleEvent(dispatcherData: Any?, subscriptionData: ByteArray, event: String,
-     *                                      setup: RpcServerSetup<out SmartEventResponder, *>): ByteArray? = when (event) {
-     *         "test" -> GeneratedCodeUtils.transformEvent(setup, subscriptionData, listOf(String.serializer(), Int.serializer()),
-     *             Float.serializer()
-     *         ) {
-     *             with(dispatcherData as AddedRow) {
-     *                 setup.handler.testEvent(it[0] as String, it[1] as Int)
-     *             }
-     *         }
-     *
-     *         "test2" -> GeneratedCodeUtils.transformEvent(setup, subscriptionData, listOf(Int.serializer()),
-     *             Float.serializer()
-     *         ) {
-     *             with(dispatcherData as TestEvent2Context) {
-     *                 setup.handler.testEvent2(it[0] as Int)
-     *             }
-     *         }
-     *
-     *         else -> null
-     *     }
-     *                             ```
-     *
-     *
-     */
-//    private fun handleEventMethod(): FunSpec = funSpec("handleEvent") {
-//        // This overrides GeneratedServerHandler
-//        addModifiers(KModifier.OVERRIDE, KModifier.SUSPEND)
-//
-//        addParameter(DispatcherDataParamName, List::class.asClassName().parameterizedBy(wildcardType))
-//        addParameter(SubscriptionDataParamName, ByteArray::class)
-//        addParameter(EventParamName, String::class)
-//        addParameter(Config, handlerConfig)
-//
-//        returns(BYTE_ARRAY.copy(nullable = true))
-//        addControlFlow("return when($EventParamName)") {
-//            for (method in api.events) {
-//                addEventHandler(method)
-//            }
-//            addCode("else -> null\n")
-//        }
-//    }
-
     /**
      * Generates:
      * ```
@@ -289,25 +193,6 @@ internal class ApiDefinitionToServerCode(private val api: RpcApi) {
         }
     }
 
-
-    private fun FunSpec.Builder.addEventHandler(rpc: RpcEventEndpoint) {
-        addCode("%S -> ".formatWith(rpc.name))
-
-
-        val arguments = listOf(
-            Config,
-            SubscriptionDataParamName,
-            ApiDefinitionUtils.listOfEventSubSerializers(rpc),
-            rpc.returnType.toSerializerString()
-        )
-
-        addControlFlow(transformEventUtilsMethod.withArgumentList(arguments)) {
-//            addControlFlow("with(this as %T)", rpc.dispatcherType.typeName) {
-            eventTransformCall(rpc)
-//            }
-        }
-    }
-
     private fun FunSpec.Builder.functionHandleCall(rpc: RpcFunction) {
         addStatement("$Config.$UserHandlerPropertyName.${rpc.name}".withMethodArguments(functionArguments(rpc)))
     }
@@ -317,7 +202,6 @@ internal class ApiDefinitionToServerCode(private val api: RpcApi) {
     }
 
 
-// private val config: EventConfig<AllEncompassingService>
 
     /**
      * Generates something like this:
@@ -337,9 +221,8 @@ internal class ApiDefinitionToServerCode(private val api: RpcApi) {
         addClass(invokerName) {
 
             addPrimaryConstructor {
-                addConstructorProperty(Config, handlerConfig/*.copy(nullable = true)*/, KModifier.PRIVATE)
+                addConstructorProperty(Config, handlerConfig, KModifier.PRIVATE)
             }
-//            superclass(GeneratedEventInvoker::class.asClassName().parameterizedBy(apiDefinition.name.kotlinPoet))
 
             for (event in api.events) {
                 addFunction(eventInvoker(event))

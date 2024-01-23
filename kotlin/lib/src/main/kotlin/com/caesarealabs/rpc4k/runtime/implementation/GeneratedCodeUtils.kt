@@ -82,7 +82,6 @@ public object GeneratedCodeUtils {
      */
     public suspend fun <T> respond(
         config: HandlerConfig<*>,
-//        setup: AnyRpcServerSetup,
         request: ByteArray,
         argDeserializers: List<KSerializer<*>>,
         resultSerializer: KSerializer<T>,
@@ -98,16 +97,6 @@ public object GeneratedCodeUtils {
 
         return config.format.encode(resultSerializer, respondMethod(parsed.arguments))
     }
-
-//
-//    public suspend fun invokeTargetedEvent(event: String, dispatcherData: List<*>, setup: AnyRpcServerSetup, target: Any?) {
-//        // Note that null -> "null" as the target
-//        invokeEventImpl(event, dispatcherData, setup, target.toString())
-//    }
-//
-//    public suspend fun invokeEvent(event: String, dispatcherData: List<*>, setup: AnyRpcServerSetup) {
-//        invokeEventImpl(event, dispatcherData, setup, target = null)
-//    }
 
     public suspend fun <Server, R> invokeEvent(
         config: HandlerConfig<Server>,
@@ -129,45 +118,4 @@ public object GeneratedCodeUtils {
             subscriber.connection.send(fullMessage)
         }
     }
-
-//    private suspend fun <T> transformEvent(
-//        config: HandlerConfig<*>,
-//        subscriptionData: ByteArray,
-//        argDeserializers: List<KSerializer<*>>,
-//        resultSerializer: KSerializer<T>,
-//        transform: suspend (args: List<*>) -> T
-//    ): ByteArray {
-//        //TODO: try/catch deserialization to discard bad events
-//        val parsed = config.format.decode(TupleSerializer(argDeserializers), subscriptionData)
-//        return config.format.encode(resultSerializer, transform(parsed))
-//    }
-
-
-    //TODO: refactor event codegen to remove event handlers and do this instead:
-//      public suspend fun invokeEventTest(dispatchParam: Int) {
-//      for (subscriber in setup.engine.eventManager.match("eventTest", null)) {
-//          val result = transformEvent(setup, subscriber.info.data, listOf(String.serializer()), String.serializer()) {
-//              setup.handler.eventTest(dispatchParam, it[0] as String)
-//          }
-//          subscriber.connection.send(result)
-//      }
-//  }
-//
-//    /**
-//     * It's important to differentiate between there being no target (target = null) and the developer passing null as the target
-//     * (target = "null"). Note that will still interpret passing null and "null" as the developer as the same thing.
-//     */
-//    private suspend fun invokeEventImpl(event: String, dispatcherData: List<*>, setup: AnyRpcServerSetup, target: String?) {
-//        for (subscriber in setup.engine.eventManager.match(event, target)) {
-//            val transformed = setup.transformEvent(dispatcherData, subscriber.info) ?: error("RPC4k Error: could not find invoked event '${event}'")
-//            subscriber.connection.send(transformed)
-//        }
-//    }
-
-//    private suspend fun HandlerConfig<*>.transformEvent(dispatcherData: List<*>, subscription: C2SEventMessage.Subscribe): ByteArray? {
-//        val helper = handler as RpcRouter<Any?, Any?>
-//        val result = helper.handleEvent(dispatcherData, subscription.data, subscription.event, this) ?: return null
-//        return S2CEventMessage.Emitted(subscription.listenerId, result).toByteArray()
-//    }
-
 }

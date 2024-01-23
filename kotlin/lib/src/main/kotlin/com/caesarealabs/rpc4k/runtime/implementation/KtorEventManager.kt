@@ -1,15 +1,16 @@
 package com.caesarealabs.rpc4k.runtime.implementation
 
-import com.caesarealabs.rpc4k.runtime.api.*
+import com.caesarealabs.rpc4k.runtime.api.C2SEventMessage
+import com.caesarealabs.rpc4k.runtime.api.EventConnection
+import com.caesarealabs.rpc4k.runtime.api.EventManager
+import com.caesarealabs.rpc4k.runtime.api.EventSubscription
 import io.ktor.websocket.*
-import java.util.UUID
+import java.util.*
 import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.ConcurrentLinkedQueue
 
 
-
-
-public class KtorWebsocketEventConnection(private val session: DefaultWebSocketSession): EventConnection {
+public class KtorWebsocketEventConnection(private val session: DefaultWebSocketSession) : EventConnection {
     override val id: String = UUID.randomUUID().toString()
     override suspend fun send(bytes: ByteArray) {
         session.send(Frame.Text(true, bytes))
@@ -17,8 +18,7 @@ public class KtorWebsocketEventConnection(private val session: DefaultWebSocketS
 }
 
 
-
-internal class KtorEventManager: EventManager<KtorWebsocketEventConnection> {
+internal class KtorEventManager : EventManager<KtorWebsocketEventConnection> {
     private val subscriptions: MutableMap<String, ConcurrentLinkedQueue<KtorSubscription>> = ConcurrentHashMap()
 
     override suspend fun subscribe(subscription: C2SEventMessage.Subscribe, connection: KtorWebsocketEventConnection) {
@@ -30,7 +30,7 @@ internal class KtorEventManager: EventManager<KtorWebsocketEventConnection> {
         return list.removeIf { it.info.listenerId == listenerId }
     }
 
-     override suspend fun dropClient(connection: KtorWebsocketEventConnection) {
+    override suspend fun dropClient(connection: KtorWebsocketEventConnection) {
         for (list in subscriptions.values) {
             list.removeIf { it.connection == connection }
         }

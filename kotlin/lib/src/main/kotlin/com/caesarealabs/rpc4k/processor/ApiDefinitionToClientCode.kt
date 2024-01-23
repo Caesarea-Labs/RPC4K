@@ -58,7 +58,7 @@ internal object ApiDefinitionToClientCode {
      * @param userClassIsInterface When we are generating both a client and a server, it's useful to make the generated class
      * extend the user class. We need to know if the user class is an interface or not to properly extend/implement it.
      */
-    fun convert(apiDefinition: RpcApi, userClassIsInterface: Boolean): FileSpec {
+    fun convert(apiDefinition: RpcApi): FileSpec {
         val className = "${apiDefinition.name.simple}${GeneratedCodeUtils.ClientSuffix}"
         return fileSpec(GeneratedCodeUtils.Package, className) {
             // KotlinPoet doesn't handle extension methods well
@@ -70,14 +70,12 @@ internal object ApiDefinitionToClientCode {
             addFunction(clientConstructorExtension(apiDefinition, className))
 
             addClass(className) {
-                addType(factoryCompanionObject(apiDefinition, className))
+                addType(factoryCompanionObject(className))
 
                 addPrimaryConstructor {
                     addConstructorProperty(ClientPropertyName, type = RpcClient::class, KModifier.PRIVATE)
                     addConstructorProperty(FormatPropertyName, type = SerializationFormat::class, KModifier.PRIVATE)
                 }
-//                val userClassName = apiDefinition.name.kotlinPoet
-//                if (userClassIsInterface) addSuperinterface(userClassName) else superclass(userClassName)
                 for (method in apiDefinition.methods) addFunction(requestMethod(method))
                 for (event in apiDefinition.events) addFunction(eventSubMethod(event))
             }
@@ -96,8 +94,7 @@ internal object ApiDefinitionToClientCode {
      *     }
      * ```
      */
-//    context(JvmContext)
-    private fun factoryCompanionObject(api: RpcApi, generatedClassName: String) = companionObject(GeneratedCodeUtils.FactoryName) {
+    private fun factoryCompanionObject(generatedClassName: String) = companionObject(GeneratedCodeUtils.FactoryName) {
         val generatedClientClass = ClassName(GeneratedCodeUtils.Package,generatedClassName)
         addSuperinterface(GeneratedClientImplFactory::class.asClassName().parameterizedBy(generatedClientClass))
         addFunction("build") {
