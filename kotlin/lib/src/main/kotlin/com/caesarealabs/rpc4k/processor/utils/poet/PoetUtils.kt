@@ -10,6 +10,9 @@ internal inline fun fileSpec(packageName: String, className: String, builder: Fi
 internal inline fun FileSpec.Builder.addClass(name: String, builder: TypeSpec.Builder.() -> Unit) = addType(
     TypeSpec.classBuilder(name).apply(builder).build()
 )
+internal inline fun FileSpec.Builder.addObject(name: String, builder: TypeSpec.Builder.() -> Unit) = addType(
+    TypeSpec.objectBuilder(name).apply(builder).build()
+)
 
 internal inline fun extensionFunction(receiver: TypeName, name: String, builder: FunSpec.Builder.() -> Unit) = FunSpec.builder(name).apply {
     receiver(receiver)

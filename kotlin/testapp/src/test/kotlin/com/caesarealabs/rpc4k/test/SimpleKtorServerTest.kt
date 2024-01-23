@@ -1,9 +1,9 @@
 package com.caesarealabs.rpc4k.test
 
-import com.caesarealabs.rpc4k.generated.SimpleProtocolClientImpl
 import com.caesarealabs.rpc4k.generated.SimpleProtocolEventInvoker
+import com.caesarealabs.rpc4k.generated.rpc4k
+import com.caesarealabs.rpc4k.runtime.api.testing.junit
 import com.caesarealabs.rpc4k.testapp.SimpleProtocol
-import com.caesarealabs.rpc4k.runtime.api.testing.rpcExtension
 import kotlinx.coroutines.runBlocking
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.extension.RegisterExtension
@@ -13,7 +13,7 @@ class SimpleKtorServerTest {
     companion object {
         @JvmField
         @RegisterExtension
-        val extension = rpcExtension<SimpleProtocol, SimpleProtocolEventInvoker, SimpleProtocolClientImpl>({ SimpleProtocol() })
+        val extension = SimpleProtocol.rpc4k.junit { SimpleProtocol() } 
     }
 
 

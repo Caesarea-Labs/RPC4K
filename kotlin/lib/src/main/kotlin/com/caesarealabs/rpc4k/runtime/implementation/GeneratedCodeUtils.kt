@@ -5,9 +5,7 @@ import com.caesarealabs.rpc4k.runtime.implementation.serializers.TupleSerializer
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import kotlinx.serialization.*
-import kotlinx.serialization.builtins.serializer
 import java.util.*
-import kotlin.reflect.jvm.internal.impl.types.TypeCheckerState.SupertypesPolicy.None
 
 /**
  * These functions are used by generated code and code that interacts with them
@@ -18,10 +16,10 @@ public object GeneratedCodeUtils {
     internal const val FactoryName: String = "Factory"
 
     @PublishedApi
-    internal const val ClientSuffix: String = "ClientImpl"
+    internal const val ClientSuffix: String = "Client"
 
     @PublishedApi
-    internal const val ServerSuffix: String = "ServerImpl"
+    internal const val ServerSuffix: String = "Router"
 
     @PublishedApi
     internal const val Group: String = "com.caesarealabs"
@@ -112,7 +110,7 @@ public object GeneratedCodeUtils {
 //    }
 
     public suspend fun <Server, R> invokeEvent(
-        config: EventConfig<Server>,
+        config: HandlerConfig<Server>,
         eventName: String,
         subArgDeserializers: List<KSerializer<*>>,
         resultSerializer: KSerializer<R>,
@@ -127,21 +125,22 @@ public object GeneratedCodeUtils {
             val parsed = config.format.decode(TupleSerializer(subArgDeserializers), subscriber.info.data)
             val handled = handle(parsed)
             val bytes = config.format.encode(resultSerializer, handled)
-            subscriber.connection.send(bytes)
+            val fullMessage = S2CEventMessage.Emitted(subscriber.info.listenerId, bytes).toByteArray()
+            subscriber.connection.send(fullMessage)
         }
     }
 
-    private suspend fun <T> transformEvent(
-        config: EventConfig<*>,
-        subscriptionData: ByteArray,
-        argDeserializers: List<KSerializer<*>>,
-        resultSerializer: KSerializer<T>,
-        transform: suspend (args: List<*>) -> T
-    ): ByteArray {
-        //TODO: try/catch deserialization to discard bad events
-        val parsed = config.format.decode(TupleSerializer(argDeserializers), subscriptionData)
-        return config.format.encode(resultSerializer, transform(parsed))
-    }
+//    private suspend fun <T> transformEvent(
+//        config: HandlerConfig<*>,
+//        subscriptionData: ByteArray,
+//        argDeserializers: List<KSerializer<*>>,
+//        resultSerializer: KSerializer<T>,
+//        transform: suspend (args: List<*>) -> T
+//    ): ByteArray {
+//        //TODO: try/catch deserialization to discard bad events
+//        val parsed = config.format.decode(TupleSerializer(argDeserializers), subscriptionData)
+//        return config.format.encode(resultSerializer, transform(parsed))
+//    }
 
 
     //TODO: refactor event codegen to remove event handlers and do this instead:
@@ -153,22 +152,22 @@ public object GeneratedCodeUtils {
 //          subscriber.connection.send(result)
 //      }
 //  }
+//
+//    /**
+//     * It's important to differentiate between there being no target (target = null) and the developer passing null as the target
+//     * (target = "null"). Note that will still interpret passing null and "null" as the developer as the same thing.
+//     */
+//    private suspend fun invokeEventImpl(event: String, dispatcherData: List<*>, setup: AnyRpcServerSetup, target: String?) {
+//        for (subscriber in setup.engine.eventManager.match(event, target)) {
+//            val transformed = setup.transformEvent(dispatcherData, subscriber.info) ?: error("RPC4k Error: could not find invoked event '${event}'")
+//            subscriber.connection.send(transformed)
+//        }
+//    }
 
-    /**
-     * It's important to differentiate between there being no target (target = null) and the developer passing null as the target
-     * (target = "null"). Note that will still interpret passing null and "null" as the developer as the same thing.
-     */
-    private suspend fun invokeEventImpl(event: String, dispatcherData: List<*>, setup: AnyRpcServerSetup, target: String?) {
-        for (subscriber in setup.engine.eventManager.match(event, target)) {
-            val transformed = setup.transformEvent(dispatcherData, subscriber.info) ?: error("RPC4k Error: could not find invoked event '${event}'")
-            subscriber.connection.send(transformed)
-        }
-    }
-
-    private suspend fun HandlerConfig<*>.transformEvent(dispatcherData: List<*>, subscription: C2SEventMessage.Subscribe): ByteArray? {
-        val helper = handler as GeneratedServerHelper<Any?, Any?>
-        val result = helper.handleEvent(dispatcherData, subscription.data, subscription.event, this) ?: return null
-        return S2CEventMessage.Emitted(subscription.listenerId, result).toByteArray()
-    }
+//    private suspend fun HandlerConfig<*>.transformEvent(dispatcherData: List<*>, subscription: C2SEventMessage.Subscribe): ByteArray? {
+//        val helper = handler as RpcRouter<Any?, Any?>
+//        val result = helper.handleEvent(dispatcherData, subscription.data, subscription.event, this) ?: return null
+//        return S2CEventMessage.Emitted(subscription.listenerId, result).toByteArray()
+//    }
 
 }

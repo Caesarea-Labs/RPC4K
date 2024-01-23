@@ -7,7 +7,6 @@ import com.squareup.kotlinpoet.AnnotationSpec
 import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.FileSpec
 import com.squareup.kotlinpoet.MemberName
-import kotlinx.serialization.ExperimentalSerializationApi
 
 internal object ApiDefinitionUtils {
     val listOfFunction = MemberName("kotlin.collections", "listOf")
@@ -20,7 +19,7 @@ internal object ApiDefinitionUtils {
         return listOfFunction.withArgumentList(rpc.parameters.map { it.type.toSerializerString() })
     }
 
-    fun listOfEventSerializers(rpc: RpcEventEndpoint): FormattedString {
+    fun listOfEventSubSerializers(rpc: RpcEventEndpoint): FormattedString {
         // We don't need to deserialize the target either because we have it as a normal kotlin value coming from the invoker.
         return listOfFunction.withArgumentList(rpc.parameters.filter { !it.isDispatch && !it.isTarget }.map { it.value.type.toSerializerString() })
     }

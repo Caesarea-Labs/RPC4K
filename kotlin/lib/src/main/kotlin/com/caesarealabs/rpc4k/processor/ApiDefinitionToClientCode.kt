@@ -194,7 +194,7 @@ internal object ApiDefinitionToClientCode {
             "%S".formatWith(event.name),
 //            We only need the dispatch parameters
             if (normalArgs.isEmpty()) "listOf<Nothing>()" else ApiDefinitionUtils.listOfFunction.withArgumentList(normalArgs),
-            ApiDefinitionUtils.listOfEventSerializers(event),
+            ApiDefinitionUtils.listOfEventSubSerializers(event),
             event.returnType.toSerializerString()
         )
 

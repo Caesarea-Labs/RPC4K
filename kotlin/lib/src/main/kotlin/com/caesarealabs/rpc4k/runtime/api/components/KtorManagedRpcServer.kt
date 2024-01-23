@@ -29,14 +29,14 @@ public class KtorManagedRpcServer(
     private val singleRoute = KtorSingleRouteRpcServer()
     override val eventManager: EventManager<KtorWebsocketEventConnection> = KtorEventManager()
 
-    private fun <RpcDef> Application.configImpl(setup: RpcSetupOf<RpcDef>) {
+    private fun Application.configImpl(config: ServerConfig) {
         install(CallLogging)
         install(WebSockets)
 
         config()
         routing {
             post("/") {
-                setup.withEngine(engine = singleRoute).handleRequests(call, call)
+                singleRoute.routeRpcs(call, call, config)
             }
 
             webSocket("/events") {
@@ -45,7 +45,8 @@ public class KtorManagedRpcServer(
                 try {
                     for (frame in incoming) {
                         frame as? Frame.Text ?: error("Unexpected non-text frame")
-                        setup.acceptEventSubscription(frame.readBytes(), connection)
+                        config.eventManager.acceptEventSubscription(frame.readBytes(),connection)
+//                        setup.acceptEventSubscription(frame.readBytes(), connection)
                     }
                 } finally {
                     Rpc4K.Logger.info("Removing connection ${connection.id}")
@@ -55,9 +56,9 @@ public class KtorManagedRpcServer(
         }
     }
 
-    override fun <RpcDef> create(setup: RpcSetupOf<RpcDef>): RpcServerEngine.MultiCall.Instance = object : RpcServerEngine.MultiCall.Instance {
+    override fun create(config: ServerConfig): RpcServerEngine.MultiCall.Instance = object : RpcServerEngine.MultiCall.Instance {
         private val server = embeddedServer(engine, port = port) {
-            configImpl(setup)
+            configImpl(config)
         }
 
         override fun stop() {

@@ -24,7 +24,7 @@ public sealed interface RpcServerEngine {
             public fun stop()
         }
 
-        public fun <RpcDef>create(setup: RpcSetupOf<RpcDef>): Instance
+        public fun create(config: ServerConfig): Instance
     }
 }
 

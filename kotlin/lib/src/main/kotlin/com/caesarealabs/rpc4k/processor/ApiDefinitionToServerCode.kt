@@ -1,9 +1,11 @@
 package com.caesarealabs.rpc4k.processor
 
 import com.caesarealabs.rpc4k.processor.ApiDefinitionUtils.ignoreExperimentalWarnings
+import com.caesarealabs.rpc4k.processor.ApiDefinitionUtils.listOfEventSubSerializers
 import com.caesarealabs.rpc4k.processor.utils.poet.*
-import com.caesarealabs.rpc4k.runtime.api.GeneratedServerHelper
+import com.caesarealabs.rpc4k.runtime.api.HandlerConfig
 import com.caesarealabs.rpc4k.runtime.api.Rpc4kIndex
+import com.caesarealabs.rpc4k.runtime.api.RpcRouter
 import com.caesarealabs.rpc4k.runtime.implementation.GeneratedCodeUtils
 import com.caesarealabs.rpc4k.runtime.implementation.kotlinPoet
 import com.squareup.kotlinpoet.*
@@ -51,16 +53,16 @@ import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy
  */
 internal class ApiDefinitionToServerCode(private val api: RpcApi) {
     companion object {
-        private const val SetupParamName: String = "setup"
+        private const val Config: String = "config"
         private const val UserHandlerPropertyName = "handler"
         private val wildcardType = WildcardTypeName.producerOf(ANY.copy(nullable = true))
-        private val rpcSetupOf = ClassName("com.caesarealabs.rpc4k.runtime.api", "RpcSetupOf")
 
         private const val RequestParamName = "request"
         private const val MethodParamName = "method"
 
         private val respondUtilsMethod = GeneratedCodeUtils::class.methodName("respond")
         private val transformEventUtilsMethod = GeneratedCodeUtils::class.methodName("transformEvent")
+        private val invokeEventUtilsMethod = GeneratedCodeUtils::class.methodName("invokeEvent")
         private const val InvokerSuffix = "EventInvoker"
 
         private const val DispatcherDataParamName = "dispatcherData"
@@ -71,9 +73,11 @@ internal class ApiDefinitionToServerCode(private val api: RpcApi) {
 
     private val invokerName = "${api.name.simple}${InvokerSuffix}"
     private val invokerClassName = ClassName(GeneratedCodeUtils.Package, invokerName)
+    private val routerName = "${api.name.simple}${GeneratedCodeUtils.ServerSuffix}"
+    private val routerClassName = ClassName(GeneratedCodeUtils.Package, routerName)
     private val clientClassName = ClassName(GeneratedCodeUtils.Package, api.name.simple + GeneratedCodeUtils.ClientSuffix)
     private val serverClassName = api.name.kotlinPoet
-    private val rpcSetup = rpcSetupOf.parameterizedBy(WildcardTypeName.producerOf(serverClassName))
+    private val handlerConfig = HandlerConfig::class.asClassName().parameterizedBy(serverClassName)
 
     //TODO: replace
     //      1.
@@ -97,8 +101,7 @@ internal class ApiDefinitionToServerCode(private val api: RpcApi) {
     //   MyApi.rpc4k.junitExtension(...)
 
     fun convert(): FileSpec {
-        val className = "${api.name.simple}${GeneratedCodeUtils.ServerSuffix}"
-        return fileSpec(GeneratedCodeUtils.Package, className) {
+        return fileSpec(GeneratedCodeUtils.Package, routerName) {
             // I know what I'm doing, Kotlin!
             addAnnotation(AnnotationSpec.builder(Suppress::class).addMember("%S", "UNCHECKED_CAST").build())
             ignoreExperimentalWarnings()
@@ -107,24 +110,24 @@ internal class ApiDefinitionToServerCode(private val api: RpcApi) {
             addImport("kotlinx.serialization.builtins", "serializer")
             addImport("kotlinx.serialization.builtins", "nullable")
 
-            addFunction(serverConstructorExtension(generatedClassName = className))
+//            addFunction(serverConstructorExtension(generatedClassName = className))
             addProperty(rpc4kGeneratedSuiteExtension())
 
-            addApiHelperClass(className)
+            addRouter()
             addInvokerClass()
         }
     }
 
-    private fun FileSpec.Builder.addApiHelperClass(className: String) {
-        addClass(className) {
+    private fun FileSpec.Builder.addRouter() {
+        addObject(routerName) {
             addSuperinterface(
-                GeneratedServerHelper::class.asClassName().parameterizedBy(
-                    serverClassName, invokerClassName
+                RpcRouter::class.asClassName().parameterizedBy(
+                    serverClassName
                 )
             )
             addFunction(handleRequestMethod())
-            addFunction(handleEventMethod())
-            addFunction(invokerProviderFunction())
+//            addFunction(handleEventMethod())
+//            addFunction(invokerProviderFunction())
         }
     }
 
@@ -134,9 +137,9 @@ internal class ApiDefinitionToServerCode(private val api: RpcApi) {
 
     private fun invokerProviderFunction(): FunSpec = funSpec("createInvoker") {
         addModifiers(KModifier.OVERRIDE)
-        addParameter(SetupParamName, rpcSetup)
+        addParameter(Config, handlerConfig)
         returns(invokerClassName)
-        addCode("return %T($SetupParamName)", invokerClassName)
+        addCode("return %T($Config)", invokerClassName)
     }
 
     /**
@@ -164,18 +167,19 @@ internal class ApiDefinitionToServerCode(private val api: RpcApi) {
     private fun rpc4kGeneratedSuiteExtension(): PropertySpec {
         val suiteType = Rpc4kIndex::class.asTypeName().parameterizedBy(serverClassName, clientClassName, invokerClassName)
         return extensionProperty(serverClassName.companion(), "rpc4k", suiteType) {
-            addCode("""
+            //                            |   override val createMemoryClient get() = TODO()
+            addCode(
+                """
                             |return object: %T {
                             |   override val createInvoker = ::%T
-                            |   override val createMemoryClient get() = TODO()
-                            |   override val createNetworkClient get() = ::%T
+                            |   override val createNetworkClient = ::%T
+                            |   override val router = %T
                             |}
                             |""".trimMargin(),
-                suiteType,invokerClassName, clientClassName
+                suiteType, invokerClassName, clientClassName, routerClassName
             )
         }
     }
-
 
 
     /**
@@ -197,13 +201,13 @@ internal class ApiDefinitionToServerCode(private val api: RpcApi) {
      *     }
      * ```
      */
-    private fun handleRequestMethod(): FunSpec = funSpec("handleRequest") {
+    private fun handleRequestMethod(): FunSpec = funSpec("routeRequest") {
         // This overrides GeneratedServerHandler
         addModifiers(KModifier.OVERRIDE, KModifier.SUSPEND)
 
         addParameter(RequestParamName, ByteArray::class)
         addParameter(MethodParamName, String::class)
-        addParameter(SetupParamName, rpcSetup)
+        addParameter(Config, handlerConfig)
 
         returns(BYTE_ARRAY.copy(nullable = true))
 
@@ -214,8 +218,6 @@ internal class ApiDefinitionToServerCode(private val api: RpcApi) {
             addCode("else -> null\n")
         }
     }
-
-
 
 
     /**
@@ -245,23 +247,23 @@ internal class ApiDefinitionToServerCode(private val api: RpcApi) {
      *
      *
      */
-    private fun handleEventMethod(): FunSpec = funSpec("handleEvent") {
-        // This overrides GeneratedServerHandler
-        addModifiers(KModifier.OVERRIDE, KModifier.SUSPEND)
-
-        addParameter(DispatcherDataParamName, List::class.asClassName().parameterizedBy(wildcardType))
-        addParameter(SubscriptionDataParamName, ByteArray::class)
-        addParameter(EventParamName, String::class)
-        addParameter(SetupParamName, rpcSetup)
-
-        returns(BYTE_ARRAY.copy(nullable = true))
-        addControlFlow("return when($EventParamName)") {
-            for (method in api.events) {
-                addEventHandler(method)
-            }
-            addCode("else -> null\n")
-        }
-    }
+//    private fun handleEventMethod(): FunSpec = funSpec("handleEvent") {
+//        // This overrides GeneratedServerHandler
+//        addModifiers(KModifier.OVERRIDE, KModifier.SUSPEND)
+//
+//        addParameter(DispatcherDataParamName, List::class.asClassName().parameterizedBy(wildcardType))
+//        addParameter(SubscriptionDataParamName, ByteArray::class)
+//        addParameter(EventParamName, String::class)
+//        addParameter(Config, handlerConfig)
+//
+//        returns(BYTE_ARRAY.copy(nullable = true))
+//        addControlFlow("return when($EventParamName)") {
+//            for (method in api.events) {
+//                addEventHandler(method)
+//            }
+//            addCode("else -> null\n")
+//        }
+//    }
 
     /**
      * Generates:
@@ -276,7 +278,7 @@ internal class ApiDefinitionToServerCode(private val api: RpcApi) {
 
 
         val arguments = listOf(
-            SetupParamName,
+            Config,
             RequestParamName,
             ApiDefinitionUtils.listOfSerializers(rpc),
             rpc.returnType.toSerializerString()
@@ -293,9 +295,9 @@ internal class ApiDefinitionToServerCode(private val api: RpcApi) {
 
 
         val arguments = listOf(
-            SetupParamName,
+            Config,
             SubscriptionDataParamName,
-            ApiDefinitionUtils.listOfEventSerializers(rpc),
+            ApiDefinitionUtils.listOfEventSubSerializers(rpc),
             rpc.returnType.toSerializerString()
         )
 
@@ -307,32 +309,15 @@ internal class ApiDefinitionToServerCode(private val api: RpcApi) {
     }
 
     private fun FunSpec.Builder.functionHandleCall(rpc: RpcFunction) {
-        addStatement("$SetupParamName.$UserHandlerPropertyName.${rpc.name}".withMethodArguments(functionArguments(rpc)))
+        addStatement("$Config.$UserHandlerPropertyName.${rpc.name}".withMethodArguments(functionArguments(rpc)))
     }
 
     private fun functionArguments(rpc: RpcFunction) = rpc.parameters.mapIndexed { i, arg ->
         "it[$i] as %T".formatWith(arg.type.typeName)
     }
 
-    private fun FunSpec.Builder.eventTransformCall(rpc: RpcEventEndpoint) {
-        addStatement("$SetupParamName.$UserHandlerPropertyName.${rpc.name}".withMethodArguments(eventArguments(rpc)))
-    }
 
-    private fun eventArguments(rpc: RpcEventEndpoint): List<FormattedString> {
-        // We draw from both lists, according to which parameter is a dispatch param and which is an event param.
-        var eventIndex = 0
-        var dispatchIndex = 0
-        return rpc.parameters.map { parameter ->
-            val dispatchValue = parameter.isDispatch || parameter.isTarget
-            // We use the dispatch value for the @EventTarget value, which allows us to have the real value without serialization.
-            val targetList = if (dispatchValue) DispatcherDataParamName else "it"
-            val index = if (dispatchValue) dispatchIndex++ else eventIndex++
-            "$targetList[$index] as %T".formatWith(parameter.value.type.typeName)
-        }
-    }
-
-
-
+// private val config: EventConfig<AllEncompassingService>
 
     /**
      * Generates something like this:
@@ -352,7 +337,7 @@ internal class ApiDefinitionToServerCode(private val api: RpcApi) {
         addClass(invokerName) {
 
             addPrimaryConstructor {
-                addConstructorProperty(SetupParamName, rpcSetup.copy(nullable = true), KModifier.PRIVATE)
+                addConstructorProperty(Config, handlerConfig/*.copy(nullable = true)*/, KModifier.PRIVATE)
             }
 //            superclass(GeneratedEventInvoker::class.asClassName().parameterizedBy(apiDefinition.name.kotlinPoet))
 
@@ -363,6 +348,13 @@ internal class ApiDefinitionToServerCode(private val api: RpcApi) {
     }
 
 
+    /**
+     * ```kotlin
+     *            GeneratedCodeUtils.invokeEvent(config, "eventTest",listOf(String.serializer()),String.serializer(),target.toString()) {
+     *               config.handler.eventTest(dispatchParam, it[0] as String)
+     *           }
+     *     ```
+     */
     private fun eventInvoker(event: RpcEventEndpoint) = funSpec("invoke${event.name.replaceFirstChar { it.uppercaseChar() }}") {
         val dispatchParameters = event.parameters.filter { it.isDispatch || it.isTarget }.map { it.value }
         addModifiers(KModifier.SUSPEND)
@@ -377,13 +369,43 @@ internal class ApiDefinitionToServerCode(private val api: RpcApi) {
         val listOfCall = if (dispatchParameters.isEmpty()) "listOf<Nothing>()"
         else "listOf(${dispatchParameters.joinToString { it.name }})"
 
-        val codeUtilsFunction = if (targetParameter != null) "invokeTargetedEvent" else "invokeEvent"
+        val paramSerializers = listOfEventSubSerializers(event)
 
-        addCode(
-            "%T.${codeUtilsFunction}(%S, ${listOfCall}, ${SetupParamName}!!, ${targetParameter ?: ""})",
-            GeneratedCodeUtils::class,
-            event.name
+//        val codeUtilsFunction = if (targetParameter != null) "invokeTargetedEvent" else "invokeEvent"
+
+        val target = if (targetParameter != null) "target.toString()" else ""
+        val arguments = listOf(
+            Config,
+            "\"${event.name}\"",
+            paramSerializers,
+            event.returnType.toSerializerString(),
+            target
         )
+        addControlFlow(invokeEventUtilsMethod.withArgumentList(arguments)) {
+            eventTransformCall(event)
+        }
+//        addCode(
+//            invokeEventUtilsMethod.withArgumentList(arguments)
+//        )
+    }
+
+    private fun FunSpec.Builder.eventTransformCall(rpc: RpcEventEndpoint) {
+        addStatement("$Config.$UserHandlerPropertyName.${rpc.name}".withMethodArguments(eventArguments(rpc)))
+    }
+
+    private fun eventArguments(rpc: RpcEventEndpoint): List<FormattedString> {
+        // We draw from both lists, according to which parameter is a dispatch param and which is an event param.
+        var eventIndex = 0
+        var dispatchIndex = 0
+        val dispatchOrTargetParams = rpc.parameters.filter { it.isDispatch || it.isTarget }
+        return rpc.parameters.map { parameter ->
+            val dispatchValue = parameter.isDispatch || parameter.isTarget
+            // We use the dispatch value for the @EventTarget value, which allows us to have the real value without serialization.
+//            val targetList = if (dispatchValue) DispatcherDataParamName else "it"
+            val index = if (dispatchValue) dispatchIndex++ else eventIndex++
+            if (dispatchValue) dispatchOrTargetParams[index].value.name.formatString()
+            else "it[$index] as %T".formatWith(parameter.value.type.typeName)
+        }
     }
 }
 

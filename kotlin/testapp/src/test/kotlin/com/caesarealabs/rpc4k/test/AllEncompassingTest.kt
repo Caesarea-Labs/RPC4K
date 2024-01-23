@@ -3,12 +3,9 @@
 
 package com.caesarealabs.rpc4k.test
 
-import com.caesarealabs.rpc4k.generated.AllEncompassingServiceClientImpl
-import com.caesarealabs.rpc4k.generated.AllEncompassingServiceEventInvoker
-import com.caesarealabs.rpc4k.generated.SimpleProtocolClientImpl
-import com.caesarealabs.rpc4k.generated.SimpleProtocolEventInvoker
-import com.caesarealabs.rpc4k.runtime.api.*
-import com.caesarealabs.rpc4k.runtime.api.testing.rpcExtension
+import com.caesarealabs.rpc4k.generated.rpc4k
+import com.caesarealabs.rpc4k.runtime.api.RpcResponseException
+import com.caesarealabs.rpc4k.runtime.api.testing.junit
 import com.caesarealabs.rpc4k.testapp.*
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
@@ -34,13 +31,9 @@ import kotlin.test.assertEquals
 import kotlin.time.Duration.Companion.milliseconds
 
 
-
-
-
 //TODO: get rid of other factories in favor of this
 //TODO: integrate this to simplify dealing with generated classes
 //TODO: split the suite into server only and client + server? for now i'm gonna gen client always
-
 
 
 //object AllEncompassingGeneratedSuite : GeneratedSuiteFactory<AllEncompassingService, AllEncompassingServiceClientImpl, AllEncompassingServiceEventInvoker> {
@@ -50,19 +43,18 @@ import kotlin.time.Duration.Companion.milliseconds
 //}
 
 
-
-
 class AllEncompassingTest {
     companion object {
         @JvmField
         @RegisterExtension
-        val allEncompassingExtension = rpcExtension<AllEncompassingService, AllEncompassingServiceEventInvoker, AllEncompassingServiceClientImpl>({
-            AllEncompassingService(invoker = it)
-        })
+        val allEncompassingExtension = AllEncompassingService.rpc4k.junit { AllEncompassingService(it) }
+//        rpcExtension<AllEncompassingService, AllEncompassingServiceEventInvoker, AllEncompassingServiceClientImpl>({
+//            AllEncompassingService(invoker = it)
+//        })
 
         @JvmField
         @RegisterExtension
-        val simpleExtension = rpcExtension<SimpleProtocol, SimpleProtocolEventInvoker, SimpleProtocolClientImpl>({ SimpleProtocol() })
+        val simpleExtension = SimpleProtocol.rpc4k.junit { SimpleProtocol() }
     }
 
     @Test

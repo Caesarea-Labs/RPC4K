@@ -50,7 +50,7 @@ open class SimpleProtocol {
 typealias AliasTest = CreateLobbyResponse
 
 @Api(true)
-open class AllEncompassingService(val value: Int = 1, val invoker: AllEncompassingServiceEventInvoker = AllEncompassingServiceEventInvoker(null)) {
+ class AllEncompassingService(val invoker: AllEncompassingServiceEventInvoker) {
     companion object {
         fun distraction1() {}
         val distraction2: String = ""
@@ -62,16 +62,16 @@ open class AllEncompassingService(val value: Int = 1, val invoker: AllEncompassi
     class Distraction5
 
 
-    open suspend fun createLobby(createdBy: PlayerId, otherThing: String): CreateLobbyResponse {
+    fun createLobby(createdBy: PlayerId, otherThing: String): CreateLobbyResponse {
         println("Handled createLobby! $createdBy")
         return CreateLobbyResponse(createdBy.num + otherThing.length)
     }
 
-    open suspend fun killSomeone(killer: Int, shit: PlayerId, bar: Unit): UInt {
+    fun killSomeone(killer: Int, shit: PlayerId, bar: Unit): UInt {
         return (killer + shit.num).toUInt()
     }
 
-    open suspend fun someShit(x: Int, y: Int): String {
+    fun someShit(x: Int, y: Int): String {
         println("asdf")
         println("asdf")
         println("asdf")

@@ -1,9 +1,9 @@
 package com.caesarealabs.rpc4k.test
 
-import com.caesarealabs.rpc4k.generated.BasicApiClientImpl
 import com.caesarealabs.rpc4k.generated.BasicApiEventInvoker
+import com.caesarealabs.rpc4k.generated.rpc4k
 import com.caesarealabs.rpc4k.runtime.api.Api
-import com.caesarealabs.rpc4k.runtime.api.testing.rpcExtension
+import com.caesarealabs.rpc4k.runtime.api.testing.junit
 import kotlinx.coroutines.runBlocking
 import kotlinx.serialization.Serializable
 import org.junit.jupiter.api.extension.RegisterExtension
@@ -16,7 +16,7 @@ class KtorServerTest {
     companion object {
         @JvmField
         @RegisterExtension
-        val extension = rpcExtension<BasicApi,BasicApiEventInvoker, BasicApiClientImpl>({ BasicApi() })
+        val extension = BasicApi.rpc4k.junit { BasicApi() }
     }
 
     @Test

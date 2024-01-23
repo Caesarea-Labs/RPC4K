@@ -6,22 +6,22 @@ import com.caesarealabs.rpc4k.runtime.api.*
 
 
 // This handles reading and responding for both types of engines
-internal suspend fun <I, O, Engine : RpcServerEngine.SingleCall<I, O>> RpcSetupEngine<Engine>.handleImpl(input: I, output: O?): O? {
+internal suspend fun <I, O> RpcServerEngine.SingleCall<I, O>.routeRpcCallImpl(input: I, output: O?, config: ServerConfig): O? {
     try {
-        val bytes = engine.read(input)
+        val bytes = read(input)
 
         val method = Rpc.peekMethodName(bytes)
-        val response = (generatedHelper as GeneratedServerHelper<Any?, Any?>).handleRequest(bytes, method, this)
-            ?: return engine.genericErrorResponder("Non existent procedure $method", RpcError.InvalidRequest, output)
-        return engine.genericResponder(response, output)
+        val response = (config.router as RpcRouter<Any?>).routeRequest(bytes, method, config)
+            ?: return genericErrorResponder("Non existent procedure $method", RpcError.InvalidRequest, output)
+        return genericResponder(response, output)
     } catch (e: InvalidRpcRequestException) {
         Rpc4K.Logger.warn("Invalid request", e)
         // RpcServerException messages are trustworthy
-        return engine.genericErrorResponder(e.message, RpcError.InvalidRequest, output)
+        return genericErrorResponder(e.message, RpcError.InvalidRequest, output)
     } catch (e: Throwable) {
         Rpc4K.Logger.error("Failed to handle request", e)
         // Don't send arbitrary throwable messages because it could leak data
-        return engine.genericErrorResponder("Server failed to process request", RpcError.InternalError, output)
+        return genericErrorResponder("Server failed to process request", RpcError.InternalError, output)
     }
 }
 

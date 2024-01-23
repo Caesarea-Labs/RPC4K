@@ -21,10 +21,10 @@ internal class ApiClassValidator(private val env: SymbolProcessorEnvironment, pr
     fun validate(apiClass: KSClassDeclaration): Boolean {
 //        if (!apiClass.validate()) return false
         var valid = checkApiClassIsValid(apiClass)
-        if (apiClass.shouldGenerateClient()) {
-            // Servers don't need to be suspendOpen, only clients
-            valid = checkClassIsSuspendOpen(apiClass) && valid
-        }
+//        if (apiClass.shouldGenerateClient()) {
+//            // Servers don't need to be suspendOpen, only clients
+//            valid = checkClassIsSuspendOpen(apiClass) && valid
+//        }
 
         var unserializableReferencedClass = false
 
@@ -134,15 +134,15 @@ internal class ApiClassValidator(private val env: SymbolProcessorEnvironment, pr
      * because the @ApiClient class serves as an interface for the generated client implementation.
      */
     private fun checkClassIsSuspendOpen(apiClass: KSClassDeclaration): Boolean {
-        apiClass.primaryConstructor?.let { ctr ->
-            ctr.parameters.evaluateAll {
-                it.checkRequirement(env, it.hasDefault) {
-                    // The generated client class extends the user's class, and having required parameters for the user's class would make it impossible
-                    // to simply extend it (we would need to specify some value)
-                    "@Api client class must have default values for its primary constructor"
-                }
-            }
-        }
+//        apiClass.primaryConstructor?.let { ctr ->
+//            ctr.parameters.evaluateAll {
+//                it.checkRequirement(env, it.hasDefault) {
+//                    // The generated client class extends the user's class, and having required parameters for the user's class would make it impossible
+//                    // to simply extend it (we would need to specify some value)
+//                    "@Api client class must have default values for its primary constructor"
+//                }
+//            }
+//        }
         val classOpen = checkIsSuspendOpen(apiClass, method = false)
         // Make sure to evaluate all the checks
         return apiClass.getPublicApiFunctions().evaluateAll { checkIsSuspendOpen(it, method = true) } && classOpen

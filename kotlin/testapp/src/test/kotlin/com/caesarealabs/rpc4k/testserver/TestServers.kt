@@ -2,21 +2,20 @@
 
 package com.caesarealabs.rpc4k.testserver
 
-import com.caesarealabs.rpc4k.testapp.AllEncompassingService
-import com.caesarealabs.rpc4k.generated.server
-import com.caesarealabs.rpc4k.runtime.api.RpcServerSetup
+import com.caesarealabs.rpc4k.generated.rpc4k
 import com.caesarealabs.rpc4k.runtime.api.startServer
 import com.caesarealabs.rpc4k.test.BasicApi
+import com.caesarealabs.rpc4k.testapp.AllEncompassingService
 import kotlin.test.Test
 
 class TestServers {
     @Test
     fun myApi() {
-        RpcServerSetup.managedKtor({ BasicApi() }, BasicApi.server()).startServer(wait = true)
+        BasicApi.rpc4k.startServer { BasicApi() }
     }
 
     @Test
     fun allEncompassingService() {
-        RpcServerSetup.managedKtor({ AllEncompassingService(invoker = it) }, AllEncompassingService.server()).startServer(wait = true)
+        AllEncompassingService.rpc4k.startServer { AllEncompassingService(it) }
     }
 }
