@@ -5,40 +5,30 @@
 ### Handle flushing out old event subscriptions
 Maybe handling erronous events is good enough?
 
-### Consolidate generated classes:
+### Resolve the issue of invoker in direct server testing
+When we have a service like this
 ```kotlin
-interface Rpc4kGeneratedClasses<Server, Client, Invoker, > {
-    val server: Server
-    val networkClientFactory: GeneratedClientImplFactory<Client>
-    val memoryClientFactory: GeneratedMemoryClientFactory<Client>
-    val invoker: Invoker
-}
-
-interface GeneratedMemoryClientFactory<C, Server> {
-    fun create(server: Server): C
+class Foo(val invoker: FooInvoker) {
+    fun bar() {
+        
+    }
 }
 ```
-1. Rename GeneratedClientImpl to GeneratedClient
-2. Rename GeneratedClientImplFactory to GeneratedNetworkClientFactory
-3. Generate an instance of this for every service
-4. Get rid of factories - i don't think i need them anymore
-5. Use this in test frameworks in such
-
-### Lift 'open class / functions' restriction
-We no longer override the service class, so:
-1. Remove KSP checks
-2. Change classes to no longer be open
-3. Stop providing defaults value for the constructor - we don't need it anymore. 
-4. Lift EventInvoker nullability of the rpcSetup because we don't need to create a stub invoker anymore
-4. Run tests again, the 'open check' tests are no longer valid so they should be removed. 
-
-
+We often want to just construct Foo and test it. For this reason we need to have some good instance of FooInvoker that will do what we expect. 
+One option is to provide a HandlerConfig that uses some simple MemoryEventManager and json to send information back to the server,
+Another option is to provide some totally in-memory implementation of the invoker to simplify debugging. We probably still need to use a MemoryEventManager.
+The relation between this features in the in-memory client is TBD. 
 
 # 2. Low Priority - Do later
 ### Improve server testing with "in-memory-server" client generation
 For every service, in addition to generating a client that interacts with the server from network, there should also be a client that 
 interacts with an actual server instance in-memory. This is because we no longer override the service class in the generated client, 
 so we need a unified interface for testing. 
+
+
+### Bind gradle version to a specific typescript version
+We need to avoid cases where you for example have gradle version that is meant for typescript 0.5, but 0.6 has been released and breaks everything.
+Currently, it just downloads the latest, but it should be bound to a specific version. 
 
 
 ### Support optional properties

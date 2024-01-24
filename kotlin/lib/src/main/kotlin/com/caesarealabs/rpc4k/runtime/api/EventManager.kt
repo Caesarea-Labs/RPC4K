@@ -6,10 +6,10 @@ public interface EventConnection {
     public suspend fun send(bytes: ByteArray)
 }
 
-public interface EventManager<C: EventConnection> {
+public interface EventManager {
     //TODO: consider validating subscriptions. Maybe benchmark how much time it takes. It's a good idea for correctness
     // but not that important.
-    public suspend fun subscribe(subscription: C2SEventMessage.Subscribe, connection: C)
+    public suspend fun subscribe(subscription: C2SEventMessage.Subscribe, connection: EventConnection)
 
     /**
      * Returns whether there was something to actually unsubscribe to matching the criteria.
@@ -21,12 +21,12 @@ public interface EventManager<C: EventConnection> {
      * @param target If a non-null value is provided then only subscriptions matching that target will be returned
      * if null is passed, all subscriptions of the event will be returned.
      */
-    public suspend fun match(event: String, target: String?): List<EventSubscription<C>>
+    public suspend fun match(event: String, target: String?): List<EventSubscription>
 
     /**
      * Removes all subscriptions of the given connection
      */
-    public suspend fun dropClient(connection: C)
+    public suspend fun dropClient(connection: EventConnection)
 }
 
-public data class EventSubscription<C: EventConnection>(val connection: C, val info: C2SEventMessage.Subscribe)
+public data class EventSubscription(val connection: EventConnection, val info: C2SEventMessage.Subscribe)

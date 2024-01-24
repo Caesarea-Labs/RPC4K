@@ -4,7 +4,8 @@ package com.caesarealabs.rpc4k.runtime.api
 
 import com.caesarealabs.rpc4k.runtime.api.components.JsonFormat
 import com.caesarealabs.rpc4k.runtime.api.components.KtorManagedRpcServer
-import com.caesarealabs.rpc4k.runtime.implementation.Rpc4K
+import com.caesarealabs.rpc4k.runtime.api.components.MemoryEventManager
+import com.caesarealabs.rpc4k.runtime.implementation.createHandlerConfig
 import com.caesarealabs.rpc4k.runtime.implementation.routeRpcCallImpl
 
 
@@ -21,7 +22,16 @@ import com.caesarealabs.rpc4k.runtime.implementation.routeRpcCallImpl
 public interface HandlerConfig<out T> {
     public val handler: T
     public val format: SerializationFormat
-    public val eventManager: EventManager<*>
+    public val eventManager: EventManager
+    public object None: HandlerConfig<Nothing> {
+        override val handler: Nothing
+            get() = TODO("Not yet implemented")
+        override val format: SerializationFormat
+            get() = TODO("Not yet implemented")
+        override val eventManager: EventManager
+            get() = TODO("Not yet implemented")
+
+    }
 }
 
 public data class ServerConfig(val router: RpcRouter<*>, private val config: HandlerConfig<*>) : HandlerConfig<Any?> by config
@@ -34,40 +44,81 @@ internal class HandlerConfigImpl<out T, I>(
     handler: (I) -> T,
     invoker: (HandlerConfigImpl<T, I>) -> I,
     override val format: SerializationFormat,
-    override val eventManager: EventManager<*>
+    override val eventManager: EventManager
 ) : HandlerConfig<T> {
     public val invoker: I = invoker(this)
     override val handler: T = handler(this.invoker)
 }
 
 public fun <S, I> Rpc4kIndex<S, *, I>.startServer(
-    format: SerializationFormat = JsonFormat(),
     engine: RpcServerEngine.MultiCall = KtorManagedRpcServer(),
+    format: SerializationFormat = JsonFormat(),
+    eventManager: EventManager = MemoryEventManager(),
     wait: Boolean = true,
     service: (I) -> S,
 ) {
-    createServer(format, engine, service).start(wait)
+    createDedicatedServer(engine, format, eventManager, service).start(wait)
 }
 
-public fun <S, I> Rpc4kIndex<S, *, I>.createServer(
-    format: SerializationFormat = JsonFormat(),
+/**
+ * Creates a MultiCall server
+ */
+public fun <S, I> Rpc4kIndex<S, *, I>.createDedicatedServer(
     engine: RpcServerEngine.MultiCall = KtorManagedRpcServer(),
+    format: SerializationFormat = JsonFormat(),
+    eventManager: EventManager = MemoryEventManager(),
     service: (I) -> S
-): RpcServerEngine.MultiCall.Instance {
-    val config = createHandlerConfig(format, engine, service)
+): Rpc4kSCServerSuite<S, I, RpcServerEngine.MultiCall.Instance>  {
+    val config = createHandlerConfig(format, eventManager, service)
     val serverConfig = ServerConfig(router, config)
-    return engine.create(serverConfig)
+    return Rpc4kSCServerSuite(
+        engine.create(serverConfig), serverConfig, config.handler, config.invoker
+    )
 }
 
-internal fun <S, I> Rpc4kIndex<S, *, I>.createHandlerConfig(
-    format: SerializationFormat,
-    engine: RpcServerEngine,
-    service: (I) -> S
-): HandlerConfigImpl<S, I> {
-    @Suppress("RemoveExplicitTypeArguments")
-    // The type args are necessary.
-    return HandlerConfigImpl<S, I>({ service(it) }, { createInvoker(it) }, format, engine.eventManager)
+/**
+ * Creates a SingleCall server
+ */
+public fun <S, Inv, E> Rpc4kIndex<S, *, Inv>.createServer(
+    engine: E,
+    format: SerializationFormat = JsonFormat(),
+    eventManager: EventManager = MemoryEventManager(),
+    service: (Inv) -> S
+): Rpc4kSCServerSuite<S, Inv, E> {
+    val config = createHandlerConfig(format, eventManager, service)
+    val serverConfig = ServerConfig(router, config)
+    return Rpc4kSCServerSuite(
+        engine, serverConfig, config.handler, config.invoker
+    )
 }
+
+
+public data class Rpc4kSCServerSuite<S, Inv, E>(
+    val engine: E,
+    val config: ServerConfig,
+    val server: S,
+    val invoker: Inv
+)
+
+public typealias Rpc4kWithEngine<E> = Rpc4kSCServerSuite<*, *, E>
+
+
+public suspend fun <I, O, E : RpcServerEngine.SingleCall.Returning<I, O>> Rpc4kWithEngine<E>.routeRpcs(input: I): O {
+    return engine.routeRpcCallImpl(input, null, config)!!
+}
+
+public suspend fun <I, O, E : RpcServerEngine.SingleCall.Writing<I, O>> Rpc4kWithEngine<E>.routeRpcs(input: I, output: O) {
+    engine.routeRpcCallImpl(input, output, config)
+}
+
+public fun <E : RpcServerEngine.MultiCall.Instance> Rpc4kWithEngine<E>.start(wait: Boolean) {
+    engine.start(wait)
+}
+
+public fun <E : RpcServerEngine.MultiCall.Instance> Rpc4kWithEngine<E>.stop() {
+    engine.stop()
+}
+
 
 //internal
 //    public fun <T>create(handler: (HandlerConfig<T>) -> T,
@@ -122,30 +173,4 @@ internal fun <S, I> Rpc4kIndex<S, *, I>.createHandlerConfig(
 //public fun <Engine : RpcServerEngine.MultiCall> RpcSetupEngine<Engine>.startServer(wait: Boolean): Unit = engine.create(this)
 //    .start(wait)
 
-public suspend fun <I, O> RpcServerEngine.SingleCall.Writing<I, O>.routeRpcs(input: I, output: O, config: ServerConfig) {
-    routeRpcCallImpl(input, output, config)
-}
-
-public suspend fun <I, O> RpcServerEngine.SingleCall.Returning<I, O>.routeRpcs(input: I, config: ServerConfig): O {
-    return routeRpcCallImpl(input, null, config)!!
-}
-
-public suspend fun EventManager<*>.acceptEventSubscription(bytes: ByteArray, connection: EventConnection) {
-    this as EventManager<EventConnection>
-//    val eventManager = engine.eventManager as EventManager<EventConnection>
-    println("Accept event subscription: ${bytes.decodeToString()}")
-    try {
-        when (val message = C2SEventMessage.fromByteArray(bytes)) {
-            is C2SEventMessage.Subscribe -> subscribe(message, connection)
-            is C2SEventMessage.Unsubscribe -> unsubscribe(message.event, message.listenerId)
-        }
-    } catch (e: InvalidRpcRequestException) {
-        Rpc4K.Logger.warn("Invalid client event message", e)
-        // RpcServerException messages are trustworthy
-        connection.send(S2CEventMessage.SubscriptionError("Invalid client event message: ${e.message}").toByteArray())
-    } catch (e: Throwable) {
-        Rpc4K.Logger.error("Failed to handle request", e)
-        connection.send(S2CEventMessage.SubscriptionError("Server failed to process subscription").toByteArray())
-    }
-}
 

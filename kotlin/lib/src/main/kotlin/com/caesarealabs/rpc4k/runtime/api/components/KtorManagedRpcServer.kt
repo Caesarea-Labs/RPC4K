@@ -1,10 +1,10 @@
 package com.caesarealabs.rpc4k.runtime.api.components
 
 import com.caesarealabs.rpc4k.runtime.api.*
-import com.caesarealabs.rpc4k.runtime.implementation.KtorEventManager
-import com.caesarealabs.rpc4k.runtime.implementation.KtorWebsocketEventConnection
 import com.caesarealabs.rpc4k.runtime.implementation.PortPool
 import com.caesarealabs.rpc4k.runtime.implementation.Rpc4K
+import com.caesarealabs.rpc4k.runtime.implementation.acceptEventSubscription
+import com.caesarealabs.rpc4k.runtime.implementation.routeRpcs
 import io.ktor.server.application.*
 import io.ktor.server.engine.*
 import io.ktor.server.netty.*
@@ -12,10 +12,15 @@ import io.ktor.server.plugins.callloging.*
 import io.ktor.server.routing.*
 import io.ktor.server.websocket.*
 import io.ktor.websocket.*
+import java.util.*
 
 
-
-
+public class KtorWebsocketEventConnection(private val session: DefaultWebSocketSession) : EventConnection {
+    override val id: String = UUID.randomUUID().toString()
+    override suspend fun send(bytes: ByteArray) {
+        session.send(Frame.Text(true, bytes))
+    }
+}
 
 // NiceToHave: use a custom implementation that setups multiple routes
 /**
@@ -27,7 +32,7 @@ public class KtorManagedRpcServer(
 ) : RpcServerEngine.MultiCall {
 
     private val singleRoute = KtorSingleRouteRpcServer()
-    override val eventManager: EventManager<KtorWebsocketEventConnection> = KtorEventManager()
+//    override val eventManager: EventManager<KtorWebsocketEventConnection> = MemoryEventManager()
 
     private fun Application.configImpl(config: ServerConfig) {
         install(CallLogging)
@@ -50,7 +55,7 @@ public class KtorManagedRpcServer(
                     }
                 } finally {
                     Rpc4K.Logger.info("Removing connection ${connection.id}")
-                    eventManager.dropClient(connection)
+                    config.eventManager.dropClient(connection)
                 }
             }
         }
