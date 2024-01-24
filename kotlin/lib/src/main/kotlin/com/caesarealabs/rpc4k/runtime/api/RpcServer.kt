@@ -4,6 +4,7 @@ package com.caesarealabs.rpc4k.runtime.api
 // LOWPRIO: try to simplify this
 public sealed interface RpcServerEngine {
 //    public val eventManager: EventManager<*>
+    public suspend fun sendMessage(connection: EventConnection, bytes: ByteArray)
 
     public sealed interface SingleCall<I, O> : RpcServerEngine {
         public suspend fun read(input: I): ByteArray

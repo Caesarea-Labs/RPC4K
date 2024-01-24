@@ -1,10 +1,10 @@
 package com.caesarealabs.rpc4k.runtime.api
 
 
-public interface EventConnection {
+@JvmInline public value class EventConnection (
     public val id: String
-    public suspend fun send(bytes: ByteArray)
-}
+//    public suspend fun send(bytes: ByteArray)
+)
 
 public interface EventManager {
     //TODO: consider validating subscriptions. Maybe benchmark how much time it takes. It's a good idea for correctness

@@ -1,5 +1,6 @@
 package com.caesarealabs.rpc4k.runtime.api.components
 
+import com.caesarealabs.rpc4k.runtime.api.EventConnection
 import com.caesarealabs.rpc4k.runtime.api.EventManager
 import com.caesarealabs.rpc4k.runtime.api.RpcError
 import com.caesarealabs.rpc4k.runtime.api.RpcServerEngine
@@ -24,5 +25,9 @@ public class KtorSingleRouteRpcServer : RpcServerEngine.SingleCall.Writing<Appli
             RpcError.InternalError -> HttpStatusCode.InternalServerError
         }
         output.respondText(message, status = code)
+    }
+
+    override suspend fun sendMessage(connection: EventConnection, bytes: ByteArray) {
+        TODO("Not yet implemented")
     }
 }

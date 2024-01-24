@@ -25,7 +25,7 @@ public fun <S, C, I> Rpc4kIndex<S, C, I>.junit(
     val url = "http://localhost:${port}"
     val websocketUrl = "$url/events"
     val clientSetup = client.build(url, websocketUrl)
-    val config = createHandlerConfig(format,eventManager,serverFactory)
+    val config = createHandlerConfig(format,eventManager,server, serverFactory)
     val serverConfig = ServerConfig(router, config)
     val suite = Rpc4kSuiteImpl(config.handler, createNetworkClient(clientSetup, format), /*createMemoryClient(config.handler),*/ config.invoker)
     val engine = server.create(serverConfig)
@@ -52,6 +52,7 @@ public class ClientServerExtension<S, C, I> internal constructor(
     AfterAllCallback {
     public val server: S = suite.server
     public val client: C = suite.networkClient
+    public val invoker: I = suite.invoker
 
     override fun beforeAll(context: ExtensionContext) {
         engine.start(wait = false)

@@ -23,12 +23,16 @@ public interface HandlerConfig<out T> {
     public val handler: T
     public val format: SerializationFormat
     public val eventManager: EventManager
-    public object None: HandlerConfig<Nothing> {
+    public val engine: RpcServerEngine
+
+    public object None : HandlerConfig<Nothing> {
         override val handler: Nothing
             get() = TODO("Not yet implemented")
         override val format: SerializationFormat
             get() = TODO("Not yet implemented")
         override val eventManager: EventManager
+            get() = TODO("Not yet implemented")
+        override val engine: RpcServerEngine
             get() = TODO("Not yet implemented")
 
     }
@@ -44,7 +48,8 @@ internal class HandlerConfigImpl<out T, I>(
     handler: (I) -> T,
     invoker: (HandlerConfigImpl<T, I>) -> I,
     override val format: SerializationFormat,
-    override val eventManager: EventManager
+    override val eventManager: EventManager,
+    override val engine: RpcServerEngine
 ) : HandlerConfig<T> {
     public val invoker: I = invoker(this)
     override val handler: T = handler(this.invoker)
@@ -68,8 +73,8 @@ public fun <S, I> Rpc4kIndex<S, *, I>.createDedicatedServer(
     format: SerializationFormat = JsonFormat(),
     eventManager: EventManager = MemoryEventManager(),
     service: (I) -> S
-): Rpc4kSCServerSuite<S, I, RpcServerEngine.MultiCall.Instance>  {
-    val config = createHandlerConfig(format, eventManager, service)
+): Rpc4kSCServerSuite<S, I, RpcServerEngine.MultiCall.Instance> {
+    val config = createHandlerConfig(format, eventManager, engine, service)
     val serverConfig = ServerConfig(router, config)
     return Rpc4kSCServerSuite(
         engine.create(serverConfig), serverConfig, config.handler, config.invoker
@@ -79,13 +84,13 @@ public fun <S, I> Rpc4kIndex<S, *, I>.createDedicatedServer(
 /**
  * Creates a SingleCall server
  */
-public fun <S, Inv, E> Rpc4kIndex<S, *, Inv>.createServer(
+public fun <S, Inv, E: RpcServerEngine> Rpc4kIndex<S, *, Inv>.createServer(
     engine: E,
     format: SerializationFormat = JsonFormat(),
     eventManager: EventManager = MemoryEventManager(),
     service: (Inv) -> S
 ): Rpc4kSCServerSuite<S, Inv, E> {
-    val config = createHandlerConfig(format, eventManager, service)
+    val config = createHandlerConfig(format, eventManager, engine, service)
     val serverConfig = ServerConfig(router, config)
     return Rpc4kSCServerSuite(
         engine, serverConfig, config.handler, config.invoker

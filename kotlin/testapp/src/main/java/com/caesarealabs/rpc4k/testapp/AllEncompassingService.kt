@@ -338,6 +338,11 @@ typealias AliasTest = CreateLobbyResponse
 
     }
 
+    @RpcEvent
+    open suspend fun targetWithDifferentName(@EventTarget name: String): String {
+        return name
+    }
+
 
 //
 @Serializable

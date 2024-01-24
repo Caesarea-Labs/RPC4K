@@ -248,15 +248,10 @@ internal class ApiDefinitionToServerCode(private val api: RpcApi) {
 
         val targetParameter = event.targetParameter?.name
 
-        // Type inference fails when there are no params so we need to explicitly pass <Nothing> as the type param
-        val listOfCall = if (dispatchParameters.isEmpty()) "listOf<Nothing>()"
-        else "listOf(${dispatchParameters.joinToString { it.name }})"
-
         val paramSerializers = listOfEventSubSerializers(event)
 
-//        val codeUtilsFunction = if (targetParameter != null) "invokeTargetedEvent" else "invokeEvent"
 
-        val target = if (targetParameter != null) "target.toString()" else ""
+        val target = if (targetParameter != null) "${targetParameter}.toString()" else ""
         val arguments = listOf(
             Config,
             "\"${event.name}\"",
@@ -267,9 +262,6 @@ internal class ApiDefinitionToServerCode(private val api: RpcApi) {
         addControlFlow(invokeEventUtilsMethod.withArgumentList(arguments)) {
             eventTransformCall(event)
         }
-//        addCode(
-//            invokeEventUtilsMethod.withArgumentList(arguments)
-//        )
     }
 
     private fun FunSpec.Builder.eventTransformCall(rpc: RpcEventEndpoint) {

@@ -115,7 +115,8 @@ public object GeneratedCodeUtils {
             val handled = handle(parsed)
             val bytes = config.format.encode(resultSerializer, handled)
             val fullMessage = S2CEventMessage.Emitted(subscriber.info.listenerId, bytes).toByteArray()
-            subscriber.connection.send(fullMessage)
+            config.engine.sendMessage(subscriber.connection,fullMessage)
+//             subscriber.connection.send(fullMessage)
         }
     }
 }

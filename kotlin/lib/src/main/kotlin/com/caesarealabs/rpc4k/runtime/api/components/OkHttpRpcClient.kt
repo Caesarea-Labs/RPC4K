@@ -14,10 +14,15 @@ import okhttp3.*
 import okhttp3.HttpUrl.Companion.toHttpUrl
 import okhttp3.RequestBody.Companion.toRequestBody
 import okio.IOException
+import java.time.Duration
 import java.util.concurrent.ConcurrentHashMap
 import kotlin.coroutines.resume
+import kotlin.time.Duration.Companion.seconds
 
-public class OkHttpRpcClient(private val url: String, private val websocketUrl: String, private val client: OkHttpClient = OkHttpClient()) :
+public class OkHttpRpcClient(private val url: String, private val websocketUrl: String,
+
+//                             private val client: OkHttpClient = OkHttpClient.Builder().readTimeout(Duration.ofSeconds(20)).build()) :
+                             private val client: OkHttpClient = OkHttpClient()) :
     RpcClient {
 
     override suspend fun send(rpc: Rpc, format: SerializationFormat, serializers: List<KSerializer<*>>): ByteArray {

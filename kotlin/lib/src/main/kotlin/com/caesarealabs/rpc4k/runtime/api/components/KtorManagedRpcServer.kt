@@ -13,14 +13,15 @@ import io.ktor.server.routing.*
 import io.ktor.server.websocket.*
 import io.ktor.websocket.*
 import java.util.*
+import java.util.concurrent.ConcurrentHashMap
 
 
-public class KtorWebsocketEventConnection(private val session: DefaultWebSocketSession) : EventConnection {
-    override val id: String = UUID.randomUUID().toString()
-    override suspend fun send(bytes: ByteArray) {
-        session.send(Frame.Text(true, bytes))
-    }
-}
+//public class KtorWebsocketEventConnection(private val session: DefaultWebSocketSession) : EventConnection {
+//    override val id: String = UUID.randomUUID().toString()
+//    override suspend fun send(bytes: ByteArray) {
+//        session.send(Frame.Text(true, bytes))
+//    }
+//}
 
 // NiceToHave: use a custom implementation that setups multiple routes
 /**
@@ -30,6 +31,8 @@ public class KtorWebsocketEventConnection(private val session: DefaultWebSocketS
 public class KtorManagedRpcServer(
     private val engine: ApplicationEngineFactory<*, *> = Netty,public val port: Int = PortPool.get(), private val config: Application.() -> Unit = {}
 ) : RpcServerEngine.MultiCall {
+
+    private val connections = ConcurrentHashMap<EventConnection, DefaultWebSocketSession>()
 
     private val singleRoute = KtorSingleRouteRpcServer()
 //    override val eventManager: EventManager<KtorWebsocketEventConnection> = MemoryEventManager()
@@ -45,17 +48,20 @@ public class KtorManagedRpcServer(
             }
 
             webSocket("/events") {
-                val connection = KtorWebsocketEventConnection(this)
+                val connection = EventConnection(UUID.randomUUID().toString())
+                connections[connection] = this
+//                val connection = KtorWebsocketEventConnection(this)
                 println("Adding connection ${connection.id}")
                 try {
                     for (frame in incoming) {
                         frame as? Frame.Text ?: error("Unexpected non-text frame")
-                        config.eventManager.acceptEventSubscription(frame.readBytes(),connection)
+                        config.acceptEventSubscription(frame.readBytes(),connection)
 //                        setup.acceptEventSubscription(frame.readBytes(), connection)
                     }
                 } finally {
                     Rpc4K.Logger.info("Removing connection ${connection.id}")
                     config.eventManager.dropClient(connection)
+                    connections.remove(connection)
                 }
             }
         }
@@ -73,6 +79,10 @@ public class KtorManagedRpcServer(
         override fun start(wait: Boolean) {
             server.start(wait)
         }
+    }
+
+    override suspend fun sendMessage(connection: EventConnection, bytes: ByteArray) {
+        connections[connection]?.send(Frame.Text(true, bytes)) ?: error("Attempt to send to unknown connection: $connection")
     }
 }
 

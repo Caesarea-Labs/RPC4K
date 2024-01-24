@@ -40,11 +40,12 @@ private suspend fun <I, O> RpcServerEngine.SingleCall<I, O>.genericErrorResponde
 internal fun <S, I> Rpc4kIndex<S, *, I>.createHandlerConfig(
     format: SerializationFormat,
     eventManager: EventManager,
+    engine: RpcServerEngine,
     service: (I) -> S
 ): HandlerConfigImpl<S, I> {
     @Suppress("RemoveExplicitTypeArguments")
     // The type args are necessary.
-    return HandlerConfigImpl<S, I>({ service(it) }, { createInvoker(it) }, format, eventManager)
+    return HandlerConfigImpl<S, I>({ service(it) }, { createInvoker(it) }, format, eventManager, engine)
 }
 
 
