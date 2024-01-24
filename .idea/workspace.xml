@@ -6,15 +6,7 @@
   <component name="ChangeListManager">
     <list default="true" id="564650a1-bc6e-416d-b8da-72123f2dbf05" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/kotlin/lib/src/main/kotlin/com/caesarealabs/rpc4k/processor/ApiDefinitionToClientCode.kt" beforeDir="false" afterPath="$PROJECT_DIR$/kotlin/lib/src/main/kotlin/com/caesarealabs/rpc4k/processor/ApiDefinitionToClientCode.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/kotlin/lib/src/main/kotlin/com/caesarealabs/rpc4k/processor/ApiDefinitionToServerCode.kt" beforeDir="false" afterPath="$PROJECT_DIR$/kotlin/lib/src/main/kotlin/com/caesarealabs/rpc4k/processor/ApiDefinitionToServerCode.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/kotlin/lib/src/main/kotlin/com/caesarealabs/rpc4k/runtime/api/S2CEventMessage.kt" beforeDir="false" afterPath="$PROJECT_DIR$/kotlin/lib/src/main/kotlin/com/caesarealabs/rpc4k/runtime/api/S2CEventMessage.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/kotlin/lib/src/main/kotlin/com/caesarealabs/rpc4k/runtime/implementation/ByteUtils.kt" beforeDir="false" afterPath="$PROJECT_DIR$/kotlin/lib/src/main/kotlin/com/caesarealabs/rpc4k/runtime/implementation/ByteUtils.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/kotlin/lib/src/main/kotlin/com/caesarealabs/rpc4k/runtime/implementation/GeneratedCodeUtils.kt" beforeDir="false" afterPath="$PROJECT_DIR$/kotlin/lib/src/main/kotlin/com/caesarealabs/rpc4k/runtime/implementation/GeneratedCodeUtils.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/kotlin/lib/src/main/kotlin/com/caesarealabs/rpc4k/runtime/implementation/KotlinName.kt" beforeDir="false" afterPath="$PROJECT_DIR$/kotlin/lib/src/main/kotlin/com/caesarealabs/rpc4k/runtime/implementation/KotlinName.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/kotlin/lib/src/main/kotlin/com/caesarealabs/rpc4k/runtime/implementation/KtorEventManager.kt" beforeDir="false" afterPath="$PROJECT_DIR$/kotlin/lib/src/main/kotlin/com/caesarealabs/rpc4k/runtime/implementation/KtorEventManager.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/kotlin/lib/src/main/kotlin/com/caesarealabs/rpc4k/runtime/implementation/MultiCallServerExtension.kt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/kotlin/lib/src/main/kotlin/com/caesarealabs/rpc4k/runtime/implementation/Utils.kt" beforeDir="false" afterPath="$PROJECT_DIR$/kotlin/lib/src/main/kotlin/com/caesarealabs/rpc4k/runtime/implementation/Utils.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/kotlin/gradle/libs.versions.toml" beforeDir="false" afterPath="$PROJECT_DIR$/kotlin/gradle/libs.versions.toml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -27,7 +19,41 @@
         <task path="$PROJECT_DIR$/kotlin">
           <activation />
         </task>
-        <projects_view />
+        <projects_view>
+          <tree_state>
+            <expand>
+              <path>
+                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
+                <item name="RPC4K" type="f1a62948:ProjectNode" />
+              </path>
+              <path>
+                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
+                <item name="RPC4K" type="f1a62948:ProjectNode" />
+                <item name="RPC4K" type="2d1252cf:ModuleNode" />
+              </path>
+              <path>
+                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
+                <item name="RPC4K" type="f1a62948:ProjectNode" />
+                <item name="RPC4K" type="2d1252cf:ModuleNode" />
+                <item name="Tasks" type="e4a08cd1:TasksNode" />
+              </path>
+              <path>
+                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
+                <item name="RPC4K" type="f1a62948:ProjectNode" />
+                <item name="RPC4K" type="2d1252cf:ModuleNode" />
+                <item name="Tasks" type="e4a08cd1:TasksNode" />
+                <item name="upload" type="c8890929:TasksNode$1" />
+              </path>
+              <path>
+                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
+                <item name="RPC4K" type="f1a62948:ProjectNode" />
+                <item name="RPC4K" type="2d1252cf:ModuleNode" />
+                <item name="lib" type="2d1252cf:ModuleNode" />
+              </path>
+            </expand>
+            <select />
+          </tree_state>
+        </projects_view>
       </state>
     </system>
   </component>
@@ -53,6 +79,8 @@
     "Gradle.Build kotlin.executor": "Run",
     "Gradle.Kotlin Tests.executor": "Run",
     "Gradle.TestServers.allEncompassingService.executor": "Run",
+    "Gradle.kotlin [uploadLibrary].executor": "Run",
+    "Jest.C2S TS Tests.executor": "Run",
     "RunOnceActivity.OpenProjectViewOnStart": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "SHARE_PROJECT_CONFIGURATION_FILES": "true",
@@ -68,7 +96,29 @@
     "vue.rearranger.settings.migration": "true"
   }
 }]]></component>
-  <component name="RunManager" selected="Jest.C2S TS Tests">
+  <component name="RunManager" selected="Gradle.kotlin [uploadLibrary]">
+    <configuration name="kotlin [uploadLibrary]" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
+      <ExternalSystemSettings>
+        <option name="executionName" />
+        <option name="externalProjectPath" value="$PROJECT_DIR$/kotlin" />
+        <option name="externalSystemIdString" value="GRADLE" />
+        <option name="scriptParameters" />
+        <option name="taskDescriptions">
+          <list />
+        </option>
+        <option name="taskNames">
+          <list>
+            <option value="uploadLibrary" />
+          </list>
+        </option>
+        <option name="vmOptions" />
+      </ExternalSystemSettings>
+      <ExternalSystemDebugServerProcess>true</ExternalSystemDebugServerProcess>
+      <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
+      <DebugAllEnabled>false</DebugAllEnabled>
+      <RunAsTest>false</RunAsTest>
+      <method v="2" />
+    </configuration>
     <configuration name="C2S TS Tests" type="JavaScriptTestRunnerJest">
       <node-interpreter value="project" />
       <jest-package value="$PROJECT_DIR$/typescript/runtime/node_modules/jest" />
@@ -81,6 +131,7 @@
     <list>
       <item itemvalue="Gradle.Kotlin Tests" />
       <item itemvalue="Gradle.FullTest Server" />
+      <item itemvalue="Gradle.kotlin [uploadLibrary]" />
       <item itemvalue="Jest.C2S TS Tests" />
       <item itemvalue="Jest.Standalone TS Tests" />
       <item itemvalue="npm.Build Runtime" />
@@ -88,7 +139,7 @@
     </list>
     <recent_temporary>
       <list>
-        <item itemvalue="Gradle.FullTest Server" />
+        <item itemvalue="Gradle.kotlin [uploadLibrary]" />
       </list>
     </recent_temporary>
   </component>
@@ -102,7 +153,8 @@
       <updated>1705944134686</updated>
       <workItem from="1705944138059" duration="2362000" />
       <workItem from="1705997070334" duration="8980000" />
-      <workItem from="1706008811969" duration="418000" />
+      <workItem from="1706008811969" duration="486000" />
+      <workItem from="1706080629534" duration="721000" />
     </task>
     <servers />
   </component>
