@@ -1,12 +1,12 @@
 import {SerialDescriptor} from "../core/SerialDescriptor";
 import {SerialKind, StructureKind} from "../core/SerialKind";
 
-abstract class ListLikeDescriptor extends SerialDescriptor {
-    private _elementDescriptor: SerialDescriptor;
+export abstract class ListLikeDescriptor extends SerialDescriptor {
+    protected elementDescriptor: SerialDescriptor;
 
     constructor(elementDescriptor: SerialDescriptor) {
         super()
-        this._elementDescriptor = elementDescriptor;
+        this.elementDescriptor = elementDescriptor;
     }
 
     abstract serialName: string;
@@ -43,7 +43,7 @@ abstract class ListLikeDescriptor extends SerialDescriptor {
         if (index < 0) {
             throw new Error(`Illegal index ${index}, serialName expects only non-negative indices`);
         }
-        return this._elementDescriptor;
+        return this.elementDescriptor;
     }
 
     // equals(other: any): boolean {
@@ -57,7 +57,7 @@ abstract class ListLikeDescriptor extends SerialDescriptor {
     // }
 
     toString(): string {
-        return `${this.serialName}(${this._elementDescriptor})`;
+        return `${this.serialName}(${this.elementDescriptor})`;
     }
 
     // You would need to implement `serialName` and `hashCode` methods for `SerialDescriptor`

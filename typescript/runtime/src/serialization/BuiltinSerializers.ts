@@ -15,6 +15,8 @@ import {NullableSerializerDescriptor} from "./builtins/NullableSerializerDescrip
 import any = jasmine.any;
 import {TupleDescriptor} from "./descriptors/TupleDescriptor";
 import {recordToArray} from "ts-minimum";
+import {ByteArrayBuilder, PrimitiveArraySerializer, UByteArrayBuilder} from "./internal/PrimitiveArraySerializer";
+import {CompositeEncoder} from "./core/encoding/Encoding";
 
 export const StringSerializer: TsSerializer<string> = {
     descriptor: new PrimitiveSerialDescriptor("javascript.string", PrimitiveKind.STRING),
@@ -44,6 +46,66 @@ export const NumberSerializer: TsSerializer<number> = {
         return decoder.decodeNumber();
     }
 };
+
+class Int8ArraySerializerClass extends PrimitiveArraySerializer<number, Int8Array, ByteArrayBuilder> {
+    constructor() {
+        super(NumberSerializer);
+    }
+    collectionSize(collection: Int8Array): number {
+        return collection.length;
+    }
+
+    toBuilder(collection: Int8Array): ByteArrayBuilder {
+        return new ByteArrayBuilder(collection);
+    }
+
+    empty(): Int8Array {
+        return new Int8Array(0);
+    }
+
+    readElement(decoder: CompositeDecoder, index: number, builder: ByteArrayBuilder, checkIndex: boolean) {
+        builder.append(decoder.decodeNumberElement(this.descriptor, index));
+    }
+
+    writeContent(encoder: CompositeEncoder, content: Int8Array, size: number) {
+        for (let i = 0; i < size; i++) {
+            encoder.encodeNumberElement(this.descriptor, i, content[i]);
+        }
+    }
+}
+export const Int8ArraySerializer: TsSerializer<Int8Array> = new Int8ArraySerializerClass()
+
+
+// The encodeNumberElement ordeal will probably need to become encodeByteElement to better support binary formats.
+class UInt8ArraySerializerClass extends PrimitiveArraySerializer<number,Uint8Array, UByteArrayBuilder> {
+    constructor() {
+        super(NumberSerializer);
+    }
+    collectionSize(collection: Uint8Array): number {
+        return collection.length;
+    }
+
+    toBuilder(collection: Uint8Array): UByteArrayBuilder {
+        return new UByteArrayBuilder(collection);
+    }
+
+    empty(): Uint8Array {
+        return new Uint8Array(0);
+    }
+
+    readElement(decoder: CompositeDecoder, index: number, builder: UByteArrayBuilder, checkIndex: boolean) {
+        builder.append(decoder.decodeNumberElement(this.descriptor, index));
+    }
+
+    writeContent(encoder: CompositeEncoder, content: Uint8Array, size: number) {
+        for (let i = 0; i < size; i++) {
+            encoder.encodeNumberElement(this.descriptor, i, content[i]);
+        }
+    }
+}
+export const UInt8ArraySerializer: TsSerializer<Uint8Array> = new UInt8ArraySerializerClass()
+
+
 
 export class ArraySerializer<E> extends CollectionSerializer<E, Array<E>, Array<E>> {
     constructor(element: TsSerializer<E>) {

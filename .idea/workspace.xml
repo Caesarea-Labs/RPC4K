@@ -5,12 +5,32 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="564650a1-bc6e-416d-b8da-72123f2dbf05" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/kotlin/lib/src/main/kotlin/com/caesarealabs/rpc4k/processor/utils/MultiKeyMap.kt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/kotlin/lib/src/test/kotlin/com/caesarealabs/rpc4k/test/ByteArrayTest.kt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/typescript/runtime/src/serialization/internal/PrimitiveArraySerializer.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/kotlin/gradle/libs.versions.toml" beforeDir="false" afterPath="$PROJECT_DIR$/kotlin/gradle/libs.versions.toml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/kotlin/lib/build.gradle.kts" beforeDir="false" afterPath="$PROJECT_DIR$/kotlin/lib/build.gradle.kts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/kotlin/lib/src/main/kotlin/com/caesarealabs/rpc4k/processor/RpcApi.kt" beforeDir="false" afterPath="$PROJECT_DIR$/kotlin/lib/src/main/kotlin/com/caesarealabs/rpc4k/processor/RpcApi.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/typescript/generator/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/typescript/generator/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/typescript/generator/src/Rpc4tsType.ts" beforeDir="false" afterPath="$PROJECT_DIR$/typescript/generator/src/Rpc4tsType.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/typescript/generator/src/SerializerGenerator.ts" beforeDir="false" afterPath="$PROJECT_DIR$/typescript/generator/src/SerializerGenerator.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/typescript/generator/src/codegen/FormatString.ts" beforeDir="false" afterPath="$PROJECT_DIR$/typescript/generator/src/codegen/FormatString.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/typescript/runtime/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/typescript/runtime/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/typescript/runtime/src/serialization/BuiltinSerializers.ts" beforeDir="false" afterPath="$PROJECT_DIR$/typescript/runtime/src/serialization/BuiltinSerializers.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/typescript/runtime/src/serialization/internal/CollectionDescriptors.ts" beforeDir="false" afterPath="$PROJECT_DIR$/typescript/runtime/src/serialization/internal/CollectionDescriptors.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/typescript/runtime/src/serialization/internal/CollectionSerializers.ts" beforeDir="false" afterPath="$PROJECT_DIR$/typescript/runtime/src/serialization/internal/CollectionSerializers.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/typescript/runtime/test/CodegenedClientTest.test.ts" beforeDir="false" afterPath="$PROJECT_DIR$/typescript/runtime/test/CodegenedClientTest.test.ts" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="ExternalProjectsData">
+    <projectState path="$PROJECT_DIR$/kotlin">
+      <ProjectState />
+    </projectState>
   </component>
   <component name="ExternalProjectsManager">
     <system id="GRADLE">
@@ -56,6 +76,13 @@
       </state>
     </system>
   </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Kotlin Class" />
+      </list>
+    </option>
+  </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
@@ -73,31 +100,33 @@
     <option name="showLibraryContents" value="true" />
     <option name="showModules" value="false" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;Gradle.Build kotlin.executor&quot;: &quot;Run&quot;,
-    &quot;Gradle.Kotlin Tests.executor&quot;: &quot;Run&quot;,
-    &quot;Gradle.TestServers.allEncompassingService.executor&quot;: &quot;Run&quot;,
-    &quot;Gradle.kotlin [uploadLibrary].executor&quot;: &quot;Run&quot;,
-    &quot;Jest.C2S TS Tests.executor&quot;: &quot;Run&quot;,
-    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
-    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
-    &quot;last_opened_file_path&quot;: &quot;C:/Users/natan/Desktop/RPC4K/typescript/runtime/test/CodegenedClientTest.test.ts&quot;,
-    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
-    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
-    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
-    &quot;nodejs.jest.jest_package&quot;: &quot;C:/Users/natan/Desktop/RPC4K/typescript/runtime/node_modules/jest&quot;,
-    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;npm.pubNoBump (1).executor&quot;: &quot;Run&quot;,
-    &quot;npm.pubNoBump.executor&quot;: &quot;Run&quot;,
-    &quot;ts.external.directory.path&quot;: &quot;C:\\Users\\natan\\Desktop\\ts-minimum\\node_modules\\typescript\\lib&quot;,
-    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "Gradle.Build kotlin.executor": "Run",
+    "Gradle.FullTest Server.executor": "Run",
+    "Gradle.Kotlin Tests.executor": "Run",
+    "Gradle.TestServers.allEncompassingService.executor": "Run",
+    "Gradle.kotlin [uploadLibrary].executor": "Run",
+    "Jest.C2S TS Tests.executor": "Run",
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
+    "git-widget-placeholder": "main",
+    "ignore.virus.scanning.warn.message": "true",
+    "kotlin-language-version-configured": "true",
+    "last_opened_file_path": "C:/Users/natan/Desktop/RPC4K/typescript/runtime/test/CodegenedClientTest.test.ts",
+    "node.js.detected.package.eslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs.jest.jest_package": "C:/Users/natan/Desktop/RPC4K/typescript/runtime/node_modules/jest",
+    "nodejs_package_manager_path": "npm",
+    "npm.pubNoBump (1).executor": "Run",
+    "npm.pubNoBump.executor": "Run",
+    "ts.external.directory.path": "C:\\Users\\natan\\Desktop\\ts-minimum\\node_modules\\typescript\\lib",
+    "vue.rearranger.settings.migration": "true"
   }
-}</component>
-  <component name="RunManager" selected="Gradle.Kotlin Tests">
+}]]></component>
+  <component name="RunManager" selected="npm.pubNoBump">
     <configuration name="kotlin [uploadLibrary]" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
       <ExternalSystemSettings>
         <option name="executionName" />
@@ -162,9 +191,9 @@
     </list>
     <recent_temporary>
       <list>
-        <item itemvalue="Gradle.kotlin [uploadLibrary]" />
-        <item itemvalue="npm.pubNoBump (1)" />
         <item itemvalue="npm.pubNoBump" />
+        <item itemvalue="npm.pubNoBump (1)" />
+        <item itemvalue="Gradle.kotlin [uploadLibrary]" />
       </list>
     </recent_temporary>
   </component>
@@ -183,6 +212,9 @@
       <workItem from="1706081359557" duration="443000" />
       <workItem from="1706092714705" duration="718000" />
       <workItem from="1706094670174" duration="21000" />
+      <workItem from="1706382143679" duration="599000" />
+      <workItem from="1706423416917" duration="2646000" />
+      <workItem from="1706441210454" duration="4066000" />
     </task>
     <servers />
   </component>

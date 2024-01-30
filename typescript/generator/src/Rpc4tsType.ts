@@ -27,11 +27,11 @@ function typescriptRpcTypeIgnoreOptional(type: RpcType, serviceName: string): Ts
     if (type.isTypeParameter) return TsTypes.typeParameter(type.name)
     const builtinType = resolveBuiltinType(type, serviceName)
     if (builtinType !== undefined) return builtinType
-    const typeArguments = type.typeArguments.map(arg => typescriptRpcType(arg,serviceName))
+    const typeArguments = type.typeArguments.map(arg => typescriptRpcType(arg, serviceName))
     // const typeArgumentString = type.typeArguments.length === 0 ? ""
     //     : `<${).join(", ")}>`
 
-    return modelType(type.name,serviceName, typeArguments) /*TsTypes.create(modelName(type.name), ModelFile, ...typeArguments)*/
+    return modelType(type.name, serviceName, typeArguments) /*TsTypes.create(modelName(type.name), ModelFile, ...typeArguments)*/
 
     // return modelName(type.name) + typeArgumentString
 }
@@ -58,6 +58,10 @@ function resolveBuiltinType(type: RpcType, serviceName: string): TsType | undefi
         case "duration":
             // Durations are Dayjs.Duration in typescript
             return TsTypes.DURATION
+        case "i8array":
+            return TsTypes.i8Array
+        case "ui8array":
+            return TsTypes.ui8Array
         case  RpcTypeNames.Time:
             // Dates are Dayjs in typescript
             return TsTypes.DAYJS
@@ -90,7 +94,7 @@ function resolveBuiltinType(type: RpcType, serviceName: string): TsType | undefi
                 throw new Error(`Unsupported map key type: ${tsReferenceToString(keyType)} in type: ${JSON.stringify(type)}`)
             }
             const valueType = typescriptRpcType(typeArgs[1], serviceName)
-            return TsTypes.record(keyType,valueType)
+            return TsTypes.record(keyType, valueType)
             // Typescript Records are Record<K,V>
             // return `Record<${keyType}, ${valueType}>`
         }
@@ -121,10 +125,11 @@ export function modelName(name: string): string {
     // Treat "Foo.Bar" as "FooBar"
     return name.replace(/\./g, "")
 }
+
 /**
  * Converts the Rpc representation of a struct name to the typescript representation
  */
-export function modelType(name: string, serviceName: string,typeArguments?: TsType[]): TsType {
+export function modelType(name: string, serviceName: string, typeArguments?: TsType[]): TsType {
     // Treat "Foo.Bar" as "FooBar"
     // const withoutDot = name.replace(/\./g, "")
     return TsTypes.create(modelName(name), MODELS_FILE(serviceName), ...(typeArguments ?? []))

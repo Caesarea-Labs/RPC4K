@@ -174,9 +174,9 @@ test("Codegened Client works in all cases", async () => {
     const everything: EveryBuiltinType = ({
         // Adjusted with simplified array literals
         a: false, b: 1, c: 2, d: 3, e: 4, f: '5', g: "6",
-        h: [7], i: [8], j: [9], k: [10], l: ['@'],
+        h: new Int8Array([7]), i: [8], j: [9], k: [10], l: ['@'],
         m: [11], n: {12: 13}, o: [14], p: [15, 16], q: [17, 18, 19],
-        r: undefined, s: [21], t: [22], u: [23], v: [24], w: [25], x: 26, y: 27, z: 28, a2: 29.0, b2: 30.0, c2: 31, d2: [32, 33],
+        r: undefined, s: [21], t: new Uint8Array([22]), u: [23], v: [24], w: [25], x: 26, y: 27, z: 28, a2: 29.0, b2: 30.0, c2: 31, d2: [32, 33],
         e2: dayjs(), f2: dayjs(), g2: "ffffffff-ffff-ffff-ffff-ffffffffffff", h2: dayjs.duration(34, "seconds")
     });
     const everythingBack = await client.everyBuiltinType(everything)
@@ -186,9 +186,9 @@ test("Codegened Client works in all cases", async () => {
     expect(
         await client.everyBuiltinTypeParams(
             false, 1, 2, 3, 4, '5', "6",
-            [7], [8], [9], [10], ['@'],
+            new Int8Array([7]), [8], [9], [10], ['@'],
             [11], {12: 13}, [14], [15, 16], [17, 18, 19],
-            undefined, [21], [22], [23], [24], [25],
+            undefined, [21], new Uint8Array([22]), [23], [24], [25],
             26, 27, 28, 29.0, 30.0, 31, [32, 33], dayjs(), dayjs(), "ffffffff-ffff-ffff-ffff-ffffffffffff",
             dayjs.duration(34, "seconds")
         )

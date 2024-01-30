@@ -252,6 +252,10 @@ class SerializerBuilder {
             case "duration":
                 // Durations are Dayjs.Duration in typescript
                 return DURATION_SERIALIZER
+            case "i8array":
+                return I8ARRAY_SERIALIZER
+            case "ui8array":
+                return UI8ARRAY_SERIALIZER
             case  RpcTypeNames.Time:
                 // Dates are Dayjs in typescript
                 return DAYJS_SERIALIZER
@@ -305,6 +309,8 @@ const ARRAY_SERIALIZER = TsTypes.library("ArraySerializer", "serialization/Built
 const RECORD_SERIALIZER = TsTypes.library("RecordSerializer", "serialization/BuiltinSerializers")
 const TUPLE_SERIALIZER = TsTypes.library("TupleSerializer", "serialization/BuiltinSerializers")
 const VOID_SERIALIZER = TsTypes.library("VoidSerializer", "serialization/BuiltinSerializers")
+const I8ARRAY_SERIALIZER = TsTypes.library("Int8ArraySerializer", "serialization/BuiltinSerializers")
+const UI8ARRAY_SERIALIZER = TsTypes.library("UInt8ArraySerializer", "serialization/BuiltinSerializers")
 
 export function SERIALIZERS_FILE(serviceName: string): string {
     return `./rpc4ts_${serviceName}Serializers`

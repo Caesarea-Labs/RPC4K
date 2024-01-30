@@ -51,7 +51,7 @@ abstract class AbstractCollectionSerializer<Element, Collection, Builder> implem
     abstract readAll(decoder: CompositeDecoder, builder: Builder, startIndex: number, size: number): void;
 }
 
-abstract class CollectionLikeSerializer<Element, Collection, Builder> extends AbstractCollectionSerializer<Element, Collection, Builder> {
+export abstract class CollectionLikeSerializer<Element, Collection, Builder> extends AbstractCollectionSerializer<Element, Collection, Builder> {
      elementSerializer: TsSerializer<Element>;
 
     constructor(elementSerializer: TsSerializer<Element>) {

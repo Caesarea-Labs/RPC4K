@@ -21,6 +21,8 @@ version = projectVersion
 
 
 dependencies {
+//    implementation("com.google.guava:guava:33.0.0-jre")
+//    implementation("org.apache.commons:commons-collections4:4.4")
     implementation(libs.symbol.processing.api)
     implementation(libs.kotlinpoet.core)
     implementation(libs.kotlinpoet.ksp)

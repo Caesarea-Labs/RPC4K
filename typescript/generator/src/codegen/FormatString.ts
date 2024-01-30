@@ -285,13 +285,14 @@ function builtin(name: string, ...typeArguments: TsType[]): TsBasicType {
 
 export const TupleTypeName = "_tuple"
 export const ArrayTypeName = "Array"
-
 export namespace TsTypes {
     export const STRING = builtin("string")
     export const NULL = builtin("null")
     export const NUMBER = builtin("number")
     export const BOOLEAN = builtin("boolean")
     export const VOID = builtin("void")
+    export const i8Array = builtin("Int8Array")
+    export const ui8Array = builtin("Uint8Array")
 
     export function array(elementType: TsType): TsBasicType {
         return builtin(ArrayTypeName, elementType)

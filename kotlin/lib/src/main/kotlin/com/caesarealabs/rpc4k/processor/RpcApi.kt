@@ -1,11 +1,11 @@
 package com.caesarealabs.rpc4k.processor
 
-import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy
-import com.squareup.kotlinpoet.TypeName
 import com.caesarealabs.rpc4k.processor.utils.appendIf
 import com.caesarealabs.rpc4k.runtime.api.Dispatch
 import com.caesarealabs.rpc4k.runtime.api.EventTarget
 import com.caesarealabs.rpc4k.runtime.implementation.*
+import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy
+import com.squareup.kotlinpoet.TypeName
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
@@ -32,13 +32,13 @@ internal sealed interface RpcEndpoint {
 }
 
 @Serializable
-internal data class RpcFunction(override val name: String,  val parameters: List<RpcParameter>,override  val returnType: KotlinTypeReference): RpcEndpoint
-
+internal data class RpcFunction(override val name: String, val parameters: List<RpcParameter>,
+                                override val returnType: KotlinTypeReference) : RpcEndpoint
 
 
 @Serializable internal data class RpcEventEndpoint(
-    override val name: String,  val parameters: List<EventParameter>,override  val returnType: KotlinTypeReference
-): RpcEndpoint {
+    override val name: String, val parameters: List<EventParameter>, override val returnType: KotlinTypeReference
+) : RpcEndpoint {
     val targetParameter get() = parameters.find { it.isTarget }?.value
 }
 
@@ -57,7 +57,7 @@ internal data class EventParameter(
 
 @Serializable
 //NiceToHave: support optional parameters
-internal data class RpcParameter(val name: String, val type: KotlinTypeReference, /*val isOptional: Boolean*//* = false*/)
+internal data class RpcParameter(val name: String, val type: KotlinTypeReference /*val isOptional: Boolean*//* = false*/)
 
 @Serializable
 internal sealed interface RpcModel {
@@ -85,7 +85,7 @@ internal sealed interface RpcModel {
          */
         @Serializable
 
-        data class Property(val name: String, val type: KotlinTypeReference,/* val isOptional: Boolean*//* = false*/)
+        data class Property(val name: String, val type: KotlinTypeReference/* val isOptional: Boolean*//* = false*/)
     }
 
     @Serializable
@@ -172,6 +172,8 @@ internal data class RpcType(
         const val I16 = "i16"
         const val I32 = "i32"
         const val I64 = "i64"
+        const val I8Array = "i8array"
+        const val UnsignedI8Array = "ui8array"
         const val UUID = "uuid"
         const val F32 = "f32"
         const val F64 = "f64"
@@ -226,42 +228,12 @@ private fun KotlinTypeReference.toRpcType() = when (name.pkg) {
  * Converts Kotlin types like Int to RPC types like i32.
  */
 private fun KotlinTypeReference.toBuiltinRpcType(): RpcType {
+    val primitive = primitiveKotlinToRpcTypes[name.simple]
+    if (primitive != null) return buildRpcType(name = primitive)
+    val array = arrayKotlinToRpcTypes[name.simple]
+    if (array != null) return buildRpcType(name = RpcType.Array, typeArguments = listOf(RpcType(name = array)))
+
     return when (name.simple) {
-        "Boolean", "Byte", "UByte", "Short", "UShort", "Int", "UInt", "Long", "ULong", "Char", "String", "Unit", "Float", "Double" -> {
-            // Primitive types
-            // Unsigned types are treated the same as the normal types
-            val name = when (name.simple) {
-                "Boolean" -> RpcType.Bool
-                "Byte", "UByte" -> RpcType.I8
-                "Short", "UShort" -> RpcType.I16
-                "Int", "UInt" -> RpcType.I32
-                "Long", "ULong" -> RpcType.I64
-                "Char" -> RpcType.Char
-                "String" -> RpcType.String
-                "Unit" -> RpcType.Void
-                "Float" -> RpcType.F32
-                "Double" -> RpcType.F64
-                else -> error("Impossible class name ${name.simple}")
-            }
-            buildRpcType(name = name)
-        }
-
-        "ByteArray", "ShortArray", "IntArray", "LongArray", "CharArray", "UByteArray", "UShortArray", "UIntArray", "ULongArray" -> {
-            // Primitive array types
-            val typeArgumentName = when (name.simple) {
-                // We expand XArray into an array of the respective type X
-                // Unsigned types are treated the same as the normal types
-                "ByteArray", "UByteArray" -> RpcType.I8
-                "ShortArray", "UShortArray" -> RpcType.I16
-                "IntArray", "UIntArray" -> RpcType.I32
-                "LongArray", "ULongArray" -> RpcType.I64
-                "CharArray" -> RpcType.Char
-                else -> error("Impossible class name $rawTypeName")
-            }
-            val typeArgument = RpcType(name = typeArgumentName)
-            buildRpcType(name = RpcType.Array, typeArguments = listOf(typeArgument))
-        }
-
         "Pair", "Triple", "Array" -> {
             // Types that use normal type arguments - pair, triple, array
             val name = if (name.simple == "Array") RpcType.Array else RpcType.Tuple
@@ -287,6 +259,35 @@ private fun KotlinTypeReference.toBuiltinCollectionType(): RpcType {
     }
 
     return buildRpcType(name = name)
+}
+
+
+private val arrayKotlinToRpcTypes: Map<String, String> = buildMap {
+    putTwo("ShortArray", "UShortArray", RpcType.I16)
+    putTwo("IntArray", "UIntArray", RpcType.I32)
+    putTwo("LongArray", "ULongArray", RpcType.I64)
+    put("CharArray", RpcType.Char)
+}
+
+private val primitiveKotlinToRpcTypes: Map<String, String> = buildMap {
+    put("Boolean", RpcType.Bool)
+    putTwo("Byte", "UByte", RpcType.I8)
+    putTwo("Short", "UShort", RpcType.I16)
+    putTwo("Int", "UInt", RpcType.I32)
+    putTwo("Long", "ULong", RpcType.I64)
+    put("Char", RpcType.Char)
+    put("String", RpcType.String)
+    put("Unit", RpcType.Void)
+    put("Float", RpcType.F32)
+    put("Double", RpcType.F64)
+    // We add special support for i8 arrays because they are useful
+    put("ByteArray", RpcType.I8Array)
+    put("UByteArray", RpcType.UnsignedI8Array)
+}
+
+private fun MutableMap<String, String>.putTwo(key1: String, key2: String, value: String) {
+    put(key1, value)
+    put(key2, value)
 }
 
 
