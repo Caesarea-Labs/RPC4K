@@ -55,6 +55,7 @@ export class Composer {
     }
 
     public printQuoted(value: string): void {
+        if (value === undefined) throw new Error(`Unexpected undefined text: ${value}`)
         // Assuming writer has a method to write quoted strings
         this.writer.writeQuoted(value);
     }

@@ -194,6 +194,7 @@ export class StreamingJsonEncoder extends AbstractEncoder implements JsonEncoder
     }
 
     encodeString(value: string): void {
+        if (value === undefined) throw new Error(`Unexpected undefined string: ${value}`)
         this.composer.printQuoted(value);
     }
 

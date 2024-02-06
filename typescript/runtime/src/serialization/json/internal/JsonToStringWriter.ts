@@ -1,83 +1,84 @@
 /*
  * Copyright 2017-2020 JetBrains s.r.o. Use of this source code is governed by the Apache 2.0 license.
  */
-import {JsonWriter} from "./JsonWriter";
+import {JsonWriter} from "./JsonWriter"
 
 /**
  * Simple rewrite of Kotlinx.serialization that just uses string concatenation. Might be very slow.
  */
 export class JsonToStringWriter implements JsonWriter {
     private array = ""
-    private size = 0;
+    private size = 0
 
     writeNumber(value: number): void {
-        this.write(value.toString());
+        this.write(value.toString())
     }
 
     writeChar(char: string): void {
         // this.ensureAdditionalCapacity(1);
-        this.array += char;
-        this.size++;
+        this.array += char
+        this.size++
     }
 
     write(text: string): void {
-        const length = text.length;
-        if (length === 0) return;
+        const length = text.length
+        if (length === 0) return
         // this.ensureAdditionalCapacity(length);
-        this.array += text;
-        this.size += length;
+        this.array += text
+        this.size += length
     }
 
     writeQuoted(text: string): void {
+        if (text === undefined) throw new Error(`Unexpected undefined text: ${text}`)
         // this.ensureAdditionalCapacity(text.length + 2);
-        let sz = this.size;
-        this.array += '"';
-        sz++;
+        let sz = this.size
+        this.array += "\""
+        sz++
         for (let i = 0; i < text.length; i++) {
-            const ch = text.charCodeAt(i);
+            const ch = text.charCodeAt(i)
             if (ch < ESCAPE_MARKERS.length && ESCAPE_MARKERS[ch] !== 0) {
-                this.appendStringSlowPath(i, text);
-                return;
+                this.appendStringSlowPath(i, text)
+                return
             } else {
-                this.array += text[i];
-                sz++;
+                this.array += text[i]
+                sz++
             }
         }
-        this.array += '"';
-        this.size = sz + 1;
+        this.array += "\""
+        this.size = sz + 1
     }
 
     private appendStringSlowPath(firstEscapedChar: number, string: string): void {
         for (let i = firstEscapedChar; i < string.length; i++) {
             // this.ensureTotalCapacity(this.size, 2);
-            const ch = string.charCodeAt(i);
+            const ch = string.charCodeAt(i)
             if (ch < ESCAPE_MARKERS.length) {
-                const marker = ESCAPE_MARKERS[ch];
+                const marker = ESCAPE_MARKERS[ch]
                 switch (marker) {
                     case 0: {
-                        this.array += String.fromCharCode(ch);
-                        break;
+                        this.array += String.fromCharCode(ch)
+                        break
                     }
                     case 1: {
-                        const escapedString = ESCAPE_STRINGS[ch];
+                        const escapedString = ESCAPE_STRINGS[ch]
                         // this.ensureTotalCapacity(this.size, escapedString!.length);
-                        this.array += escapedString;
-                        this.size += escapedString.length;
-                        break;
+                        this.array += escapedString
+                        this.size += escapedString.length
+                        break
                     }
                     default: {
-                        this.array += '\\' + String.fromCharCode(marker);
-                        this.size += 2;
-                        break;
+                        this.array += "\\" + String.fromCharCode(marker)
+                        this.size += 2
+                        break
                     }
                 }
             } else {
-                this.array += String.fromCharCode(ch);
+                this.array += String.fromCharCode(ch)
             }
         }
         // this.ensureTotalCapacity(this.size, 1);
-        this.array += '"';
-        this.size++;
+        this.array += "\""
+        this.size++
     }
 
     toString(): string {
@@ -101,50 +102,47 @@ export class JsonToStringWriter implements JsonWriter {
 const ESCAPE_MARKERS = createEscapeMarkers()
 
 
-
-
-
 const ESCAPE_STRINGS = createEscapeStrings()
 
 function createEscapeMarkers(): number[] {
-    const markers: number[] = new Array(93).fill(0);
+    const markers: number[] = new Array(93).fill(0)
 
     for (let c = 0; c <= 0x1f; c++) {
-        markers[c] = 1;
+        markers[c] = 1
     }
-    markers['"'.charCodeAt(0)] = '"'.charCodeAt(0);
-    markers['\\'.charCodeAt(0)] = '\\'.charCodeAt(0);
-    markers['\t'.charCodeAt(0)] = 't'.charCodeAt(0);
-    markers['\b'.charCodeAt(0)] = 'b'.charCodeAt(0);
-    markers['\n'.charCodeAt(0)] = 'n'.charCodeAt(0);
-    markers['\r'.charCodeAt(0)] = 'r'.charCodeAt(0);
-    markers[0x0c] = 'f'.charCodeAt(0);
+    markers["\"".charCodeAt(0)] = "\"".charCodeAt(0)
+    markers["\\".charCodeAt(0)] = "\\".charCodeAt(0)
+    markers["\t".charCodeAt(0)] = "t".charCodeAt(0)
+    markers["\b".charCodeAt(0)] = "b".charCodeAt(0)
+    markers["\n".charCodeAt(0)] = "n".charCodeAt(0)
+    markers["\r".charCodeAt(0)] = "r".charCodeAt(0)
+    markers[0x0c] = "f".charCodeAt(0)
     return markers
 }
 
 function createEscapeStrings(): string[] {
     const escape: (string | null)[] = Array(93).fill(null).map((_, c) => {
         if (c <= 0x1f) {
-            const c1 = toHexChar(c >> 12);
-            const c2 = toHexChar(c >> 8);
-            const c3 = toHexChar(c >> 4);
-            const c4 = toHexChar(c);
-            return `\\u${c1}${c2}${c3}${c4}`;
+            const c1 = toHexChar(c >> 12)
+            const c2 = toHexChar(c >> 8)
+            const c3 = toHexChar(c >> 4)
+            const c4 = toHexChar(c)
+            return `\\u${c1}${c2}${c3}${c4}`
         }
-        return null;
-    });
+        return null
+    })
 
-    escape['"'.charCodeAt(0)] = "\\\"";
-    escape['\\'.charCodeAt(0)] = "\\\\";
-    escape['\t'.charCodeAt(0)] = "\\t";
-    escape['\b'.charCodeAt(0)] = "\\b";
-    escape['\n'.charCodeAt(0)] = "\\n";
-    escape['\r'.charCodeAt(0)] = "\\r";
-    escape[0x0c] = "\\f";
+    escape["\"".charCodeAt(0)] = "\\\""
+    escape["\\".charCodeAt(0)] = "\\\\"
+    escape["\t".charCodeAt(0)] = "\\t"
+    escape["\b".charCodeAt(0)] = "\\b"
+    escape["\n".charCodeAt(0)] = "\\n"
+    escape["\r".charCodeAt(0)] = "\\r"
+    escape[0x0c] = "\\f"
 
     return escape as string[]
 }
 
 function toHexChar(n: number): string {
-    return n.toString(16);
+    return n.toString(16)
 }

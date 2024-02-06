@@ -21,6 +21,7 @@ import {CompositeEncoder} from "./core/encoding/Encoding";
 export const StringSerializer: TsSerializer<string> = {
     descriptor: new PrimitiveSerialDescriptor("javascript.string", PrimitiveKind.STRING),
     serialize(encoder: Encoder, value: string) {
+        if (value === undefined) throw new Error(`Unexpected undefined string: ${value}`)
         encoder.encodeString(value)
     },
     deserialize(decoder: Decoder): string {
