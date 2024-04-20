@@ -17,7 +17,7 @@ class Foo(val invoker: FooInvoker) {
 We often want to just construct Foo and test it. For this reason we need to have some good instance of FooInvoker that will do what we expect. 
 One option is to provide a HandlerConfig that uses some simple MemoryEventManager and json to send information back to the server,
 Another option is to provide some totally in-memory implementation of the invoker to simplify debugging. We probably still need to use a MemoryEventManager.
-The relation between this features in the in-memory client is TBD. 
+The relation between this feature and the in-memory client is TBD. 
 
 # 2. Low Priority - Do later
 ### Improve server testing with "in-memory-server" client generation
