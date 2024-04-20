@@ -14,7 +14,7 @@ repositories {
 }
 
 dependencies {
-    implementation("com.github.node-gradle:gradle-node-plugin:7.0.1")
+    implementation(libs.nodejs)
     implementation("com.google.devtools.ksp:com.google.devtools.ksp.gradle.plugin:${libs.versions.ksp.get()}")
 }
 

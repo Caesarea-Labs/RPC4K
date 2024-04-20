@@ -68,6 +68,7 @@ test("Test Enum serialization from string", () => {
 })
 
 test("Test Polymorphic serialization from string", () => {
+    //@ts-ignore
     const obj: TestUnion<string> = ({
         t: ({
             x: "Sdf",
