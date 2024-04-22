@@ -60,7 +60,7 @@ public object GeneratedCodeUtils {
      * the server already defines when a target is necessary. When a target is needed, empty string is interpreted as empty string,
      * when a target is not needed, empty string, null, or anything else will be treated as 'no target'.
      */
-    public suspend fun <T> subscribe(
+    public fun <T> coldEventFlow(
         client: RpcClient,
         format: SerializationFormat,
         event: String,

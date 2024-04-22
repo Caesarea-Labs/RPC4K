@@ -52,7 +52,7 @@ internal object ApiDefinitionToClientCode {
     private const val FormatPropertyName = "format"
     private val sendMethod = GeneratedCodeUtils::class.methodName("send")
     private val requestMethod = GeneratedCodeUtils::class.methodName("request")
-    private val subscribe = GeneratedCodeUtils::class.methodName("subscribe")
+    private val coldEventFlow = GeneratedCodeUtils::class.methodName("coldEventFlow")
 
     /**
      * @param userClassIsInterface When we are generating both a client and a server, it's useful to make the generated class
@@ -173,8 +173,8 @@ internal object ApiDefinitionToClientCode {
      * ```
      */
     private fun eventSubMethod(event: RpcEventEndpoint): FunSpec = funSpec(event.name) {
-        // We need to call network methods in this
-        addModifiers(KModifier.SUSPEND)
+        // We need to call network methods in this (TODO: no we don't?)
+//        addModifiers(KModifier.SUSPEND)
 
         for (argument in event.parameters) {
             if (!argument.isDispatch) addParameter(requestParameter(argument.value))
@@ -200,7 +200,7 @@ internal object ApiDefinitionToClientCode {
         // Pass the target if its relevant
         if (targetParameter != null) arguments.add(targetParameter.value.name)
 
-        this.addStatement("return ".plusFormat(subscribe.withArgumentList(arguments)))
+        this.addStatement("return ".plusFormat(coldEventFlow.withArgumentList(arguments)))
     }
 
 }

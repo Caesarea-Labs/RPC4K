@@ -5,7 +5,6 @@ import com.caesarealabs.rpc4k.runtime.implementation.Rpc4K
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.channels.trySendBlocking
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.suspendCancellableCoroutine
@@ -14,15 +13,15 @@ import okhttp3.*
 import okhttp3.HttpUrl.Companion.toHttpUrl
 import okhttp3.RequestBody.Companion.toRequestBody
 import okio.IOException
-import java.time.Duration
 import java.util.concurrent.ConcurrentHashMap
 import kotlin.coroutines.resume
-import kotlin.time.Duration.Companion.seconds
 
-public class OkHttpRpcClient(private val url: String, private val websocketUrl: String,
+public class OkHttpRpcClient(
+    private val url: String, private val websocketUrl: String,
 
 //                             private val client: OkHttpClient = OkHttpClient.Builder().readTimeout(Duration.ofSeconds(20)).build()) :
-                             private val client: OkHttpClient = OkHttpClient()) :
+    private val client: OkHttpClient = OkHttpClient()
+) :
     RpcClient {
 
     override suspend fun send(rpc: Rpc, format: SerializationFormat, serializers: List<KSerializer<*>>): ByteArray {
@@ -82,21 +81,52 @@ private class OkHttpWebsocketEventClient(url: String, client: OkHttpClient) : Ev
         webSocket.send(message.decodeToString())
     }
 
-    override suspend fun createFlow(subscribeMessage: ByteArray, unsubscribeMessage: ByteArray, listenerId: String): Flow<ByteArray> {
-        return callbackFlow {
-            // Register event for self
-            activeFlows[listenerId] = {
-                trySendBlocking(it)
-            }
-            // Tell the server to start sending events
-            this@OkHttpWebsocketEventClient.send(subscribeMessage)
-            awaitClose {
-                launch {
-                    // Tell the server to stop sending events
-                    this@OkHttpWebsocketEventClient.send(unsubscribeMessage)
-                    // Remove event reference from self
-                    activeFlows.remove(listenerId)
-                }
+    override fun createFlow(subscribeMessage: ByteArray, unsubscribeMessage: ByteArray, listenerId: String): Flow<ByteArray> {
+        return createFlow(activeFlows, subscribeMessage, unsubscribeMessage, listenerId)
+    }
+
+//    override suspend fun createFlow(subscribeMessage: ByteArray, unsubscribeMessage: ByteArray, listenerId: String): Flow<ByteArray> {
+//        return callbackFlow {
+//            // Register event for self
+//            activeFlows[listenerId] = {
+//                trySendBlocking(it)
+//            }
+//            // Tell the server to start sending events
+//            this@OkHttpWebsocketEventClient.send(subscribeMessage)
+//            awaitClose {
+//                launch {
+//                    // Tell the server to stop sending events
+//                    this@OkHttpWebsocketEventClient.send(unsubscribeMessage)
+//                    // Remove event reference from self
+//                    activeFlows.remove(listenerId)
+//                }
+//            }
+//        }
+//    }
+}
+
+/**
+ * Utility for managing event client flows
+ */
+internal fun EventClient.createFlow(
+    activeFlows: MutableMap<String, (ByteArray) -> Unit>,
+    subscribeMessage: ByteArray,
+    unsubscribeMessage: ByteArray,
+    listenerId: String
+): Flow<ByteArray> {
+    return callbackFlow {
+        // Register event for self
+        activeFlows[listenerId] = {
+            trySendBlocking(it)
+        }
+        // Tell the server to start sending events
+        this@EventClient.send(subscribeMessage)
+        awaitClose {
+            launch {
+                // Tell the server to stop sending events
+                this@EventClient.send(unsubscribeMessage)
+                // Remove event reference from self
+                activeFlows.remove(listenerId)
             }
         }
     }

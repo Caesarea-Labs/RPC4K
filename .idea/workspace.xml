@@ -6,10 +6,10 @@
   <component name="ChangeListManager">
     <list default="true" id="564650a1-bc6e-416d-b8da-72123f2dbf05" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/TODO.md" beforeDir="false" afterPath="$PROJECT_DIR$/TODO.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/kotlin/gradle/libs.versions.toml" beforeDir="false" afterPath="$PROJECT_DIR$/kotlin/gradle/libs.versions.toml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/kotlin/settings.gradle.kts" beforeDir="false" afterPath="$PROJECT_DIR$/kotlin/settings.gradle.kts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/kotlin/versions.properties" beforeDir="false" afterPath="$PROJECT_DIR$/kotlin/versions.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/kotlin/lib/src/main/kotlin/com/caesarealabs/rpc4k/processor/ApiDefinitionToClientCode.kt" beforeDir="false" afterPath="$PROJECT_DIR$/kotlin/lib/src/main/kotlin/com/caesarealabs/rpc4k/processor/ApiDefinitionToClientCode.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/kotlin/lib/src/main/kotlin/com/caesarealabs/rpc4k/runtime/api/EventClient.kt" beforeDir="false" afterPath="$PROJECT_DIR$/kotlin/lib/src/main/kotlin/com/caesarealabs/rpc4k/runtime/api/EventClient.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/kotlin/lib/src/main/kotlin/com/caesarealabs/rpc4k/runtime/api/components/OkHttpRpcClient.kt" beforeDir="false" afterPath="$PROJECT_DIR$/kotlin/lib/src/main/kotlin/com/caesarealabs/rpc4k/runtime/api/components/OkHttpRpcClient.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/kotlin/lib/src/main/kotlin/com/caesarealabs/rpc4k/runtime/implementation/GeneratedCodeUtils.kt" beforeDir="false" afterPath="$PROJECT_DIR$/kotlin/lib/src/main/kotlin/com/caesarealabs/rpc4k/runtime/implementation/GeneratedCodeUtils.kt" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -114,11 +114,13 @@
     &quot;Gradle.Kotlin Tests.executor&quot;: &quot;Run&quot;,
     &quot;Gradle.TestServers.allEncompassingService.executor&quot;: &quot;Run&quot;,
     &quot;Gradle.kotlin [uploadLibrary].executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.kotlin:lib [uploadLibrary].executor&quot;: &quot;Run&quot;,
     &quot;Jest.C2S TS Tests.executor&quot;: &quot;Run&quot;,
     &quot;Jest.Standalone TS Tests.executor&quot;: &quot;Run&quot;,
     &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
     &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
     &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
+    &quot;android.gradle.sync.needed&quot;: &quot;true&quot;,
     &quot;git-widget-placeholder&quot;: &quot;main&quot;,
     &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
     &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
@@ -263,7 +265,9 @@
       <workItem from="1707758269921" duration="1925000" />
       <workItem from="1710358572563" duration="1557000" />
       <workItem from="1713644223491" duration="939000" />
-      <workItem from="1713648748959" duration="1455000" />
+      <workItem from="1713648748959" duration="1794000" />
+      <workItem from="1713773247674" duration="1254000" />
+      <workItem from="1713799104534" duration="2260000" />
     </task>
     <servers />
   </component>

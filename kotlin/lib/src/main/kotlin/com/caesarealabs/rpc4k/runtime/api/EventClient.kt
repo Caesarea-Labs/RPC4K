@@ -4,8 +4,11 @@ import kotlinx.coroutines.flow.Flow
 
 public interface EventClient {
     public suspend fun send(message: ByteArray)
-    //TODO: I feel like the createFlow implementation would be the same across any EventClient
-    public suspend fun createFlow(subscribeMessage: ByteArray, unsubscribeMessage: ByteArray, listenerId: String): Flow<ByteArray>
+
+    /**
+     * Creates a _cold_ `Flow` that listens to new events
+     */
+    public  fun createFlow(subscribeMessage: ByteArray, unsubscribeMessage: ByteArray, listenerId: String): Flow<ByteArray>
 }
 
 //    events: EventClient
