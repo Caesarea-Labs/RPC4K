@@ -24,6 +24,12 @@ The relation between this feature and the in-memory client is TBD.
 For every service, in addition to generating a client that interacts with the server from network, there should also be a client that 
 interacts with an actual server instance in-memory. This is because we no longer override the service class in the generated client, 
 so we need a unified interface for testing. 
+For this to work, we will need to create two new generated classes:
+A. The client interface.
+B. The in-memory client.
+
+Then the network client will implement the client interface, and the new in-memory client will also implement the same client interface.
+This way the same code could be used to test both implementations. 
 
 
 ### Bind gradle version to a specific typescript version

@@ -1,4 +1,4 @@
-package com.caesarealabs.rpc4k.runtime.api.testing
+package com.caesarealabs.rpc4k.runtime.user.testing
 
 import com.caesarealabs.rpc4k.runtime.api.*
 import com.caesarealabs.rpc4k.runtime.api.components.JsonFormat
@@ -7,6 +7,7 @@ import com.caesarealabs.rpc4k.runtime.api.components.MemoryEventManager
 import com.caesarealabs.rpc4k.runtime.api.components.OkHttpRpcClient
 import com.caesarealabs.rpc4k.runtime.implementation.PortPool
 import com.caesarealabs.rpc4k.runtime.implementation.createHandlerConfig
+import com.caesarealabs.rpc4k.runtime.user.Rpc4kIndex
 import okhttp3.OkHttpClient
 import org.junit.jupiter.api.extension.AfterAllCallback
 import org.junit.jupiter.api.extension.BeforeAllCallback
@@ -40,7 +41,8 @@ public interface Rpc4kSuite<Server, Client, Invoker> {
     public val invoker: Invoker
 }
 
-public data class Rpc4kSuiteImpl<S,C,I>(override val server: S, override val networkClient: C, override val invoker: I): Rpc4kSuite<S,C, I>
+public data class Rpc4kSuiteImpl<S,C,I>(override val server: S, override val networkClient: C, override val invoker: I):
+    Rpc4kSuite<S, C, I>
 
 
 

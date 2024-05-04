@@ -55,47 +55,7 @@ internal class HandlerConfigImpl<out T, I>(
     override val handler: T = handler(this.invoker)
 }
 
-public fun <S, I> Rpc4kIndex<S, *, I>.startServer(
-    engine: RpcServerEngine.MultiCall = KtorManagedRpcServer(),
-    format: SerializationFormat = JsonFormat(),
-    eventManager: EventManager = MemoryEventManager(),
-    wait: Boolean = true,
-    service: (I) -> S,
-) {
-    createDedicatedServer(engine, format, eventManager, service).start(wait)
-}
 
-/**
- * Creates a MultiCall server
- */
-public fun <S, I> Rpc4kIndex<S, *, I>.createDedicatedServer(
-    engine: RpcServerEngine.MultiCall = KtorManagedRpcServer(),
-    format: SerializationFormat = JsonFormat(),
-    eventManager: EventManager = MemoryEventManager(),
-    service: (I) -> S
-): Rpc4kSCServerSuite<S, I, RpcServerEngine.MultiCall.Instance> {
-    val config = createHandlerConfig(format, eventManager, engine, service)
-    val serverConfig = ServerConfig(router, config)
-    return Rpc4kSCServerSuite(
-        engine.create(serverConfig), serverConfig, config.handler, config.invoker
-    )
-}
-
-/**
- * Creates a SingleCall server
- */
-public fun <S, Inv, E: RpcServerEngine> Rpc4kIndex<S, *, Inv>.createServer(
-    engine: E,
-    format: SerializationFormat = JsonFormat(),
-    eventManager: EventManager = MemoryEventManager(),
-    service: (Inv) -> S
-): Rpc4kSCServerSuite<S, Inv, E> {
-    val config = createHandlerConfig(format, eventManager, engine, service)
-    val serverConfig = ServerConfig(router, config)
-    return Rpc4kSCServerSuite(
-        engine, serverConfig, config.handler, config.invoker
-    )
-}
 
 
 public data class Rpc4kSCServerSuite<S, Inv, E>(

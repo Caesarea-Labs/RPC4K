@@ -1,4 +1,4 @@
-package com.caesarealabs.rpc4k.runtime.api
+package com.caesarealabs.rpc4k.runtime.user
 
 
 /**

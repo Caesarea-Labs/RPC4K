@@ -4,7 +4,7 @@ import com.caesarealabs.rpc4k.processor.ApiDefinitionUtils.ignoreExperimentalWar
 import com.caesarealabs.rpc4k.processor.ApiDefinitionUtils.listOfEventSubSerializers
 import com.caesarealabs.rpc4k.processor.utils.poet.*
 import com.caesarealabs.rpc4k.runtime.api.HandlerConfig
-import com.caesarealabs.rpc4k.runtime.api.Rpc4kIndex
+import com.caesarealabs.rpc4k.runtime.user.Rpc4kIndex
 import com.caesarealabs.rpc4k.runtime.api.RpcRouter
 import com.caesarealabs.rpc4k.runtime.implementation.GeneratedCodeUtils
 import com.caesarealabs.rpc4k.runtime.implementation.kotlinPoet

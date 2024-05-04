@@ -3,9 +3,9 @@
 package com.caesarealabs.rpc4k.processor
 
 import com.caesarealabs.rpc4k.processor.utils.*
-import com.caesarealabs.rpc4k.runtime.api.Dispatch
-import com.caesarealabs.rpc4k.runtime.api.EventTarget
-import com.caesarealabs.rpc4k.runtime.api.RpcEvent
+import com.caesarealabs.rpc4k.runtime.user.Dispatch
+import com.caesarealabs.rpc4k.runtime.user.EventTarget
+import com.caesarealabs.rpc4k.runtime.user.RpcEvent
 import com.google.devtools.ksp.*
 import com.google.devtools.ksp.processing.Resolver
 import com.google.devtools.ksp.processing.SymbolProcessorEnvironment
@@ -176,12 +176,14 @@ internal class ApiClassValidator(private val env: SymbolProcessorEnvironment, pr
     //TODO: test these validations
     private fun checkAnnotationsAreValid(function: KSFunctionDeclaration): Boolean {
         if (function.isAnnotationPresent(RpcEvent::class)) {
-            val annotatedWithTargetCount = function.parameters.count { it.isAnnotationPresent(EventTarget::class) }
+            val annotatedWithTargetCount = function.parameters.count { it.isAnnotationPresent(
+                EventTarget::class) }
             function.checkRequirement(env, annotatedWithTargetCount <= 1) {
                 "only one parameter may be annotated with @EventTarget"
             }
             return function.parameters.evaluateAll {
-                val annotatedByBoth = it.isAnnotationPresent(EventTarget::class) && it.isAnnotationPresent(Dispatch::class)
+                val annotatedByBoth = it.isAnnotationPresent(EventTarget::class) && it.isAnnotationPresent(
+                    Dispatch::class)
                 it.checkRequirement(env, !annotatedByBoth) {
                     "@Dispatch and @EventTarget are mutually exclusive"
                 }

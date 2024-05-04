@@ -1,8 +1,8 @@
 package com.caesarealabs.rpc4k.processor
 
 import com.caesarealabs.rpc4k.processor.utils.appendIf
-import com.caesarealabs.rpc4k.runtime.api.Dispatch
-import com.caesarealabs.rpc4k.runtime.api.EventTarget
+import com.caesarealabs.rpc4k.runtime.user.Dispatch
+import com.caesarealabs.rpc4k.runtime.user.EventTarget
 import com.caesarealabs.rpc4k.runtime.implementation.*
 import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy
 import com.squareup.kotlinpoet.TypeName

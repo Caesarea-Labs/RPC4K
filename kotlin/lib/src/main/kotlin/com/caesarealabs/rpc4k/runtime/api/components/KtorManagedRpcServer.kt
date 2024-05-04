@@ -1,19 +1,29 @@
 package com.caesarealabs.rpc4k.runtime.api.components
 
-import com.caesarealabs.rpc4k.runtime.api.*
+import com.caesarealabs.rpc4k.runtime.api.EventConnection
+import com.caesarealabs.rpc4k.runtime.api.RpcServerEngine
+import com.caesarealabs.rpc4k.runtime.api.ServerConfig
 import com.caesarealabs.rpc4k.runtime.implementation.PortPool
 import com.caesarealabs.rpc4k.runtime.implementation.Rpc4K
 import com.caesarealabs.rpc4k.runtime.implementation.acceptEventSubscription
 import com.caesarealabs.rpc4k.runtime.implementation.routeRpcs
-import io.ktor.server.application.*
-import io.ktor.server.engine.*
-import io.ktor.server.netty.*
-import io.ktor.server.plugins.callloging.*
-import io.ktor.server.routing.*
-import io.ktor.server.websocket.*
-import io.ktor.websocket.*
-import java.util.*
+import io.ktor.server.application.Application
+import io.ktor.server.application.call
+import io.ktor.server.application.install
+import io.ktor.server.engine.ApplicationEngineFactory
+import io.ktor.server.engine.embeddedServer
+import io.ktor.server.netty.Netty
+import io.ktor.server.plugins.callloging.CallLogging
+import io.ktor.server.routing.post
+import io.ktor.server.routing.routing
+import io.ktor.server.websocket.WebSockets
+import io.ktor.server.websocket.webSocket
+import io.ktor.websocket.DefaultWebSocketSession
+import io.ktor.websocket.Frame
+import io.ktor.websocket.readBytes
+import java.util.UUID
 import java.util.concurrent.ConcurrentHashMap
+import kotlin.collections.set
 
 
 //public class KtorWebsocketEventConnection(private val session: DefaultWebSocketSession) : EventConnection {
@@ -29,7 +39,9 @@ import java.util.concurrent.ConcurrentHashMap
  * It sets up a single route at / to respond to rpc calls
  */
 public class KtorManagedRpcServer(
-    private val engine: ApplicationEngineFactory<*, *> = Netty,public val port: Int = PortPool.get(), private val config: Application.() -> Unit = {}
+    private val engine: ApplicationEngineFactory<*, *> = Netty,
+    public val port: Int = PortPool.get(),
+    private val config: Application.() -> Unit = {}
 ) : RpcServerEngine.MultiCall {
 
     private val connections = ConcurrentHashMap<EventConnection, DefaultWebSocketSession>()
@@ -55,7 +67,7 @@ public class KtorManagedRpcServer(
                 try {
                     for (frame in incoming) {
                         frame as? Frame.Text ?: error("Unexpected non-text frame")
-                        config.acceptEventSubscription(frame.readBytes(),connection)
+                        config.acceptEventSubscription(frame.readBytes(), connection)
 //                        setup.acceptEventSubscription(frame.readBytes(), connection)
                     }
                 } finally {
@@ -67,22 +79,24 @@ public class KtorManagedRpcServer(
         }
     }
 
-    override fun create(config: ServerConfig): RpcServerEngine.MultiCall.Instance = object : RpcServerEngine.MultiCall.Instance {
-        private val server = embeddedServer(engine, port = port) {
-            configImpl(config)
-        }
+    override fun create(config: ServerConfig): RpcServerEngine.MultiCall.Instance =
+        object : RpcServerEngine.MultiCall.Instance {
+            private val server = embeddedServer(engine, port = port) {
+                configImpl(config)
+            }
 
-        override fun stop() {
-            server.stop()
-        }
+            override fun stop() {
+                server.stop()
+            }
 
-        override fun start(wait: Boolean) {
-            server.start(wait)
+            override fun start(wait: Boolean) {
+                server.start(wait)
+            }
         }
-    }
 
     override suspend fun sendMessage(connection: EventConnection, bytes: ByteArray) {
-        connections[connection]?.send(Frame.Text(true, bytes)) ?: error("Attempt to send to unknown connection: $connection")
+        connections[connection]?.send(Frame.Text(true, bytes))
+            ?: error("Attempt to send to unknown connection: $connection")
     }
 }
 

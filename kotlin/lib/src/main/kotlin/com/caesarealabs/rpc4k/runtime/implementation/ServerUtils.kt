@@ -3,6 +3,7 @@
 package com.caesarealabs.rpc4k.runtime.implementation
 
 import com.caesarealabs.rpc4k.runtime.api.*
+import com.caesarealabs.rpc4k.runtime.user.Rpc4kIndex
 
 
 // This handles reading and responding for both types of engines

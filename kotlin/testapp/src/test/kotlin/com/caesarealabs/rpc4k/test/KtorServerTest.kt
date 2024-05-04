@@ -1,9 +1,8 @@
 package com.caesarealabs.rpc4k.test
 
-import com.caesarealabs.rpc4k.generated.BasicApiEventInvoker
 import com.caesarealabs.rpc4k.generated.rpc4k
-import com.caesarealabs.rpc4k.runtime.api.Api
-import com.caesarealabs.rpc4k.runtime.api.testing.junit
+import com.caesarealabs.rpc4k.runtime.user.Api
+import com.caesarealabs.rpc4k.runtime.user.testing.junit
 import kotlinx.coroutines.runBlocking
 import kotlinx.serialization.Serializable
 import org.junit.jupiter.api.extension.RegisterExtension

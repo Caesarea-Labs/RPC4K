@@ -5,6 +5,10 @@ package com.caesarealabs.rpc4k.testapp
 
 import com.caesarealabs.rpc4k.generated.AllEncompassingServiceEventInvoker
 import com.caesarealabs.rpc4k.runtime.api.*
+import com.caesarealabs.rpc4k.runtime.user.Api
+import com.caesarealabs.rpc4k.runtime.user.Dispatch
+import com.caesarealabs.rpc4k.runtime.user.EventTarget
+import com.caesarealabs.rpc4k.runtime.user.RpcEvent
 import com.caesarealabs.rpc4k.testapp.EnumArgs.Option1
 import com.caesarealabs.rpc4k.testapp.EnumArgs.Option5
 import kotlinx.serialization.Contextual
@@ -325,7 +329,7 @@ typealias AliasTest = CreateLobbyResponse
     // 4. Implement dispatch/subscription gen for EventTarget
 
     @RpcEvent
-    open suspend fun eventTargetTest(normal: String, @EventTarget target: Int,@Dispatch dispatch: Float, normalAfterTarget: Foo): String {
+    open suspend fun eventTargetTest(normal: String, @EventTarget target: Int, @Dispatch dispatch: Float, normalAfterTarget: Foo): String {
         return "${normal} ${target} ${dispatch} ${normalAfterTarget.x}"
     }
 
@@ -334,7 +338,8 @@ typealias AliasTest = CreateLobbyResponse
         return "12345"
     }
 
-    @RpcEvent suspend fun noArgsTest() {
+    @RpcEvent
+    suspend fun noArgsTest() {
 
     }
 

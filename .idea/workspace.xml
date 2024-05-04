@@ -5,11 +5,29 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="564650a1-bc6e-416d-b8da-72123f2dbf05" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/kotlin/lib/src/main/kotlin/com/caesarealabs/rpc4k/runtime/user/ClientUsage.kt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/kotlin/lib/src/main/kotlin/com/caesarealabs/rpc4k/runtime/user/ServerUsage.kt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/TODO.md" beforeDir="false" afterPath="$PROJECT_DIR$/TODO.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/kotlin/lib/src/main/kotlin/com/caesarealabs/rpc4k/processor/ApiClassValidator.kt" beforeDir="false" afterPath="$PROJECT_DIR$/kotlin/lib/src/main/kotlin/com/caesarealabs/rpc4k/processor/ApiClassValidator.kt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/kotlin/lib/src/main/kotlin/com/caesarealabs/rpc4k/processor/ApiDefinitionToClientCode.kt" beforeDir="false" afterPath="$PROJECT_DIR$/kotlin/lib/src/main/kotlin/com/caesarealabs/rpc4k/processor/ApiDefinitionToClientCode.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/kotlin/lib/src/main/kotlin/com/caesarealabs/rpc4k/runtime/api/EventClient.kt" beforeDir="false" afterPath="$PROJECT_DIR$/kotlin/lib/src/main/kotlin/com/caesarealabs/rpc4k/runtime/api/EventClient.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/kotlin/lib/src/main/kotlin/com/caesarealabs/rpc4k/runtime/api/components/OkHttpRpcClient.kt" beforeDir="false" afterPath="$PROJECT_DIR$/kotlin/lib/src/main/kotlin/com/caesarealabs/rpc4k/runtime/api/components/OkHttpRpcClient.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/kotlin/lib/src/main/kotlin/com/caesarealabs/rpc4k/runtime/implementation/GeneratedCodeUtils.kt" beforeDir="false" afterPath="$PROJECT_DIR$/kotlin/lib/src/main/kotlin/com/caesarealabs/rpc4k/runtime/implementation/GeneratedCodeUtils.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/kotlin/lib/src/main/kotlin/com/caesarealabs/rpc4k/processor/ApiDefinitionToServerCode.kt" beforeDir="false" afterPath="$PROJECT_DIR$/kotlin/lib/src/main/kotlin/com/caesarealabs/rpc4k/processor/ApiDefinitionToServerCode.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/kotlin/lib/src/main/kotlin/com/caesarealabs/rpc4k/processor/KspToApiDefinition.kt" beforeDir="false" afterPath="$PROJECT_DIR$/kotlin/lib/src/main/kotlin/com/caesarealabs/rpc4k/processor/KspToApiDefinition.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/kotlin/lib/src/main/kotlin/com/caesarealabs/rpc4k/processor/Rpc4kProcessorProvider.kt" beforeDir="false" afterPath="$PROJECT_DIR$/kotlin/lib/src/main/kotlin/com/caesarealabs/rpc4k/processor/Rpc4kProcessorProvider.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/kotlin/lib/src/main/kotlin/com/caesarealabs/rpc4k/processor/RpcApi.kt" beforeDir="false" afterPath="$PROJECT_DIR$/kotlin/lib/src/main/kotlin/com/caesarealabs/rpc4k/processor/RpcApi.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/kotlin/lib/src/main/kotlin/com/caesarealabs/rpc4k/runtime/api/Api.kt" beforeDir="false" afterPath="$PROJECT_DIR$/kotlin/lib/src/main/kotlin/com/caesarealabs/rpc4k/runtime/user/Api.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/kotlin/lib/src/main/kotlin/com/caesarealabs/rpc4k/runtime/api/Rpc4kIndex.kt" beforeDir="false" afterPath="$PROJECT_DIR$/kotlin/lib/src/main/kotlin/com/caesarealabs/rpc4k/runtime/user/Rpc4kIndex.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/kotlin/lib/src/main/kotlin/com/caesarealabs/rpc4k/runtime/api/RpcServerSetup.kt" beforeDir="false" afterPath="$PROJECT_DIR$/kotlin/lib/src/main/kotlin/com/caesarealabs/rpc4k/runtime/api/RpcServerSetup.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/kotlin/lib/src/main/kotlin/com/caesarealabs/rpc4k/runtime/api/components/KtorManagedRpcServer.kt" beforeDir="false" afterPath="$PROJECT_DIR$/kotlin/lib/src/main/kotlin/com/caesarealabs/rpc4k/runtime/api/components/KtorManagedRpcServer.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/kotlin/lib/src/main/kotlin/com/caesarealabs/rpc4k/runtime/api/testing/RpcExtension.kt" beforeDir="false" afterPath="$PROJECT_DIR$/kotlin/lib/src/main/kotlin/com/caesarealabs/rpc4k/runtime/user/testing/RpcExtension.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/kotlin/lib/src/main/kotlin/com/caesarealabs/rpc4k/runtime/implementation/ServerUtils.kt" beforeDir="false" afterPath="$PROJECT_DIR$/kotlin/lib/src/main/kotlin/com/caesarealabs/rpc4k/runtime/implementation/ServerUtils.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/kotlin/testapp/src/main/java/com/caesarealabs/rpc4k/testapp/AllEncompassingService.kt" beforeDir="false" afterPath="$PROJECT_DIR$/kotlin/testapp/src/main/java/com/caesarealabs/rpc4k/testapp/AllEncompassingService.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/kotlin/testapp/src/main/java/com/caesarealabs/rpc4k/testapp/EventsTest.kt" beforeDir="false" afterPath="$PROJECT_DIR$/kotlin/testapp/src/main/java/com/caesarealabs/rpc4k/testapp/EventsTest.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/kotlin/testapp/src/main/java/com/caesarealabs/rpc4k/testapp/TestValidClasses.kt" beforeDir="false" afterPath="$PROJECT_DIR$/kotlin/testapp/src/main/java/com/caesarealabs/rpc4k/testapp/TestValidClasses.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/kotlin/testapp/src/test/kotlin/com/caesarealabs/rpc4k/test/AllEncompassingTest.kt" beforeDir="false" afterPath="$PROJECT_DIR$/kotlin/testapp/src/test/kotlin/com/caesarealabs/rpc4k/test/AllEncompassingTest.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/kotlin/testapp/src/test/kotlin/com/caesarealabs/rpc4k/test/KtorServerTest.kt" beforeDir="false" afterPath="$PROJECT_DIR$/kotlin/testapp/src/test/kotlin/com/caesarealabs/rpc4k/test/KtorServerTest.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/kotlin/testapp/src/test/kotlin/com/caesarealabs/rpc4k/test/SimpleKtorServerTest.kt" beforeDir="false" afterPath="$PROJECT_DIR$/kotlin/testapp/src/test/kotlin/com/caesarealabs/rpc4k/test/SimpleKtorServerTest.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/kotlin/testapp/src/test/kotlin/com/caesarealabs/rpc4k/testserver/TestServers.kt" beforeDir="false" afterPath="$PROJECT_DIR$/kotlin/testapp/src/test/kotlin/com/caesarealabs/rpc4k/testserver/TestServers.kt" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -87,12 +105,20 @@
     <option name="RECENT_TEMPLATES">
       <list>
         <option value="Kotlin Class" />
+        <option value="HTTP Request" />
       </list>
     </option>
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
+  <component name="HttpClientSelectedEnvironments">
+    <file url="jar://$APPLICATION_HOME_DIR$/plugins/restClient/lib/restClient.jar!/com/intellij/ws/rest/client/requests/collection/post-requests.http" environment="test" />
+  </component>
+  <component name="KubernetesApiPersistence">{}</component>
+  <component name="KubernetesApiProvider">{
+  &quot;isMigrated&quot;: true
+}</component>
   <component name="ProjectColorInfo">{
   &quot;associatedIndex&quot;: 4
 }</component>
@@ -115,6 +141,7 @@
     &quot;Gradle.TestServers.allEncompassingService.executor&quot;: &quot;Run&quot;,
     &quot;Gradle.kotlin [uploadLibrary].executor&quot;: &quot;Run&quot;,
     &quot;Gradle.kotlin:lib [uploadLibrary].executor&quot;: &quot;Run&quot;,
+    &quot;HTTP Request.test | #1.executor&quot;: &quot;Run&quot;,
     &quot;Jest.C2S TS Tests.executor&quot;: &quot;Run&quot;,
     &quot;Jest.Standalone TS Tests.executor&quot;: &quot;Run&quot;,
     &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
@@ -141,7 +168,7 @@
     ]
   }
 }</component>
-  <component name="RunManager" selected="Gradle.kotlin:lib [uploadLibrary]">
+  <component name="RunManager" selected="HTTP Request.test | #1">
     <configuration name="kotlin [uploadLibrary]" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
       <ExternalSystemSettings>
         <option name="executionName" />
@@ -186,6 +213,9 @@
       <RunAsTest>false</RunAsTest>
       <method v="2" />
     </configuration>
+    <configuration name="test | #1" type="HttpClient.HttpRequestRunConfigurationType" factoryName="HTTP Request" temporary="true" nameIsGenerated="true" path="$PROJECT_DIR$/kotlin/lib/src/main/kotlin/com/caesarealabs/rpc4k/runtime/api/test.http" requestIdentifier="#1" runType="Run single request">
+      <method v="2" />
+    </configuration>
     <configuration name="C2S TS Tests" type="JavaScriptTestRunnerJest">
       <node-interpreter value="project" />
       <jest-package value="$PROJECT_DIR$/typescript/runtime/node_modules/jest" />
@@ -220,6 +250,7 @@
       <item itemvalue="Gradle.FullTest Server" />
       <item itemvalue="Gradle.kotlin:lib [uploadLibrary]" />
       <item itemvalue="Gradle.kotlin [uploadLibrary]" />
+      <item itemvalue="HTTP Request.test | #1" />
       <item itemvalue="Jest.C2S TS Tests" />
       <item itemvalue="Jest.Standalone TS Tests" />
       <item itemvalue="npm.Build Runtime" />
@@ -229,6 +260,7 @@
     </list>
     <recent_temporary>
       <list>
+        <item itemvalue="HTTP Request.test | #1" />
         <item itemvalue="Gradle.kotlin:lib [uploadLibrary]" />
         <item itemvalue="npm.pubNoBump" />
         <item itemvalue="npm.pubNoBump (1)" />
@@ -268,6 +300,9 @@
       <workItem from="1713648748959" duration="1794000" />
       <workItem from="1713773247674" duration="1254000" />
       <workItem from="1713799104534" duration="2260000" />
+      <workItem from="1713904931371" duration="1400000" />
+      <workItem from="1714075679505" duration="1118000" />
+      <workItem from="1714411369951" duration="2650000" />
     </task>
     <servers />
   </component>

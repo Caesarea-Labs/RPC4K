@@ -4,13 +4,11 @@ import com.caesarealabs.rpc4k.processor.utils.checkRequirement
 import com.caesarealabs.rpc4k.processor.utils.findDuplicate
 import com.caesarealabs.rpc4k.processor.utils.getClassesWithAnnotation
 import com.caesarealabs.rpc4k.processor.utils.getQualifiedName
-import com.caesarealabs.rpc4k.runtime.api.Api
-import com.google.devtools.ksp.KspExperimental
+import com.caesarealabs.rpc4k.runtime.user.Api
 import com.google.devtools.ksp.processing.Resolver
 import com.google.devtools.ksp.processing.SymbolProcessor
 import com.google.devtools.ksp.processing.SymbolProcessorEnvironment
 import com.google.devtools.ksp.processing.SymbolProcessorProvider
-import com.google.devtools.ksp.symbol.ClassKind
 import com.google.devtools.ksp.symbol.KSAnnotated
 import com.google.devtools.ksp.symbol.KSClassDeclaration
 import com.squareup.kotlinpoet.ksp.writeTo

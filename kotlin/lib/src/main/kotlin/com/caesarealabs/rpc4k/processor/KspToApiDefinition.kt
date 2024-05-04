@@ -1,9 +1,9 @@
 package com.caesarealabs.rpc4k.processor
 
 import com.caesarealabs.rpc4k.processor.utils.*
-import com.caesarealabs.rpc4k.runtime.api.Dispatch
-import com.caesarealabs.rpc4k.runtime.api.EventTarget
-import com.caesarealabs.rpc4k.runtime.api.RpcEvent
+import com.caesarealabs.rpc4k.runtime.user.Dispatch
+import com.caesarealabs.rpc4k.runtime.user.EventTarget
+import com.caesarealabs.rpc4k.runtime.user.RpcEvent
 import com.google.devtools.ksp.KspExperimental
 import com.google.devtools.ksp.getAllSuperTypes
 import com.google.devtools.ksp.getDeclaredProperties

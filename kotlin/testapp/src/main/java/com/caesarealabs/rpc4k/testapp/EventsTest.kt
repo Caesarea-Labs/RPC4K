@@ -1,7 +1,5 @@
 package com.caesarealabs.rpc4k.testapp
 
-import com.caesarealabs.rpc4k.runtime.api.Api
-
 //@Api(true)
 //open class EventsTest {
 //    companion object;

@@ -5,7 +5,7 @@ package com.caesarealabs.rpc4k.test
 
 import com.caesarealabs.rpc4k.generated.rpc4k
 import com.caesarealabs.rpc4k.runtime.api.RpcResponseException
-import com.caesarealabs.rpc4k.runtime.api.testing.junit
+import com.caesarealabs.rpc4k.runtime.user.testing.junit
 import com.caesarealabs.rpc4k.testapp.*
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay

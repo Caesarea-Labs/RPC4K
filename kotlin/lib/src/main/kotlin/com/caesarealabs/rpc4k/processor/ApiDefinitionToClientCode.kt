@@ -67,7 +67,7 @@ internal object ApiDefinitionToClientCode {
 
             ignoreExperimentalWarnings()
 
-            addFunction(clientConstructorExtension(apiDefinition, className))
+//            addFunction(clientConstructorExtension(apiDefinition, className))
 
             addClass(className) {
                 addType(factoryCompanionObject(className))
@@ -107,22 +107,22 @@ internal object ApiDefinitionToClientCode {
     }
 
 
-    /**
-     * Making the generated class available with an extension function makes it more resilient to name changes
-     *   since you will no longer need to directly reference the generated class.
-     *   Looks like:
-     *   ```
-     *   fun MyApi.Companion.client(client: RpcClient, format: SerializationFormat) = MyApiClientImpl(client,format)
-     *   ```
-     */
-//    context(JvmContext)
-    private fun clientConstructorExtension(api: RpcApi, generatedClassName: String) =
-        extensionFunction(api.name.kotlinPoet.companion(), "client") {
-            addParameter(ClientPropertyName, RpcClient::class)
-            addParameter(FormatPropertyName, SerializationFormat::class)
-            returns(ClassName(GeneratedCodeUtils.Package, generatedClassName))
-            addStatement("return $generatedClassName($ClientPropertyName, $FormatPropertyName)")
-        }
+//    /**
+//     * Making the generated class available with an extension function makes it more resilient to name changes
+//     *   since you will no longer need to directly reference the generated class.
+//     *   Looks like:
+//     *   ```
+//     *   fun MyApi.Companion.client(client: RpcClient, format: SerializationFormat) = MyApiClientImpl(client,format)
+//     *   ```
+//     */
+////    context(JvmContext)
+//    private fun clientConstructorExtension(api: RpcApi, generatedClassName: String) =
+//        extensionFunction(api.name.kotlinPoet.companion(), "client") {
+//            addParameter(ClientPropertyName, RpcClient::class)
+//            addParameter(FormatPropertyName, SerializationFormat::class)
+//            returns(ClassName(GeneratedCodeUtils.Package, generatedClassName))
+//            addStatement("return $generatedClassName($ClientPropertyName, $FormatPropertyName)")
+//        }
 
 
     private fun requestMethod(rpcDefinition: RpcFunction): FunSpec = funSpec(rpcDefinition.name) {
