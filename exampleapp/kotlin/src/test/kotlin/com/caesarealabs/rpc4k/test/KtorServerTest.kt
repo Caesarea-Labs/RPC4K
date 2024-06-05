@@ -1,6 +1,6 @@
 package com.caesarealabs.rpc4k.test
 
-import com.caesarealabs.rpc4k.runtime.api.Api
+import com.caesarealabs.rpc4k.runtime.user.Api
 import com.caesarealabs.rpc4k.runtime.api.testing.rpcExtension
 import kotlinx.coroutines.runBlocking
 import kotlinx.serialization.Serializable

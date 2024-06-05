@@ -2,7 +2,7 @@
 
 package com.caesarealabs.rpc4k.testapp
 
-import com.caesarealabs.rpc4k.runtime.api.Api
+import com.caesarealabs.rpc4k.runtime.user.Api
 
 @Api(true)
 abstract class TestValidClass1 {

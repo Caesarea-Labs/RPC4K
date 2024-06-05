@@ -1,7 +1,7 @@
-import com.caesarealabs.rpc4k.runtime.api.Api
-import com.caesarealabs.rpc4k.runtime.api.Dispatch
-import com.caesarealabs.rpc4k.runtime.api.EventTarget
-import com.caesarealabs.rpc4k.runtime.api.RpcEvent
+import com.caesarealabs.rpc4k.runtime.user.Api
+import com.caesarealabs.rpc4k.runtime.user.Dispatch
+import com.caesarealabs.rpc4k.runtime.user.EventTarget
+import com.caesarealabs.rpc4k.runtime.user.RpcEvent
 
 @Api(true)
 open class InvalidPropertyType {

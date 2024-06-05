@@ -19,6 +19,8 @@ package com.caesarealabs.rpc4k.runtime.user
  * ```kotlin
  * val setup = RpcServerSetup({ MyService(it) }, ...)
  *```
+ *
+ * An @Api class may implement [AutoCloseable] and close() will be automatically closed when tests using it shut down.
  */
 @Target(AnnotationTarget.CLASS)
 @Retention(AnnotationRetention.SOURCE)

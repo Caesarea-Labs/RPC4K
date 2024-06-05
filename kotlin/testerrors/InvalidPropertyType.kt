@@ -1,5 +1,5 @@
 import kotlinx.serialization.Serializable
-import com.caesarealabs.rpc4k.runtime.api.Api
+import com.caesarealabs.rpc4k.runtime.user.Api
 import java.util.Locale
 
 

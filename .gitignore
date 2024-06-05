@@ -15,3 +15,6 @@ generated/
 dist/
 kotlin/gradle.properties
 kotlin/plugin/gradle.properties
+.idea/compiler.xml
+.idea/kotlinc.xml
+.idea/vcs.xml

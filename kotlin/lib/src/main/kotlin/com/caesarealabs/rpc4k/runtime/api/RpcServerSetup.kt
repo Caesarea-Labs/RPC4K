@@ -2,10 +2,7 @@
 
 package com.caesarealabs.rpc4k.runtime.api
 
-import com.caesarealabs.rpc4k.runtime.api.components.JsonFormat
-import com.caesarealabs.rpc4k.runtime.api.components.KtorManagedRpcServer
 import com.caesarealabs.rpc4k.runtime.api.components.MemoryEventManager
-import com.caesarealabs.rpc4k.runtime.implementation.createHandlerConfig
 import com.caesarealabs.rpc4k.runtime.implementation.routeRpcCallImpl
 
 
@@ -17,6 +14,10 @@ import com.caesarealabs.rpc4k.runtime.implementation.routeRpcCallImpl
 //}
 
 /**
+ * All configuration a generated RPC responding router needs to function.
+ *
+ * A _handler_ is the user class annotated with @Api.
+ *
  * Needs to be an interface to allow the invoker to access the handler
  */
 public interface HandlerConfig<out T> {
@@ -25,16 +26,11 @@ public interface HandlerConfig<out T> {
     public val eventManager: EventManager
     public val engine: RpcServerEngine
 
-    public object None : HandlerConfig<Nothing> {
-        override val handler: Nothing
-            get() = TODO("Not yet implemented")
-        override val format: SerializationFormat
-            get() = TODO("Not yet implemented")
-        override val eventManager: EventManager
-            get() = TODO("Not yet implemented")
-        override val engine: RpcServerEngine
-            get() = TODO("Not yet implemented")
-
+    public object InMemory : HandlerConfig<Nothing> {
+        override val handler: Nothing get() = error("No actual handler is used as everything is done in-memory")
+        override val format: SerializationFormat get() = error("No serialization is used as everything is done in-memory")
+        override val eventManager: EventManager = MemoryEventManager()
+        override val engine: RpcServerEngine get() = error("No Server Engine is used as everything is done in-memory")
     }
 }
 

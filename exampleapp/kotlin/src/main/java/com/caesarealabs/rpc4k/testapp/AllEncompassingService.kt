@@ -5,7 +5,7 @@ package com.caesarealabs.rpc4k.testapp
 
 import com.caesarealabs.rpc4k.testapp.EnumArgs.Option1
 import com.caesarealabs.rpc4k.testapp.EnumArgs.Option5
-import com.caesarealabs.rpc4k.runtime.api.Api
+import com.caesarealabs.rpc4k.runtime.user.Api
 import com.caesarealabs.rpc4k.runtime.api.serverRequirement
 import kotlinx.serialization.Contextual
 import kotlinx.serialization.Serializable

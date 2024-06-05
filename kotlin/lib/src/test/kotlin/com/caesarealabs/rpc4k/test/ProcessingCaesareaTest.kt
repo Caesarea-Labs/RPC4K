@@ -1,9 +1,12 @@
+@file:OptIn(ExperimentalCompilerApi::class)
+
 package com.caesarealabs.rpc4k.test
 
 import com.tschuchort.compiletesting.KotlinCompilation
 import com.tschuchort.compiletesting.SourceFile
 import com.tschuchort.compiletesting.symbolProcessorProviders
 import com.caesarealabs.rpc4k.processor.Rpc4kProcessorProvider
+import org.jetbrains.kotlin.compiler.plugin.ExperimentalCompilerApi
 import java.io.File
 import kotlin.test.Test
 import kotlin.test.assertEquals

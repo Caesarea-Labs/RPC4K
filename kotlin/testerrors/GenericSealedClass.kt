@@ -1,4 +1,4 @@
-import com.caesarealabs.rpc4k.runtime.api.Api
+import com.caesarealabs.rpc4k.runtime.user.Api
 import kotlinx.serialization.Serializable
 
 @Api

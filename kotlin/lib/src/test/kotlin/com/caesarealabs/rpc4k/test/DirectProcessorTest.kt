@@ -1,9 +1,12 @@
+@file:OptIn(ExperimentalCompilerApi::class)
+
 package com.caesarealabs.rpc4k.test
 
 import com.tschuchort.compiletesting.KotlinCompilation
 import com.tschuchort.compiletesting.SourceFile
 import com.tschuchort.compiletesting.symbolProcessorProviders
 import com.caesarealabs.rpc4k.processor.Rpc4kProcessorProvider
+import org.jetbrains.kotlin.compiler.plugin.ExperimentalCompilerApi
 import strikt.api.expectThat
 import strikt.assertions.isEqualTo
 import java.io.File
@@ -34,6 +37,7 @@ class DirectProcessorTest {
     @Test
     fun `Symbol processor gives off correct errors`() {
         val errorCasesDir = File("../testerrors")
+//        val errorFile = File("../testerrors/BadAnnotations.kt")
         for (errorFile in errorCasesDir.listFiles()!!.filter { it.isFile }) {
             // Test individual files
             val testSources = listOf(SourceFile.fromPath(errorFile))

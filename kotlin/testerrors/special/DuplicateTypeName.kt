@@ -1,5 +1,5 @@
 package special
-import com.caesarealabs.rpc4k.runtime.api.Api
+import com.caesarealabs.rpc4k.runtime.user.Api
 
 /**
  * This test is in a special package because it needs to compile alongside package1 and package2 since we are testing having the same type

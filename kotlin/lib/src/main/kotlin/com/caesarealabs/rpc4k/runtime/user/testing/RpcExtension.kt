@@ -8,6 +8,7 @@ import com.caesarealabs.rpc4k.runtime.api.components.OkHttpRpcClient
 import com.caesarealabs.rpc4k.runtime.implementation.PortPool
 import com.caesarealabs.rpc4k.runtime.implementation.createHandlerConfig
 import com.caesarealabs.rpc4k.runtime.user.Rpc4kIndex
+import io.ktor.utils.io.core.*
 import okhttp3.OkHttpClient
 import org.junit.jupiter.api.extension.AfterAllCallback
 import org.junit.jupiter.api.extension.BeforeAllCallback
@@ -26,7 +27,7 @@ public fun <S, C, I> Rpc4kIndex<S, C, I>.junit(
     val url = "http://localhost:${port}"
     val websocketUrl = "$url/events"
     val clientSetup = client.build(url, websocketUrl)
-    val config = createHandlerConfig(format,eventManager,server, serverFactory)
+    val config = createHandlerConfig(format, eventManager, server, serverFactory)
     val serverConfig = ServerConfig(router, config)
     val suite = Rpc4kSuiteImpl(config.handler, createNetworkClient(clientSetup, format), /*createMemoryClient(config.handler),*/ config.invoker)
     val engine = server.create(serverConfig)
@@ -41,10 +42,8 @@ public interface Rpc4kSuite<Server, Client, Invoker> {
     public val invoker: Invoker
 }
 
-public data class Rpc4kSuiteImpl<S,C,I>(override val server: S, override val networkClient: C, override val invoker: I):
+public data class Rpc4kSuiteImpl<S, C, I>(override val server: S, override val networkClient: C, override val invoker: I) :
     Rpc4kSuite<S, C, I>
-
-
 
 
 public class ClientServerExtension<S, C, I> internal constructor(
@@ -62,6 +61,7 @@ public class ClientServerExtension<S, C, I> internal constructor(
 
     override fun afterAll(context: ExtensionContext) {
         engine.stop()
+        if (server is AutoCloseable) server.close()
     }
 }
 
