@@ -110,6 +110,7 @@ public object GeneratedCodeUtils {
         target: String? = null,
         handle: suspend (subArgs: List<*>) -> R
     ) {
+        println("Invoking event $eventName")
         for (subscriber in config.eventManager.match(eventName, target)) {
             val parsed = config.format.decode(TupleSerializer(subArgDeserializers), subscriber.info.data)
             val handled = handle(parsed)
