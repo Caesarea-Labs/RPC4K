@@ -94,9 +94,9 @@ public class KtorManagedRpcServer(
             }
         }
 
-    override suspend fun sendMessage(connection: EventConnection, bytes: ByteArray) {
-        connections[connection]?.send(Frame.Text(true, bytes))
-            ?: error("Attempt to send to unknown connection: $connection")
+    override suspend fun sendMessage(connection: EventConnection, bytes: ByteArray): Boolean {
+        return connections[connection]?.send(Frame.Text(true, bytes)) != null
+//            ?: error("Attempt to send to unknown connection: $connection")
     }
 }
 

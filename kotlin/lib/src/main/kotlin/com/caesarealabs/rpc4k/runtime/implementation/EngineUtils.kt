@@ -14,10 +14,10 @@ public suspend fun ServerConfig.acceptEventSubscription(bytes: ByteArray, connec
     } catch (e: InvalidRpcRequestException) {
         Rpc4K.Logger.warn("Invalid client event message", e)
         // RpcServerException messages are trustworthy
-        engine.sendMessage(connection, S2CEventMessage.SubscriptionError("Invalid client event message: ${e.message}").toByteArray())
+        sendOrDrop(connection, S2CEventMessage.SubscriptionError("Invalid client event message: ${e.message}").toByteArray())
     } catch (e: Throwable) {
         Rpc4K.Logger.error("Failed to handle request", e)
-        engine.sendMessage(connection, S2CEventMessage.SubscriptionError("Server failed to process subscription").toByteArray())
+        sendOrDrop(connection, S2CEventMessage.SubscriptionError("Server failed to process subscription").toByteArray())
     }
 }
 

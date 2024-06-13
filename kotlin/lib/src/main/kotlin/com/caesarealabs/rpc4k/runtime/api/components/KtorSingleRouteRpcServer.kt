@@ -27,7 +27,7 @@ public class KtorSingleRouteRpcServer : RpcServerEngine.SingleCall.Writing<Appli
         output.respondText(message, status = code)
     }
 
-    override suspend fun sendMessage(connection: EventConnection, bytes: ByteArray) {
+    override suspend fun sendMessage(connection: EventConnection, bytes: ByteArray): Boolean {
         TODO("Not yet implemented")
     }
 }
