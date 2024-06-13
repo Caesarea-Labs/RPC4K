@@ -42,7 +42,9 @@ export namespace GeneratedCodeUtils {
         return client.events.createObservable(
             //TODO: this probably breaks in binary formats
             // This byte -> string conversion is prob inefficient
-            `sub:${event}:${listenerId}:${String(target) ?? ""}:${textDecoder.decode(payload)}`,
+
+            // The RPC spec specifies that if no target is relevant for this function, we pass an empty string.
+            `sub:${event}:${listenerId}:${String(target ?? "") }:${textDecoder.decode(payload)}`,
             `unsub:${event}:${listenerId}`,
             listenerId
             //TODO: this string -> bytes conversion is also inefficient

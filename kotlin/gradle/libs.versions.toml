@@ -9,7 +9,7 @@ nexus_publish = { id = "io.github.gradle-nexus.publish-plugin", version.ref = "n
 
 [versions]
 
-rpc4k = "0.7.0"
+rpc4k = "0.7.1"
 nexus = "2.0.0"
 kotlin = "2.0.0"
 ksp = "2.0.0-1.0.21"

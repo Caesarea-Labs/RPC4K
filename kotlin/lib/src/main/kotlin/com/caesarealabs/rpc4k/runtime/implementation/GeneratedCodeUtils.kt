@@ -71,7 +71,7 @@ public object GeneratedCodeUtils {
     ): Flow<T> {
         val listenerId = UUID.randomUUID().toString()
         val payload = format.encode(TupleSerializer(argSerializers), args)
-        val subscriptionMessage = C2SEventMessage.Subscribe(event = event, listenerId = listenerId, payload, target.toString())
+        val subscriptionMessage = C2SEventMessage.Subscribe(event = event, listenerId = listenerId, payload, target?.toString())
         val unsubMessage = C2SEventMessage.Unsubscribe(event = event, listenerId = listenerId)
         return client.events.createFlow(subscriptionMessage.toByteArray(), unsubMessage.toByteArray(), listenerId)
             .map { format.decode(eventSerializer, it) }
@@ -111,7 +111,9 @@ public object GeneratedCodeUtils {
         handle: suspend (subArgs: List<*>) -> R
     ) {
         println("Invoking event $eventName")
-        for (subscriber in config.eventManager.match(eventName, target)) {
+        val match = config.eventManager.match(eventName, target)
+        println("Match results for event $eventName with target $target: $match")
+        for (subscriber in match) {
             val parsed = config.format.decode(TupleSerializer(subArgDeserializers), subscriber.info.data)
             val handled = handle(parsed)
             val bytes = config.format.encode(resultSerializer, handled)

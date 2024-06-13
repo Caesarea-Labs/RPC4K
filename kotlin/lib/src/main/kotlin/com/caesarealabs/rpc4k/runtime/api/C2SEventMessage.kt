@@ -47,9 +47,10 @@ public sealed interface C2SEventMessage {
             when (type) {
                 "sub" -> {
                     val listenerId = reader.readPart("listener id").decodeToString()
-                    val watchedObjectId = reader.readPart("watched object id").decodeToString()
+                    val target = reader.readPart("target").decodeToString()
                     val data = reader.readPart("payload", finalPart = true)
-                    return Subscribe(event, listenerId, data, target = watchedObjectId.ifEmpty { null })
+                    //TODO this function should pass in "accepts target" and if not always pass null
+                    return Subscribe(event, listenerId, data, target = target.ifEmpty { null })
                 }
 
                 "unsub" -> {
