@@ -6,7 +6,14 @@ import kotlin.io.path.readBytes
 plugins {
     id("signing")
     id("maven-publish")
+    alias(libs.plugins.kotlinMultiplatform)
+    alias(libs.plugins.androidLibrary)
+    alias(libs.plugins.serialization)
 }
+
+
+
+
 
 fun rpc4kRuntimeVersion() = libs.versions.rpc4k.get()
 
@@ -20,64 +27,37 @@ group = projectGroup
 version = projectVersion
 
 
-dependencies {
-//    implementation("com.google.guava:guava:33.0.0-jre")
-//    implementation("org.apache.commons:commons-collections4:4.4")
-    implementation(libs.symbol.processing.api)
-    implementation(libs.kotlinpoet.core)
-    implementation(libs.kotlinpoet.ksp)
-    implementation(libs.junit)
-
-    api(libs.coroutines.core)
-    api(libs.serialization.json)
-
-    implementation(libs.okhttp.core)
-    implementation(libs.okhttp.sse)
-    implementation(libs.ktor.netty)
-    implementation(libs.ktor.logging)
-    implementation("io.ktor:ktor-server-core-jvm:2.2.4")
-    implementation("io.ktor:ktor-server-websockets-jvm:2.2.4")
-
-    testImplementation(libs.kotlin.test)
-    testImplementation(libs.compile.testing.ksp)
-    testImplementation(Testing.Strikt.core)
-    testImplementation(libs.logback)
-
-}
-
-java {
-    withSourcesJar()
-    withJavadocJar()
-}
-
-kotlin {
-    explicitApi()
-}
 
 
-tasks.test {
-    useJUnitPlatform()
-    testLogging {
-        events("passed", "skipped", "failed", "standardOut", "standardError")
-    }
-}
+//tasks.test {
+//    useJUnitPlatform()
+//    testLogging {
+//        events("passed", "skipped", "failed", "standardOut", "standardError")
+//    }
+//}
 
-sourceSets.main {
-    java.srcDirs("src/main/kotlin")
-}
+//sourceSets.main {
+//    java.srcDirs("src/main/kotlin")
+//}
 
 
 afterEvaluate {
     publishing {
-        publications {
-            register("release", MavenPublication::class) {
-                // The coordinates of the library, being set from variables that
-                // we'll set up later
-                groupId = projectGroup
-                artifactId = projectId
-                version = projectVersion
-
-                from(components["java"])
+        publications.withType<MavenPublication> {
+//            register("release", MavenPublication::class) {
+                // Stub javadoc.jar artifact to appease Maven Central
+                artifact(tasks.register("${name}JavadocJar", Jar::class) {
+                    archiveClassifier.set("javadoc")
+                    archiveAppendix.set("release")
+                })
+//
+//                // The coordinates of the library, being set from variables that
+//                // we'll set up later
+//                groupId = projectGroup
+//                artifactId = projectId
+//                version = projectVersion
+//
+//                from(components["java"])
 
                 // Mostly self-explanatory metadata
                 pom {
@@ -102,7 +82,7 @@ afterEvaluate {
                     }
                 }
             }
-        }
+//        }
     }
 }
 
@@ -117,4 +97,59 @@ signing {
         System.getenv("CLABS_GPG_KEY_PASSWORD")
     )
     sign(publishing.publications)
+}
+
+kotlin {
+    compilerOptions {
+        freeCompilerArgs.add("-Xcontext-receivers")
+    }
+    explicitApi()
+    targetHierarchy.default()
+    jvm()
+    androidTarget {
+        publishLibraryVariants("release")
+        compilations.all {
+            kotlinOptions {
+                jvmTarget = "1.8"
+            }
+        }
+    }
+
+    sourceSets {
+        val commonMain by getting {
+            dependencies {
+                implementation(libs.symbol.processing.api)
+                implementation(libs.kotlinpoet.core)
+                implementation(libs.kotlinpoet.ksp)
+                implementation(libs.junit)
+
+                api(libs.coroutines.core)
+                api(libs.serialization.json)
+
+                implementation(libs.okhttp.core)
+                implementation(libs.okhttp.sse)
+                implementation(libs.ktor.netty)
+                implementation(libs.ktor.logging)
+                implementation("io.ktor:ktor-server-core-jvm:2.2.4")
+                implementation("io.ktor:ktor-server-websockets-jvm:2.2.4")
+
+            }
+        }
+        val commonTest by getting {
+            dependencies {
+                implementation(libs.kotlin.test)
+                implementation(libs.compile.testing.ksp)
+                implementation(Testing.Strikt.core)
+                implementation(libs.logback)
+            }
+        }
+    }
+}
+
+android {
+    namespace = projectGroup
+    compileSdk = libs.versions.android.compileSdk.get().toInt()
+    defaultConfig {
+        minSdk = libs.versions.android.minSdk.get().toInt()
+    }
 }

@@ -2,6 +2,14 @@ plugins {
     `kotlin-dsl`
     embeddedKotlin("plugin.serialization")
     id("com.gradle.plugin-publish") version "1.1.0"
+//    alias(libs.plugins.kotlinMultiplatform)
+}
+
+
+
+kotlin {
+    jvmToolchain(17)
+    compilerOptions.freeCompilerArgs.add("-Xcontext-receivers")
 }
 
 group = "com.caesarealabs"
@@ -16,6 +24,8 @@ repositories {
 dependencies {
     implementation(libs.nodejs)
     implementation("com.google.devtools.ksp:com.google.devtools.ksp.gradle.plugin:${libs.versions.ksp.get()}")
+    // Allow reference Kotlin Gradle types
+    compileOnly (libs.kotlin.gradle.plugin)
 }
 
 
@@ -34,9 +44,10 @@ gradlePlugin {
 }
 
 
-kotlin {
-    compilerOptions.freeCompilerArgs.add("-Xcontext-receivers")
-}
+
+//kotlin {
+//    compilerOptions.freeCompilerArgs.add("-Xcontext-receivers")
+//}
 
 fun rpc4kRuntimeVersion() = libs.versions.rpc4k.get()
 

@@ -71,7 +71,7 @@ internal class ApiDefinitionToServerCode(private val api: RpcApi) {
 
     }
 
-    private val invokerName = "${api.name.simple}${InvokerSuffix}"
+    private val invokerName = "${api.name.simple}$InvokerSuffix"
     private val invokerClassName = ClassName(GeneratedCodeUtils.Package, invokerName)
     private val routerName = "${api.name.simple}${GeneratedCodeUtils.ServerSuffix}"
     private val routerClassName = ClassName(GeneratedCodeUtils.Package, routerName)

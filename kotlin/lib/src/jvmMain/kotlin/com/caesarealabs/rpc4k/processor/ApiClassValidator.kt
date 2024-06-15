@@ -53,7 +53,7 @@ internal class ApiClassValidator(private val env: SymbolProcessorEnvironment, pr
         return referencedClasses.filter { it.isSealedSubclass() }.evaluateAll { classDecl ->
             classDecl.getDeclaredProperties().evaluateAll { property ->
                 property.checkRequirement(env, property.getSimpleName() != TypeDiscriminatorField) {
-                    "The name '${TypeDiscriminatorField}' is reserved for sealed classes"
+                    "The name '$TypeDiscriminatorField' is reserved for sealed classes"
                 }
             }
         }

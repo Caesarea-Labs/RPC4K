@@ -120,11 +120,11 @@ internal fun EventClient.createFlow(
             trySendBlocking(it)
         }
         // Tell the server to start sending events
-        this@EventClient.send(subscribeMessage)
+        this@createFlow.send(subscribeMessage)
         awaitClose {
             launch {
                 // Tell the server to stop sending events
-                this@EventClient.send(unsubscribeMessage)
+                this@createFlow.send(unsubscribeMessage)
                 // Remove event reference from self
                 activeFlows.remove(listenerId)
             }

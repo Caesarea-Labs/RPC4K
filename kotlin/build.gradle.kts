@@ -1,21 +1,29 @@
 plugins {
-    alias(libs.plugins.kotlin)
-    alias(libs.plugins.serialization)
+    alias(libs.plugins.androidLibrary) apply false
+    alias(libs.plugins.kotlinMultiplatform) apply false
+//    alias(libs.plugins.serialization)
     alias(libs.plugins.nexus.publish)
 }
+
 allprojects {
-    apply(plugin = "org.jetbrains.kotlin.jvm")
-    apply(plugin = "org.jetbrains.kotlin.plugin.serialization")
     repositories {
         mavenCentral()
         google()
     }
-
-    kotlin {
-        jvmToolchain(17)
-        compilerOptions.freeCompilerArgs.add("-Xcontext-receivers")
-    }
 }
+//allprojects {
+//    apply(plugin = "org.jetbrains.kotlin.jvm")
+//    apply(plugin = "org.jetbrains.kotlin.plugin.serialization")
+//    repositories {
+//        mavenCentral()
+//        google()
+//    }
+//
+//    kotlin {
+//        jvmToolchain(17)
+//        compilerOptions.freeCompilerArgs.add("-Xcontext-receivers")
+//    }
+//}
 
 
 nexusPublishing {

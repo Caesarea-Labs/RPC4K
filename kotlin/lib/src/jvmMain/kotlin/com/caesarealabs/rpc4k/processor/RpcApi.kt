@@ -33,7 +33,8 @@ internal sealed interface RpcEndpoint {
 
 @Serializable
 internal data class RpcFunction(override val name: String, val parameters: List<RpcParameter>,
-                                override val returnType: KotlinTypeReference) : RpcEndpoint
+                                override val returnType: KotlinTypeReference
+) : RpcEndpoint
 
 
 @Serializable internal data class RpcEventEndpoint(

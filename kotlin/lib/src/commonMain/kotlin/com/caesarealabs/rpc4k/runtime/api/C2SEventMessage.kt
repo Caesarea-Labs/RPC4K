@@ -16,9 +16,9 @@ public sealed interface C2SEventMessage {
         /**
          * @see EventTarget
          */
-        public val target: String?) : C2SEventMessage {
+        public val target: String?) : com.caesarealabs.rpc4k.runtime.api.C2SEventMessage {
         override fun equals(other: Any?): Boolean {
-            return other is Subscribe && event == other.event && listenerId == other.listenerId
+            return other is com.caesarealabs.rpc4k.runtime.api.C2SEventMessage.Subscribe && event == other.event && listenerId == other.listenerId
                 && data.contentEquals(other.data) && target == other.target
         }
 
@@ -50,12 +50,16 @@ public sealed interface C2SEventMessage {
                     val target = reader.readPart("target").decodeToString()
                     val data = reader.readPart("payload", finalPart = true)
                     //TODO this function should pass in "accepts target" and if not always pass null
-                    return Subscribe(event, listenerId, data, target = target.ifEmpty { null })
+                    return C2SEventMessage.Subscribe(
+                        event,
+                        listenerId,
+                        data,
+                        target = target.ifEmpty { null })
                 }
 
                 "unsub" -> {
                     val listenerId = reader.readPart("listener id", finalPart = true).decodeToString()
-                    return Unsubscribe(event, listenerId)
+                    return C2SEventMessage.Unsubscribe(event, listenerId)
                 }
 
                 else -> throw InvalidRpcRequestException("Invalid event message format, the type should be 'sub' or 'unsub' but is '${type}'")
@@ -66,11 +70,11 @@ public sealed interface C2SEventMessage {
 
     public fun toByteArray(): ByteArray {
         return when (this) {
-            is Subscribe -> "sub".toByteArray()
-                .fastConcat(Rpc.ColonCode, event.toByteArray(), listenerId.toByteArray(), (target ?: "").toByteArray(), data)
+            is C2SEventMessage.Subscribe -> "sub".toByteArray()
+                .fastConcat(Rpc.Companion.ColonCode, event.toByteArray(), listenerId.toByteArray(), (target ?: "").toByteArray(), data)
 
-            is Unsubscribe -> "unsub".toByteArray()
-                .fastConcat(Rpc.ColonCode, event.toByteArray(), listenerId.toByteArray())
+            is C2SEventMessage.Unsubscribe -> "unsub".toByteArray()
+                .fastConcat(Rpc.Companion.ColonCode, event.toByteArray(), listenerId.toByteArray())
         }
     }
 
@@ -81,7 +85,7 @@ private class MessageReader(private val bytes: ByteArray) {
     private var i = 0
     fun readPart(partName: String, finalPart: Boolean = false): ByteArray {
         val startIndex = i
-        while (bytes[i] != Rpc.ColonCode || finalPart) {
+        while (bytes[i] != Rpc.Companion.ColonCode || finalPart) {
             i++
             if (i >= bytes.size) {
                 if (finalPart) break
