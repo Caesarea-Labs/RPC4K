@@ -106,6 +106,8 @@ kotlin {
     explicitApi()
     targetHierarchy.default()
     jvm()
+//    wasmJs()
+//    iosArm64()
     androidTarget {
         publishLibraryVariants("release")
         compilations.all {
@@ -116,6 +118,11 @@ kotlin {
     }
 
     sourceSets {
+//        val jvmTest by getting {
+//            dependencies {
+//                implementation ("org.junit.jupiter:junit-jupiter-api:5.8.1")
+//            }
+//        }
         val commonMain by getting {
             dependencies {
                 implementation(libs.symbol.processing.api)

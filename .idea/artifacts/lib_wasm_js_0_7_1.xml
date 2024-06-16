@@ -1,0 +1,6 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="lib-wasm-js-0.7.1">
+    <output-path>$PROJECT_DIR$/kotlin/lib/build/libs</output-path>
+    <root id="archive" name="lib-wasm-js-0.7.1.jar" />
+  </artifact>
+</component>

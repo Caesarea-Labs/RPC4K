@@ -10,7 +10,7 @@
       </option>
       <option name="taskNames">
         <list>
-          <option value="test" />
+          <option value="jvmTest" />
           <option value="--tests" />
           <option value="com.caesarealabs.rpc4k.test.*" />
         </list>

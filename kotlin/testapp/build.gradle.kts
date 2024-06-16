@@ -1,3 +1,5 @@
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+
 buildscript {
     // Sets up the plugin with local paths
     System.setProperty("rpc4k.dev", "true")
@@ -53,13 +55,26 @@ kotlin {
     }
 }
 
+tasks.withType<Test> {
+    useJUnitPlatform()
+}
+
+//tasks.withType<KotlinCompile> {
+//    if(name != "kspCommonMainKotlinMetadata") {
+//        dependsOn("kspCommonMainKotlinMetadata")
+//    }
+//}
+
 dependencies {
     add("kspJvm", project(":lib"))
     add("kspJvmTest", project(":lib"))
+    add("kspCommonMainMetadata", project(":lib"))
+//    add("kspJvmTest", project(":lib"))
 }
 
 //TODO: Road to Getting RPC4K to Multiplatform:
-// 1. Resolve test failing (I think it failed before, I just didn't run it)
-// 2. Adapt Gradle Plugin to KMP
+// 1. Split lib into lib + processor so we can properly declare all platforms for the lib
+// 1.5. Add another target to the testApp so that kspCommonMainKotlinMetadata exists, and then make it run
+// 2. Adapt Gradle Plugin to KMP (in config, allow choosing which platform to apply RPC on, default commonMain)
 // 3. Properly set up publishing for KMP
 // 4. Test on non-jvm app

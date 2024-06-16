@@ -57,6 +57,11 @@ class AllEncompassingTest {
         val simpleExtension = SimpleProtocol.rpc4k.junit { SimpleProtocol() }
     }
 
+//    @Befo
+//    fun foo() {
+//
+//    }
+
     @Test
     fun testEvents(): Unit = runBlocking {
         val api = allEncompassingExtension.server
@@ -64,7 +69,7 @@ class AllEncompassingTest {
         var actualMessage: String? = null
 
 
-        val webSocket = OkHttpClient().newWebSocket(Request("http://localhost:8080/events".toHttpUrl()), object : WebSocketListener() {
+        val webSocket = OkHttpClient().newWebSocket(Request("http://localhost:${allEncompassingExtension.port}/events".toHttpUrl()), object : WebSocketListener() {
             override fun onMessage(webSocket: WebSocket, bytes: ByteString) {
                 println("Got message: ${bytes.string(Charset.defaultCharset())}")
             }

@@ -10,7 +10,7 @@
       </option>
       <option name="taskNames">
         <list>
-          <option value=":testapp:test" />
+          <option value=":testapp:jvmTest" />
           <option value="--tests" />
           <option value="&quot;com.caesarealabs.rpc4k.testserver.TestServers.allEncompassingService&quot;" />
         </list>

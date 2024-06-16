@@ -31,7 +31,7 @@ public fun <S, C, I> Rpc4kIndex<S, C, I>.junit(
     val serverConfig = ServerConfig(router, config)
     val suite = Rpc4kSuiteImpl(config.handler, createNetworkClient(clientSetup, format), /*createMemoryClient(config.handler),*/ config.invoker)
     val engine = server.create(serverConfig)
-    return ClientServerExtension(engine, suite)
+    return ClientServerExtension(engine, port, suite)
 }
 
 public interface Rpc4kSuite<Server, Client, Invoker> {
@@ -48,6 +48,7 @@ public data class Rpc4kSuiteImpl<S, C, I>(override val server: S, override val n
 
 public class ClientServerExtension<S, C, I> internal constructor(
     private val engine: RpcServerEngine.MultiCall.Instance,
+    public val port: Int,
     suite: Rpc4kSuite<S, C, I>
 ) : Extension, BeforeAllCallback,
     AfterAllCallback {

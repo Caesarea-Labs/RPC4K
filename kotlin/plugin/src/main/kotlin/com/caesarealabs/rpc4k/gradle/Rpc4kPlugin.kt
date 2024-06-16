@@ -4,7 +4,6 @@ import com.github.gradle.node.npm.task.NpxTask
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.kotlin.dsl.create
-import org.gradle.kotlin.dsl.dependencies
 import org.gradle.kotlin.dsl.get
 import org.gradle.kotlin.dsl.getByType
 import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
@@ -27,7 +26,7 @@ class Rpc4KPlugin : Plugin<Project> {
         val artifact = if (dev) project(":lib") else "com.caesarealabs:rpc4k:${getRpc4kVersion()}"
         val extension = extensions.create<Rpc4kExtension>("rpc4k")
 
-        if(plugins.hasPlugin("org.jetbrains.kotlin.jvm")) {
+        if (plugins.hasPlugin("org.jetbrains.kotlin.jvm")) {
             // Kotlin-JVM logic
             // Depend on runtime
             dependencies.add("implementation", artifact)
@@ -68,7 +67,8 @@ class Rpc4KPlugin : Plugin<Project> {
                     }
                 }
             }
-        }  else if(plugins.hasPlugin("org.jetbrains.kotlin.multiplatform")){
+        } else if (plugins.hasPlugin("org.jetbrains.kotlin.multiplatform")) {
+            // For KMP,
             val kmp = extensions.getByType<KotlinMultiplatformExtension>()
             kmp.sourceSets["commonMain"].dependencies {
                 println("Dep: $artifact")
@@ -82,6 +82,8 @@ class Rpc4KPlugin : Plugin<Project> {
 
 
     }
+
+//    private fun Project.
 }
 
 
@@ -96,6 +98,9 @@ open class Rpc4kExtension {
             require(toPath(value) != null) { "typescriptDir value $value is not a file path" }
             field = value
         }
+
+
+//    var
 
 }
 
