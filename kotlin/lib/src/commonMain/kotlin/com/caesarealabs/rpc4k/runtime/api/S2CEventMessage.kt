@@ -2,14 +2,13 @@
 package com.caesarealabs.rpc4k.runtime.api
 
 import com.caesarealabs.rpc4k.runtime.implementation.fastConcat
+import io.ktor.utils.io.core.*
 
 internal sealed interface S2CEventMessage {
     data class Emitted(val listenerId: String, val payload: ByteArray) : S2CEventMessage {
         override fun equals(other: Any?): Boolean {
             if (this === other) return true
-            if (javaClass != other?.javaClass) return false
-
-            other as Emitted
+            if (other !is Emitted) return false
 
             if (listenerId != other.listenerId) return false
             if (!payload.contentEquals(other.payload)) return false

@@ -5,8 +5,8 @@ import kotlinx.serialization.KSerializer
 import kotlinx.serialization.modules.SerializersModule
 import kotlin.reflect.KClass
 
-
-internal val Rpc4kSerializers: List<Rpc4kSerializer<*>> = Rpc4kSerializersModuleBuilder().apply {
+// Used for the processor only
+public val Rpc4kSerializers: List<Rpc4kSerializer<*>> = Rpc4kSerializersModuleBuilder().apply {
     obj(VoidUnitSerializer)
     obj(UUIDSerializer)
     obj(InstantIsoSerializer)
@@ -47,7 +47,7 @@ private class Rpc4kSerializersModuleBuilder {
     }
 
     inline fun <reified T : Any, reified O : KSerializer<T>> obj(instance: O) {
-        serializers.add(Rpc4kSerializer.Object(O::class.kotlinName, ContextualProvider.Argless(instance), T::class))
+        serializers.add(Rpc4kSerializer.Object(KotlinClassName.ofKClass(O::class), ContextualProvider.Argless(instance), T::class))
     }
 
 //    @PublishedApi
@@ -73,31 +73,29 @@ private class Rpc4kSerializersModuleBuilder {
 private fun <T : Any> Rpc4kSerializersModuleBuilder.builtinSerializerMethod(
     clazz: KClass<T>,
     name: String, provider: (typeArgumentsSerializers: List<KSerializer<*>>) -> KSerializer<*>
-) = method(clazz, name, "${GeneratedCodeUtils.Group}.rpc4k.runtime.implementation.serializers", provider)
+) = method(clazz, name, "com.caesarealabs.rpc4k.runtime.implementation.serializers", provider)
 
 
-@PublishedApi
-internal sealed interface Rpc4kSerializer<T : Any> {
+public sealed interface Rpc4kSerializer<T : Any> {
 
-    val name: KotlinName
-    val provider: ContextualProvider
-    val kClass: KClass<T>
+    public val name: KotlinName
+    public val provider: ContextualProvider
+    public val kClass: KClass<T>
 
-    data class Function<T : Any>(
+    public data class Function<T : Any>(
         override val name: KotlinMethodName,
         override val provider: ContextualProvider,
         override val kClass: KClass<T>
     ) : Rpc4kSerializer<T>
 
-    data class Object<T : Any>(
+    public data class Object<T : Any>(
         override val name: KotlinClassName,
         override val provider: ContextualProvider.Argless,
         override val kClass: KClass<T>
     ) : Rpc4kSerializer<T>
 }
 
-@PublishedApi
-internal sealed interface ContextualProvider {
-    class Argless(val serializer: KSerializer<*>) : ContextualProvider
-    class WithTypeArguments(val provider: (typeArgumentsSerializers: List<KSerializer<*>>) -> KSerializer<*>) : ContextualProvider
+public sealed interface ContextualProvider {
+    public class Argless(internal val serializer: KSerializer<*>) : ContextualProvider
+    public class WithTypeArguments(internal val provider: (typeArgumentsSerializers: List<KSerializer<*>>) -> KSerializer<*>) : ContextualProvider
 }

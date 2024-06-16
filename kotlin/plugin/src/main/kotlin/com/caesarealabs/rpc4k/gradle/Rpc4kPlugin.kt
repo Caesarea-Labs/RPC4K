@@ -23,15 +23,16 @@ class Rpc4KPlugin : Plugin<Project> {
 //        System.setProperty("rpc4k.dev", "true") is invoke in the dev project to know when to use local paths
         val dev = System.getProperty("rpc4k.dev") == "true"
 
-        val artifact = if (dev) project(":lib") else "com.caesarealabs:rpc4k:${getRpc4kVersion()}"
+        val lib = if (dev) project(":lib") else "com.caesarealabs:rpc4k:${getRpc4kVersion()}"
+        val processor = if(dev) project(":processor") else TODO() //TODO: This should be the maven coordinate of the processor
         val extension = extensions.create<Rpc4kExtension>("rpc4k")
 
         if (plugins.hasPlugin("org.jetbrains.kotlin.jvm")) {
             // Kotlin-JVM logic
             // Depend on runtime
-            dependencies.add("implementation", artifact)
+            dependencies.add("implementation", lib)
             // Apply KSP processor
-            dependencies.add("ksp", artifact)
+            dependencies.add("ksp", processor)
 
 
 
@@ -71,9 +72,7 @@ class Rpc4KPlugin : Plugin<Project> {
             // For KMP,
             val kmp = extensions.getByType<KotlinMultiplatformExtension>()
             kmp.sourceSets["commonMain"].dependencies {
-                println("Dep: $artifact")
-                implementation(artifact)
-//                add
+                implementation(lib)
             }
             println("TODO: Setup KMP")
         } else {

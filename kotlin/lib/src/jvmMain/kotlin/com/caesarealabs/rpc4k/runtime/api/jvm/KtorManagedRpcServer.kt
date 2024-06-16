@@ -1,4 +1,4 @@
-package com.caesarealabs.rpc4k.runtime.api.components
+package com.caesarealabs.rpc4k.runtime.api.jvm
 
 import com.caesarealabs.rpc4k.runtime.api.EventConnection
 import com.caesarealabs.rpc4k.runtime.api.RpcServerEngine

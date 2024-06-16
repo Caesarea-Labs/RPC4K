@@ -1,6 +1,7 @@
 package com.caesarealabs.rpc4k.processor
 
 import com.caesarealabs.rpc4k.processor.utils.appendIf
+import com.caesarealabs.rpc4k.processor.utils.poet.kotlinPoet
 import com.caesarealabs.rpc4k.runtime.user.Dispatch
 import com.caesarealabs.rpc4k.runtime.user.EventTarget
 import com.caesarealabs.rpc4k.runtime.implementation.*
@@ -190,7 +191,7 @@ internal data class RpcType(
 }
 
 
-internal const val GeneratedModelsPackage = "${GeneratedCodeUtils.Package}.models"
+internal const val GeneratedModelsPackage = "${ApiDefinitionUtils.Package}.models"
 
 
 /**

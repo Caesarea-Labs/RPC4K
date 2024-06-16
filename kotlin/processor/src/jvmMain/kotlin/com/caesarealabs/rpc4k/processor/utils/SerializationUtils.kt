@@ -6,7 +6,6 @@ import com.google.devtools.ksp.symbol.KSType
 import com.caesarealabs.rpc4k.processor.KotlinTypeReference
 import com.caesarealabs.rpc4k.runtime.implementation.KotlinClassName
 import com.caesarealabs.rpc4k.runtime.implementation.KotlinMethodName
-import com.caesarealabs.rpc4k.runtime.implementation.kotlinName
 import com.caesarealabs.rpc4k.runtime.implementation.serializers.Rpc4kSerializer
 import com.caesarealabs.rpc4k.runtime.implementation.serializers.Rpc4kSerializers
 import kotlinx.serialization.Serializable
@@ -56,7 +55,7 @@ private fun KSType.isAnnotatedBySerializable() =
 internal fun KSType.isBuiltinSerializableType() = declaration.qualifiedName?.asString() in builtinSerializableClasses
 
 private val rpc4kSerializerMap = Rpc4kSerializers.associateBy {
-    it.kClass.kotlinName
+    KotlinClassName.ofKClass(it.kClass)
 }
 
 internal fun KotlinTypeReference.getKSerializer(): KotlinSerializer {
@@ -110,7 +109,7 @@ private val classesWithSeparateKxsBuiltinSerializerMethod: Set<KotlinClassName> 
     List::class, Set::class, Map::class,
     ByteArray::class, ShortArray::class, IntArray::class, LongArray::class, CharArray::class,
     Array::class, UByteArray::class, UShortArray::class, UIntArray::class, ULongArray::class
-).map { it.kotlinName }.toHashSet() +
+).map { KotlinClassName.ofKClass(it) }.toHashSet() +
         listOf(KotlinClassName.MutableMap, KotlinClassName.MutableList, KotlinClassName.MutableSet)
 
 private val serializableClassName = Serializable::class.qualifiedName

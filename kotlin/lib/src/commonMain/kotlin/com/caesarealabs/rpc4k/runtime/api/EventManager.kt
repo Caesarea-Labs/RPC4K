@@ -1,7 +1,10 @@
 package com.caesarealabs.rpc4k.runtime.api
 
+import kotlin.jvm.JvmInline
 
-@JvmInline public value class EventConnection (
+
+@JvmInline
+public value class EventConnection (
     public val id: String
 //    public suspend fun send(bytes: ByteArray)
 )

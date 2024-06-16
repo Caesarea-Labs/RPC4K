@@ -7,7 +7,6 @@ import com.caesarealabs.rpc4k.runtime.api.HandlerConfig
 import com.caesarealabs.rpc4k.runtime.user.Rpc4kIndex
 import com.caesarealabs.rpc4k.runtime.api.RpcRouter
 import com.caesarealabs.rpc4k.runtime.implementation.GeneratedCodeUtils
-import com.caesarealabs.rpc4k.runtime.implementation.kotlinPoet
 import com.squareup.kotlinpoet.*
 import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy
 
@@ -72,15 +71,15 @@ internal class ApiDefinitionToServerCode(private val api: RpcApi) {
     }
 
     private val invokerName = "${api.name.simple}$InvokerSuffix"
-    private val invokerClassName = ClassName(GeneratedCodeUtils.Package, invokerName)
-    private val routerName = "${api.name.simple}${GeneratedCodeUtils.ServerSuffix}"
-    private val routerClassName = ClassName(GeneratedCodeUtils.Package, routerName)
-    private val clientClassName = ClassName(GeneratedCodeUtils.Package, api.name.simple + GeneratedCodeUtils.ClientSuffix)
+    private val invokerClassName = ClassName(ApiDefinitionUtils.Package, invokerName)
+    private val routerName = "${api.name.simple}${ApiDefinitionUtils.ServerSuffix}"
+    private val routerClassName = ClassName(ApiDefinitionUtils.Package, routerName)
+    private val clientClassName = ClassName(ApiDefinitionUtils.Package, api.name.simple + ApiDefinitionUtils.ClientSuffix)
     private val serverClassName = api.name.kotlinPoet
     private val handlerConfig = HandlerConfig::class.asClassName().parameterizedBy(serverClassName)
 
     fun convert(): FileSpec {
-        return fileSpec(GeneratedCodeUtils.Package, routerName) {
+        return fileSpec(ApiDefinitionUtils.Package, routerName) {
             // I know what I'm doing, Kotlin!
             addAnnotation(AnnotationSpec.builder(Suppress::class).addMember("%S", "UNCHECKED_CAST").build())
             ignoreExperimentalWarnings()

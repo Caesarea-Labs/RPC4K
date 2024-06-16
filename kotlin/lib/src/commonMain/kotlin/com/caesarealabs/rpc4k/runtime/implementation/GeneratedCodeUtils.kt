@@ -12,20 +12,6 @@ import java.util.*
  */
 //TODO: consider making the C2S functions be in a instance method, this would allow storing the format and client and reduce codegen.
 public object GeneratedCodeUtils {
-    @PublishedApi
-    internal const val FactoryName: String = "Factory"
-
-    @PublishedApi
-    internal const val ClientSuffix: String = "Client"
-
-    @PublishedApi
-    internal const val ServerSuffix: String = "Router"
-
-    @PublishedApi
-    internal const val Group: String = "com.caesarealabs"
-
-    @PublishedApi
-    internal const val Package: String = "${Group}.rpc4k.generated"
 
 
     /**

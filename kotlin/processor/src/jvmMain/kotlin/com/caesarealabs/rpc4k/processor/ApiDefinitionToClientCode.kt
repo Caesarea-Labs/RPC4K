@@ -6,7 +6,6 @@ import com.caesarealabs.rpc4k.runtime.api.GeneratedClientImplFactory
 import com.caesarealabs.rpc4k.runtime.api.RpcClient
 import com.caesarealabs.rpc4k.runtime.api.SerializationFormat
 import com.caesarealabs.rpc4k.runtime.implementation.GeneratedCodeUtils
-import com.caesarealabs.rpc4k.runtime.implementation.kotlinPoet
 import com.squareup.kotlinpoet.*
 import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy
 import kotlinx.coroutines.flow.Flow
@@ -59,8 +58,8 @@ internal object ApiDefinitionToClientCode {
      * extend the user class. We need to know if the user class is an interface or not to properly extend/implement it.
      */
     fun convert(apiDefinition: RpcApi): FileSpec {
-        val className = "${apiDefinition.name.simple}${GeneratedCodeUtils.ClientSuffix}"
-        return fileSpec(GeneratedCodeUtils.Package, className) {
+        val className = "${apiDefinition.name.simple}${ApiDefinitionUtils.ClientSuffix}"
+        return fileSpec(ApiDefinitionUtils.Package, className) {
             // KotlinPoet doesn't handle extension methods well
             addImport("kotlinx.serialization.builtins", "serializer")
             addImport("kotlinx.serialization.builtins", "nullable")
@@ -94,8 +93,8 @@ internal object ApiDefinitionToClientCode {
      *     }
      * ```
      */
-    private fun factoryCompanionObject(generatedClassName: String) = companionObject(GeneratedCodeUtils.FactoryName) {
-        val generatedClientClass = ClassName(GeneratedCodeUtils.Package,generatedClassName)
+    private fun factoryCompanionObject(generatedClassName: String) = companionObject(ApiDefinitionUtils.FactoryName) {
+        val generatedClientClass = ClassName(ApiDefinitionUtils.Package,generatedClassName)
         addSuperinterface(GeneratedClientImplFactory::class.asClassName().parameterizedBy(generatedClientClass))
         addFunction("build") {
             addModifiers(KModifier.OVERRIDE)

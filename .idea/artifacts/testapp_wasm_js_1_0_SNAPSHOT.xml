@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="testapp-wasm-js-1.0-SNAPSHOT">
+    <output-path>$PROJECT_DIR$/kotlin/testapp/build/libs</output-path>
+    <root id="archive" name="testapp-wasm-js-1.0-SNAPSHOT.jar">
+      <element id="module-output" name="RPC4K.testapp.wasmJsMain" />
+    </root>
+  </artifact>
+</component>

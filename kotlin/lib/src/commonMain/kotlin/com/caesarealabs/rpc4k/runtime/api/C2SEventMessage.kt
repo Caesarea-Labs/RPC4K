@@ -1,6 +1,7 @@
 package com.caesarealabs.rpc4k.runtime.api
 
 import com.caesarealabs.rpc4k.runtime.implementation.fastConcat
+import io.ktor.utils.io.core.*
 
 public sealed interface C2SEventMessage {
     public data class Subscribe(

@@ -2,6 +2,8 @@ package com.caesarealabs.rpc4k.runtime.api
 
 import com.caesarealabs.rpc4k.runtime.implementation.fastConcat
 import com.caesarealabs.rpc4k.runtime.implementation.serializers.TupleSerializer
+import io.ktor.utils.io.charsets.*
+import io.ktor.utils.io.core.*
 import kotlinx.serialization.KSerializer
 
 
@@ -10,7 +12,7 @@ import kotlinx.serialization.KSerializer
  */
 public data class Rpc(val method: String, val arguments: List<*>) {
     internal companion object {
-        private val Encoding = Charsets.UTF_8
+//        private val Encoding = Charsets.UTF_8
 
         fun fromByteArray(bytes: ByteArray, format: SerializationFormat, argDeserializers: List<KSerializer<*>>): Rpc {
             val (method, readBytes) = readMethodName(bytes)
@@ -41,7 +43,7 @@ public data class Rpc(val method: String, val arguments: List<*>) {
             } while (currentByte != ColonCode)
 
             // Exclude colon itself
-            return bytes.copyOfRange(0, pos - 1).toString(Encoding) to pos
+            return bytes.copyOfRange(0, pos - 1).decodeToString() to pos
         }
     }
 
@@ -58,7 +60,7 @@ public data class Rpc(val method: String, val arguments: List<*>) {
      * See docs/rpc_format.png
      */
     public fun toByteArray(format: SerializationFormat, serializers: List<KSerializer<*>>): ByteArray {
-        return method.toByteArray(Encoding).fastConcat(ColonCode, format.encode(TupleSerializer(serializers), arguments))
+        return method.encodeToByteArray().fastConcat(ColonCode, format.encode(TupleSerializer(serializers), arguments))
     }
 
 }

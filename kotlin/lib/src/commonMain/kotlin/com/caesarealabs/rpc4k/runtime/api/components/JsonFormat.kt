@@ -22,13 +22,12 @@ public class JsonFormat(config: JsonBuilder.() -> Unit = {}) : SerializationForm
         serializersModule = Rpc4kSerializersModule + serializersModule
     }
 
-    private val encoding = Charsets.UTF_8
 
     override fun <T> encode(serializer: SerializationStrategy<T>, value: T): ByteArray {
-        return json.encodeToString(serializer, value).toByteArray(encoding)
+        return json.encodeToString(serializer, value).encodeToByteArray()
     }
 
     override fun <T> decode(serializer: DeserializationStrategy<T>, raw: ByteArray): T {
-        return json.decodeFromString(serializer, raw.toString(encoding))
+        return json.decodeFromString(serializer, raw.decodeToString())
     }
 }

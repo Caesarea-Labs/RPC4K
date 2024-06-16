@@ -5,7 +5,6 @@ import com.squareup.kotlinpoet.MemberName
 import com.caesarealabs.rpc4k.processor.KotlinTypeReference
 import com.caesarealabs.rpc4k.processor.utils.KotlinSerializer
 import com.caesarealabs.rpc4k.processor.utils.getKSerializer
-import com.caesarealabs.rpc4k.runtime.implementation.kotlinPoet
 
 /**
  * Represents a string like `"%T.serializer()"` formatted with a value like `Int`.

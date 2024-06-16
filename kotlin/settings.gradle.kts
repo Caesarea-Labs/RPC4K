@@ -12,5 +12,9 @@ plugins {
 
 rootProject.name = "RPC4K"
 include(":testapp")
+// Multiplatform, exposed to runtime users of RPC4K
 include(":lib")
+// JVM Targeted, runs during kotlin Compilation
+include(":processor")
+// JVM Targeted, runs as part of the Gradle script to pull in RPC libraries and such
 includeBuild("plugin")

@@ -36,6 +36,7 @@ version = "1.0-SNAPSHOT"
 
 kotlin {
     jvm()
+    wasmJs()
     sourceSets {
         val jvmMain by getting {
             dependencies {
@@ -59,22 +60,22 @@ tasks.withType<Test> {
     useJUnitPlatform()
 }
 
-//tasks.withType<KotlinCompile> {
-//    if(name != "kspCommonMainKotlinMetadata") {
-//        dependsOn("kspCommonMainKotlinMetadata")
-//    }
-//}
+tasks.withType<KotlinCompile> {
+    if(name != "kspCommonMainKotlinMetadata") {
+        dependsOn("kspCommonMainKotlinMetadata")
+    }
+}
 
 dependencies {
-    add("kspJvm", project(":lib"))
-    add("kspJvmTest", project(":lib"))
-    add("kspCommonMainMetadata", project(":lib"))
+    add("kspJvm", project(":processor"))
+    add("kspJvmTest", project(":processor"))
+    add("kspCommonMainMetadata", project(":processor"))
 //    add("kspJvmTest", project(":lib"))
 }
 
 //TODO: Road to Getting RPC4K to Multiplatform:
-// 1. Split lib into lib + processor so we can properly declare all platforms for the lib
-// 1.5. Add another target to the testApp so that kspCommonMainKotlinMetadata exists, and then make it run
+// 1. Commonize neccesary code (we gonna need a multiplatform server impl), split out into JVM the JVM specific parts
+// 1.5. See if kspCommonMainKotlinMetadata runs and generates common code
 // 2. Adapt Gradle Plugin to KMP (in config, allow choosing which platform to apply RPC on, default commonMain)
 // 3. Properly set up publishing for KMP
 // 4. Test on non-jvm app

@@ -9,6 +9,17 @@ import com.squareup.kotlinpoet.FileSpec
 import com.squareup.kotlinpoet.MemberName
 
 internal object ApiDefinitionUtils {
+     const val FactoryName: String = "Factory"
+
+     const val ClientSuffix: String = "Client"
+
+     const val ServerSuffix: String = "Router"
+
+     const val Group: String = "com.caesarealabs"
+
+     const val Package: String = "${Group}.rpc4k.generated"
+
+
     val listOfFunction = MemberName("kotlin.collections", "listOf")
     // Kotlin doesn't let us reference these annotations directly sadly so we need to resort to strings
     private val experimentalUnsignedTypes = ClassName("kotlin", "ExperimentalUnsignedTypes")
