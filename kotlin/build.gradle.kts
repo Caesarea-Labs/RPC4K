@@ -11,19 +11,6 @@ allprojects {
         google()
     }
 }
-//allprojects {
-//    apply(plugin = "org.jetbrains.kotlin.jvm")
-//    apply(plugin = "org.jetbrains.kotlin.plugin.serialization")
-//    repositories {
-//        mavenCentral()
-//        google()
-//    }
-//
-//    kotlin {
-//        jvmToolchain(17)
-//        compilerOptions.freeCompilerArgs.add("-Xcontext-receivers")
-//    }
-//}
 
 
 nexusPublishing {
