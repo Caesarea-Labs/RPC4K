@@ -6,7 +6,9 @@ import org.gradle.api.Project
 import org.gradle.kotlin.dsl.create
 import org.gradle.kotlin.dsl.get
 import org.gradle.kotlin.dsl.getByType
+import org.gradle.kotlin.dsl.withType
 import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 import java.io.File
 import java.nio.file.Path
 import java.nio.file.Paths
@@ -20,69 +22,85 @@ class Rpc4KPlugin : Plugin<Project> {
     override fun apply(project: Project): Unit = with(project) {
         plugins.apply("com.google.devtools.ksp")
 
-//        System.setProperty("rpc4k.dev", "true") is invoke in the dev project to know when to use local paths
+//        System.setProperty("rpc4k.dev", "true") is invoked in the dev project to know when to use local paths
+        // This is a system property instead of an extension configuration because we need this information EARLY.
         val dev = System.getProperty("rpc4k.dev") == "true"
+        // TODO: write big and large comment about jvm source set not working in multiplatform and delete the forceJvm stuff
 
-        val lib = if (dev) project(":lib") else "com.caesarealabs:rpc4k:${getRpc4kVersion()}"
-        val processor = if(dev) project(":processor") else TODO() //TODO: This should be the maven coordinate of the processor
+        val lib = if (dev) project(":lib") else "com.caesarealabs:rpc4k-runtime:${getRpc4kVersion()}"
+        val processor = if (dev) project(":processor") else "com.caesarealabs:rpc4k-processor:${getRpc4kVersion()}"
         val extension = extensions.create<Rpc4kExtension>("rpc4k")
+        val jvm = plugins.hasPlugin("org.jetbrains.kotlin.jvm")
 
-        if (plugins.hasPlugin("org.jetbrains.kotlin.jvm")) {
+        if (jvm) {
             // Kotlin-JVM logic
             // Depend on runtime
             dependencies.add("implementation", lib)
             // Apply KSP processor
             dependencies.add("ksp", processor)
 
-
-
-            afterEvaluate {
-                if (extension.typescriptDir != null) {
-                    plugins.apply("com.github.node-gradle.node")
-
-                    tasks.create<NpxTask>("generateTypescriptClient") {
-                        dependsOn("kspKotlin")
-                        tasks["classes"].dependsOn(this)
-
-                        // NiceToHave: support multiple source sets
-                        val jsonPath = project.layout.buildDirectory.dir("generated/ksp/main/resources/rpc4k").get().asFile.absolutePath
-                        val resultPath = toPath(extension.typescriptDir)!!.absolutePathString()
-                        inputs.dir(jsonPath)
-                        outputs.dir(resultPath)
-                        inputs.properties(mapOf("dev" to dev, "typescriptDir" to extension.typescriptDir))
-
-                        val rpc4tsArgs = mutableListOf("-i$jsonPath", "-o$resultPath")
-                        if (dev) rpc4tsArgs.add("-d")
-
-                        if (dev) {
-                            command.set("ts-node")
-                            val projectRoot = project.rootDir.parentFile.resolve(DevGeneratorDir)
-                            inputs.dir(projectRoot)
-                            val generatorPath = projectRoot.resolve(DevGeneratorMain).absolutePath
-                            println("Running $rpc4tsArgs")
-                            args.set(listOf(generatorPath) + rpc4tsArgs)
-                        } else {
-                            command.set("rpc4ts-gen")
-                            args.set(rpc4tsArgs)
-                        }
-                    }
+        } else if (plugins.hasPlugin("org.jetbrains.kotlin.multiplatform")) {
+            println("RPC4K will be applied to commonMain ONLY!")
+            val kmp = extensions.getByType<KotlinMultiplatformExtension>()
+            // KSP doesn't know to detect this by itself
+            kmp.sourceSets.named("commonMain").configure {
+                kotlin.srcDir("build/generated/ksp/metadata/commonMain/kotlin")
+            }
+            // KSP doesn't know to make this task run by itself
+            tasks.withType<KotlinCompile> {
+                if (name != "kspCommonMainKotlinMetadata") {
+                    dependsOn("kspCommonMainKotlinMetadata")
                 }
             }
-        } else if (plugins.hasPlugin("org.jetbrains.kotlin.multiplatform")) {
-            // For KMP,
-            val kmp = extensions.getByType<KotlinMultiplatformExtension>()
+
+            dependencies.add("kspCommonMainMetadata", processor)
+
             kmp.sourceSets["commonMain"].dependencies {
                 implementation(lib)
             }
-            println("TODO: Setup KMP")
         } else {
             throw IllegalStateException("No Kotlin plugin detected, make sure to apply it before RPC4K. ")
+        }
+
+        afterEvaluate {
+            val generatedSourcesPath = if (jvm) "main" else "metadata/commonMain"
+            val classesTask = if (jvm) "classes" else "metadataMainClasses"
+            val kspTask = if (jvm) "kspKotlin" else "kspCommonMainKotlinMetadata"
+            if (extension.typescriptDir != null) {
+                plugins.apply("com.github.node-gradle.node")
+
+                tasks.create<NpxTask>("generateTypescriptClient") {
+                    dependsOn(kspTask)
+                    tasks[classesTask].dependsOn(this)
+
+                    // NiceToHave: support multiple source sets
+                    val jsonPath = project.layout.buildDirectory.dir("generated/ksp/$generatedSourcesPath/resources/rpc4k").get().asFile.absolutePath
+                    val resultPath = toPath(extension.typescriptDir)!!.absolutePathString()
+                    inputs.dir(jsonPath)
+                    outputs.dir(resultPath)
+                    inputs.properties(mapOf("dev" to dev, "typescriptDir" to extension.typescriptDir))
+
+                    val rpc4tsArgs = mutableListOf("-i$jsonPath", "-o$resultPath")
+                    if (dev) rpc4tsArgs.add("-d")
+
+                    if (dev) {
+                        command.set("ts-node")
+                        val projectRoot = project.rootDir.parentFile.resolve(DevGeneratorDir)
+                        inputs.dir(projectRoot)
+                        val generatorPath = projectRoot.resolve(DevGeneratorMain).absolutePath
+                        println("Running $rpc4tsArgs")
+                        args.set(listOf(generatorPath) + rpc4tsArgs)
+                    } else {
+                        command.set("rpc4ts-gen")
+                        args.set(rpc4tsArgs)
+                    }
+                }
+            }
         }
 
 
     }
 
-//    private fun Project.
 }
 
 
@@ -97,9 +115,6 @@ open class Rpc4kExtension {
             require(toPath(value) != null) { "typescriptDir value $value is not a file path" }
             field = value
         }
-
-
-//    var
 
 }
 

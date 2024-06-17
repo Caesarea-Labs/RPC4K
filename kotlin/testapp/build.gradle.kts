@@ -1,4 +1,3 @@
-import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 buildscript {
     // Sets up the plugin with local paths
@@ -23,20 +22,13 @@ rpc4k {
 
 version = "1.0-SNAPSHOT"
 
-//tasks.test {
-//    useJUnitPlatform()
-//    testLogging {
-//        events("passed", "skipped", "failed")
-//        showStandardStreams = true
-//        showStackTraces = true
-//        showExceptions = true
-//        exceptionFormat = org.gradle.api.tasks.testing.logging.TestExceptionFormat.FULL
-//    }
-//}
 
 kotlin {
     jvm()
-    wasmJs()
+    // Must be added for KSP to work in common
+    wasmJs {
+        browser()
+    }
     sourceSets {
         val jvmMain by getting {
             dependencies {
@@ -60,22 +52,11 @@ tasks.withType<Test> {
     useJUnitPlatform()
 }
 
-tasks.withType<KotlinCompile> {
-    if(name != "kspCommonMainKotlinMetadata") {
-        dependsOn("kspCommonMainKotlinMetadata")
-    }
-}
-
-dependencies {
-    add("kspJvm", project(":processor"))
-    add("kspJvmTest", project(":processor"))
-    add("kspCommonMainMetadata", project(":processor"))
-//    add("kspJvmTest", project(":lib"))
-}
 
 //TODO: Road to Getting RPC4K to Multiplatform:
-// 1. Commonize neccesary code (we gonna need a multiplatform server impl), split out into JVM the JVM specific parts
-// 1.5. See if kspCommonMainKotlinMetadata runs and generates common code
-// 2. Adapt Gradle Plugin to KMP (in config, allow choosing which platform to apply RPC on, default commonMain)
+// 2.5 Implement serializers for common UUID and Instant
+// 2.6 test integration with typescript client
+// 2.7 update POC to multiplatform rpc4k
+// 2.8 run processor tests again (Caesarea should pass)
 // 3. Properly set up publishing for KMP
 // 4. Test on non-jvm app

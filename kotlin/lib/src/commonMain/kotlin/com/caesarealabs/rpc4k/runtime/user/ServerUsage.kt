@@ -6,14 +6,14 @@ import com.caesarealabs.rpc4k.runtime.api.RpcServerEngine
 import com.caesarealabs.rpc4k.runtime.api.SerializationFormat
 import com.caesarealabs.rpc4k.runtime.api.ServerConfig
 import com.caesarealabs.rpc4k.runtime.api.components.JsonFormat
-import com.caesarealabs.rpc4k.runtime.api.components.KtorManagedRpcServer
 import com.caesarealabs.rpc4k.runtime.api.components.MemoryEventManager
 import com.caesarealabs.rpc4k.runtime.api.start
 import com.caesarealabs.rpc4k.runtime.implementation.createHandlerConfig
 
 
 public fun <S, I> Rpc4kIndex<S, *, I>.startDedicatedServer(
-    engine: RpcServerEngine.MultiCall = KtorManagedRpcServer(),
+    //TODO: MP default
+    engine: RpcServerEngine.MultiCall /*= KtorManagedRpcServer()*/,
     format: SerializationFormat = JsonFormat(),
     eventManager: EventManager = MemoryEventManager(),
     wait: Boolean = true,
@@ -26,7 +26,8 @@ public fun <S, I> Rpc4kIndex<S, *, I>.startDedicatedServer(
  * Creates a MultiCall server
  */
 public fun <S, I> Rpc4kIndex<S, *, I>.createDedicatedServer(
-    engine: RpcServerEngine.MultiCall = KtorManagedRpcServer(),
+    //TODO: MP default
+    engine: RpcServerEngine.MultiCall /*= KtorManagedRpcServer()*/,
     format: SerializationFormat = JsonFormat(),
     eventManager: EventManager = MemoryEventManager(),
     service: (I) -> S

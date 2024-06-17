@@ -1,9 +1,17 @@
 package com.caesarealabs.rpc4k.runtime.implementation
 
-import org.slf4j.Logger
-import org.slf4j.LoggerFactory
-
-internal object Rpc4K {
-    @PublishedApi
-    internal val Logger: Logger = LoggerFactory.getLogger("RPC4K")
+//TODO: use loggy
+public object Rpc4kLogger {
+    public fun warn(msg: String, exception: Throwable? = null) {
+        println("WARN: $msg")
+        exception?.printStackTrace()
+    }
+    public fun error(msg: String, exception: Throwable? = null) {
+        println("ERROR: $msg")
+        exception?.printStackTrace()
+    }
+    public fun info(msg: String, exception: Throwable? = null) {
+        println(msg)
+        exception?.printStackTrace()
+    }
 }

@@ -1,7 +1,7 @@
-package com.caesarealabs.rpc4k.runtime.api.components
+package com.caesarealabs.rpc4k.runtime.jvm.api
 
 import com.caesarealabs.rpc4k.runtime.api.*
-import com.caesarealabs.rpc4k.runtime.implementation.Rpc4K
+import com.caesarealabs.rpc4k.runtime.implementation.Rpc4kLogger
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.channels.trySendBlocking
 import kotlinx.coroutines.flow.Flow
@@ -16,10 +16,12 @@ import okio.IOException
 import java.util.concurrent.ConcurrentHashMap
 import kotlin.coroutines.resume
 
+public class OkHttpRpcClientFactory(private val client: OkHttpClient = OkHttpClient()) : RpcClientFactory {
+    override fun build(url: String, websocketUrl: String): RpcClient = OkHttpRpcClient(url, websocketUrl, client)
+}
+
 public class OkHttpRpcClient(
     private val url: String, private val websocketUrl: String,
-
-//                             private val client: OkHttpClient = OkHttpClient.Builder().readTimeout(Duration.ofSeconds(20)).build()) :
     private val client: OkHttpClient = OkHttpClient()
 ) :
     RpcClient {
@@ -64,7 +66,7 @@ private class OkHttpWebsocketEventClient(url: String, client: OkHttpClient) : Ev
                         if (listener != null) {
                             listener(parsed.payload)
                         } else {
-                            Rpc4K.Logger.warn("Could not find listener for id '${parsed.listenerId}', the subscription may still open on the server")
+                            Rpc4kLogger.warn("Could not find listener for id '${parsed.listenerId}', the subscription may still open on the server")
                         }
                     }
 

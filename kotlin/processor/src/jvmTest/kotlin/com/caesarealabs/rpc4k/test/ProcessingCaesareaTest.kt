@@ -7,6 +7,8 @@ import com.tschuchort.compiletesting.SourceFile
 import com.tschuchort.compiletesting.symbolProcessorProviders
 import com.caesarealabs.rpc4k.processor.Rpc4kProcessorProvider
 import org.jetbrains.kotlin.compiler.plugin.ExperimentalCompilerApi
+import strikt.api.expectThat
+import strikt.assertions.isNotEmpty
 import java.io.File
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -16,10 +18,13 @@ class ProcessingCaesareaTest {
 
     @Test
     fun `Process CaesareaPoC`() {
-        val testSources = File("../../../work/CaesareaPoC/server/src").walkBottomUp()
+        println("path: " + System.getProperty("user.dir"))
+        val testSources = File("../../../poc/server/src").walkBottomUp()
             .filter { it.isFile && it.extension == "kt" }
             .map { SourceFile.fromPath(it) }
             .toList()
+
+        expectThat(testSources).isNotEmpty()
 
         val result = KotlinCompilation().apply {
             sources = testSources

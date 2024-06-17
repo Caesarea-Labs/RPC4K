@@ -1,15 +1,13 @@
-package com.caesarealabs.rpc4k.runtime.user.testing
+package com.caesarealabs.rpc4k.runtime.jvm.user.testing
 
 import com.caesarealabs.rpc4k.runtime.api.*
 import com.caesarealabs.rpc4k.runtime.api.components.JsonFormat
-import com.caesarealabs.rpc4k.runtime.api.components.KtorManagedRpcServer
 import com.caesarealabs.rpc4k.runtime.api.components.MemoryEventManager
-import com.caesarealabs.rpc4k.runtime.api.components.OkHttpRpcClient
-import com.caesarealabs.rpc4k.runtime.implementation.PortPool
+import com.caesarealabs.rpc4k.runtime.jvm.api.PortPool
 import com.caesarealabs.rpc4k.runtime.implementation.createHandlerConfig
+import com.caesarealabs.rpc4k.runtime.jvm.api.KtorManagedRpcServer
+import com.caesarealabs.rpc4k.runtime.jvm.api.OkHttpRpcClientFactory
 import com.caesarealabs.rpc4k.runtime.user.Rpc4kIndex
-import io.ktor.utils.io.core.*
-import okhttp3.OkHttpClient
 import org.junit.jupiter.api.extension.AfterAllCallback
 import org.junit.jupiter.api.extension.BeforeAllCallback
 import org.junit.jupiter.api.extension.Extension
@@ -20,7 +18,7 @@ public fun <S, C, I> Rpc4kIndex<S, C, I>.junit(
     port: Int = PortPool.get(),
     format: SerializationFormat = JsonFormat(),
     server: RpcServerEngine.MultiCall = KtorManagedRpcServer(port = port),
-    client: RpcClientFactory = RpcClientFactory.OkHttp(),
+    client: RpcClientFactory = OkHttpRpcClientFactory(),
     eventManager: EventManager = MemoryEventManager(),
     serverFactory: (I) -> S,
 ): ClientServerExtension<S, C, I> {
@@ -67,16 +65,3 @@ public class ClientServerExtension<S, C, I> internal constructor(
 }
 
 
-//TODO: this can probably be simplified
-/**
- * Something that creates a [RpcClient], generally there's one [RpcClientFactory] per [RpcClient]
- * This interface is useful because it's often easier to specify a [RpcClient] than an instance of a [ServerExtension] because [ServerExtension]
- * often have many parameters.
- */
-public interface RpcClientFactory {
-    public fun build(url: String, websocketUrl: String): RpcClient
-
-    public class OkHttp(private val client: OkHttpClient = OkHttpClient()) : RpcClientFactory {
-        override fun build(url: String, websocketUrl: String): RpcClient = OkHttpRpcClient(url, websocketUrl, client)
-    }
-}

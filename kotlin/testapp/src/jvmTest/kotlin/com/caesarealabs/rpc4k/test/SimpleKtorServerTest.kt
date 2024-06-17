@@ -2,7 +2,7 @@ package com.caesarealabs.rpc4k.test
 
 import com.caesarealabs.rpc4k.generated.SimpleProtocolEventInvoker
 import com.caesarealabs.rpc4k.generated.rpc4k
-import com.caesarealabs.rpc4k.runtime.user.testing.junit
+import com.caesarealabs.rpc4k.runtime.jvm.user.testing.junit
 import com.caesarealabs.rpc4k.testapp.SimpleProtocol
 import kotlinx.coroutines.runBlocking
 import org.junit.jupiter.api.Assertions.assertEquals

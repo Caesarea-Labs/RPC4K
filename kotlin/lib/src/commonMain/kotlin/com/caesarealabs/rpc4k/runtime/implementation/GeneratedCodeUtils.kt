@@ -1,11 +1,11 @@
 package com.caesarealabs.rpc4k.runtime.implementation
 
+import com.benasher44.uuid.uuid4
 import com.caesarealabs.rpc4k.runtime.api.*
 import com.caesarealabs.rpc4k.runtime.implementation.serializers.TupleSerializer
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import kotlinx.serialization.*
-import java.util.*
 
 /**
  * These functions are used by generated code and code that interacts with them
@@ -55,7 +55,7 @@ public object GeneratedCodeUtils {
         eventSerializer: KSerializer<T>,
         target: Any? = null
     ): Flow<T> {
-        val listenerId = UUID.randomUUID().toString()
+        val listenerId = uuid4().toString()
         val payload = format.encode(TupleSerializer(argSerializers), args)
         val subscriptionMessage = C2SEventMessage.Subscribe(event = event, listenerId = listenerId, payload, target?.toString())
         val unsubMessage = C2SEventMessage.Unsubscribe(event = event, listenerId = listenerId)

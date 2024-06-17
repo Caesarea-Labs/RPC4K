@@ -16,11 +16,11 @@ internal suspend fun <I, O> RpcServerEngine.SingleCall<I, O>.routeRpcCallImpl(in
             ?: return genericErrorResponder("Non existent procedure $method", RpcError.InvalidRequest, output)
         return genericResponder(response, output)
     } catch (e: InvalidRpcRequestException) {
-        Rpc4K.Logger.warn("Invalid request", e)
+        Rpc4kLogger.warn("Invalid request", e)
         // RpcServerException messages are trustworthy
         return genericErrorResponder(e.message, RpcError.InvalidRequest, output)
     } catch (e: Throwable) {
-        Rpc4K.Logger.error("Failed to handle request", e)
+        Rpc4kLogger.error("Failed to handle request", e)
         // Don't send arbitrary throwable messages because it could leak data
         return genericErrorResponder("Server failed to process request", RpcError.InternalError, output)
     }

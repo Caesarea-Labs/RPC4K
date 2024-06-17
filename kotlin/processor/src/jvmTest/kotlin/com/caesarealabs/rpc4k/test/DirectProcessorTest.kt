@@ -9,6 +9,8 @@ import com.caesarealabs.rpc4k.processor.Rpc4kProcessorProvider
 import org.jetbrains.kotlin.compiler.plugin.ExperimentalCompilerApi
 import strikt.api.expectThat
 import strikt.assertions.isEqualTo
+import strikt.assertions.isNotEmpty
+import strikt.assertions.isNotEqualTo
 import java.io.File
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -18,10 +20,12 @@ class DirectProcessorTest {
 
     @Test
     fun `Symbol processor success`() {
-        val testSources = (File("../testapp/src/main").walkBottomUp() + File("../testapp/src/test").walkBottomUp())
+        println("path: ${System.getProperty("user.dir")}")
+        val testSources = (File("../testapp/src/commonMain").walkBottomUp())
             .filter { it.isFile && it.extension == "kt" }
             .map { SourceFile.fromPath(it) }
             .toList()
+        expectThat(testSources).isNotEmpty()
 
         val result = KotlinCompilation().apply {
             sources = testSources
@@ -37,8 +41,10 @@ class DirectProcessorTest {
     @Test
     fun `Symbol processor gives off correct errors`() {
         val errorCasesDir = File("../testerrors")
+        val files = errorCasesDir.listFiles()!!.toList()
+        expectThat(files).isNotEmpty()
 //        val errorFile = File("../testerrors/BadAnnotations.kt")
-        for (errorFile in errorCasesDir.listFiles()!!.filter { it.isFile }) {
+        for (errorFile in files.filter { it.isFile }) {
             // Test individual files
             val testSources = listOf(SourceFile.fromPath(errorFile))
 

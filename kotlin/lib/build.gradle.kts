@@ -29,7 +29,9 @@ kotlin {
     explicitApi()
     targetHierarchy.default()
     jvm()
-    wasmJs()
+    wasmJs {
+        browser()
+    }
     iosArm64()
     androidTarget {
         publishLibraryVariants("release")
@@ -47,24 +49,39 @@ kotlin {
                 implementation(libs.ktor.server.core.jvm)
                 implementation(libs.ktor.server.websockets.jvm)
                 implementation(libs.ktor.netty)
+                implementation(libs.ktor.logging)
+                implementation(libs.okhttp.core)
             }
         }
         val commonMain by getting {
             dependencies {
                 api(libs.coroutines.core)
                 api(libs.serialization.json)
-
-                implementation(libs.okhttp.core)
-                implementation(libs.ktor.logging)
+                implementation (libs.uuid)
             }
         }
-        val commonTest by getting {
+        val jvmTest by getting {
             dependencies {
                 implementation(libs.kotlin.test)
                 implementation(Testing.Strikt.core)
                 implementation(libs.logback)
             }
         }
+
+        val nativeMain by getting {
+            dependencies {
+                // Used to fill in for java concurrency primitives
+                implementation(libs.stately.concurrent.collections)
+            }
+        }
+
+        val wasmJsMain by getting {
+            dependencies {
+                // Used to fill in for java concurrency primitives
+                implementation(libs.stately.concurrent.collections)
+            }
+        }
+
     }
 }
 

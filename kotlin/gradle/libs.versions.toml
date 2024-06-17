@@ -8,7 +8,7 @@ serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref 
 nexus_publish = { id = "io.github.gradle-nexus.publish-plugin", version.ref = "nexus" }
 androidLibrary = { id = "com.android.library", version.ref = "agp" }
 kotlinMultiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
-
+atomicfu = {id ="org.jetbrains.kotlin.plugin.atomicfu", version.ref = "kotlin" }
 [versions]
 
 rpc4k = "0.7.1"
@@ -23,11 +23,13 @@ junit = "5.10.2"
 okhttp = "5.0.0-alpha.14"
 ktor = "2.3.11"
 logback = "1.5.6"
+statelyConcurrentCollections = "2.0.7"
 strikt = "0.34.1"
 nodejs = "7.0.2"
 agp = "8.2.0"
 android-minSdk = "24"
 android-compileSdk = "34"
+uuid = "0.8.4"
 
 [libraries]
 
@@ -36,6 +38,7 @@ ktor-server-core-jvm = { module = "io.ktor:ktor-server-core-jvm", version.ref = 
 ktor-server-websockets-jvm = { module = "io.ktor:ktor-server-websockets-jvm", version.ref = "ktor" }
 nodejs = {module = "com.github.node-gradle:gradle-node-plugin" , version.ref = "nodejs"}
 kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin" }
+stately-concurrent-collections = { module = "co.touchlab:stately-concurrent-collections", version.ref = "statelyConcurrentCollections" }
 symbol-processing-api = { module = "com.google.devtools.ksp:symbol-processing-api", version.ref = "ksp" }
 kotlinpoet-core = { module = "com.squareup:kotlinpoet", version.ref = "kotlinpoet" }
 kotlinpoet-ksp = { module = "com.squareup:kotlinpoet-ksp", version.ref = "kotlinpoet" }
@@ -51,3 +54,4 @@ okhttp-sse = { module = "com.squareup.okhttp3:okhttp-sse", version.ref = "okhttp
 okhttp-core = { module = "com.squareup.okhttp3:okhttp", version.ref = "okhttp" }
 logback = { module = "ch.qos.logback:logback-classic", version.ref = "logback" }
 strikt = { module = "io.strikt:strikt-jvm", version.ref = "strikt" }
+uuid = { module = "com.benasher44:uuid", version.ref = "uuid" }

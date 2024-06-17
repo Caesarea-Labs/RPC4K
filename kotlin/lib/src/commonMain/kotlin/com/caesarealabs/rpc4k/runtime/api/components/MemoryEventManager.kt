@@ -5,11 +5,13 @@ import com.caesarealabs.rpc4k.runtime.api.EventConnection
 import com.caesarealabs.rpc4k.runtime.api.EventManager
 import com.caesarealabs.rpc4k.runtime.api.EventSubscription
 import com.caesarealabs.rpc4k.runtime.implementation.concurrentAdd
-import java.util.concurrent.ConcurrentHashMap
-import java.util.concurrent.ConcurrentLinkedQueue
+import com.caesarealabs.rpc4k.runtime.platform.ConcurrentMutableMap
 
 internal class MemoryEventManager : EventManager {
-    private val subscriptions: MutableMap<String, ConcurrentLinkedQueue<EventSubscription>> = ConcurrentHashMap()
+    /**
+     * Map from event to its subscribers
+     */
+    private val subscriptions: MutableMap<String, MutableCollection<EventSubscription>> = ConcurrentMutableMap()
 
     override suspend fun subscribe(subscription: C2SEventMessage.Subscribe, connection: EventConnection) {
         subscriptions.concurrentAdd(subscription.event, EventSubscription(connection, subscription))
@@ -17,12 +19,12 @@ internal class MemoryEventManager : EventManager {
 
     override suspend fun unsubscribe(event: String, listenerId: String): Boolean {
         val list = subscriptions[event] ?: return false
-        return list.removeIf { it.info.listenerId == listenerId }
+        return list.removeAll { it.info.listenerId == listenerId }
     }
 
     override suspend fun dropClient(connection: EventConnection) {
         for (list in subscriptions.values) {
-            list.removeIf { it.connection == connection }
+            list.removeAll { it.connection == connection }
         }
     }
 

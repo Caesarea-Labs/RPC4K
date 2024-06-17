@@ -2,8 +2,6 @@ package com.caesarealabs.rpc4k.runtime.api
 
 import com.caesarealabs.rpc4k.runtime.implementation.fastConcat
 import com.caesarealabs.rpc4k.runtime.implementation.serializers.TupleSerializer
-import io.ktor.utils.io.charsets.*
-import io.ktor.utils.io.core.*
 import kotlinx.serialization.KSerializer
 
 
@@ -12,7 +10,6 @@ import kotlinx.serialization.KSerializer
  */
 public data class Rpc(val method: String, val arguments: List<*>) {
     internal companion object {
-//        private val Encoding = Charsets.UTF_8
 
         fun fromByteArray(bytes: ByteArray, format: SerializationFormat, argDeserializers: List<KSerializer<*>>): Rpc {
             val (method, readBytes) = readMethodName(bytes)

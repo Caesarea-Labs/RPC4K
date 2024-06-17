@@ -7,10 +7,10 @@ import kotlin.reflect.KClass
 
 // Used for the processor only
 public val Rpc4kSerializers: List<Rpc4kSerializer<*>> = Rpc4kSerializersModuleBuilder().apply {
-    obj(VoidUnitSerializer)
-    obj(UUIDSerializer)
-    obj(InstantIsoSerializer)
-    obj(ZonedDateTimeIsoSerializer)
+    obj(VoidUnitSerializer, "com.caesarealabs.rpc4k.runtime.implementation.serializers", "VoidUnitSerializer")
+//    obj(UUIDSerializer)
+//    obj(InstantIsoSerializer)
+//    obj(ZonedDateTimeIsoSerializer)
     builtinSerializerMethod(Pair::class, "TuplePairSerializer") {
         TuplePairSerializer(it[0], it[1])
     }
@@ -46,8 +46,8 @@ private class Rpc4kSerializersModuleBuilder {
         serializers.add(Rpc4kSerializer.Function(KotlinMethodName(methodName, packageName), ContextualProvider.WithTypeArguments(provider), kClass))
     }
 
-    inline fun <reified T : Any, reified O : KSerializer<T>> obj(instance: O) {
-        serializers.add(Rpc4kSerializer.Object(KotlinClassName.ofKClass(O::class), ContextualProvider.Argless(instance), T::class))
+    inline fun <reified T : Any, O : KSerializer<T>> obj(instance: O, packageName: String, className: String) {
+        serializers.add(Rpc4kSerializer.Object(KotlinClassName(simple = className, pkg = packageName), ContextualProvider.Argless(instance), T::class))
     }
 
 //    @PublishedApi

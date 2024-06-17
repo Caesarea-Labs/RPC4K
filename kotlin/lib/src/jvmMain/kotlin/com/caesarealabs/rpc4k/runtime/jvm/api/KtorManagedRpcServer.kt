@@ -1,12 +1,9 @@
-package com.caesarealabs.rpc4k.runtime.api.jvm
+package com.caesarealabs.rpc4k.runtime.jvm.api
 
 import com.caesarealabs.rpc4k.runtime.api.EventConnection
 import com.caesarealabs.rpc4k.runtime.api.RpcServerEngine
 import com.caesarealabs.rpc4k.runtime.api.ServerConfig
-import com.caesarealabs.rpc4k.runtime.implementation.PortPool
-import com.caesarealabs.rpc4k.runtime.implementation.Rpc4K
-import com.caesarealabs.rpc4k.runtime.implementation.acceptEventSubscription
-import com.caesarealabs.rpc4k.runtime.implementation.routeRpcs
+import com.caesarealabs.rpc4k.runtime.implementation.*
 import io.ktor.server.application.Application
 import io.ktor.server.application.call
 import io.ktor.server.application.install
@@ -32,6 +29,10 @@ import kotlin.collections.set
 //        session.send(Frame.Text(true, bytes))
 //    }
 //}
+
+
+//val x=  Queue
+
 
 // NiceToHave: use a custom implementation that setups multiple routes
 /**
@@ -71,7 +72,7 @@ public class KtorManagedRpcServer(
 //                        setup.acceptEventSubscription(frame.readBytes(), connection)
                     }
                 } finally {
-                    Rpc4K.Logger.info("Removing connection ${connection.id}")
+                    Rpc4kLogger.info("Removing connection ${connection.id}")
                     config.eventManager.dropClient(connection)
                     connections.remove(connection)
                 }

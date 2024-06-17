@@ -2,7 +2,6 @@
 package com.caesarealabs.rpc4k.runtime.api
 
 import com.caesarealabs.rpc4k.runtime.implementation.fastConcat
-import io.ktor.utils.io.core.*
 
 internal sealed interface S2CEventMessage {
     data class Emitted(val listenerId: String, val payload: ByteArray) : S2CEventMessage {
@@ -26,8 +25,8 @@ internal sealed interface S2CEventMessage {
     data class SubscriptionError(val error: String) : S2CEventMessage
 
     fun toByteArray(): ByteArray = when (this) {
-        is Emitted -> EmittedType.toByteArray().fastConcat(Rpc.ColonCode, listenerId.toByteArray(), payload)
-        is SubscriptionError -> ErrorType.toByteArray().fastConcat(Rpc.ColonCode, error.toByteArray())
+        is Emitted -> EmittedType.encodeToByteArray().fastConcat(Rpc.ColonCode, listenerId.encodeToByteArray(), payload)
+        is SubscriptionError -> ErrorType.encodeToByteArray().fastConcat(Rpc.ColonCode, error.encodeToByteArray())
     }
 
     companion object {
@@ -42,7 +41,7 @@ internal sealed interface S2CEventMessage {
                     val listenerId = split[1]
                     //TODO: optimize splitting and joining
                     val payload = split.drop(2).joinToString(":")
-                    return Emitted(listenerId, payload.toByteArray())
+                    return Emitted(listenerId, payload.encodeToByteArray())
                 }
 
                 ErrorType -> {

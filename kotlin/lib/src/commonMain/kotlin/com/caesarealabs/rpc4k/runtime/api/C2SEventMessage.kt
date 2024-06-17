@@ -1,7 +1,6 @@
 package com.caesarealabs.rpc4k.runtime.api
 
 import com.caesarealabs.rpc4k.runtime.implementation.fastConcat
-import io.ktor.utils.io.core.*
 
 public sealed interface C2SEventMessage {
     public data class Subscribe(
@@ -71,11 +70,11 @@ public sealed interface C2SEventMessage {
 
     public fun toByteArray(): ByteArray {
         return when (this) {
-            is C2SEventMessage.Subscribe -> "sub".toByteArray()
-                .fastConcat(Rpc.Companion.ColonCode, event.toByteArray(), listenerId.toByteArray(), (target ?: "").toByteArray(), data)
+            is C2SEventMessage.Subscribe -> "sub".encodeToByteArray()
+                .fastConcat(Rpc.Companion.ColonCode, event.encodeToByteArray(), listenerId.encodeToByteArray(), (target ?: "").encodeToByteArray(), data)
 
-            is C2SEventMessage.Unsubscribe -> "unsub".toByteArray()
-                .fastConcat(Rpc.Companion.ColonCode, event.toByteArray(), listenerId.toByteArray())
+            is C2SEventMessage.Unsubscribe -> "unsub".encodeToByteArray()
+                .fastConcat(Rpc.Companion.ColonCode, event.encodeToByteArray(), listenerId.encodeToByteArray())
         }
     }
 

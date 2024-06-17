@@ -1,8 +1,10 @@
 package com.caesarealabs.rpc4k.test
 
 import com.caesarealabs.rpc4k.generated.rpc4k
+import com.caesarealabs.rpc4k.runtime.jvm.user.testing.junit
 import com.caesarealabs.rpc4k.runtime.user.Api
-import com.caesarealabs.rpc4k.runtime.user.testing.junit
+import com.caesarealabs.rpc4k.testapp.BasicApi
+import com.caesarealabs.rpc4k.testapp.Dog
 import kotlinx.coroutines.runBlocking
 import kotlinx.serialization.Serializable
 import org.junit.jupiter.api.extension.RegisterExtension
@@ -18,6 +20,7 @@ class KtorServerTest {
         val extension = BasicApi.rpc4k.junit { BasicApi() }
     }
 
+
     @Test
     fun `Basic RPCs work`(): Unit = runBlocking {
         val client = extension.client
@@ -28,18 +31,4 @@ class KtorServerTest {
     }
 }
 
-@Api(true)
-open class BasicApi {
-    companion object;
-    private val dogs = mutableListOf<Dog>()
-    open suspend fun getDogs(num: Int, type: String): List<Dog> {
-        return dogs.filter { it.type == type }.take(num)
-    }
 
-    open suspend fun putDog(dog: Dog) {
-        dogs.add(dog)
-    }
-}
-
-@Serializable
-data class Dog(val name: String, val type: String, val age: Int)
