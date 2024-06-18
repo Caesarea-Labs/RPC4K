@@ -9,6 +9,7 @@ plugins {
     id("com.caesarealabs.rpc4k")
 }
 
+
 kotlin {
     jvmToolchain(21)
     compilerOptions.freeCompilerArgs.add("-Xcontext-receivers")
@@ -29,6 +30,8 @@ kotlin {
     wasmJs {
         browser()
     }
+
+    iosArm64()
     sourceSets {
         val jvmMain by getting {
             dependencies {
@@ -54,8 +57,6 @@ tasks.withType<Test> {
 
 
 //TODO: Road to Getting RPC4K to Multiplatform:
-// 2.5 Implement serializers for common UUID and Instant
-// 2.6 test integration with typescript client
 // 2.7 update POC to multiplatform rpc4k
 // 2.8 run processor tests again (Caesarea should pass)
 // 3. Properly set up publishing for KMP

@@ -219,8 +219,8 @@ private fun KotlinTypeReference.toRpcType() = when (name.pkg) {
     "kotlin" -> toBuiltinRpcType()
     "kotlin.collections" -> toBuiltinCollectionType()
     "kotlin.time" -> toDurationType()
-    "java.time" -> toDateType()
-    "java.util" -> toUUID()
+    "kotlinx.datetime" -> toDateType()
+    "com.benasher44.uuid" -> toUUID()
     else -> toUserType()
 }
 
@@ -302,7 +302,7 @@ private fun KotlinTypeReference.buildRpcType(
 }
 
 private fun KotlinTypeReference.toDateType(): RpcType {
-    if (name.simple == "ZonedDateTime" || name.simple == "Instant") {
+    if (name.simple == "Instant") {
         return buildRpcType(name = RpcType.Date, typeArguments = listOf())
     } else {
         error("Unexpected kotlin date type: ${name.simple}. These shouldn't be accepted by the compiler.")
@@ -310,7 +310,7 @@ private fun KotlinTypeReference.toDateType(): RpcType {
 }
 
 private fun KotlinTypeReference.toUUID(): RpcType {
-    if (name.simple == "UUID") {
+    if (name.simple == "Uuid") {
         return buildRpcType(name = RpcType.UUID, typeArguments = listOf())
     } else {
         error("Unexpected kotlin java.util type: ${name.simple}. These shouldn't be accepted by the compiler.")

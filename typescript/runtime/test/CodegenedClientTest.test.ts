@@ -177,7 +177,7 @@ test("Codegened Client works in all cases", async () => {
         h: new Int8Array([7]), i: [8], j: [9], k: [10], l: ['@'],
         m: [11], n: {12: 13}, o: [14], p: [15, 16], q: [17, 18, 19],
         r: undefined, s: [21], t: new Uint8Array([22]), u: [23], v: [24], w: [25], x: 26, y: 27, z: 28, a2: 29.0, b2: 30.0, c2: 31, d2: [32, 33],
-        e2: dayjs(), f2: dayjs(), g2: "ffffffff-ffff-ffff-ffff-ffffffffffff", h2: dayjs.duration(34, "seconds")
+        e2: dayjs(), g2: "ffffffff-ffff-ffff-ffff-ffffffffffff", h2: dayjs.duration(34, "seconds")
     });
     const everythingBack = await client.everyBuiltinType(everything)
     // Turn the duration into an iso string because equality doesn't work well on the object itself
@@ -189,7 +189,7 @@ test("Codegened Client works in all cases", async () => {
             new Int8Array([7]), [8], [9], [10], ['@'],
             [11], {12: 13}, [14], [15, 16], [17, 18, 19],
             undefined, [21], new Uint8Array([22]), [23], [24], [25],
-            26, 27, 28, 29.0, 30.0, 31, [32, 33], dayjs(), dayjs(), "ffffffff-ffff-ffff-ffff-ffffffffffff",
+            26, 27, 28, 29.0, 30.0, 31, [32, 33], dayjs(),  "ffffffff-ffff-ffff-ffff-ffffffffffff",
             dayjs.duration(34, "seconds")
         )
     ).toEqual([17, 18, 19]);

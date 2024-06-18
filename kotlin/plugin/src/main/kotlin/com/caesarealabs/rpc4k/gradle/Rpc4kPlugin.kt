@@ -22,10 +22,9 @@ class Rpc4KPlugin : Plugin<Project> {
     override fun apply(project: Project): Unit = with(project) {
         plugins.apply("com.google.devtools.ksp")
 
-//        System.setProperty("rpc4k.dev", "true") is invoked in the dev project to know when to use local paths
+        // System.setProperty("rpc4k.dev", "true") is invoked in the dev project to know when to use local paths
         // This is a system property instead of an extension configuration because we need this information EARLY.
         val dev = System.getProperty("rpc4k.dev") == "true"
-        // TODO: write big and large comment about jvm source set not working in multiplatform and delete the forceJvm stuff
 
         val lib = if (dev) project(":lib") else "com.caesarealabs:rpc4k-runtime:${getRpc4kVersion()}"
         val processor = if (dev) project(":processor") else "com.caesarealabs:rpc4k-processor:${getRpc4kVersion()}"
@@ -53,8 +52,10 @@ class Rpc4KPlugin : Plugin<Project> {
                 }
             }
 
+            // Apply KSP processor
             dependencies.add("kspCommonMainMetadata", processor)
 
+            // Depend on runtime
             kmp.sourceSets["commonMain"].dependencies {
                 implementation(lib)
             }
@@ -64,17 +65,20 @@ class Rpc4KPlugin : Plugin<Project> {
 
         afterEvaluate {
             val generatedSourcesPath = if (jvm) "main" else "metadata/commonMain"
-            val classesTask = if (jvm) "classes" else "metadataMainClasses"
             val kspTask = if (jvm) "kspKotlin" else "kspCommonMainKotlinMetadata"
             if (extension.typescriptDir != null) {
                 plugins.apply("com.github.node-gradle.node")
 
                 tasks.create<NpxTask>("generateTypescriptClient") {
                     dependsOn(kspTask)
-                    tasks[classesTask].dependsOn(this)
+                    // This is the only reliable way i have found to make this task run in multiplatform
+                    tasks.withType<KotlinCompile> {
+                        finalizedBy(this@create)
+                    }
 
                     // NiceToHave: support multiple source sets
-                    val jsonPath = project.layout.buildDirectory.dir("generated/ksp/$generatedSourcesPath/resources/rpc4k").get().asFile.absolutePath
+                    val jsonPath =
+                        project.layout.buildDirectory.dir("generated/ksp/$generatedSourcesPath/resources/rpc4k").get().asFile.absolutePath
                     val resultPath = toPath(extension.typescriptDir)!!.absolutePathString()
                     inputs.dir(jsonPath)
                     outputs.dir(resultPath)
