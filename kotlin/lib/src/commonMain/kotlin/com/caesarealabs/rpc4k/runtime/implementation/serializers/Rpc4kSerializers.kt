@@ -1,23 +1,26 @@
 package com.caesarealabs.rpc4k.runtime.implementation.serializers
 
-import com.caesarealabs.rpc4k.runtime.implementation.*
+import com.benasher44.uuid.Uuid
+import com.caesarealabs.rpc4k.runtime.implementation.KotlinClassName
+import com.caesarealabs.rpc4k.runtime.implementation.KotlinMethodName
+import com.caesarealabs.rpc4k.runtime.implementation.KotlinName
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.modules.SerializersModule
 import kotlin.reflect.KClass
 
 // Used for the processor only
 public val Rpc4kSerializers: List<Rpc4kSerializer<*>> = Rpc4kSerializersModuleBuilder().apply {
-    obj(VoidUnitSerializer, "com.caesarealabs.rpc4k.runtime.implementation.serializers", "VoidUnitSerializer")
-//    obj(UUIDSerializer)
+    obj(VoidUnitSerializer, "kotlin", "Unit", "com.caesarealabs.rpc4k.runtime.implementation.serializers", "VoidUnitSerializer")
+    obj<Uuid>(UUIDSerializer, "com.benasher44.uuid","Uuid","com.caesarealabs.rpc4k.runtime.implementation.serializers", "UUIDSerializer")
 //    obj(InstantIsoSerializer)
 //    obj(ZonedDateTimeIsoSerializer)
-    builtinSerializerMethod(Pair::class, "TuplePairSerializer") {
+    builtinSerializerMethod(Pair::class, "kotlin", "Pair", "TuplePairSerializer") {
         TuplePairSerializer(it[0], it[1])
     }
-    builtinSerializerMethod(Triple::class, "TupleTripleSerializer") {
+    builtinSerializerMethod(Triple::class, "kotlin", "Triple", "TupleTripleSerializer") {
         TupleTripleSerializer(it[0], it[1], it[2])
     }
-    builtinSerializerMethod(Map.Entry::class, "TupleMapEntrySerializer") {
+    builtinSerializerMethod(Map.Entry::class, "kotlin.collections", "Map.Entry", "TupleMapEntrySerializer") {
         TupleMapEntrySerializer(it[0], it[1])
     }
 }.build()
@@ -26,8 +29,8 @@ public val Rpc4kSerializers: List<Rpc4kSerializer<*>> = Rpc4kSerializersModuleBu
 public val Rpc4kSerializersModule: SerializersModule = SerializersModule {
     for (serializer in Rpc4kSerializers) {
         when (val provider = serializer.provider) {
-            is ContextualProvider.Argless -> contextual(serializer.kClass as KClass<Any>, provider.serializer as KSerializer<Any>)
-            is ContextualProvider.WithTypeArguments -> contextual(serializer.kClass, provider.provider)
+            is ContextualProvider.Argless -> contextual(serializer.serializedKClass as KClass<Any>, provider.serializer as KSerializer<Any>)
+            is ContextualProvider.WithTypeArguments -> contextual(serializer.serializedKClass, provider.provider)
         }
     }
 }
@@ -37,17 +40,43 @@ private class Rpc4kSerializersModuleBuilder {
     @PublishedApi
     internal val serializers = mutableListOf<Rpc4kSerializer<*>>()
 
+    /**
+     * Class names are passed explicitly for type aliases to work
+     */
     fun <T : Any> method(
         kClass: KClass<T>,
-        methodName: String,
-        packageName: String,
+        typePackage: String,
+        typeName: String,
+        serializerName: String,
+        serializerPackage: String,
         provider: (typeArgumentsSerializers: List<KSerializer<*>>) -> KSerializer<*>
     ) {
-        serializers.add(Rpc4kSerializer.Function(KotlinMethodName(methodName, packageName), ContextualProvider.WithTypeArguments(provider), kClass))
+        serializers.add(
+            Rpc4kSerializer.Function(
+                KotlinMethodName(serializerName, serializerPackage), ContextualProvider.WithTypeArguments(provider), kClass,
+                KotlinClassName(pkg = typePackage, simple = typeName)
+            )
+        )
     }
 
-    inline fun <reified T : Any, O : KSerializer<T>> obj(instance: O, packageName: String, className: String) {
-        serializers.add(Rpc4kSerializer.Object(KotlinClassName(simple = className, pkg = packageName), ContextualProvider.Argless(instance), T::class))
+    /**
+     * Class names are passed explicitly for type aliases to work
+     */
+    inline fun <reified T : Any> obj(
+        instance: KSerializer<T>,
+        typePackage: String,
+        typeName: String,
+        serializerPackage: String,
+        serializerName: String
+    ) {
+        serializers.add(
+            Rpc4kSerializer.Object(
+                KotlinClassName(simple = serializerName, pkg = serializerPackage),
+                ContextualProvider.Argless(instance),
+                T::class,
+                KotlinClassName(simple = typeName, pkg = typePackage)
+            )
+        )
     }
 
 //    @PublishedApi
@@ -72,26 +101,40 @@ private class Rpc4kSerializersModuleBuilder {
 
 private fun <T : Any> Rpc4kSerializersModuleBuilder.builtinSerializerMethod(
     clazz: KClass<T>,
+    typePackage: String,
+    typeName: String,
     name: String, provider: (typeArgumentsSerializers: List<KSerializer<*>>) -> KSerializer<*>
-) = method(clazz, name, "com.caesarealabs.rpc4k.runtime.implementation.serializers", provider)
+) = method(
+    clazz,
+    serializerName = name,
+    serializerPackage = "com.caesarealabs.rpc4k.runtime.implementation.serializers",
+    typeName = typeName,
+    typePackage = typePackage,
+    provider = provider
+)
 
 
 public sealed interface Rpc4kSerializer<T : Any> {
 
-    public val name: KotlinName
+    public val serializerName: KotlinName
     public val provider: ContextualProvider
-    public val kClass: KClass<T>
+    public val serializedKClass: KClass<T>
+
+    // KClass is not good enough for type aliases
+    public val serializedName: KotlinClassName
 
     public data class Function<T : Any>(
-        override val name: KotlinMethodName,
+        override val serializerName: KotlinMethodName,
         override val provider: ContextualProvider,
-        override val kClass: KClass<T>
+        override val serializedKClass: KClass<T>,
+        override val serializedName: KotlinClassName,
     ) : Rpc4kSerializer<T>
 
     public data class Object<T : Any>(
-        override val name: KotlinClassName,
+        override val serializerName: KotlinClassName,
         override val provider: ContextualProvider.Argless,
-        override val kClass: KClass<T>
+        override val serializedKClass: KClass<T>,
+        override val serializedName: KotlinClassName,
     ) : Rpc4kSerializer<T>
 }
 

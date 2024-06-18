@@ -11,6 +11,7 @@ kotlinMultiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref =
 atomicfu = {id ="org.jetbrains.kotlin.plugin.atomicfu", version.ref = "kotlin" }
 [versions]
 
+kotlinxDatetime = "0.6.0"
 rpc4k = "0.7.1"
 nexus = "2.0.0"
 kotlin = "2.0.0"
@@ -34,6 +35,7 @@ uuid = "0.8.4"
 [libraries]
 
 kotlin-gradle-plugin = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "kotlin" }
+kotlinx-datetime = { module = "org.jetbrains.kotlinx:kotlinx-datetime", version.ref = "kotlinxDatetime" }
 ktor-server-core-jvm = { module = "io.ktor:ktor-server-core-jvm", version.ref = "ktor" }
 ktor-server-websockets-jvm = { module = "io.ktor:ktor-server-websockets-jvm", version.ref = "ktor" }
 nodejs = {module = "com.github.node-gradle:gradle-node-plugin" , version.ref = "nodejs"}

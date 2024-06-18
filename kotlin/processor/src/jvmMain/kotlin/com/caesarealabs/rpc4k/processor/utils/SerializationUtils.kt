@@ -9,7 +9,9 @@ import com.caesarealabs.rpc4k.runtime.implementation.KotlinClassName
 import com.caesarealabs.rpc4k.runtime.implementation.KotlinMethodName
 import com.caesarealabs.rpc4k.runtime.implementation.serializers.Rpc4kSerializer
 import com.caesarealabs.rpc4k.runtime.implementation.serializers.Rpc4kSerializers
+import kotlinx.datetime.Instant
 import kotlinx.serialization.Serializable
+import java.util.UUID
 import kotlin.time.Duration
 
 /**
@@ -56,16 +58,16 @@ private fun KSType.isAnnotatedBySerializable() =
 internal fun KSType.isBuiltinSerializableType() = declaration.qualifiedName?.asString() in builtinSerializableClasses
 
 private val rpc4kSerializerMap = Rpc4kSerializers.associateBy {
-    it.kClass.kotlinName
+    it.serializedName
 }
 
 internal fun KotlinTypeReference.getKSerializer(): KotlinSerializer {
     val rpc4kSerializer = rpc4kSerializerMap[name]
     return if (rpc4kSerializer != null) {
         when (rpc4kSerializer) {
-            is Rpc4kSerializer.Object -> KotlinSerializer.Object(rpc4kSerializer.name, isNullable)
+            is Rpc4kSerializer.Object -> KotlinSerializer.Object(rpc4kSerializer.serializerName, isNullable)
             is Rpc4kSerializer.Function -> KotlinSerializer.TopLevelFunction(
-                rpc4kSerializer.name,
+                rpc4kSerializer.serializerName,
                 isNullable,
                 typeArguments.map { it.getKSerializer() })
         }
@@ -119,7 +121,7 @@ private val serializableClassName = Serializable::class.qualifiedName
 
 
 @ExperimentalUnsignedTypes
-private val builtinSerializableClasses: Set<String> = (listOf(
+internal val builtinSerializableClasses: Set<String> = (listOf(
     Byte::class,
     Short::class,
     Int::class,
@@ -141,9 +143,12 @@ private val builtinSerializableClasses: Set<String> = (listOf(
     UShort::class,
     UInt::class,
     ULong::class,
-    Duration::class
+    Duration::class,
+    Instant::class,
+    // We don't support this JVM UUID, but sometimes the Multiplatform UUID evaluates to this during symbol processing so we have to accept it
+    UUID::class
 // Add classes that rpc4k supports as well
-) + Rpc4kSerializers.map { it.kClass }).map { it.qualifiedName!! }.toHashSet() +
+).map { it.qualifiedName!! } + Rpc4kSerializers.map { it.serializedName.toString() }).toHashSet() +
         classesWithSeparateKxsBuiltinSerializerMethod.map { it.toString() }
 
 

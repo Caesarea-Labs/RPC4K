@@ -55,6 +55,7 @@ internal fun KSDeclaration.getTopLevelSimpleName(): String = simpleName.asString
 
 /**
  * Will mark the [KSNode] itself as the cause of the failure if this check fails
+ * Returns [requirement]
  */
 internal inline fun KSNode.checkRequirement(environment: SymbolProcessorEnvironment, requirement: Boolean, msg: () -> String): Boolean {
     if (!requirement) environment.logger.error(msg(), this)

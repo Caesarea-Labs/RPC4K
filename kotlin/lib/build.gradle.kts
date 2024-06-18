@@ -57,7 +57,8 @@ kotlin {
             dependencies {
                 api(libs.coroutines.core)
                 api(libs.serialization.json)
-                implementation (libs.uuid)
+                api (libs.uuid)
+                api(libs.kotlinx.datetime)
             }
         }
         val jvmTest by getting {

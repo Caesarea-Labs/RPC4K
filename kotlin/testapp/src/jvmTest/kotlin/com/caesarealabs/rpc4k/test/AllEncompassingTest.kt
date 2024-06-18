@@ -12,6 +12,8 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
+import kotlinx.datetime.Clock
+import kotlinx.datetime.Instant
 import okhttp3.HttpUrl.Companion.toHttpUrl
 import okhttp3.OkHttpClient
 import okhttp3.Request
@@ -23,8 +25,6 @@ import strikt.api.expectThat
 import strikt.api.expectThrows
 import strikt.assertions.isEqualTo
 import java.nio.charset.Charset
-import java.time.Instant
-import java.time.ZonedDateTime
 import java.util.*
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -193,8 +193,8 @@ class AllEncompassingTest {
             byteArrayOf(7), ShortArray(8), IntArray(9), longArrayOf(10), charArrayOf('@'),
             listOf(11), mapOf(12 to 13), setOf(14), 15 to 16, Triple(17, 18, 19), Unit,
             arrayOf(20), ubyteArrayOf(21u), ushortArrayOf(22u), uintArrayOf(23u), ULongArray(24),
-            25u, 26u, 27u, 28u, 29f, 30.0, mapOf(31 to 32).entries.first(), /*Instant.now(), ZonedDateTime.now(),
-            UUID.randomUUID(),*/ 33.milliseconds
+            25u, 26u, 27u, 28u, 29f, 30.0, mapOf(31 to 32).entries.first(), Clock.System.now(),
+            UUID.randomUUID(), 33.milliseconds
 
         )
         expectThat(protocol.everyBuiltinType(everything)).isEqualTo(everything)
@@ -204,8 +204,8 @@ class AllEncompassingTest {
                 byteArrayOf(7), ShortArray(8), IntArray(9), longArrayOf(10), charArrayOf('@'),
                 listOf(11), mapOf(12 to 13), setOf(14), 15 to 16, Triple(17, 18, 19), Unit,
                 arrayOf(20), ubyteArrayOf(21u), ushortArrayOf(22u), uintArrayOf(23u), ULongArray(24),
-                25u, 26u, 27u, 28u, 29f, 30.0, mapOf(31 to 32).entries.first(), /*Instant.now(), ZonedDateTime.now(),
-                UUID.randomUUID(),*/ 20.milliseconds
+                25u, 26u, 27u, 28u, 29f, 30.0, mapOf(31 to 32).entries.first(), Clock.System.now(),
+                UUID.randomUUID(), 20.milliseconds
             )
         ).isEqualTo(Triple(17, 18, 19))
 

@@ -33,6 +33,8 @@ kotlin {
                 implementation(libs.kotlinpoet.core)
                 implementation(libs.kotlinpoet.ksp)
                 implementation(libs.junit)
+                compileOnly(libs.kotlinx.datetime)
+                compileOnly(libs.uuid)
                 implementation(project(":lib"))
             }
         }

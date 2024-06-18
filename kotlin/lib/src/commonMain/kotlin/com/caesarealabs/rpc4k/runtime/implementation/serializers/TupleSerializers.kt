@@ -14,6 +14,7 @@ import kotlinx.serialization.encoding.Encoder
 import kotlinx.serialization.encoding.encodeCollection
 
 
+
 /**
  * Serializes a pair as an array of two elements
  */

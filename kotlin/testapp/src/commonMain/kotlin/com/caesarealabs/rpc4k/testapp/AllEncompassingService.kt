@@ -5,12 +5,10 @@ package com.caesarealabs.rpc4k.testapp
 
 import com.caesarealabs.rpc4k.generated.AllEncompassingServiceEventInvoker
 import com.caesarealabs.rpc4k.runtime.api.*
-import com.caesarealabs.rpc4k.runtime.user.Api
-import com.caesarealabs.rpc4k.runtime.user.Dispatch
-import com.caesarealabs.rpc4k.runtime.user.EventTarget
-import com.caesarealabs.rpc4k.runtime.user.RpcEvent
+import com.caesarealabs.rpc4k.runtime.user.*
 import com.caesarealabs.rpc4k.testapp.EnumArgs.Option1
 import com.caesarealabs.rpc4k.testapp.EnumArgs.Option5
+import kotlinx.datetime.Instant
 import kotlinx.serialization.Contextual
 import kotlinx.serialization.Serializable
 import kotlin.jvm.JvmInline
@@ -208,9 +206,9 @@ typealias AliasTest = CreateLobbyResponse
         b2: Float,
         c2: Double,
         d2: Map.Entry<Int, Int>,
-//        e2: Instant,
+        e2: Instant,
 //        f2: ZonedDateTime,
-//        g2: UUID,
+        g2: SerializableUUID,
         h2: Duration
     ): Triple<Int, Int, Int> {
         return q
@@ -252,9 +250,9 @@ typealias AliasTest = CreateLobbyResponse
         return 2
     }
 
-//    open suspend fun nullDate(date: Instant?): Instant?{
-//        return date
-//    }
+    open suspend fun nullDate(date: Instant?): Instant?{
+        return date
+    }
 
 //    This is currently bugged, see:
 //https://github.com/Kotlin/kotlinx.serialization/issues/2374
@@ -422,9 +420,9 @@ class EveryBuiltinType(
     val b2: Float,
     val c2: Double,
     @Contextual val d2: Map.Entry<Int, Int>,
-//    @Contextual val e2: Instant,
+    val e2: Instant,
 //    @Contextual val f2: ZonedDateTime,
-//    @Contextual val g2: UUID,
+    val g2: SerializableUUID,
     val h2: Duration
 ) {
     override fun equals(other: Any?): Boolean {
@@ -461,9 +459,9 @@ class EveryBuiltinType(
         if (b2 != other.b2) return false
         if (c2 != other.c2) return false
         if (d2 != other.d2) return false
-//        if (e2 != other.e2) return false
+        if (e2 != other.e2) return false
 //        if (f2 != other.f2) return false
-//        if (g2 != other.g2) return false
+        if (g2 != other.g2) return false
         if (h2 != other.h2) return false
 
         return true

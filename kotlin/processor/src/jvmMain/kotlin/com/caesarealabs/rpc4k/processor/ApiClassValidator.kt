@@ -176,14 +176,18 @@ internal class ApiClassValidator(private val env: SymbolProcessorEnvironment, pr
     //TODO: test these validations
     private fun checkAnnotationsAreValid(function: KSFunctionDeclaration): Boolean {
         if (function.isAnnotationPresent(RpcEvent::class)) {
-            val annotatedWithTargetCount = function.parameters.count { it.isAnnotationPresent(
-                EventTarget::class) }
+            val annotatedWithTargetCount = function.parameters.count {
+                it.isAnnotationPresent(
+                    EventTarget::class
+                )
+            }
             function.checkRequirement(env, annotatedWithTargetCount <= 1) {
                 "only one parameter may be annotated with @EventTarget"
             }
             return function.parameters.evaluateAll {
                 val annotatedByBoth = it.isAnnotationPresent(EventTarget::class) && it.isAnnotationPresent(
-                    Dispatch::class)
+                    Dispatch::class
+                )
                 it.checkRequirement(env, !annotatedByBoth) {
                     "@Dispatch and @EventTarget are mutually exclusive"
                 }
@@ -218,12 +222,13 @@ internal class ApiClassValidator(private val env: SymbolProcessorEnvironment, pr
     private fun checkIsSerializable(type: KSTypeReference, target: KSNode = type, typeArgument: Boolean = false): Boolean {
         val resolved = type.resolveToUnderlying()
 
-        target.checkRequirement(env, resolved.declaration.qualifiedName != null) {
-            "Cannot parse type"
-        }
+        if (!target.checkRequirement(env, resolved.declaration.qualifiedName != null) {
+                "Cannot parse type"
+            }) return false
+
 
         val selfSerializable = target.checkRequirement(env, resolved.isSerializable()) {
-            "Type used in API method '${resolved.declaration.qualifiedName!!.asString()}' must be Serializable"
+            "Type used in API method '${resolved.declaration.qualifiedName!!.asString()}' must be Serializable. Serializable types: $builtinSerializableClasses"
                 .appendIf(typeArgument) { " (in type argument of $target)" }
         }
         // Make sure to evaluate all the checks
