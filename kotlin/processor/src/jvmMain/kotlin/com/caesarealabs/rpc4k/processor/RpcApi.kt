@@ -220,7 +220,8 @@ private fun KotlinTypeReference.toRpcType() = when (name.pkg) {
     "kotlin.collections" -> toBuiltinCollectionType()
     "kotlin.time" -> toDurationType()
     "kotlinx.datetime" -> toDateType()
-    "com.benasher44.uuid" -> toUUID()
+    // com.benasher44.uuid.Uuid typealias still sometimes annoyingly evaluates as java.util.UUID so we need to treat them as the same
+    "com.benasher44.uuid" , "java.util" -> toUUID()
     else -> toUserType()
 }
 
@@ -310,7 +311,7 @@ private fun KotlinTypeReference.toDateType(): RpcType {
 }
 
 private fun KotlinTypeReference.toUUID(): RpcType {
-    if (name.simple == "Uuid") {
+    if (name.simple == "Uuid" || name.simple == "UUID") {
         return buildRpcType(name = RpcType.UUID, typeArguments = listOf())
     } else {
         error("Unexpected kotlin java.util type: ${name.simple}. These shouldn't be accepted by the compiler.")

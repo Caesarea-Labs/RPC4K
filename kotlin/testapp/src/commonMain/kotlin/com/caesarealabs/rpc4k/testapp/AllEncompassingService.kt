@@ -20,6 +20,10 @@ data class NestedObject(val x : Int)
 @Serializable
 data class NestingObject(val nested: NestedObject)
 
+typealias UUIDTypeAlias = UUID
+
+@Serializable data class UUIDTest(val uuid: UUIDTypeAlias)
+
 
 @Serializable
 @JvmInline
@@ -66,6 +70,10 @@ typealias AliasTest = CreateLobbyResponse
     fun createLobby(createdBy: PlayerId, otherThing: String): CreateLobbyResponse {
         println("Handled createLobby! $createdBy")
         return CreateLobbyResponse(createdBy.num + otherThing.length)
+    }
+
+    fun uuidTypeAliasTest(uuid: UUIDTypeAlias) {
+
     }
 
     fun killSomeone(killer: Int, shit: PlayerId, bar: Unit): UInt {
@@ -208,7 +216,7 @@ typealias AliasTest = CreateLobbyResponse
         d2: Map.Entry<Int, Int>,
         e2: Instant,
 //        f2: ZonedDateTime,
-        g2: SerializableUUID,
+        g2: UUID,
         h2: Duration
     ): Triple<Int, Int, Int> {
         return q
@@ -422,7 +430,7 @@ class EveryBuiltinType(
     @Contextual val d2: Map.Entry<Int, Int>,
     val e2: Instant,
 //    @Contextual val f2: ZonedDateTime,
-    val g2: SerializableUUID,
+    val g2: UUID,
     val h2: Duration
 ) {
     override fun equals(other: Any?): Boolean {

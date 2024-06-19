@@ -96,9 +96,7 @@ public object GeneratedCodeUtils {
         target: String? = null,
         handle: suspend (subArgs: List<*>) -> R
     ) {
-        println("Invoking event $eventName")
         val match = config.eventManager.match(eventName, target)
-        println("Match results for event $eventName with target $target: $match")
         for (subscriber in match) {
             val parsed = config.format.decode(TupleSerializer(subArgDeserializers), subscriber.info.data)
             val handled = handle(parsed)

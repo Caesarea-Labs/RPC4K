@@ -37,7 +37,6 @@ class Rpc4KPlugin : Plugin<Project> {
             dependencies.add("implementation", lib)
             // Apply KSP processor
             dependencies.add("ksp", processor)
-
         } else if (plugins.hasPlugin("org.jetbrains.kotlin.multiplatform")) {
             println("RPC4K will be applied to commonMain ONLY!")
             val kmp = extensions.getByType<KotlinMultiplatformExtension>()
