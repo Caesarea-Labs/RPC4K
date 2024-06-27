@@ -24,7 +24,7 @@ export class FetchRpcClient implements RpcClient {
 
         const exception = async (message: string): Promise<never> => {
             const body = await response.text()
-            throw new RpcResponseError(message + ": " + body, rpc, format, this, body, response.status)
+            throw new RpcResponseError(message + ": " + body + `. Request: ${rpc.method}(${rpc.methodArgs})`, rpc, format, this, body, response.status)
         }
 
 
@@ -32,7 +32,7 @@ export class FetchRpcClient implements RpcClient {
             case 200:
                 return new Uint8Array(await response.arrayBuffer())
             case 400:
-                return await exception("Request was not valid. The client may not be up to date")
+                return await exception("Request was not valid. The client may not be up to date.")
             case 404:
                 return await exception(`Could not find the server at url '${this.url}'.`)
             case 500:
