@@ -32,9 +32,12 @@ internal class ApiClassValidator(private val env: SymbolProcessorEnvironment, pr
             val type = it.resolveToUnderlying()
             // Type parameters get a pass since they might get expanded into something serializable
             if (type.declaration is KSTypeParameter) return@getReferencedClasses true
+            // Ignore error types
+            if (type.isError) return@getReferencedClasses true
             val serializable = type.isSerializable()
             if (!serializable) unserializableReferencedClass = true
             it.checkRequirement(env, serializable) {
+                println(apiClass)
                 "Referenced type '${type.declaration.getQualifiedName()}' is not a @Serializable class or a builtin serializable type."
             }
         }

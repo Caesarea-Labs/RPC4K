@@ -53,6 +53,41 @@ test("Test events", async () => {
 
     expect(actualMessage).toEqual("test5")
 })
+//         val server = allEncompassingExtension.server
+//         val client = allEncompassingExtension.client
+//         var actualMessage: String? = null
+//         val event = client.eventTest("Test string")
+//
+//         GlobalScope.launch {
+//             event.collectLatest {
+//                 actualMessage = it
+//             }
+//         }
+//
+//         delay(1000)
+//         expectThat(actualMessage).isNull()
+//         server.invokeEventWithParticipants(participant = event.listenerId)
+//         expectThat(actualMessage).isNull()
+//         delay(1000)
+//         expectThat(actualMessage).isNull()
+test("Test event with participants", async () => {
+    const fetch = new FetchRpcClient("http://localhost:8080", new NodejsWebsocket("http://localhost:8080/events"))
+    const format = JsonFormat
+    const client = new AllEncompassingServiceApi(fetch, format)
+
+    let actualMessage: string | null = null
+    const observable = client.eventTest("test")
+    observable.observe(value => {
+        actualMessage = value
+    })
+    await wait(1000)
+
+    await client.invokeEventWithParticipants(observable.listenerId)
+
+    await wait(1000)
+
+    expect(actualMessage).toEqual(null)
+})
 
 
 //TODO:  - The server is passing around the target parameter when it shouldn't

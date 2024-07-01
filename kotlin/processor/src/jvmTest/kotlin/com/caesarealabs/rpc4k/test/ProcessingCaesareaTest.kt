@@ -19,16 +19,19 @@ class ProcessingCaesareaTest {
     @Test
     fun `Process CaesareaPoC`() {
         println("path: " + System.getProperty("user.dir"))
-        val testSources = File("../../../poc/server/src").walkBottomUp()
+//        val indices = 0
+        val testSources = (File("../../../Searchit/src").walkBottomUp()
+            + File("../../../poc/server/src").walkBottomUp())
             .filter { it.isFile && it.extension == "kt" }
             .map { SourceFile.fromPath(it) }
             .toList()
+//            .drop(10)
 
         expectThat(testSources).isNotEmpty()
 
         val result = KotlinCompilation().apply {
             sources = testSources
-            symbolProcessorProviders = listOf(com.caesarealabs.rpc4k.processor.Rpc4kProcessorProvider())
+            symbolProcessorProviders = listOf(Rpc4kProcessorProvider())
             inheritClassPath = true
             messageOutputStream = System.out // see diagnostics in real time
         }.compile()

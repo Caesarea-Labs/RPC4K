@@ -4,9 +4,9 @@ import com.caesarealabs.rpc4k.processor.ApiDefinitionUtils.ignoreExperimentalWar
 import com.caesarealabs.rpc4k.processor.ApiDefinitionUtils.listOfEventSubSerializers
 import com.caesarealabs.rpc4k.processor.utils.poet.*
 import com.caesarealabs.rpc4k.runtime.api.HandlerConfig
-import com.caesarealabs.rpc4k.runtime.user.Rpc4kIndex
 import com.caesarealabs.rpc4k.runtime.api.RpcRouter
 import com.caesarealabs.rpc4k.runtime.implementation.GeneratedCodeUtils
+import com.caesarealabs.rpc4k.runtime.user.Rpc4kIndex
 import com.squareup.kotlinpoet.*
 import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy
 
@@ -54,20 +54,15 @@ internal class ApiDefinitionToServerCode(private val api: RpcApi) {
     companion object {
         private const val Config: String = "config"
         private const val UserHandlerPropertyName = "handler"
-        private val wildcardType = WildcardTypeName.producerOf(ANY.copy(nullable = true))
 
         private const val RequestParamName = "request"
         private const val MethodParamName = "method"
 
         private val respondUtilsMethod = GeneratedCodeUtils::class.methodName("respond")
-        private val transformEventUtilsMethod = GeneratedCodeUtils::class.methodName("transformEvent")
         private val invokeEventUtilsMethod = GeneratedCodeUtils::class.methodName("invokeEvent")
         private const val InvokerSuffix = "EventInvoker"
-
-        private const val DispatcherDataParamName = "dispatcherData"
-        private const val SubscriptionDataParamName = "subscriptionData"
-        private const val EventParamName = "event"
-
+        private const val ParticipantsParamName = "participants"
+        private val ParticipantsParamType = Set::class.parameterizedBy(String::class)
     }
 
     private val invokerName = "${api.name.simple}$InvokerSuffix"
@@ -105,6 +100,7 @@ internal class ApiDefinitionToServerCode(private val api: RpcApi) {
             addFunction(handleRequestMethod())
         }
     }
+
     /**
      * val MyApi.Companion.server = object : GeneratedSuiteFactory<MyApi, AllEncompassingServiceClientImpl, AllEncompassingServiceEventInvoker> {
      *     override val createInvoker = ::AllEncompassingServiceEventInvoker
@@ -201,7 +197,6 @@ internal class ApiDefinitionToServerCode(private val api: RpcApi) {
     }
 
 
-
     /**
      * Generates something like this:
      * ```kotlin
@@ -243,6 +238,9 @@ internal class ApiDefinitionToServerCode(private val api: RpcApi) {
         for (parameter in dispatchParameters) {
             addParameter(parameter.name, parameter.type.typeName)
         }
+        // Add support for not sending events to "participants"
+        addParameter(ParameterSpec.builder(ParticipantsParamName, ParticipantsParamType).defaultValue("setOf()").build())
+        addKdoc("@param $ParticipantsParamName Listeners that will not be invoked as they have caused the event.")
         //NiceToHave: watched object id
 
         val targetParameter = event.targetParameter?.name
@@ -256,6 +254,7 @@ internal class ApiDefinitionToServerCode(private val api: RpcApi) {
             "\"${event.name}\"",
             paramSerializers,
             event.returnType.toSerializerString(),
+            ParticipantsParamName,
             target
         )
         addControlFlow(invokeEventUtilsMethod.withArgumentList(arguments)) {

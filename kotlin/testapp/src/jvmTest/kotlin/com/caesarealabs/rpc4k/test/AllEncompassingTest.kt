@@ -13,7 +13,6 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import kotlinx.datetime.Clock
-import kotlinx.datetime.Instant
 import okhttp3.HttpUrl.Companion.toHttpUrl
 import okhttp3.OkHttpClient
 import okhttp3.Request
@@ -24,23 +23,14 @@ import org.junit.jupiter.api.extension.RegisterExtension
 import strikt.api.expectThat
 import strikt.api.expectThrows
 import strikt.assertions.isEqualTo
+import strikt.assertions.isNotNull
+import strikt.assertions.isNull
 import java.nio.charset.Charset
 import java.util.*
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.time.Duration.Companion.milliseconds
 
-
-//TODO: get rid of other factories in favor of this
-//TODO: integrate this to simplify dealing with generated classes
-//TODO: split the suite into server only and client + server? for now i'm gonna gen client always
-
-
-//object AllEncompassingGeneratedSuite : GeneratedSuiteFactory<AllEncompassingService, AllEncompassingServiceClientImpl, AllEncompassingServiceEventInvoker> {
-//    override val createInvoker = ::AllEncompassingServiceEventInvoker
-//    override val createMemoryClient get() =  TODO()
-//    override val createNetworkClient = ::AllEncompassingServiceClientImpl
-//}
 
 
 class AllEncompassingTest {
@@ -69,15 +59,17 @@ class AllEncompassingTest {
         var actualMessage: String? = null
 
 
-        val webSocket = OkHttpClient().newWebSocket(Request("http://localhost:${allEncompassingExtension.port}/events".toHttpUrl()), object : WebSocketListener() {
-            override fun onMessage(webSocket: WebSocket, bytes: ByteString) {
-                println("Got message: ${bytes.string(Charset.defaultCharset())}")
-            }
+        val webSocket = OkHttpClient().newWebSocket(
+            Request("http://localhost:${allEncompassingExtension.port}/events".toHttpUrl()),
+            object : WebSocketListener() {
+                override fun onMessage(webSocket: WebSocket, bytes: ByteString) {
+                    println("Got message: ${bytes.string(Charset.defaultCharset())}")
+                }
 
-            override fun onMessage(webSocket: WebSocket, text: String) {
-                actualMessage = text
-            }
-        })
+                override fun onMessage(webSocket: WebSocket, text: String) {
+                    actualMessage = text
+                }
+            })
 
 
         webSocket.send("sub:eventTest:121b9a71-20f6-4d6c-91a2-4f0f1550d9ac::[\"Test string\"]")
@@ -231,6 +223,27 @@ class AllEncompassingTest {
 //        expectThat(protocol.inlineSealedParent(InlineSealedChild(2))).isEqualTo(InlineSealedChild(2))
 //        expectThat(protocol.inlineSealedChild(InlineSealedChild(2))).isEqualTo(InlineSealedChild(2))
 //        expectThat(protocol.inlineSealedChildReturnParent(InlineSealedChild(2))).isEqualTo(InlineSealedChild(2))
+    }
+
+    @Test
+    fun testParticipants(): Unit = runBlocking {
+        val server = allEncompassingExtension.server
+        val client = allEncompassingExtension.client
+        var actualMessage: String? = null
+        val event = client.eventTest("Test string")
+
+        GlobalScope.launch {
+            event.collectLatest {
+                actualMessage = it
+            }
+        }
+
+        delay(1000)
+        expectThat(actualMessage).isNull()
+        server.invokeEventWithParticipants(participant = event.listenerId)
+        expectThat(actualMessage).isNull()
+        delay(1000)
+        expectThat(actualMessage).isNull()
     }
 
 }

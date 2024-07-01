@@ -75,7 +75,8 @@ export class WebsocketEventClient implements EventClient {
                     // Tell the server to not update us about this event anymore
                     void this.send(unsubscribeMessage)
                 }
-            }
+            },
+            listenerId
         )
     }
 

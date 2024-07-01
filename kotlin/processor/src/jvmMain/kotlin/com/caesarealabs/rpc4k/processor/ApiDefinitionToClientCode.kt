@@ -6,6 +6,7 @@ import com.caesarealabs.rpc4k.runtime.api.GeneratedClientImplFactory
 import com.caesarealabs.rpc4k.runtime.api.RpcClient
 import com.caesarealabs.rpc4k.runtime.api.SerializationFormat
 import com.caesarealabs.rpc4k.runtime.implementation.GeneratedCodeUtils
+import com.caesarealabs.rpc4k.runtime.user.EventSubscription
 import com.squareup.kotlinpoet.*
 import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy
 import kotlinx.coroutines.flow.Flow
@@ -178,7 +179,7 @@ internal object ApiDefinitionToClientCode {
         for (argument in event.parameters) {
             if (!argument.isDispatch) addParameter(requestParameter(argument.value))
         }
-        val returnType = Flow::class.asClassName().parameterizedBy(event.returnType.typeName)
+        val returnType = EventSubscription::class.asClassName().parameterizedBy(event.returnType.typeName)
         returns(returnType)
 
         val normalArgs = event.parameters.filter { !it.isDispatch && !it.isTarget }.map { it.value.name }

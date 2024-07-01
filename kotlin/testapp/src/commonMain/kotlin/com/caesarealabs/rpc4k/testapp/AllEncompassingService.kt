@@ -321,6 +321,10 @@ typealias AliasTest = CreateLobbyResponse
         invoker.invokeEventTest(5)
     }
 
+     suspend fun invokeEventWithParticipants(participant: String) {
+        invoker.invokeEventTest(6, participants = setOf(participant))
+    }
+
     @RpcEvent
     open suspend fun complexEventTest(param1: Pair<String, ModelWithType>, @Dispatch param2: Tree<Int>, param3: TypeField): TypeField {
         return param3
@@ -329,9 +333,6 @@ typealias AliasTest = CreateLobbyResponse
     open suspend fun invokeComplexEventTest() {
         invoker.invokeComplexEventTest(Tree(2, listOf()))
     }
-
-    //TODO: 1.
-    // 4. Implement dispatch/subscription gen for EventTarget
 
     @RpcEvent
     open suspend fun eventTargetTest(normal: String, @EventTarget target: Int, @Dispatch dispatch: Float, normalAfterTarget: Foo): String {
