@@ -17,3 +17,4 @@ dist/
 .idea/kotlinc.xml
 .idea/vcs.xml
 .kotlin/
+.idea/artifacts/

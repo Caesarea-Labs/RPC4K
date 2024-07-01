@@ -57,7 +57,6 @@ tasks.withType<Test> {
 
 
 //TODO: Road to Getting RPC4K to Multiplatform:
-// 2.7 update POC to multiplatform rpc4k
-// 2.8 run processor tests again (Caesarea should pass)
 // 3. Properly set up publishing for KMP
+// 3.5 Find, use and test a multiplatform server and client to be used as a default
 // 4. Test on non-jvm app

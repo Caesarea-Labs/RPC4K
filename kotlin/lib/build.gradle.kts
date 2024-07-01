@@ -5,7 +5,7 @@ import kotlin.io.path.readBytes
 
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
-    alias(libs.plugins.androidLibrary)
+//    alias(libs.plugins.androidLibrary)
     alias(libs.plugins.serialization)
 }
 
@@ -18,11 +18,12 @@ val projGroup: String by project
 
 group = projGroup
 version = libs.versions.rpc4k.get()
-
+base.archivesName = "rpc4k-runtime"
 
 
 
 kotlin {
+
     compilerOptions {
         freeCompilerArgs.add("-Xcontext-receivers")
     }
@@ -33,14 +34,14 @@ kotlin {
         browser()
     }
     iosArm64()
-    androidTarget {
-        publishLibraryVariants("release")
-        compilations.all {
-            kotlinOptions {
-                jvmTarget = "1.8"
-            }
-        }
-    }
+//    androidTarget {
+//        publishLibraryVariants("release")
+//        compilations.all {
+//            kotlinOptions {
+//                jvmTarget = "1.8"
+//            }
+//        }
+//    }
 
     sourceSets {
         val jvmMain by getting {
@@ -85,11 +86,11 @@ kotlin {
 
     }
 }
-
-android {
-    namespace = projGroup
-    compileSdk = libs.versions.android.compileSdk.get().toInt()
-    defaultConfig {
-        minSdk = libs.versions.android.minSdk.get().toInt()
-    }
-}
+//
+//android {
+//    namespace = projGroup
+//    compileSdk = libs.versions.android.compileSdk.get().toInt()
+//    defaultConfig {
+//        minSdk = libs.versions.android.minSdk.get().toInt()
+//    }
+//}

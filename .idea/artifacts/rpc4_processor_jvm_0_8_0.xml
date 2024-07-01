@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="rpc4-processor-jvm-0.8.0">
+    <output-path>$PROJECT_DIR$/kotlin/processor/build/libs</output-path>
+    <root id="archive" name="rpc4-processor-jvm-0.8.0.jar">
+      <element id="module-output" name="RPC4K.processor.jvmMain" />
+    </root>
+  </artifact>
+</component>

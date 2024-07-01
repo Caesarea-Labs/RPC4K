@@ -11,7 +11,9 @@ import kotlin.reflect.KClass
 // Used for the processor only
 public val Rpc4kSerializers: List<Rpc4kSerializer<*>> = Rpc4kSerializersModuleBuilder().apply {
     obj(VoidUnitSerializer, "kotlin", "Unit", "com.caesarealabs.rpc4k.runtime.implementation.serializers", "VoidUnitSerializer")
-    obj<Uuid>(UUIDSerializer, "com.benasher44.uuid","Uuid","com.caesarealabs.rpc4k.runtime.implementation.serializers", "UUIDSerializer")
+    obj(UUIDSerializer, "com.benasher44.uuid","Uuid","com.caesarealabs.rpc4k.runtime.implementation.serializers", "UUIDSerializer")
+    // Use our serializer for the java UUID as because the MP UUID is typealiased to it
+    obj(UUIDSerializer, "java.util","UUID","com.caesarealabs.rpc4k.runtime.implementation.serializers", "UUIDSerializer")
 //    obj(InstantIsoSerializer)
 //    obj(ZonedDateTimeIsoSerializer)
     builtinSerializerMethod(Pair::class, "kotlin", "Pair", "TuplePairSerializer") {

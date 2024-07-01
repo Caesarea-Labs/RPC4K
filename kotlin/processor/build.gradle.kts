@@ -1,22 +1,25 @@
-import java.nio.file.Path
-import java.nio.file.Paths
-import kotlin.io.path.exists
-import kotlin.io.path.readBytes
-
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
     alias(libs.plugins.serialization)
+//    id("maven-publish")
 }
-
-
-
-
 
 
 val projGroup: String by project
 
 group = projGroup
+base.archivesName = "rpc4k-processor"
 version = libs.versions.rpc4k.get()
+
+//region Fix Gradle warning about signing tasks using publishing task outputs without explicit dependencies
+// https://github.com/gradle/gradle/issues/26091
+tasks.withType<AbstractPublishToMaven>().configureEach {
+    val signingTasks = tasks.withType<Sign>()
+    mustRunAfter(signingTasks)
+}
+//endregion
+
+
 
 
 kotlin {

@@ -63,6 +63,9 @@ suspend fun invokeSomeEvent(param1: Int, param2: String, participants: List<Stri
    
 
 # 2. Low Priority - Do later
+### Reduce error duplication when a type is not serializable.
+Currently we get two errors - one for the method having a non-serializable param, and then one for the type itself not being serializable. 
+TBH I think we can get rid of the method check because the type check encompasses it. 
 ### Improve server testing with "in-memory-server" client generation
 For every service, in addition to generating a client that interacts with the server from network, there should also be a client that 
 interacts with an actual server instance in-memory. This is because we no longer override the service class in the generated client, 

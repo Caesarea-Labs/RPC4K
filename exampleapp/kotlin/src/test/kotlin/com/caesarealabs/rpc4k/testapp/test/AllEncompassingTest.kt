@@ -1,38 +1,111 @@
 @file:OptIn(ExperimentalUnsignedTypes::class)
 @file:Suppress("SpellCheckingInspection")
 
-package com.caesarealabs.rpc4k.test
+package com.caesarealabs.rpc4k.testapp.test
 
+import com.caesarealabs.rpc4k.generated.rpc4k
 import com.caesarealabs.rpc4k.runtime.api.RpcResponseException
-import com.caesarealabs.rpc4k.runtime.api.testing.rpcExtension
+import com.caesarealabs.rpc4k.runtime.jvm.user.testing.junit
 import com.caesarealabs.rpc4k.testapp.*
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
+import kotlinx.datetime.Clock
+import okhttp3.HttpUrl.Companion.toHttpUrl
+import okhttp3.OkHttpClient
+import okhttp3.Request
+import okhttp3.WebSocket
+import okhttp3.WebSocketListener
+import okio.ByteString
 import org.junit.jupiter.api.extension.RegisterExtension
 import strikt.api.expectThat
 import strikt.api.expectThrows
 import strikt.assertions.isEqualTo
-import java.time.Instant
-import java.time.ZonedDateTime
+import strikt.assertions.isNull
+import java.nio.charset.Charset
 import java.util.*
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.time.Duration.Companion.milliseconds
 
 
+
 class AllEncompassingTest {
     companion object {
         @JvmField
         @RegisterExtension
-        val allEncompassingExtension = rpcExtension(AllEncompassingService())
+        val allEncompassingExtension = AllEncompassingService.rpc4k.junit { AllEncompassingService(it) }
+//        rpcExtension<AllEncompassingService, AllEncompassingServiceEventInvoker, AllEncompassingServiceClientImpl>({
+//            AllEncompassingService(invoker = it)
+//        })
 
         @JvmField
         @RegisterExtension
-        val simpleExtension = rpcExtension(SimpleProtocol())
+        val simpleExtension = SimpleProtocol.rpc4k.junit { SimpleProtocol() }
+    }
+
+//    @Befo
+//    fun foo() {
+//
+//    }
+
+    @Test
+    fun testEvents(): Unit = runBlocking {
+        val api = allEncompassingExtension.server
+
+        var actualMessage: String? = null
+
+
+        val webSocket = OkHttpClient().newWebSocket(
+            Request("http://localhost:${allEncompassingExtension.port}/events".toHttpUrl()),
+            object : WebSocketListener() {
+                override fun onMessage(webSocket: WebSocket, bytes: ByteString) {
+                    println("Got message: ${bytes.string(Charset.defaultCharset())}")
+                }
+
+                override fun onMessage(webSocket: WebSocket, text: String) {
+                    actualMessage = text
+                }
+            })
+
+
+        webSocket.send("sub:eventTest:121b9a71-20f6-4d6c-91a2-4f0f1550d9ac::[\"Test string\"]")
+        delay(1000)
+
+        api.tinkerWithEvents()
+
+        delay(1000)
+
+        expectThat(actualMessage).isEqualTo("event:121b9a71-20f6-4d6c-91a2-4f0f1550d9ac:\"Test string5\"")
+    }
+
+    @Test
+    fun testGeneratedEvents(): Unit = runBlocking {
+        val server = allEncompassingExtension.server
+        val client = allEncompassingExtension.client
+        var actualMessage: String? = null
+
+        GlobalScope.launch {
+            client.eventTest("Test string").collectLatest {
+                actualMessage = it
+            }
+        }
+
+
+        delay(1000)
+
+        server.tinkerWithEvents()
+
+        delay(1000)
+
+        expectThat(actualMessage).isEqualTo("Test string5")
     }
 
     @Test
     fun testUsage(): Unit = runBlocking {
-        val protocol = allEncompassingExtension.api
+        val protocol = allEncompassingExtension.client
         val response = protocol.createLobby(PlayerId(123), "alo")
         assertEquals(CreateLobbyResponse(126), response)
         val response2 = protocol.killSomeone(111, PlayerId(5), Unit)
@@ -59,7 +132,7 @@ class AllEncompassingTest {
 
     @Test
     fun testNullableTypes(): Unit = runBlocking {
-        val protocol = allEncompassingExtension.api
+        val protocol = allEncompassingExtension.client
         expectThat(protocol.heavyNullable(AllEncompassingService.HeavyNullableTestMode.EntirelyNull)).isEqualTo(null)
         expectThat(protocol.heavyNullable(AllEncompassingService.HeavyNullableTestMode.NullList)).isEqualTo(GenericThing(null, null, listOf()))
         expectThat(protocol.heavyNullable(AllEncompassingService.HeavyNullableTestMode.NullString)).isEqualTo(
@@ -73,7 +146,7 @@ class AllEncompassingTest {
 
     @Test
     fun testManual(): Unit = runBlocking {
-        val protocol = simpleExtension.api
+        val protocol = simpleExtension.client
         val response = protocol.bar(2)
         assertEquals(3, response)
     }
@@ -81,18 +154,18 @@ class AllEncompassingTest {
     @Test
     fun testExceptions(): Unit = runBlocking {
         expectThrows<RpcResponseException> {
-            allEncompassingExtension.api.errorTest()
+            allEncompassingExtension.client.errorTest()
         }.get { code == 500 }
 
         expectThrows<RpcResponseException> {
-            allEncompassingExtension.api.requirementTest()
+            allEncompassingExtension.client.requirementTest()
         }.get { code == 400 }
     }
 
     @Test
     fun testExoticTypes(): Unit = runBlocking {
         val y = "Asdf"
-        val protocol = allEncompassingExtension.api
+        val protocol = allEncompassingExtension.client
         expectThat(protocol.withNullsTest(WithNulls(listOf("2", null), y = y)))
             .isEqualTo(WithNulls(listOf(1, null), y))
 
@@ -111,7 +184,7 @@ class AllEncompassingTest {
             byteArrayOf(7), ShortArray(8), IntArray(9), longArrayOf(10), charArrayOf('@'),
             listOf(11), mapOf(12 to 13), setOf(14), 15 to 16, Triple(17, 18, 19), Unit,
             arrayOf(20), ubyteArrayOf(21u), ushortArrayOf(22u), uintArrayOf(23u), ULongArray(24),
-            25u, 26u, 27u, 28u, 29f, 30.0, mapOf(31 to 32).entries.first(), Instant.now(), ZonedDateTime.now(),
+            25u, 26u, 27u, 28u, 29f, 30.0, mapOf(31 to 32).entries.first(), Clock.System.now(),
             UUID.randomUUID(), 33.milliseconds
 
         )
@@ -122,10 +195,11 @@ class AllEncompassingTest {
                 byteArrayOf(7), ShortArray(8), IntArray(9), longArrayOf(10), charArrayOf('@'),
                 listOf(11), mapOf(12 to 13), setOf(14), 15 to 16, Triple(17, 18, 19), Unit,
                 arrayOf(20), ubyteArrayOf(21u), ushortArrayOf(22u), uintArrayOf(23u), ULongArray(24),
-                25u, 26u, 27u, 28u, 29f, 30.0, mapOf(31 to 32).entries.first(), Instant.now(), ZonedDateTime.now(),
+                25u, 26u, 27u, 28u, 29f, 30.0, mapOf(31 to 32).entries.first(), Clock.System.now(),
                 UUID.randomUUID(), 20.milliseconds
             )
         ).isEqualTo(Triple(17, 18, 19))
+
 
         expectThat(protocol.genericInline(GenericInline(2))).isEqualTo(GenericInline(2))
         val inlineHolder = InlineHolder2(InlineId(2))
@@ -148,6 +222,27 @@ class AllEncompassingTest {
 //        expectThat(protocol.inlineSealedParent(InlineSealedChild(2))).isEqualTo(InlineSealedChild(2))
 //        expectThat(protocol.inlineSealedChild(InlineSealedChild(2))).isEqualTo(InlineSealedChild(2))
 //        expectThat(protocol.inlineSealedChildReturnParent(InlineSealedChild(2))).isEqualTo(InlineSealedChild(2))
+    }
+
+    @Test
+    fun testParticipants(): Unit = runBlocking {
+        val server = allEncompassingExtension.server
+        val client = allEncompassingExtension.client
+        var actualMessage: String? = null
+        val event = client.eventTest("Test string")
+
+        GlobalScope.launch {
+            event.collectLatest {
+                actualMessage = it
+            }
+        }
+
+        delay(1000)
+        expectThat(actualMessage).isNull()
+        server.invokeEventWithParticipants(participant = event.listenerId)
+        expectThat(actualMessage).isNull()
+        delay(1000)
+        expectThat(actualMessage).isNull()
     }
 
 }

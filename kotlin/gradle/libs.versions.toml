@@ -8,11 +8,12 @@ serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref 
 nexus_publish = { id = "io.github.gradle-nexus.publish-plugin", version.ref = "nexus" }
 androidLibrary = { id = "com.android.library", version.ref = "agp" }
 kotlinMultiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
+kotlin-jvm = {id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin"}
 atomicfu = {id ="org.jetbrains.kotlin.plugin.atomicfu", version.ref = "kotlin" }
 [versions]
 
 kotlinxDatetime = "0.6.0"
-rpc4k = "0.7.1"
+rpc4k = "0.8.0"
 nexus = "2.0.0"
 kotlin = "2.0.0"
 ksp = "2.0.0-1.0.21"

@@ -3,21 +3,27 @@
 
 package com.caesarealabs.rpc4k.testapp
 
+import com.caesarealabs.rpc4k.generated.AllEncompassingServiceEventInvoker
+import com.caesarealabs.rpc4k.runtime.api.*
+import com.caesarealabs.rpc4k.runtime.user.*
 import com.caesarealabs.rpc4k.testapp.EnumArgs.Option1
 import com.caesarealabs.rpc4k.testapp.EnumArgs.Option5
-import com.caesarealabs.rpc4k.runtime.user.Api
-import com.caesarealabs.rpc4k.runtime.api.serverRequirement
+import kotlinx.datetime.Instant
 import kotlinx.serialization.Contextual
 import kotlinx.serialization.Serializable
-import java.time.Instant
-import java.time.ZonedDateTime
-import java.util.*
+import kotlin.jvm.JvmInline
 import kotlin.time.Duration
 
 
+@Serializable
+data class NestedObject(val x : Int)
+@Serializable
+data class NestingObject(val nested: NestedObject)
 
+typealias UUIDTypeAlias = UUID
 
-//@Serializable data class LyingSerializable(@Contextual val locale: Locale)
+@Serializable data class UUIDTest(val uuid: UUIDTypeAlias)
+
 
 @Serializable
 @JvmInline
@@ -49,11 +55,10 @@ open class SimpleProtocol {
 typealias AliasTest = CreateLobbyResponse
 
 @Api(true)
-open class AllEncompassingService(val value: Int = 1) {
+ class AllEncompassingService(val invoker: AllEncompassingServiceEventInvoker) {
     companion object {
         fun distraction1() {}
         val distraction2: String = ""
-
     }
 
     val distraction3 = 2
@@ -62,16 +67,20 @@ open class AllEncompassingService(val value: Int = 1) {
     class Distraction5
 
 
-    open suspend fun createLobby(createdBy: PlayerId, otherThing: String): CreateLobbyResponse {
+    fun createLobby(createdBy: PlayerId, otherThing: String): CreateLobbyResponse {
         println("Handled createLobby! $createdBy")
         return CreateLobbyResponse(createdBy.num + otherThing.length)
     }
 
-    open suspend fun killSomeone(killer: Int, shit: PlayerId, bar: Unit): UInt {
+    fun uuidTypeAliasTest(uuid: UUIDTypeAlias) {
+
+    }
+
+    fun killSomeone(killer: Int, shit: PlayerId, bar: Unit): UInt {
         return (killer + shit.num).toUInt()
     }
 
-    open suspend fun someShit(x: Int, y: Int): String {
+    fun someShit(x: Int, y: Int): String {
         println("asdf")
         println("asdf")
         println("asdf")
@@ -109,30 +118,13 @@ open class AllEncompassingService(val value: Int = 1) {
         NullString
     }
 
-    open suspend fun heavyNullable(mode: AllEncompassingService.HeavyNullableTestMode): GenericThing<List<String?>?, List<String>?, List<String?>>? {
+    open suspend fun heavyNullable(mode: HeavyNullableTestMode): GenericThing<List<String?>?, List<String>?, List<String?>>? {
         return when (mode) {
-            AllEncompassingService.HeavyNullableTestMode.EntirelyNull -> null
-            AllEncompassingService.HeavyNullableTestMode.NullList -> GenericThing(
-                null,
-                null,
-                listOf()
-            )
-            AllEncompassingService.HeavyNullableTestMode.NullString -> GenericThing(
-                listOf(null, "test"),
-                null,
-                listOf()
-            )
+            HeavyNullableTestMode.EntirelyNull -> null
+            HeavyNullableTestMode.NullList -> GenericThing(null, null, listOf())
+            HeavyNullableTestMode.NullString -> GenericThing(listOf(null, "test"), null, listOf())
         }
     }
-
-//    open suspend fun flowTest(thing: Int): Flow<List<PlayerId>?> {
-//        return flowOf(listOf(PlayerId(thing.toLong())))
-//    }
-//
-//    open suspend fun sharedFlowTest(thing: Int): Flow<List<PlayerId>?> {
-//        val flow = flowOf(listOf(PlayerId(thing.toLong())))
-//        return flow.stateIn(CoroutineScope(currentCoroutineContext()))
-//    }
 
     open suspend fun genericTest(thing: String): GenericThing<String, Int, Long> {
         return GenericThing("", 2, 3)
@@ -223,7 +215,7 @@ open class AllEncompassingService(val value: Int = 1) {
         c2: Double,
         d2: Map.Entry<Int, Int>,
         e2: Instant,
-        f2: ZonedDateTime,
+//        f2: ZonedDateTime,
         g2: UUID,
         h2: Duration
     ): Triple<Int, Int, Int> {
@@ -312,6 +304,64 @@ open class AllEncompassingService(val value: Int = 1) {
         return map
     }
 
+    open suspend fun nestingObject(obj: NestingObject): NestingObject {
+        return obj
+    }
+
+    open suspend fun modelWithType(type: ModelWithType): ModelWithType {
+        return type
+    }
+
+    @RpcEvent
+    suspend fun eventTest(@Dispatch dispatchParam: Int, normalParam: String): String {
+        return normalParam + dispatchParam
+    }
+
+    open suspend fun tinkerWithEvents() {
+        invoker.invokeEventTest(5)
+    }
+
+     suspend fun invokeEventWithParticipants(participant: String) {
+        invoker.invokeEventTest(6, participants = setOf(participant))
+    }
+
+    @RpcEvent
+    open suspend fun complexEventTest(param1: Pair<String, ModelWithType>, @Dispatch param2: Tree<Int>, param3: TypeField): TypeField {
+        return param3
+    }
+
+    open suspend fun invokeComplexEventTest() {
+        invoker.invokeComplexEventTest(Tree(2, listOf()))
+    }
+
+    @RpcEvent
+    open suspend fun eventTargetTest(normal: String, @EventTarget target: Int, @Dispatch dispatch: Float, normalAfterTarget: Foo): String {
+        return "${normal} ${target} ${dispatch} ${normalAfterTarget.x}"
+    }
+
+    open suspend fun invokeEventTargetTest(target: Int): String {
+        invoker.invokeEventTargetTest(target, 1234f)
+        return "12345"
+    }
+
+    @RpcEvent
+    suspend fun noArgsTest() {
+
+    }
+
+    @RpcEvent
+    open suspend fun targetWithDifferentName(@EventTarget name: String): String {
+        return name
+    }
+
+
+//
+@Serializable
+data class Foo(val x: Int)
+
+
+
+
 //NiceToHave: Respect @SerialName
 //    open suspend fun serialName(obj: SerialNameTest): SerialNameTest {
 //        return obj
@@ -326,6 +376,7 @@ open class AllEncompassingService(val value: Int = 1) {
 
 @Serializable
 data class Tree<T>(val item: T, val children: List<Tree<T>>)
+
 
 @Serializable
 data class TypeField(val type: String)
@@ -378,16 +429,14 @@ class EveryBuiltinType(
     val b2: Float,
     val c2: Double,
     @Contextual val d2: Map.Entry<Int, Int>,
-    @Contextual val e2: Instant,
-    @Contextual val f2: ZonedDateTime,
-    @Contextual val g2: UUID,
+    val e2: Instant,
+//    @Contextual val f2: ZonedDateTime,
+    val g2: UUID,
     val h2: Duration
 ) {
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
-        if (javaClass != other?.javaClass) return false
-
-        other as EveryBuiltinType
+        if (other !is EveryBuiltinType) return false
 
         if (a != other.a) return false
         if (b != other.b) return false
@@ -420,7 +469,7 @@ class EveryBuiltinType(
         if (c2 != other.c2) return false
         if (d2 != other.d2) return false
         if (e2 != other.e2) return false
-        if (f2 != other.f2) return false
+//        if (f2 != other.f2) return false
         if (g2 != other.g2) return false
         if (h2 != other.h2) return false
 
@@ -463,7 +512,8 @@ sealed class PolymorphicClass: LargeHierarchy {
     data object Option3 : PolymorphicClass()
 }
 
-
+@Serializable
+data class ModelWithType(val type: String, val other: Int)
 
 
 @Serializable data class MutableThings(val map: MutableMap<String, Int>, val list: MutableList<Int>, val set: MutableSet<Int>)

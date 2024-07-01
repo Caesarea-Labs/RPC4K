@@ -1,6 +1,7 @@
-package com.caesarealabs.rpc4k.test
+package com.caesarealabs.rpc4k.testapp.test
 
-import com.caesarealabs.rpc4k.runtime.api.testing.rpcExtension
+import com.caesarealabs.rpc4k.generated.rpc4k
+import com.caesarealabs.rpc4k.runtime.jvm.user.testing.junit
 import com.caesarealabs.rpc4k.testapp.SimpleProtocol
 import kotlinx.coroutines.runBlocking
 import org.junit.jupiter.api.Assertions.assertEquals
@@ -11,13 +12,13 @@ class SimpleKtorServerTest {
     companion object {
         @JvmField
         @RegisterExtension
-        val extension = rpcExtension(SimpleProtocol())
+        val extension = SimpleProtocol.rpc4k.junit { SimpleProtocol() } 
     }
 
 
     @Test
     fun testManual(): Unit = runBlocking {
-        val response = extension.api.bar(2)
+        val response = extension.client.bar(2)
         assertEquals(3, response)
     }
 

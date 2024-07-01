@@ -18,10 +18,3 @@ sealed interface Foo {
 //    Z
 //}
 //
-fun main() {
-    val map = """{"1": 2.0}"""
-    val res = Json.decodeFromString(MapSerializer(Int.serializer(),Double.serializer()), map)
-//    val
-//    val res = Json.encodeToString(Foo.serializer(), Foo.Bar(2))
-//    println(res)
-}
