@@ -27,6 +27,7 @@ kotlin {
         freeCompilerArgs.add("-Xcontext-receivers")
     }
     jvm()
+    jvmToolchain(17)
 
 
     sourceSets {

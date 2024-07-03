@@ -43,7 +43,11 @@ gradlePlugin {
     }
 }
 
-
+publishing {
+    publications.withType<MavenPublication> {
+        artifactId = "rpc4k-plugin"
+    }
+}
 
 //kotlin {
 //    compilerOptions.freeCompilerArgs.add("-Xcontext-receivers")

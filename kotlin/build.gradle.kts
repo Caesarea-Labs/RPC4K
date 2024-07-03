@@ -49,6 +49,7 @@ afterEvaluate {
 subprojects {
     apply(plugin = "maven-publish")
     apply(plugin = "signing")
+
     // AfterEvaluate so we catch the various platform publications as well
     afterEvaluate {
         signing {

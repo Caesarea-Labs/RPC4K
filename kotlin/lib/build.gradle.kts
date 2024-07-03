@@ -34,6 +34,7 @@ kotlin {
         browser()
     }
     iosArm64()
+    jvmToolchain(17)
 //    androidTarget {
 //        publishLibraryVariants("release")
 //        compilations.all {
@@ -46,12 +47,15 @@ kotlin {
     sourceSets {
         val jvmMain by getting {
             dependencies {
-                implementation(libs.junit)
-                implementation(libs.ktor.server.core.jvm)
-                implementation(libs.ktor.server.websockets.jvm)
-                implementation(libs.ktor.netty)
-                implementation(libs.ktor.logging)
-                implementation(libs.okhttp.core)
+                //TODO: should be part of testing module
+                api(libs.junit)
+                //TODO: should be part of ktor server module
+                api(libs.ktor.server.core.jvm)
+                api(libs.ktor.server.websockets.jvm)
+                api(libs.ktor.netty)
+                api(libs.ktor.logging)
+                //TODo: should be part of okhttp client module
+                api(libs.okhttp.core)
             }
         }
         val commonMain by getting {
@@ -86,6 +90,8 @@ kotlin {
 
     }
 }
+
+
 //
 //android {
 //    namespace = projGroup

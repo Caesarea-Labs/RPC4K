@@ -8,6 +8,7 @@ import org.gradle.kotlin.dsl.get
 import org.gradle.kotlin.dsl.getByType
 import org.gradle.kotlin.dsl.withType
 import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
+import org.jetbrains.kotlin.gradle.tasks.AbstractKotlinCompile
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 import java.io.File
 import java.nio.file.Path
@@ -44,12 +45,16 @@ class Rpc4KPlugin : Plugin<Project> {
             kmp.sourceSets.named("commonMain").configure {
                 kotlin.srcDir("build/generated/ksp/metadata/commonMain/kotlin")
             }
-            // KSP doesn't know to make this task run by itself
-            tasks.withType<KotlinCompile> {
-                if (name != "kspCommonMainKotlinMetadata") {
-                    dependsOn("kspCommonMainKotlinMetadata")
+            // Do in afterEvaluate because the multiplatform compile tasks are created after user configuration
+            afterEvaluate {
+                // KSP doesn't know to make this task run by itself
+                tasks.withType<AbstractKotlinCompile<*>> {
+                    if (name != "kspCommonMainKotlinMetadata") {
+                        dependsOn("kspCommonMainKotlinMetadata")
+                    }
                 }
             }
+
 
             // Apply KSP processor
             dependencies.add("kspCommonMainMetadata", processor)
