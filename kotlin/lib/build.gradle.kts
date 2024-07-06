@@ -7,6 +7,7 @@ plugins {
     alias(libs.plugins.kotlinMultiplatform)
 //    alias(libs.plugins.androidLibrary)
     alias(libs.plugins.serialization)
+    id("org.jetbrains.kotlinx.atomicfu") version "0.25.0"
 }
 
 

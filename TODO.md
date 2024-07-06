@@ -1,4 +1,7 @@
-
+Next steps:
+1. Fix Caesarea
+2. simplify Server.Dedicated and handle constructor function issues with the listener
+3. Add memory server
 
 ### Handle erroneous event subscriptions
 1. If invoking an event fails, remove it from the subscription list and send an error message to the client signaling an error occurred. Make sure to pass a listener id. 

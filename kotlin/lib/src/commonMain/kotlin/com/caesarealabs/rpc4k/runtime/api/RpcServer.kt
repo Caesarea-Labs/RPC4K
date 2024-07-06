@@ -1,36 +1,26 @@
 package com.caesarealabs.rpc4k.runtime.api
 
 
-// LOWPRIO: try to simplify this
-public sealed interface RpcServerEngine {
+
+/**
+ * Specifies how RPC event messages should be sent
+ */
+public interface RpcMessageLauncher {
     /**
      * Returns true if the message was reached.
      *
      * Return false if the target of the connection is gone, and the connection should be removed
      */
-    public suspend fun sendMessage(connection: EventConnection, bytes: ByteArray): Boolean
+    public suspend fun send(connection: EventConnection, bytes: ByteArray): Boolean
+}
 
-    public sealed interface SingleCall<I, O> : RpcServerEngine {
-        public suspend fun read(input: I): ByteArray
-        public interface Returning<I, O> : SingleCall<I, O> {
-            public suspend fun respond(body: ByteArray): O
-            public suspend fun respondError(message: String, errorType: RpcError): O
-        }
-
-        public interface Writing<I, O> : SingleCall<I, O> {
-            public suspend fun write(body: ByteArray, output: O)
-            public suspend fun writeError(message: String, errorType: RpcError, output: O)
-        }
-    }
-
-    public interface MultiCall : RpcServerEngine {
-        public interface Instance {
-            public fun start(wait: Boolean)
-            public fun stop()
-        }
-
-        public fun create(config: ServerConfig): Instance
-    }
+/**
+ * A server platform that handles routing RPC requests itself, using the specified config in [start].
+ * Once the server is not needed, [stop] should be called.
+ */
+public interface DedicatedServer: RpcMessageLauncher {
+    public fun start(config: ServerConfig, wait: Boolean = true)
+    public fun stop()
 }
 
 /**

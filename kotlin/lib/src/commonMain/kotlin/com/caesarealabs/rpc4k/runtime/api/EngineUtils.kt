@@ -1,11 +1,9 @@
-package com.caesarealabs.rpc4k.runtime.implementation
+package com.caesarealabs.rpc4k.runtime.api
 
-import com.caesarealabs.rpc4k.runtime.api.*
-import com.caesarealabs.rpc4k.runtime.api.S2CEventMessage
+import com.caesarealabs.rpc4k.runtime.implementation.Rpc4kLogger
+import com.caesarealabs.rpc4k.runtime.implementation.sendOrDrop
 
 public suspend fun ServerConfig.acceptEventSubscription(bytes: ByteArray, connection: EventConnection) {
-//    val eventManager = engine.eventManager as EventManager<EventConnection>
-    println("Accept event subscription: ${bytes.decodeToString()}")
     try {
         when (val message = C2SEventMessage.fromByteArray(bytes)) {
             is C2SEventMessage.Subscribe -> eventManager.subscribe(message, connection)
@@ -21,10 +19,3 @@ public suspend fun ServerConfig.acceptEventSubscription(bytes: ByteArray, connec
     }
 }
 
-public suspend fun <I, O> RpcServerEngine.SingleCall.Writing<I, O>.routeRpcs(input: I, output: O, config: ServerConfig) {
-    routeRpcCallImpl(input, output, config)
-}
-
-public suspend fun <I, O> RpcServerEngine.SingleCall.Returning<I, O>.routeRpcs(input: I, config: ServerConfig): O {
-    return routeRpcCallImpl(input, null, config)!!
-}

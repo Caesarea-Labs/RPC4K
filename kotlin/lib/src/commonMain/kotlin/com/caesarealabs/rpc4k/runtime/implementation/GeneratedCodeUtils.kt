@@ -113,7 +113,6 @@ public object GeneratedCodeUtils {
             val bytes = config.format.encode(resultSerializer, handled)
             val fullMessage = S2CEventMessage.Emitted(subscriber.info.listenerId, bytes).toByteArray()
             config.sendOrDrop(subscriber.connection, fullMessage)
-//             subscriber.connection.send(fullMessage)
         }
     }
 }
@@ -122,7 +121,7 @@ public object GeneratedCodeUtils {
  * Will send the [bytes] to the [connection], dropping it if it cannot be reached
  */
 internal suspend fun <T> HandlerConfig<T>.sendOrDrop(connection: EventConnection, bytes: ByteArray) {
-    val clientExists = engine.sendMessage(connection, bytes)
+    val clientExists =  messageLauncher.send(connection, bytes)
     if (!clientExists) {
         println("Dropping connection ${connection.id} as it cannot be reached")
         eventManager.dropClient(connection)

@@ -121,7 +121,8 @@ internal object ApiDefinitionToNetworkClient {
      *  ```
      */
     private fun requestMethod(rpcDefinition: RpcFunction): FunSpec = ApiDefinitionToClient.createRequest(rpcDefinition) {
-        addModifiers(KModifier.OVERRIDE)
+        //LOWPRIO: Improve server testing with "in-memory-server" client generation
+        // addModifiers(KModifier.OVERRIDE)
         val returnsValue = !rpcDefinition.returnType.isUnit
         // We use a simpler method where no return type is required
         val method = if (returnsValue) requestMethod else sendMethod
@@ -158,7 +159,8 @@ internal object ApiDefinitionToNetworkClient {
      * ```
      */
     private fun eventSubMethod(event: RpcEventEndpoint): FunSpec = ApiDefinitionToClient.createEventSubscription(event) {
-        addModifiers(KModifier.OVERRIDE)
+        //LOWPRIO: Improve server testing with "in-memory-server" client generation
+        // addModifiers(KModifier.OVERRIDE)
         val normalArgs = event.parameters.filter { !it.isDispatch && !it.isTarget }.map { it.value.name }
 
 

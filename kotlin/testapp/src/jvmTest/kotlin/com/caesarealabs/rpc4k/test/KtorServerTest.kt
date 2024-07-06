@@ -17,7 +17,7 @@ class KtorServerTest {
     companion object {
         @JvmField
         @RegisterExtension
-        val extension = BasicApi.rpc4k.junit { BasicApi() }
+        val extension = BasicApi.rpc4k.junit { BasicApi(it) }
     }
 
 

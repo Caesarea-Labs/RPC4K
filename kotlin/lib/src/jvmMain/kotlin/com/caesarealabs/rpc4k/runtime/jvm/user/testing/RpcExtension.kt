@@ -3,7 +3,7 @@ package com.caesarealabs.rpc4k.runtime.jvm.user.testing
 import com.caesarealabs.rpc4k.runtime.api.*
 import com.caesarealabs.rpc4k.runtime.api.components.JsonFormat
 import com.caesarealabs.rpc4k.runtime.api.components.MemoryEventManager
-import com.caesarealabs.rpc4k.runtime.jvm.api.PortPool
+import com.caesarealabs.rpc4k.runtime.api.PortPool
 import com.caesarealabs.rpc4k.runtime.implementation.createHandlerConfig
 import com.caesarealabs.rpc4k.runtime.jvm.api.KtorManagedRpcServer
 import com.caesarealabs.rpc4k.runtime.jvm.api.OkHttpRpcClientFactory
@@ -39,7 +39,7 @@ import org.junit.jupiter.api.extension.ExtensionContext
  * and will shut down when tests end. The server will use the [eventManager] to manage events.
  * The specified [client] will be used to access that server via network calls that are in the specified [format].
  *
- * @param serverFactory Your main `@Api` class should be constructed here. An event invoker will be passed to the lambda so that it may be injected
+ * @param service Your main `@Api` class should be constructed here. An event invoker will be passed to the lambda so that it may be injected
  * into the `@Api` class constructor, and used to invoke events.
  *
  *
@@ -48,19 +48,19 @@ import org.junit.jupiter.api.extension.ExtensionContext
 public fun <S, C, I> Rpc4kIndex<S, C, I>.junit(
     port: Int = PortPool.get(),
     format: SerializationFormat = JsonFormat(),
-    server: RpcServerEngine.MultiCall = KtorManagedRpcServer(port = port),
+    server: DedicatedServer = KtorManagedRpcServer(port = port),
+    eventLauncher: RpcMessageLauncher = server,
     client: RpcClientFactory = OkHttpRpcClientFactory(),
     eventManager: EventManager = MemoryEventManager(),
-    serverFactory: (I) -> S,
+    service: (I) -> S,
 ): ClientServerExtension<S, C, I> {
     val url = "http://localhost:${port}"
     val websocketUrl = "$url/events"
     val clientSetup = client.build(url, websocketUrl)
-    val config = createHandlerConfig(format, eventManager, server, serverFactory)
+    val config = createHandlerConfig(format, eventManager, eventLauncher, service)
     val serverConfig = ServerConfig(router, config)
     val suite = Rpc4kSuiteImpl(config.handler, createNetworkClient(clientSetup, format), /*createMemoryClient(config.handler),*/ config.invoker)
-    val engine = server.create(serverConfig)
-    return ClientServerExtension(engine, port, suite)
+    return ClientServerExtension(server, serverConfig, port, suite)
 }
 
 public interface Rpc4kSuite<Server, Client, Invoker> {
@@ -76,7 +76,11 @@ public data class Rpc4kSuiteImpl<S, C, I>(override val server: S, override val n
 
 
 public class ClientServerExtension<S, C, I> internal constructor(
-    private val engine: RpcServerEngine.MultiCall.Instance,
+    private val host : DedicatedServer,
+    private val serverConfig: ServerConfig,
+    /**
+     * Exposed to make connecting to this specific server easier
+     */
     public val port: Int,
     suite: Rpc4kSuite<S, C, I>
 ) : Extension, BeforeAllCallback,
@@ -86,11 +90,11 @@ public class ClientServerExtension<S, C, I> internal constructor(
     public val invoker: I = suite.invoker
 
     override fun beforeAll(context: ExtensionContext) {
-        engine.start(wait = false)
+        host.start(serverConfig, wait = false)
     }
 
     override fun afterAll(context: ExtensionContext) {
-        engine.stop()
+        host.stop()
         if (server is AutoCloseable) server.close()
     }
 }
