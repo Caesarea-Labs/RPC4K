@@ -23,21 +23,11 @@ import java.util.concurrent.ConcurrentHashMap
 import kotlin.collections.set
 
 
-//public class KtorWebsocketEventConnection(private val session: DefaultWebSocketSession) : EventConnection {
-//    override val id: String = UUID.randomUUID().toString()
-//    override suspend fun send(bytes: ByteArray) {
-//        session.send(Frame.Text(true, bytes))
-//    }
-//}
-
-
-//val x=  Queue
-
 
 // NiceToHave: use a custom implementation that setups multiple routes
 /**
  * Single class that sets up the ktor server for you
- * It sets up a single route at / to respond to rpc calls
+ * It sets up a single route at `/` to respond to rpc calls
  */
 public class KtorManagedRpcServer(
     private val engine: ApplicationEngineFactory<*, *> = Netty,
@@ -48,7 +38,6 @@ public class KtorManagedRpcServer(
     private val connections = ConcurrentHashMap<EventConnection, DefaultWebSocketSession>()
 
     private val singleRoute = KtorSingleRouteRpcServer()
-//    override val eventManager: EventManager<KtorWebsocketEventConnection> = MemoryEventManager()
 
     private fun Application.configImpl(config: ServerConfig) {
         install(CallLogging)
@@ -63,13 +52,11 @@ public class KtorManagedRpcServer(
             webSocket("/events") {
                 val connection = EventConnection(UUID.randomUUID().toString())
                 connections[connection] = this
-//                val connection = KtorWebsocketEventConnection(this)
                 println("Adding connection ${connection.id}")
                 try {
                     for (frame in incoming) {
                         frame as? Frame.Text ?: error("Unexpected non-text frame")
                         config.acceptEventSubscription(frame.readBytes(), connection)
-//                        setup.acceptEventSubscription(frame.readBytes(), connection)
                     }
                 } finally {
                     Rpc4kLogger.info("Removing connection ${connection.id}")
@@ -97,26 +84,5 @@ public class KtorManagedRpcServer(
 
     override suspend fun sendMessage(connection: EventConnection, bytes: ByteArray): Boolean {
         return connections[connection]?.send(Frame.Text(true, bytes)) != null
-//            ?: error("Attempt to send to unknown connection: $connection")
     }
 }
-
-
-//private fun
-//
-//@Serializable
-//data class FullClientMessage(
-//    /**
-//     * This will only be 'sendmessage' in AWS so everything routes to the same function
-//     */
-//    val action: String,
-//    val message: String
-//)
-//
-//@Serializable
-//@SerialName("subscribe")
-//data class SubscribeMessage<out T>(
-//    val listenerId: String,
-////    val event: String,
-//    val params: T
-//)

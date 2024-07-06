@@ -69,7 +69,7 @@ internal class ApiDefinitionToServerCode(private val api: RpcApi) {
     private val invokerClassName = ClassName(ApiDefinitionUtils.Package, invokerName)
     private val routerName = "${api.name.simple}${ApiDefinitionUtils.ServerSuffix}"
     private val routerClassName = ClassName(ApiDefinitionUtils.Package, routerName)
-    private val clientClassName = ClassName(ApiDefinitionUtils.Package, api.name.simple + ApiDefinitionUtils.ClientSuffix)
+    private val clientClassName = ClassName(ApiDefinitionUtils.Package, api.name.simple + ApiDefinitionUtils.NetworkClientSuffix)
     private val serverClassName = api.name.kotlinPoet
     private val handlerConfig = HandlerConfig::class.asClassName().parameterizedBy(serverClassName)
 

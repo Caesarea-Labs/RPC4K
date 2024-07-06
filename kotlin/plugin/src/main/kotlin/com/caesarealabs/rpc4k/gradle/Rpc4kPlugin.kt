@@ -39,7 +39,6 @@ class Rpc4KPlugin : Plugin<Project> {
             // Apply KSP processor
             dependencies.add("ksp", processor)
         } else if (plugins.hasPlugin("org.jetbrains.kotlin.multiplatform")) {
-            println("RPC4K will be applied to commonMain ONLY!")
             val kmp = extensions.getByType<KotlinMultiplatformExtension>()
             // KSP doesn't know to detect this by itself
             kmp.sourceSets.named("commonMain").configure {
@@ -81,8 +80,8 @@ class Rpc4KPlugin : Plugin<Project> {
                     }
 
                     // NiceToHave: support multiple source sets
-                    val jsonPath =
-                        project.layout.buildDirectory.dir("generated/ksp/$generatedSourcesPath/resources/rpc4k").get().asFile.absolutePath
+                    val jsonPath = project.layout.buildDirectory
+                        .dir("generated/ksp/$generatedSourcesPath/resources/rpc4k").get().asFile.absolutePath
                     val resultPath = toPath(extension.typescriptDir)!!.absolutePathString()
                     inputs.dir(jsonPath)
                     outputs.dir(resultPath)

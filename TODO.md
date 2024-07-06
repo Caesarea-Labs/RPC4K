@@ -1,3 +1,5 @@
+
+
 ### Handle erroneous event subscriptions
 1. If invoking an event fails, remove it from the subscription list and send an error message to the client signaling an error occurred. Make sure to pass a listener id. 
 - If it's a format error with the subscription data, send a format error detailing what went wrong. If it's an internal error, simply say that there is an internal error. 
@@ -66,21 +68,27 @@ suspend fun invokeSomeEvent(param1: Int, param2: String, participants: List<Stri
 ### Reduce error duplication when a type is not serializable.
 Currently we get two errors - one for the method having a non-serializable param, and then one for the type itself not being serializable. 
 TBH I think we can get rid of the method check because the type check encompasses it. 
-### Improve server testing with "in-memory-server" client generation
-For every service, in addition to generating a client that interacts with the server from network, there should also be a client that 
-interacts with an actual server instance in-memory. This is because we no longer override the service class in the generated client, 
-so we need a unified interface for testing. 
-For this to work, we will need to create two new generated classes:
-A. The client interface.
-B. The in-memory client.
-
-Then the network client will implement the client interface, and the new in-memory client will also implement the same client interface.
-This way the same code could be used to test both implementations. 
-
 
 ### Bind gradle version to a specific typescript version
 We need to avoid cases where you for example have gradle version that is meant for typescript 0.5, but 0.6 has been released and breaks everything.
 Currently, it just downloads the latest, but it should be bound to a specific version. 
+
+### Improve server testing with "in-memory-server" client generation 
+For every service, in addition to generating a client that interacts with the server from network, there should also be a client that
+interacts with an actual server instance in-memory. This is because we no longer override the service class in the generated client,
+so we need a unified interface for testing.
+For this to work, we will need to create four new generated classes:
+A. The client interface.
+B. The in-memory client.
+C. The invoker interface
+D. The in-memory invoker. 
+
+Additionally, all @Api classes must implement `RPC` to expose their `invoker`. 
+
+Then the network client will implement the client interface, and the new in-memory client will also implement the same client interface.
+This way the same code could be used to test both implementations.
+
+I've already started implementing it but decided for a simpler approach that works but is less efficient. See testApp.ManualMemoryClient and processor.ApiDefinitionToClientInterface
 
 
 ### Support optional properties

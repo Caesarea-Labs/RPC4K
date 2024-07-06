@@ -11,7 +11,8 @@ import com.squareup.kotlinpoet.MemberName
 internal object ApiDefinitionUtils {
      const val FactoryName: String = "Factory"
 
-     const val ClientSuffix: String = "Client"
+     const val NetworkClientSuffix: String = "NetworkClient"
+     const val ClientInterfaceSuffix: String = "Client"
 
      const val ServerSuffix: String = "Router"
 
@@ -22,9 +23,9 @@ internal object ApiDefinitionUtils {
 
     val listOfFunction = MemberName("kotlin.collections", "listOf")
     // Kotlin doesn't let us reference these annotations directly sadly so we need to resort to strings
-    private val experimentalUnsignedTypes = ClassName("kotlin", "ExperimentalUnsignedTypes")
+     val experimentalUnsignedTypes = ClassName("kotlin", "ExperimentalUnsignedTypes")
     private val experimentalSerializationApi = ClassName("kotlinx.serialization", "ExperimentalSerializationApi")
-    private val optIn = ClassName("kotlin", "OptIn")
+     val optIn = ClassName("kotlin", "OptIn")
 
     fun listOfSerializers(rpc: RpcFunction): FormattedString {
         return listOfFunction.withArgumentList(rpc.parameters.map { it.type.toSerializerString() })
@@ -36,9 +37,5 @@ internal object ApiDefinitionUtils {
     }
     fun FileSpec.Builder.ignoreExperimentalWarnings() {
         addAnnotation(AnnotationSpec.builder(optIn).addMember("%T::class, %T::class", experimentalUnsignedTypes, experimentalSerializationApi).build())
-//        addAnnotation(AnnotationSpec.builder(Suppress::class).addMember("%S", "UNCHECKED_CAST").build())
-//
-//        addAnnotation()
-//        addAnnotation(experimentalSerializationApi)
     }
 }

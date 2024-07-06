@@ -3,7 +3,6 @@ package com.caesarealabs.rpc4k.runtime.api
 
 // LOWPRIO: try to simplify this
 public sealed interface RpcServerEngine {
-//    public val eventManager: EventManager<*>
     /**
      * Returns true if the message was reached.
      *

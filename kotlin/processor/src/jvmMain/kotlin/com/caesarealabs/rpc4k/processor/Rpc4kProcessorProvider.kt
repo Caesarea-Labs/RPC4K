@@ -62,9 +62,9 @@ internal class Rpc4kProcessor(private val env: SymbolProcessorEnvironment) : Sym
 
             val file = apiClass.containingFile!!
             val files = listOf(file)
-//            if (apiClass.shouldGenerateClient()) {
-            ApiDefinitionToClientCode.convert(api).writeTo(codeGenerator, false, files)
-//            }
+            //LOWPRIO: Improve server testing with "in-memory-server" client generation
+            // ApiDefinitionToClientInterface.convert(api).writeTo(codeGenerator, false, files)
+            ApiDefinitionToNetworkClient.convert(api).writeTo(codeGenerator, false, files)
             ApiDefinitionToServerCode(api).convert().writeTo(codeGenerator, false, files)
             ApiDefinitionWriter.writeRpcJsons(api, codeGenerator, file)
         }
