@@ -13,7 +13,7 @@ atomicfu = {id ="org.jetbrains.kotlin.plugin.atomicfu", version.ref = "kotlin" }
 [versions]
 
 kotlinxDatetime = "0.6.0"
-rpc4k = "0.8.4"
+rpc4k = "0.9.0"
 nexus = "2.0.0"
 kotlin = "2.0.0"
 ksp = "2.0.0-1.0.21"

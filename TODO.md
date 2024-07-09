@@ -1,6 +1,4 @@
 Next steps:
-1. Fix Caesarea
-2. simplify Server.Dedicated and handle constructor function issues with the listener
 3. Add memory server
 
 ### Handle erroneous event subscriptions
