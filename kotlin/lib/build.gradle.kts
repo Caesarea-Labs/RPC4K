@@ -1,4 +1,4 @@
-import java.nio.file.Path
+ import java.nio.file.Path
 import java.nio.file.Paths
 import kotlin.io.path.exists
 import kotlin.io.path.readBytes
@@ -50,6 +50,8 @@ kotlin {
             dependencies {
                 //TODO: should be part of testing module
                 api(libs.junit)
+                // Atomicfu doesn't properly add this dependency to dependants with just the plugin for some reason
+                implementation("org.jetbrains.kotlinx:atomicfu:0.25.0")
                 //TODO: should be part of ktor server module
                 api(libs.ktor.server.core.jvm)
                 api(libs.ktor.server.websockets.jvm)

@@ -3,9 +3,6 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/.idea/RPC4K.iml" filepath="$PROJECT_DIR$/.idea/RPC4K.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/lib/RPC4K.lib.jvmMain.iml" filepath="$PROJECT_DIR$/.idea/modules/lib/RPC4K.lib.jvmMain.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/lib/RPC4K.lib.jvmTest.iml" filepath="$PROJECT_DIR$/.idea/modules/lib/RPC4K.lib.jvmTest.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/testapp/RPC4K.testapp.jvmTest.iml" filepath="$PROJECT_DIR$/.idea/modules/testapp/RPC4K.testapp.jvmTest.iml" />
       <module fileurl="file://$PROJECT_DIR$/../fudge-lib/fudge-lib.iml" filepath="$PROJECT_DIR$/../fudge-lib/fudge-lib.iml" />
       <module fileurl="file://$PROJECT_DIR$/../ts-minimum/ts-minimum.iml" filepath="$PROJECT_DIR$/../ts-minimum/ts-minimum.iml" />
     </modules>
