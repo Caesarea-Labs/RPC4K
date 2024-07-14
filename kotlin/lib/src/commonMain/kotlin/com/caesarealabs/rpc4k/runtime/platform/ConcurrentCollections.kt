@@ -1,3 +1,5 @@
+@file:Suppress("FunctionName")
+
 package com.caesarealabs.rpc4k.runtime.platform
 
 /**

@@ -2,6 +2,7 @@ package com.caesarealabs.rpc4k.runtime.jvm.api
 
 import com.caesarealabs.rpc4k.runtime.api.*
 import com.caesarealabs.rpc4k.runtime.implementation.Rpc4kLogger
+import com.caesarealabs.rpc4k.runtime.user.Rpc4kIndex
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.channels.trySendBlocking
 import kotlinx.coroutines.flow.Flow
@@ -16,9 +17,9 @@ import okio.IOException
 import java.util.concurrent.ConcurrentHashMap
 import kotlin.coroutines.resume
 
-public class OkHttpRpcClientFactory(private val client: OkHttpClient = OkHttpClient()) : RpcClientFactory {
-    override fun build(url: String, websocketUrl: String): RpcClient = OkHttpRpcClient(url, websocketUrl, client)
-}
+//public class OkHttpRpcClientFactory(private val client: OkHttpClient = OkHttpClient()) : RpcClientFactory {
+//    override fun build(url: String, websocketUrl: String): RpcClient = OkHttpRpcClient(url, websocketUrl, client)
+//}
 
 public class OkHttpRpcClient(
     private val url: String, private val websocketUrl: String,
@@ -55,25 +56,11 @@ private suspend fun OkHttpClient.request(request: Request): Response = suspendCa
     })
 }
 
-private class OkHttpWebsocketEventClient(url: String, client: OkHttpClient) : EventClient {
-    private val activeFlows = ConcurrentHashMap<String, (ByteArray) -> Unit>()
+private class OkHttpWebsocketEventClient(url: String, client: OkHttpClient) : AbstractEventClient() {
     val webSocket by lazy {
         client.newWebSocket(Request(url.toHttpUrl()), object : WebSocketListener() {
             override fun onMessage(webSocket: WebSocket, text: String) {
-                when (val parsed = S2CEventMessage.fromString(text)) {
-                    is S2CEventMessage.Emitted -> {
-                        val listener = activeFlows[parsed.listenerId]
-                        if (listener != null) {
-                            listener(parsed.payload)
-                        } else {
-                            Rpc4kLogger.warn("Could not find listener for id '${parsed.listenerId}', the subscription may still open on the server")
-                        }
-                    }
-
-                    is S2CEventMessage.SubscriptionError -> {
-                        error("Failed to subscribe to event: ${parsed.error}")
-                    }
-                }
+                handleMessage(S2CEventMessage.fromString(text))
             }
         })
     }
@@ -82,54 +69,9 @@ private class OkHttpWebsocketEventClient(url: String, client: OkHttpClient) : Ev
         //TODO: kind of inefficient bytes -> string conversion
         webSocket.send(message.decodeToString())
     }
-
-    override fun createFlow(subscribeMessage: ByteArray, unsubscribeMessage: ByteArray, listenerId: String): Flow<ByteArray> {
-        return createFlow(activeFlows, subscribeMessage, unsubscribeMessage, listenerId)
-    }
-
-//    override suspend fun createFlow(subscribeMessage: ByteArray, unsubscribeMessage: ByteArray, listenerId: String): Flow<ByteArray> {
-//        return callbackFlow {
-//            // Register event for self
-//            activeFlows[listenerId] = {
-//                trySendBlocking(it)
-//            }
-//            // Tell the server to start sending events
-//            this@OkHttpWebsocketEventClient.send(subscribeMessage)
-//            awaitClose {
-//                launch {
-//                    // Tell the server to stop sending events
-//                    this@OkHttpWebsocketEventClient.send(unsubscribeMessage)
-//                    // Remove event reference from self
-//                    activeFlows.remove(listenerId)
-//                }
-//            }
-//        }
-//    }
 }
 
-/**
- * Utility for managing event client flows
- */
-internal fun EventClient.createFlow(
-    activeFlows: MutableMap<String, (ByteArray) -> Unit>,
-    subscribeMessage: ByteArray,
-    unsubscribeMessage: ByteArray,
-    listenerId: String
-): Flow<ByteArray> {
-    return callbackFlow {
-        // Register event for self
-        activeFlows[listenerId] = {
-            trySendBlocking(it)
-        }
-        // Tell the server to start sending events
-        this@createFlow.send(subscribeMessage)
-        awaitClose {
-            launch {
-                // Tell the server to stop sending events
-                this@createFlow.send(unsubscribeMessage)
-                // Remove event reference from self
-                activeFlows.remove(listenerId)
-            }
-        }
-    }
+public fun <C> Rpc4kIndex<*, C, *>.okHttpClient(url: String, format: SerializationFormat): C {
+    val websocketUrl = "$url/events"
+    return createNetworkClient(OkHttpRpcClient(url, websocketUrl), format)
 }

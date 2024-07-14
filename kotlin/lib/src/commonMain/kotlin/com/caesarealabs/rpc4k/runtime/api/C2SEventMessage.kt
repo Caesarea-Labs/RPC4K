@@ -41,7 +41,7 @@ public sealed interface C2SEventMessage {
     public companion object {
         internal fun fromByteArray(bytes: ByteArray): C2SEventMessage {
             serverRequirement(bytes.isNotEmpty()) { "Event message is empty" }
-            val reader = MessageReader(bytes)
+            val reader = RpcMessageReader(bytes)
             val type = reader.readPart("type").decodeToString()
             val event = reader.readPart("event").decodeToString()
             when (type) {
@@ -49,8 +49,7 @@ public sealed interface C2SEventMessage {
                     val listenerId = reader.readPart("listener id").decodeToString()
                     val target = reader.readPart("target").decodeToString()
                     val data = reader.readPart("payload", finalPart = true)
-                    //TODO this function should pass in "accepts target" and if not always pass null
-                    return C2SEventMessage.Subscribe(
+                    return Subscribe(
                         event,
                         listenerId,
                         data,
@@ -59,7 +58,7 @@ public sealed interface C2SEventMessage {
 
                 "unsub" -> {
                     val listenerId = reader.readPart("listener id", finalPart = true).decodeToString()
-                    return C2SEventMessage.Unsubscribe(event, listenerId)
+                    return Unsubscribe(event, listenerId)
                 }
 
                 else -> throw InvalidRpcRequestException("Invalid event message format, the type should be 'sub' or 'unsub' but is '${type}'")
@@ -70,22 +69,23 @@ public sealed interface C2SEventMessage {
 
     public fun toByteArray(): ByteArray {
         return when (this) {
-            is C2SEventMessage.Subscribe -> "sub".encodeToByteArray()
-                .fastConcat(Rpc.Companion.ColonCode, event.encodeToByteArray(), listenerId.encodeToByteArray(), (target ?: "").encodeToByteArray(), data)
+            is Subscribe -> "sub".encodeToByteArray()
+                .fastConcat(Rpc.ColonCode, event.encodeToByteArray(), listenerId.encodeToByteArray(), (target ?: "").encodeToByteArray(), data)
 
-            is C2SEventMessage.Unsubscribe -> "unsub".encodeToByteArray()
-                .fastConcat(Rpc.Companion.ColonCode, event.encodeToByteArray(), listenerId.encodeToByteArray())
+            is Unsubscribe -> "unsub".encodeToByteArray()
+                .fastConcat(Rpc.ColonCode, event.encodeToByteArray(), listenerId.encodeToByteArray())
         }
     }
 
 }
 
 
-private class MessageReader(private val bytes: ByteArray) {
+internal class RpcMessageReader(private val bytes: ByteArray) {
     private var i = 0
     fun readPart(partName: String, finalPart: Boolean = false): ByteArray {
+        if (i >= bytes.size) throw InvalidRpcRequestException("Invalid event message format, $partName is an empty string")
         val startIndex = i
-        while (bytes[i] != Rpc.Companion.ColonCode || finalPart) {
+        while (bytes[i] != Rpc.ColonCode || finalPart) {
             i++
             if (i >= bytes.size) {
                 if (finalPart) break

@@ -6,7 +6,7 @@ import com.caesarealabs.rpc4k.runtime.api.components.MemoryEventManager
 import com.caesarealabs.rpc4k.runtime.api.PortPool
 import com.caesarealabs.rpc4k.runtime.implementation.createHandlerConfig
 import com.caesarealabs.rpc4k.runtime.jvm.api.KtorManagedRpcServer
-import com.caesarealabs.rpc4k.runtime.jvm.api.OkHttpRpcClientFactory
+import com.caesarealabs.rpc4k.runtime.jvm.api.OkHttpRpcClient
 import com.caesarealabs.rpc4k.runtime.user.Rpc4kIndex
 import org.junit.jupiter.api.extension.AfterAllCallback
 import org.junit.jupiter.api.extension.BeforeAllCallback
@@ -42,25 +42,30 @@ import org.junit.jupiter.api.extension.ExtensionContext
  * @param service Your main `@Api` class should be constructed here. An event invoker will be passed to the lambda so that it may be injected
  * into the `@Api` class constructor, and used to invoke events.
  *
+ * The [server] and [client] parameters should used the passed int as the port. It will reflect the [port] that is passed as a parameter.
+ *
  *
  *
  */
 public fun <S, C, I> Rpc4kIndex<S, C, I>.junit(
     port: Int = PortPool.get(),
     format: SerializationFormat = JsonFormat(),
-    server: DedicatedServer = KtorManagedRpcServer(port = port),
-    eventLauncher: RpcMessageLauncher = server,
-    client: RpcClientFactory = OkHttpRpcClientFactory(),
+    server: (port: Int) -> DedicatedServer = { KtorManagedRpcServer(port = it) },
+    client: (port: Int) -> RpcClient = {
+        val url = "http://localhost:${it}"
+        val websocketUrl = "$url/events"
+        OkHttpRpcClient(url, websocketUrl)
+    },
     eventManager: EventManager = MemoryEventManager(),
     service: (I) -> S,
 ): ClientServerExtension<S, C, I> {
-    val url = "http://localhost:${port}"
-    val websocketUrl = "$url/events"
-    val clientSetup = client.build(url, websocketUrl)
-    val config = createHandlerConfig(format, eventManager, eventLauncher, service)
+    val serverInstance = server(port)
+    val clientSetup = client(port)
+//    val clientSetup = client.build(url, websocketUrl)
+    val config = createHandlerConfig(format, eventManager, serverInstance, service)
     val serverConfig = ServerConfig(router, config)
     val suite = Rpc4kSuiteImpl(config.handler, createNetworkClient(clientSetup, format), /*createMemoryClient(config.handler),*/ config.invoker)
-    return ClientServerExtension(server, serverConfig, port, suite)
+    return ClientServerExtension(serverInstance, serverConfig, port, suite)
 }
 
 public interface Rpc4kSuite<Server, Client, Invoker> {
@@ -76,7 +81,7 @@ public data class Rpc4kSuiteImpl<S, C, I>(override val server: S, override val n
 
 
 public class ClientServerExtension<S, C, I> internal constructor(
-    private val host : DedicatedServer,
+    private val host: DedicatedServer,
     private val serverConfig: ServerConfig,
     /**
      * Exposed to make connecting to this specific server easier

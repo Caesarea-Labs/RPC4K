@@ -1,13 +1,11 @@
- import java.nio.file.Path
-import java.nio.file.Paths
-import kotlin.io.path.exists
-import kotlin.io.path.readBytes
+@file:Suppress("OPT_IN_USAGE")
 
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
 //    alias(libs.plugins.androidLibrary)
     alias(libs.plugins.serialization)
     id("org.jetbrains.kotlinx.atomicfu") version "0.25.0"
+    kotlin("plugin.power-assert") version "2.0.0"
 }
 
 
@@ -69,9 +67,13 @@ kotlin {
                 api(libs.kotlinx.datetime)
             }
         }
-        val jvmTest by getting {
+        val commonTest by getting {
             dependencies {
                 implementation(libs.kotlin.test)
+            }
+        }
+        val jvmTest by getting {
+            dependencies {
                 implementation(Testing.Strikt.core)
                 implementation(libs.logback)
             }
@@ -93,7 +95,13 @@ kotlin {
 
     }
 }
+powerAssert {
+    functions = listOf("kotlin.test.assertTrue", "kotlin.test.assertEquals", "kotlin.test.assertContentEquals")
+}
 
+tasks.withType<Test> {
+    useJUnitPlatform()
+}
 
 //
 //android {

@@ -15,8 +15,9 @@ open class BasicApi(val invoker: BasicApiEventInvoker) {
         return dogs.filter { it.type == type }.take(num)
     }
 
-    fun putDog(dog: Dog) {
+    suspend fun putDog(dog: Dog) {
         dogs.add(dog)
+        invoker.invokeDogEvent(2, dog.name)
     }
 
     @RpcEvent

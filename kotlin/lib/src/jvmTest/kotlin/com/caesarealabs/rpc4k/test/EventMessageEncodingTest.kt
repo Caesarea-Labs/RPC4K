@@ -28,6 +28,14 @@ class EventMessageEncodingTest {
         expectThat(S2CEventMessage.fromString(error.toByteArray().decodeToString()) ).isEqualTo(error)
 
     }
+    @Test
+    fun testS2CBytes() {
+        val emitted = S2CEventMessage.Emitted("ID1234141", "wfe:#!213".toByteArray())
+        expectThat(S2CEventMessage.fromByteArray(emitted.toByteArray()) ).isEqualTo(emitted)
+        val error = S2CEventMessage.SubscriptionError("waefawef")
+        expectThat(S2CEventMessage.fromByteArray(error.toByteArray()) ).isEqualTo(error)
+
+    }
 
 }
 
