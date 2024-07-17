@@ -3,10 +3,11 @@ package com.caesarealabs.rpc4k.runtime.api.components
 import com.benasher44.uuid.uuid4
 import com.caesarealabs.rpc4k.runtime.api.*
 import com.caesarealabs.rpc4k.runtime.implementation.RpcResult
+import com.caesarealabs.rpc4k.runtime.user.Rpc4kIndex
 import kotlinx.serialization.KSerializer
 
 // A global map used to store active MemoryMulticallServer by their 'port'
-private val memoryServerRegistry = mutableMapOf<Int, MemoryMulticallServer>()
+private val memoryServerRegistry = mutableMapOf<Int, MemoryDedicatedServer>()
 
 
 /**
@@ -14,7 +15,7 @@ private val memoryServerRegistry = mutableMapOf<Int, MemoryMulticallServer>()
  * @param port While this doesn't actually open a port on the network, this number is used as an identifier for the server,
  * so that clients may connect to this server specifically and not other servers running in the same process.
  */
-public class MemoryMulticallServer(private val port: Int) : DedicatedServer {
+public class MemoryDedicatedServer(private val port: Int) : DedicatedServer {
     private val connections = mutableMapOf<EventConnection, MemoryEventClient>()
     private var config: ServerConfig? = null
 
@@ -90,4 +91,7 @@ internal class MemoryEventClient(private val port: Int) : AbstractEventClient() 
         if (!connected) server.connect(this)
         server.acceptEventMessage(message, this)
     }
+}
+public fun <C> Rpc4kIndex<*, C, *>.memoryClient(port: Int, format: SerializationFormat = JsonFormat()): C {
+    return createNetworkClient(MemoryRpcClient(port), format)
 }

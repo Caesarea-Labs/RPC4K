@@ -1,6 +1,7 @@
 package com.caesarealabs.rpc4k.runtime.jvm.api
 
 import com.caesarealabs.rpc4k.runtime.api.*
+import com.caesarealabs.rpc4k.runtime.api.components.JsonFormat
 import com.caesarealabs.rpc4k.runtime.implementation.Rpc4kLogger
 import com.caesarealabs.rpc4k.runtime.user.Rpc4kIndex
 import kotlinx.coroutines.channels.awaitClose
@@ -71,7 +72,7 @@ private class OkHttpWebsocketEventClient(url: String, client: OkHttpClient) : Ab
     }
 }
 
-public fun <C> Rpc4kIndex<*, C, *>.okHttpClient(url: String, format: SerializationFormat): C {
+public fun <C> Rpc4kIndex<*, C, *>.okHttpClient(url: String, format: SerializationFormat = JsonFormat()): C {
     val websocketUrl = "$url/events"
     return createNetworkClient(OkHttpRpcClient(url, websocketUrl), format)
 }

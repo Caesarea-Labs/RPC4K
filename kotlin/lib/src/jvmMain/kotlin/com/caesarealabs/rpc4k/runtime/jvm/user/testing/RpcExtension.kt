@@ -64,20 +64,27 @@ public fun <S, C, I> Rpc4kIndex<S, C, I>.junit(
 //    val clientSetup = client.build(url, websocketUrl)
     val config = createHandlerConfig(format, eventManager, serverInstance, service)
     val serverConfig = ServerConfig(router, config)
-    val suite = Rpc4kSuiteImpl(config.handler, createNetworkClient(clientSetup, format), /*createMemoryClient(config.handler),*/ config.invoker)
-    return ClientServerExtension(serverInstance, serverConfig, port, suite)
+//    val suite = Rpc4kSCServerSuite(, createNetworkClient(clientSetup, format), /*createMemoryClient(config.handler),*/ config.invoker)
+    return ClientServerExtension(
+        serverInstance,
+        serverConfig,
+        port,
+        createNetworkClient(clientSetup, format),
+        config.handler,
+        config.invoker
+    )
 }
 
-public interface Rpc4kSuite<Server, Client, Invoker> {
-    public val server: Server
-    public val networkClient: Client
-
-    //    public val memoryClient: Client,
-    public val invoker: Invoker
-}
-
-public data class Rpc4kSuiteImpl<S, C, I>(override val server: S, override val networkClient: C, override val invoker: I) :
-    Rpc4kSuite<S, C, I>
+//public interface Rpc4kSuite<Server, Client, Invoker> {
+//    public val server: Server
+//    public val networkClient: Client
+//
+//    //    public val memoryClient: Client,
+//    public val invoker: Invoker
+//}
+//
+//public data class Rpc4kSuiteImpl<S, C, I>(override val server: S, override val networkClient: C, override val invoker: I) :
+//    Rpc4kSuite<S, C, I>
 
 
 public class ClientServerExtension<S, C, I> internal constructor(
@@ -87,12 +94,15 @@ public class ClientServerExtension<S, C, I> internal constructor(
      * Exposed to make connecting to this specific server easier
      */
     public val port: Int,
-    suite: Rpc4kSuite<S, C, I>
+    public val client: C,
+    public val server: S,
+    public val invoker: I,
+//    suite: Rpc4kSuite<S, C, I>
 ) : Extension, BeforeAllCallback,
     AfterAllCallback {
-    public val server: S = suite.server
-    public val client: C = suite.networkClient
-    public val invoker: I = suite.invoker
+//    public val server: S = suite.server
+//    public val client: C = suite.networkClient
+//    public val invoker: I = suite.invoker
 
     override fun beforeAll(context: ExtensionContext) {
         host.start(serverConfig, wait = false)

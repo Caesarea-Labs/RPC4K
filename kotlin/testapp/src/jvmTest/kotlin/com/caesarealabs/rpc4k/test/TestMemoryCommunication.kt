@@ -1,7 +1,7 @@
 package com.caesarealabs.rpc4k.test
 
 import com.caesarealabs.rpc4k.generated.rpc4k
-import com.caesarealabs.rpc4k.runtime.api.components.MemoryMulticallServer
+import com.caesarealabs.rpc4k.runtime.api.components.MemoryDedicatedServer
 import com.caesarealabs.rpc4k.runtime.api.components.MemoryRpcClient
 import com.caesarealabs.rpc4k.runtime.jvm.user.testing.junit
 import com.caesarealabs.rpc4k.testapp.BasicApi
@@ -21,7 +21,7 @@ class TestMemoryCommunication {
     companion object {
         @JvmField
         @RegisterExtension
-        val extension = BasicApi.rpc4k.junit(server = { MemoryMulticallServer(it) }, client = {
+        val extension = BasicApi.rpc4k.junit(server = { MemoryDedicatedServer(it) }, client = {
             MemoryRpcClient(it)
         }) { BasicApi(it) }
     }
