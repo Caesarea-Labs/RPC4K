@@ -55,8 +55,3 @@ tasks.withType<Test> {
     useJUnitPlatform()
 }
 
-
-//TODO: Road to Getting RPC4K to Multiplatform:
-// 3. Properly set up publishing for KMP
-// 3.5 Find, use and test a multiplatform server and client to be used as a default
-// 4. Test on non-jvm app

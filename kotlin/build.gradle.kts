@@ -13,7 +13,6 @@ allprojects {
     }
 }
 
-//TODO: next step: evolve from maven local to sonatype. Current problem: could not PUT JVM publication.
 
 
 nexusPublishing {

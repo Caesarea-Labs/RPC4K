@@ -27,7 +27,7 @@ public interface HandlerConfig<out T> {
     }
 }
 
-public data class ServerConfig(val router: RpcRouter<*>, private val config: HandlerConfig<*>) : HandlerConfig<Any?> by config
+public data class ServerConfig(val router: RpcRouter<*>, private val config: HandlerConfig<Any?>) : HandlerConfig<Any?> by config
 
 
 /**

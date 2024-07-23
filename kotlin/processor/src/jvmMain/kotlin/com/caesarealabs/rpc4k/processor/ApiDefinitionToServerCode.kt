@@ -104,7 +104,6 @@ internal class ApiDefinitionToServerCode(private val api: RpcApi) {
     /**
      * val MyApi.Companion.server = object : GeneratedSuiteFactory<MyApi, AllEncompassingServiceClientImpl, AllEncompassingServiceEventInvoker> {
      *     override val createInvoker = ::AllEncompassingServiceEventInvoker
-     *     override val createMemoryClient get() =  TODO()
      *     override val createNetworkClient = ::AllEncompassingServiceClientImpl
      * }
      *

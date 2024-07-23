@@ -5,7 +5,7 @@ plugins {
 //    alias(libs.plugins.androidLibrary)
     alias(libs.plugins.serialization)
     id("org.jetbrains.kotlinx.atomicfu") version "0.25.0"
-    kotlin("plugin.power-assert") version "2.0.0"
+    kotlin("plugin.power-assert") version "2.0.20-Beta2"
 }
 
 

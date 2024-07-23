@@ -4,7 +4,9 @@ import com.benasher44.uuid.uuid4
 import com.caesarealabs.rpc4k.runtime.api.*
 import com.caesarealabs.rpc4k.runtime.implementation.RpcResult
 import com.caesarealabs.rpc4k.runtime.user.Rpc4kIndex
+import kotlinx.coroutines.delay
 import kotlinx.serialization.KSerializer
+import kotlin.time.Duration
 
 // A global map used to store active MemoryMulticallServer by their 'port'
 private val memoryServerRegistry = mutableMapOf<Int, MemoryDedicatedServer>()
@@ -14,17 +16,27 @@ private val memoryServerRegistry = mutableMapOf<Int, MemoryDedicatedServer>()
  * Simple implementation of a [DedicatedServer] that handles everything in-memory without any need for HTTP and such
  * @param port While this doesn't actually open a port on the network, this number is used as an identifier for the server,
  * so that clients may connect to this server specifically and not other servers running in the same process.
+ * @param emulatedLatency If specified, server will wait this much time when responding. This allows emulating the latency of a real server
  */
-public class MemoryDedicatedServer(private val port: Int) : DedicatedServer {
+public class MemoryDedicatedServer(
+    private val port: Int,
+    private val emulatedLatency: Duration? = null
+) : DedicatedServer {
     private val connections = mutableMapOf<EventConnection, MemoryEventClient>()
     private var config: ServerConfig? = null
 
-    private fun getConfig() = config ?: error("Attempt to respond with server that has not been started with start()")
+    private suspend fun emulateLatency() {
+        if (emulatedLatency != null) delay(emulatedLatency)
+    }
+
+    private fun getConfig() =
+        config ?: error("Attempt to respond with server that has not been started with start()")
 
     /**
      * Emulates the handling of a request by a server
      */
     internal suspend fun respond(rpcRequest: ByteArray): RpcResult {
+        emulateLatency()
         return RpcServerUtils.routeCall(rpcRequest, getConfig())
     }
 
@@ -32,6 +44,7 @@ public class MemoryDedicatedServer(private val port: Int) : DedicatedServer {
      * Emulates the handling of a subscription / unsubscription by a server
      */
     internal suspend fun acceptEventMessage(message: ByteArray, session: MemoryEventClient) {
+        emulateLatency()
         getConfig().acceptEventSubscription(message, session.connection)
     }
 
@@ -56,6 +69,7 @@ public class MemoryDedicatedServer(private val port: Int) : DedicatedServer {
     }
 
     override suspend fun send(connection: EventConnection, bytes: ByteArray): Boolean {
+        emulateLatency()
         val session = connections[connection] ?: return false
         session.handleMessage(S2CEventMessage.fromByteArray(bytes))
         return true
@@ -68,12 +82,25 @@ public class MemoryDedicatedServer(private val port: Int) : DedicatedServer {
  * so that clients may connect to this server specifically and not other servers running in the same process.
  */
 public class MemoryRpcClient(private val port: Int) : RpcClient {
-    override suspend fun send(rpc: Rpc, format: SerializationFormat, serializers: List<KSerializer<*>>): ByteArray {
+    override suspend fun send(
+        rpc: Rpc,
+        format: SerializationFormat,
+        serializers: List<KSerializer<*>>
+    ): ByteArray {
         val data = rpc.toByteArray(format, serializers)
-        val server = memoryServerRegistry[port] ?: error("Cannot find started memory server at port $port")
+        val server =
+            memoryServerRegistry[port] ?: error("Cannot find started memory server at port $port")
         when (val response = server.respond(data)) {
             // The last 2 parameters don't mean much here
-            is RpcResult.Error -> throw RpcResponseException(response.message, rpc, format, this, response.message, 0)
+            is RpcResult.Error -> throw RpcResponseException(
+                response.message,
+                rpc,
+                format,
+                this,
+                response.message,
+                0
+            )
+
             is RpcResult.Success -> return response.bytes
         }
     }
@@ -87,11 +114,16 @@ internal class MemoryEventClient(private val port: Int) : AbstractEventClient() 
     internal val connection = EventConnection(uuid4().toString())
     private var connected = false
     override suspend fun send(message: ByteArray) {
-        val server = memoryServerRegistry[port] ?: error("Cannot find started memory server at port $port")
+        val server =
+            memoryServerRegistry[port] ?: error("Cannot find started memory server at port $port")
         if (!connected) server.connect(this)
         server.acceptEventMessage(message, this)
     }
 }
-public fun <C> Rpc4kIndex<*, C, *>.memoryClient(port: Int, format: SerializationFormat = JsonFormat()): C {
+
+public fun <C> Rpc4kIndex<*, C, *>.memoryClient(
+    port: Int,
+    format: SerializationFormat = JsonFormat()
+): C {
     return createNetworkClient(MemoryRpcClient(port), format)
 }
