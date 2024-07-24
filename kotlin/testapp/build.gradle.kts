@@ -1,3 +1,4 @@
+import org.jetbrains.kotlin.gradle.targets.js.dsl.ExperimentalWasmDsl
 
 buildscript {
     // Sets up the plugin with local paths
@@ -12,7 +13,7 @@ plugins {
 
 kotlin {
     jvmToolchain(21)
-    compilerOptions.freeCompilerArgs.add("-Xcontext-receivers")
+//    compilerOptions.freeCompilerArgs.add("-Xcontext-receivers")
 }
 
 rpc4k {
@@ -27,11 +28,12 @@ version = "1.0-SNAPSHOT"
 kotlin {
     jvm()
     // Must be added for KSP to work in common
+    @OptIn(ExperimentalWasmDsl::class)
     wasmJs {
         browser()
     }
 
-    iosArm64()
+//    iosArm64()
     sourceSets {
         val jvmMain by getting {
             dependencies {

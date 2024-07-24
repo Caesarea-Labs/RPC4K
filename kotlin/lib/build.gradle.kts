@@ -27,12 +27,12 @@ kotlin {
         freeCompilerArgs.add("-Xcontext-receivers")
     }
     explicitApi()
-    targetHierarchy.default()
+//    targetHierarchy.default()
     jvm()
     wasmJs {
         browser()
     }
-    iosArm64()
+//    iosArm64()
     jvmToolchain(17)
 //    androidTarget {
 //        publishLibraryVariants("release")
@@ -79,12 +79,12 @@ kotlin {
             }
         }
 
-        val nativeMain by getting {
-            dependencies {
-                // Used to fill in for java concurrency primitives
-                implementation(libs.stately.concurrent.collections)
-            }
-        }
+//        val nativeMain by getting {
+//            dependencies {
+//                // Used to fill in for java concurrency primitives
+//                implementation(libs.stately.concurrent.collections)
+//            }
+//        }
 
         val wasmJsMain by getting {
             dependencies {
