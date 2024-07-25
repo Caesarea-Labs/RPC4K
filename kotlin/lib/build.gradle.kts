@@ -23,9 +23,9 @@ base.archivesName = "rpc4k-runtime"
 
 kotlin {
 
-    compilerOptions {
-        freeCompilerArgs.add("-Xcontext-receivers")
-    }
+//    compilerOptions {
+//        freeCompilerArgs.add("-Xcontext-receivers")
+//    }
     explicitApi()
 //    targetHierarchy.default()
     jvm()
@@ -57,6 +57,10 @@ kotlin {
                 api(libs.ktor.logging)
                 //TODo: should be part of okhttp client module
                 api(libs.okhttp.core)
+
+                // TODO: should be part of ktor client module
+                // Use okhttp client on JVM
+                api(libs.ktor.client.okhttp)
             }
         }
         val commonMain by getting {
@@ -65,6 +69,10 @@ kotlin {
                 api(libs.serialization.json)
                 api (libs.uuid)
                 api(libs.kotlinx.datetime)
+
+                // TODO: should be part of ktor client module
+                api(libs.ktor.client.core)
+                implementation(libs.ktor.client.websockets)
             }
         }
         val commonTest by getting {
@@ -90,6 +98,10 @@ kotlin {
             dependencies {
                 // Used to fill in for java concurrency primitives
                 implementation(libs.stately.concurrent.collections)
+
+                // TODO: should be part of ktor client module
+                // Use js client on wasmJs
+                api(libs.ktor.client.js)
             }
         }
 

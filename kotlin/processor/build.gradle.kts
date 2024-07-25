@@ -23,9 +23,9 @@ tasks.withType<AbstractPublishToMaven>().configureEach {
 
 
 kotlin {
-    compilerOptions {
-        freeCompilerArgs.add("-Xcontext-receivers")
-    }
+//    compilerOptions {
+//        freeCompilerArgs.add("-Xcontext-receivers")
+//    }
     jvm()
     jvmToolchain(17)
 

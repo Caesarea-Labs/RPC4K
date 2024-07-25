@@ -6,7 +6,8 @@ import io.ktor.http.*
 import io.ktor.server.application.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
-import io.ktor.utils.io.core.*
+import io.ktor.utils.io.*
+import kotlinx.io.readByteArray
 
 public sealed interface KtorRequestResult {
     public class Success(public val bytes: ByteArray): KtorRequestResult
@@ -16,7 +17,7 @@ public sealed interface KtorRequestResult {
 
 public object Rpc4kKtor {
     public suspend fun routeCalls(call: ApplicationCall, config: ServerConfig) {
-        val bytes = call.receiveChannel().readRemaining().readBytes()
+        val bytes = call.receiveChannel().readRemaining().readByteArray()
         when(val result = RpcServerUtils.routeCall(bytes,config)) {
             is RpcResult.Error ->  {
                 val code = when (result.errorType) {

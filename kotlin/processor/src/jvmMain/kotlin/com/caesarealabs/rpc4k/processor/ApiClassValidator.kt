@@ -37,7 +37,6 @@ internal class ApiClassValidator(private val env: SymbolProcessorEnvironment, pr
             val serializable = type.isSerializable()
             if (!serializable) unserializableReferencedClass = true
             it.checkRequirement(env, serializable) {
-                println(apiClass)
                 "Referenced type '${type.declaration.getQualifiedName()}' is not a @Serializable class or a builtin serializable type."
             }
         }

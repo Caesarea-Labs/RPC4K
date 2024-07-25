@@ -3,7 +3,6 @@ package com.caesarealabs.rpc4k.runtime.jvm.user.testing
 import com.caesarealabs.rpc4k.runtime.api.*
 import com.caesarealabs.rpc4k.runtime.api.components.JsonFormat
 import com.caesarealabs.rpc4k.runtime.api.components.MemoryEventManager
-import com.caesarealabs.rpc4k.runtime.api.PortPool
 import com.caesarealabs.rpc4k.runtime.implementation.createHandlerConfig
 import com.caesarealabs.rpc4k.runtime.jvm.api.KtorManagedRpcServer
 import com.caesarealabs.rpc4k.runtime.jvm.api.OkHttpRpcClient
@@ -12,6 +11,7 @@ import org.junit.jupiter.api.extension.AfterAllCallback
 import org.junit.jupiter.api.extension.BeforeAllCallback
 import org.junit.jupiter.api.extension.Extension
 import org.junit.jupiter.api.extension.ExtensionContext
+//TODO: make tests pass
 
 /**
  * Call in a companion object of a JUnit test class like so:
@@ -51,16 +51,19 @@ public fun <S, C, I> Rpc4kIndex<S, C, I>.junit(
     port: Int = PortPool.get(),
     format: SerializationFormat = JsonFormat(),
     server: (port: Int) -> DedicatedServer = { KtorManagedRpcServer(port = it) },
-    client: (port: Int) -> RpcClient = {
-        val url = "http://localhost:${it}"
-        val websocketUrl = "$url/events"
-        OkHttpRpcClient(url, websocketUrl)
-    },
+    client: (port: Int, url: String, websocketUrl: String) -> RpcClient = { _, url, ws -> OkHttpRpcClient(url, ws) },
+//    client: ( port: Int) -> RpcClient = {
+//        val url = "http://localhost:${it}"
+//        val websocketUrl = "$url/events"
+//        OkHttpRpcClient(url, websocketUrl)
+//    },
     eventManager: EventManager = MemoryEventManager(),
     service: (I) -> S,
 ): ClientServerExtension<S, C, I> {
+    val url = "http://localhost:${port}"
+    val websocketUrl = "ws://localhost:${port}/events"
     val serverInstance = server(port)
-    val clientSetup = client(port)
+    val clientSetup = client(port, url, websocketUrl)
 //    val clientSetup = client.build(url, websocketUrl)
     val config = createHandlerConfig(format, eventManager, serverInstance, service)
     val serverConfig = ServerConfig(router, config)

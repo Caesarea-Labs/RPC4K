@@ -45,8 +45,7 @@ internal class Rpc4kProcessor(private val env: SymbolProcessorEnvironment) : Sym
     }
 
 
-    context(SymbolProcessorEnvironment)
-    private fun generateRpc(apiClass: KSClassDeclaration, resolver: Resolver) {
+    private fun SymbolProcessorEnvironment.generateRpc(apiClass: KSClassDeclaration, resolver: Resolver) {
         val time = measureTimeMillis {
             val api = KspToApiDefinition(resolver).toApiDefinition(apiClass)
             if (api == null) {

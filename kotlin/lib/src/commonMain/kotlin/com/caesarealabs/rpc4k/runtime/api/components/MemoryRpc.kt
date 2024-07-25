@@ -88,8 +88,7 @@ public class MemoryRpcClient(private val port: Int) : RpcClient {
         serializers: List<KSerializer<*>>
     ): ByteArray {
         val data = rpc.toByteArray(format, serializers)
-        val server =
-            memoryServerRegistry[port] ?: error("Cannot find started memory server at port $port")
+        val server = memoryServerRegistry[port] ?: error("Cannot find started memory server at port $port")
         when (val response = server.respond(data)) {
             // The last 2 parameters don't mean much here
             is RpcResult.Error -> throw RpcResponseException(
@@ -114,8 +113,7 @@ internal class MemoryEventClient(private val port: Int) : AbstractEventClient() 
     internal val connection = EventConnection(uuid4().toString())
     private var connected = false
     override suspend fun send(message: ByteArray) {
-        val server =
-            memoryServerRegistry[port] ?: error("Cannot find started memory server at port $port")
+        val server = memoryServerRegistry[port] ?: error("Cannot find started memory server at port $port")
         if (!connected) server.connect(this)
         server.acceptEventMessage(message, this)
     }

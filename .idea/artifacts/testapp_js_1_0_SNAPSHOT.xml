@@ -1,8 +1,0 @@
-<component name="ArtifactManager">
-  <artifact type="jar" name="testapp-js-1.0-SNAPSHOT">
-    <output-path>$PROJECT_DIR$/kotlin/testapp/build/libs</output-path>
-    <root id="archive" name="testapp-js-1.0-SNAPSHOT.jar">
-      <element id="module-output" name="RPC4K.testapp.jsMain" />
-    </root>
-  </artifact>
-</component>

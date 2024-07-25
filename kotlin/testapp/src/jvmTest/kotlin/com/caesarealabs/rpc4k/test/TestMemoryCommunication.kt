@@ -21,8 +21,8 @@ class TestMemoryCommunication {
     companion object {
         @JvmField
         @RegisterExtension
-        val extension = BasicApi.rpc4k.junit(server = { MemoryDedicatedServer(it) }, client = {
-            MemoryRpcClient(it)
+        val extension = BasicApi.rpc4k.junit(server = { MemoryDedicatedServer(it) }, client = { port ,_, _ ->
+            MemoryRpcClient(port)
         }) { BasicApi(it) }
     }
 

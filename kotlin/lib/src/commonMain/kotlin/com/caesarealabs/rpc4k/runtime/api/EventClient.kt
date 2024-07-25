@@ -2,6 +2,8 @@ package com.caesarealabs.rpc4k.runtime.api
 
 import com.caesarealabs.rpc4k.runtime.implementation.Rpc4kLogger
 import com.caesarealabs.rpc4k.runtime.platform.ConcurrentMutableMap
+import kotlinx.coroutines.CancellationException
+import kotlinx.coroutines.cancel
 import kotlinx.coroutines.channels.*
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.buffer
@@ -53,8 +55,12 @@ public abstract class AbstractEventClient: EventClient {
             activeFlows[listenerId] = {
                 trySend(it)
                     .onFailure { e ->
-                        println("Failed to update event listener: $e")
-                        if (e != null) throw e
+                        if(e is CancellationException) {
+                            cancel(e)
+                        } else {
+                            println("Failed to update event listener: $e")
+                            if (e != null) throw e
+                        }
                     }
             }
             // Tell the server to start sending events
@@ -67,8 +73,7 @@ public abstract class AbstractEventClient: EventClient {
                     activeFlows.remove(listenerId)
                 }
             }
-            // Avoid losing listeners. This shouldn't be a problem
-        }.buffer(Channel.UNLIMITED)
+        }
     }
 }
 

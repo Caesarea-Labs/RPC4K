@@ -1,16 +1,18 @@
 package com.caesarealabs.rpc4k.runtime.jvm.api
 
 import com.caesarealabs.rpc4k.runtime.api.*
-import com.caesarealabs.rpc4k.runtime.implementation.*
+import com.caesarealabs.rpc4k.runtime.implementation.Rpc4kLogger
 import io.ktor.server.application.*
 import io.ktor.server.engine.*
 import io.ktor.server.netty.*
-import io.ktor.server.plugins.callloging.*
+import io.ktor.server.plugins.calllogging.*
 import io.ktor.server.routing.*
 import io.ktor.server.websocket.*
 import io.ktor.websocket.*
+import org.slf4j.event.Level
 import java.util.*
 import java.util.concurrent.ConcurrentHashMap
+import java.util.concurrent.RejectedExecutionException
 import kotlin.collections.set
 
 
@@ -27,13 +29,18 @@ public class KtorManagedRpcServer(
 
     private val connections = ConcurrentHashMap<EventConnection, DefaultWebSocketSession>()
 
-    private var server: ApplicationEngine? = null
+    private var server: EmbeddedServer<*, *>? = null
 
     override fun start(config: ServerConfig, wait: Boolean) {
         server = embeddedServer(engine, port = port) {
-            install(CallLogging)
-            install(WebSockets)
+            install(CallLogging) {
+                level = Level.TRACE
+                this.filter {
+                    true
+                }
+            }
 
+            install(WebSockets)
             config()
             routing {
                 post("/") {
@@ -43,10 +50,8 @@ public class KtorManagedRpcServer(
                 webSocket("/events") {
                     val connection = EventConnection(UUID.randomUUID().toString())
                     connections[connection] = this
-                    println("Adding connection ${connection.id}")
                     try {
                         for (frame in incoming) {
-                            frame as? Frame.Text ?: error("Unexpected non-text frame")
                             config.acceptEventSubscription(frame.readBytes(), connection)
                         }
                     } finally {
@@ -61,7 +66,11 @@ public class KtorManagedRpcServer(
     }
 
     override fun stop() {
-        server?.stop()
+        try {
+            server?.stop()
+        } catch (e: RejectedExecutionException) {
+            // Try to avoid this random error when stopping
+        }
     }
 
     override suspend fun send(connection: EventConnection, bytes: ByteArray): Boolean {

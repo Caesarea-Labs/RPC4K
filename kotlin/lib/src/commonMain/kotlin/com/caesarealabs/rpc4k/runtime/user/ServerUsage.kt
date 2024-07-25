@@ -28,7 +28,8 @@ public fun <I, S> DedicatedServer.startRpc(
     format: SerializationFormat = JsonFormat(),
     eventManager: EventManager = MemoryEventManager(),
     wait: Boolean = true, service: (I) -> S
-) {
+): Rpc4kSCServerSuite<S,I> {
     val suite = rpc.setupServer(this, format = format, eventManager, service)
     start(suite.config, wait)
+    return suite
 }

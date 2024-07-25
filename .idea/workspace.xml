@@ -1,0 +1,335 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="3d9afbb3-2081-47fc-b20e-4f85518ab567" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/kotlin/lib/src/commonMain/kotlin/com/caesarealabs/rpc4k/runtime/api/components/KtorHttpClient.kt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/kotlin/testapp/src/jvmTest/kotlin/com/caesarealabs/rpc4k/test/TestUtils.kt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/kotlin/testapp/src/jvmTest/kotlin/com/caesarealabs/rpc4k/test/rpc/KtorClientTests.kt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/kotlin/testapp/src/jvmTest/kotlin/com/caesarealabs/rpc4k/test/rpc/MemoryClientTests.kt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/kotlin/testapp/src/jvmTest/kotlin/com/caesarealabs/rpc4k/test/rpc/NetworkTests.kt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/kotlin/testapp/src/jvmTest/kotlin/com/caesarealabs/rpc4k/test/rpc/OkHttpTests.kt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/kotlin/testapp/src/jvmTest/kotlin/com/caesarealabs/rpc4k/test/rpc/RpcTests.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/.gitignore" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/RPC4K.iml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/artifacts/lib_jvm_0_7_1.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/artifacts/lib_jvm_0_8_0.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/artifacts/lib_wasm_js_0_7_1.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/artifacts/lib_wasm_js_0_8_0.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/artifacts/processor_jvm_0_7_1.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/artifacts/rpc4_processor_jvm_0_8_0.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/artifacts/rpc4k_processor_jvm_0_8_0.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/artifacts/rpc4k_runtime_jvm_0_8_0.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/artifacts/rpc4k_runtime_wasm_js_0_8_0.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/artifacts/testapp_js_1_0_SNAPSHOT.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/aws.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/gradle.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/gradle.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/jarRepositories.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/jarRepositories.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/modules.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/modules/lib/RPC4K.lib.jvmMain.iml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/modules/lib/RPC4K.lib.jvmTest.iml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/modules/plugin/plugin.main.iml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/modules/testapp/RPC4K.testapp.jvmMain.iml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/modules/testapp/RPC4K.testapp.jvmTest.iml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/uiDesigner.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/kotlin/gradle/libs.versions.toml" beforeDir="false" afterPath="$PROJECT_DIR$/kotlin/gradle/libs.versions.toml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/kotlin/lib/build.gradle.kts" beforeDir="false" afterPath="$PROJECT_DIR$/kotlin/lib/build.gradle.kts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/kotlin/lib/src/commonMain/kotlin/com/caesarealabs/rpc4k/runtime/api/EventClient.kt" beforeDir="false" afterPath="$PROJECT_DIR$/kotlin/lib/src/commonMain/kotlin/com/caesarealabs/rpc4k/runtime/api/EventClient.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/kotlin/lib/src/commonMain/kotlin/com/caesarealabs/rpc4k/runtime/api/components/MemoryRpc.kt" beforeDir="false" afterPath="$PROJECT_DIR$/kotlin/lib/src/commonMain/kotlin/com/caesarealabs/rpc4k/runtime/api/components/MemoryRpc.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/kotlin/lib/src/commonMain/kotlin/com/caesarealabs/rpc4k/runtime/user/ServerUsage.kt" beforeDir="false" afterPath="$PROJECT_DIR$/kotlin/lib/src/commonMain/kotlin/com/caesarealabs/rpc4k/runtime/user/ServerUsage.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/kotlin/lib/src/jvmMain/kotlin/com/caesarealabs/rpc4k/runtime/jvm/api/KtorManagedRpcServer.kt" beforeDir="false" afterPath="$PROJECT_DIR$/kotlin/lib/src/jvmMain/kotlin/com/caesarealabs/rpc4k/runtime/jvm/api/KtorManagedRpcServer.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/kotlin/lib/src/jvmMain/kotlin/com/caesarealabs/rpc4k/runtime/jvm/api/OkHttpRpcClient.kt" beforeDir="false" afterPath="$PROJECT_DIR$/kotlin/lib/src/jvmMain/kotlin/com/caesarealabs/rpc4k/runtime/jvm/api/OkHttpRpcClient.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/kotlin/lib/src/jvmMain/kotlin/com/caesarealabs/rpc4k/runtime/jvm/api/Rpc4kKtor.kt" beforeDir="false" afterPath="$PROJECT_DIR$/kotlin/lib/src/jvmMain/kotlin/com/caesarealabs/rpc4k/runtime/jvm/api/Rpc4kKtor.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/kotlin/lib/src/jvmMain/kotlin/com/caesarealabs/rpc4k/runtime/jvm/user/testing/RpcExtension.kt" beforeDir="false" afterPath="$PROJECT_DIR$/kotlin/lib/src/jvmMain/kotlin/com/caesarealabs/rpc4k/runtime/jvm/user/testing/RpcExtension.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/kotlin/processor/build.gradle.kts" beforeDir="false" afterPath="$PROJECT_DIR$/kotlin/processor/build.gradle.kts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/kotlin/processor/src/jvmMain/kotlin/com/caesarealabs/rpc4k/processor/ApiClassValidator.kt" beforeDir="false" afterPath="$PROJECT_DIR$/kotlin/processor/src/jvmMain/kotlin/com/caesarealabs/rpc4k/processor/ApiClassValidator.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/kotlin/processor/src/jvmMain/kotlin/com/caesarealabs/rpc4k/processor/Rpc4kProcessorProvider.kt" beforeDir="false" afterPath="$PROJECT_DIR$/kotlin/processor/src/jvmMain/kotlin/com/caesarealabs/rpc4k/processor/Rpc4kProcessorProvider.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/kotlin/testapp/build.gradle.kts" beforeDir="false" afterPath="$PROJECT_DIR$/kotlin/testapp/build.gradle.kts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/kotlin/testapp/src/jvmTest/kotlin/com/caesarealabs/rpc4k/test/AllEncompassingTest.kt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/kotlin/testapp/src/jvmTest/kotlin/com/caesarealabs/rpc4k/test/KtorServerTest.kt" beforeDir="false" afterPath="$PROJECT_DIR$/kotlin/testapp/src/jvmTest/kotlin/com/caesarealabs/rpc4k/test/KtorServerTest.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/kotlin/testapp/src/jvmTest/kotlin/com/caesarealabs/rpc4k/test/TestMemoryCommunication.kt" beforeDir="false" afterPath="$PROJECT_DIR$/kotlin/testapp/src/jvmTest/kotlin/com/caesarealabs/rpc4k/test/TestMemoryCommunication.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/typescript/typescript.iml" beforeDir="false" afterPath="$PROJECT_DIR$/typescript/typescript.iml" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="ExternalProjectsData">
+    <projectState path="$PROJECT_DIR$/kotlin">
+      <ProjectState />
+    </projectState>
+  </component>
+  <component name="ExternalProjectsManager">
+    <system id="GRADLE">
+      <state>
+        <task path="$PROJECT_DIR$/kotlin/testapp">
+          <activation />
+        </task>
+        <projects_view>
+          <tree_state>
+            <expand />
+            <select />
+          </tree_state>
+        </projects_view>
+      </state>
+    </system>
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Kotlin File" />
+        <option value="Kotlin Object" />
+        <option value="Kotlin Class" />
+      </list>
+    </option>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 3
+}</component>
+  <component name="ProjectId" id="2jhAUx6h8fq8y3z9RvbgYrKX1Pb" />
+  <component name="ProjectLevelVcsManager">
+    <ConfirmationsSetting value="2" id="Add" />
+  </component>
+  <component name="ProjectViewState">
+    <option name="autoscrollFromSource" value="true" />
+    <option name="compactDirectories" value="true" />
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+    <option name="showModules" value="false" />
+  </component>
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;Gradle.Build kotlin.executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.Kotlin Tests.executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.KtorClientTests.executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.KtorClientTests.testEvents.executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.KtorClientTests.testExoticTypes.executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.KtorClientTests.testGeneratedEvents.executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.KtorServerTest.Basic RPCs work.executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.MemoryClientTests.executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.MemoryClientTests.testEvents.executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.MemoryClientTests.testGeneratedEvents.executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.OkHttpTests.executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.OkHttpTests.testEvents.executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.OkHttpTests.testGeneratedEvents.executor&quot;: &quot;Run&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
+    &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
+    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/Users/Natan/.gradle/caches/modules-2/files-2.1/io.ktor/ktor-server-core-jvm/3.0.0-beta-2/a61f308a6d89d5ccccd97a31f0c94f6d24f44015/ktor-server-core-jvm-3.0.0-beta-2-sources.jar&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;npm.build.executor&quot;: &quot;Run&quot;,
+    &quot;ts.external.directory.path&quot;: &quot;C:\\Users\\Natan\\Desktop\\RPC4K\\typescript\\generator\\node_modules\\typescript\\lib&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  }
+}</component>
+  <component name="RecentsManager">
+    <key name="MoveKotlinTopLevelDeclarationsDialog.RECENTS_KEY">
+      <recent name="com.caesarealabs.rpc4k.test.rpc" />
+    </key>
+    <key name="CopyKotlinDeclarationDialog.RECENTS_KEY">
+      <recent name="com.caesarealabs.rpc4k.test.rpc" />
+    </key>
+  </component>
+  <component name="RunManager" selected="Gradle.Kotlin Tests">
+    <configuration name="KtorClientTests" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
+      <ExternalSystemSettings>
+        <option name="executionName" />
+        <option name="externalProjectPath" value="$PROJECT_DIR$/kotlin/testapp" />
+        <option name="externalSystemIdString" value="GRADLE" />
+        <option name="scriptParameters" value="" />
+        <option name="taskDescriptions">
+          <list />
+        </option>
+        <option name="taskNames">
+          <list>
+            <option value=":testapp:cleanJvmTest" />
+            <option value=":testapp:jvmTest" />
+            <option value="--tests &quot;com.caesarealabs.rpc4k.test.rpc.KtorClientTests&quot;" />
+          </list>
+        </option>
+        <option name="vmOptions" />
+      </ExternalSystemSettings>
+      <ExternalSystemDebugServerProcess>false</ExternalSystemDebugServerProcess>
+      <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
+      <DebugAllEnabled>false</DebugAllEnabled>
+      <RunAsTest>true</RunAsTest>
+      <method v="2" />
+    </configuration>
+    <configuration name="KtorClientTests.testEvents" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
+      <ExternalSystemSettings>
+        <option name="executionName" />
+        <option name="externalProjectPath" value="$PROJECT_DIR$/kotlin/testapp" />
+        <option name="externalSystemIdString" value="GRADLE" />
+        <option name="scriptParameters" value="" />
+        <option name="taskDescriptions">
+          <list />
+        </option>
+        <option name="taskNames">
+          <list>
+            <option value=":testapp:cleanJvmTest" />
+            <option value=":testapp:jvmTest" />
+            <option value="--tests &quot;com.caesarealabs.rpc4k.test.rpc.KtorClientTests.testEvents&quot;" />
+          </list>
+        </option>
+        <option name="vmOptions" />
+      </ExternalSystemSettings>
+      <ExternalSystemDebugServerProcess>false</ExternalSystemDebugServerProcess>
+      <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
+      <DebugAllEnabled>false</DebugAllEnabled>
+      <RunAsTest>true</RunAsTest>
+      <method v="2" />
+    </configuration>
+    <configuration name="KtorClientTests.testGeneratedEvents" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
+      <ExternalSystemSettings>
+        <option name="executionName" />
+        <option name="externalProjectPath" value="$PROJECT_DIR$/kotlin/testapp" />
+        <option name="externalSystemIdString" value="GRADLE" />
+        <option name="scriptParameters" value="" />
+        <option name="taskDescriptions">
+          <list />
+        </option>
+        <option name="taskNames">
+          <list>
+            <option value=":testapp:cleanJvmTest" />
+            <option value=":testapp:jvmTest" />
+            <option value="--tests &quot;com.caesarealabs.rpc4k.test.rpc.KtorClientTests.testGeneratedEvents&quot;" />
+          </list>
+        </option>
+        <option name="vmOptions" />
+      </ExternalSystemSettings>
+      <ExternalSystemDebugServerProcess>false</ExternalSystemDebugServerProcess>
+      <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
+      <DebugAllEnabled>false</DebugAllEnabled>
+      <RunAsTest>true</RunAsTest>
+      <method v="2" />
+    </configuration>
+    <configuration name="OkHttpTests" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
+      <ExternalSystemSettings>
+        <option name="executionName" />
+        <option name="externalProjectPath" value="$PROJECT_DIR$/kotlin/testapp" />
+        <option name="externalSystemIdString" value="GRADLE" />
+        <option name="scriptParameters" value="" />
+        <option name="taskDescriptions">
+          <list />
+        </option>
+        <option name="taskNames">
+          <list>
+            <option value=":testapp:cleanJvmTest" />
+            <option value=":testapp:jvmTest" />
+            <option value="--tests &quot;com.caesarealabs.rpc4k.test.rpc.OkHttpTests&quot;" />
+          </list>
+        </option>
+        <option name="vmOptions" />
+      </ExternalSystemSettings>
+      <ExternalSystemDebugServerProcess>false</ExternalSystemDebugServerProcess>
+      <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
+      <DebugAllEnabled>false</DebugAllEnabled>
+      <RunAsTest>true</RunAsTest>
+      <method v="2" />
+    </configuration>
+    <configuration name="OkHttpTests.testGeneratedEvents" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
+      <ExternalSystemSettings>
+        <option name="executionName" />
+        <option name="externalProjectPath" value="$PROJECT_DIR$/kotlin/testapp" />
+        <option name="externalSystemIdString" value="GRADLE" />
+        <option name="scriptParameters" value="" />
+        <option name="taskDescriptions">
+          <list />
+        </option>
+        <option name="taskNames">
+          <list>
+            <option value=":testapp:cleanJvmTest" />
+            <option value=":testapp:jvmTest" />
+            <option value="--tests &quot;com.caesarealabs.rpc4k.test.rpc.OkHttpTests.testGeneratedEvents&quot;" />
+          </list>
+        </option>
+        <option name="vmOptions" />
+      </ExternalSystemSettings>
+      <ExternalSystemDebugServerProcess>false</ExternalSystemDebugServerProcess>
+      <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
+      <DebugAllEnabled>false</DebugAllEnabled>
+      <RunAsTest>true</RunAsTest>
+      <method v="2" />
+    </configuration>
+    <recent_temporary>
+      <list>
+        <item itemvalue="Gradle.KtorClientTests.testGeneratedEvents" />
+        <item itemvalue="Gradle.KtorClientTests.testGeneratedEvents" />
+        <item itemvalue="Gradle.KtorClientTests" />
+        <item itemvalue="Gradle.KtorClientTests.testGeneratedEvents" />
+        <item itemvalue="Gradle.KtorClientTests" />
+      </list>
+    </recent_temporary>
+  </component>
+  <component name="SharedIndexes">
+    <attachedChunks>
+      <set>
+        <option value="bundled-jdk-9823dce3aa75-b114ca120d71-intellij.indexing.shared.core-IU-242.20224.91" />
+        <option value="bundled-js-predefined-d6986cc7102b-410509235cf1-JavaScript-IU-242.20224.91" />
+      </set>
+    </attachedChunks>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="3d9afbb3-2081-47fc-b20e-4f85518ab567" name="Changes" comment="" />
+      <created>1721828954320</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1721828954320</updated>
+      <workItem from="1721828955369" duration="22000" />
+      <workItem from="1721829005047" duration="2820000" />
+      <workItem from="1721836538137" duration="3681000" />
+      <workItem from="1721856782902" duration="6099000" />
+      <workItem from="1721894099546" duration="5326000" />
+      <workItem from="1721917375465" duration="18000" />
+    </task>
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" type="kotlin-line">
+          <url>file://$PROJECT_DIR$/kotlin/lib/src/commonMain/kotlin/com/caesarealabs/rpc4k/runtime/api/components/MemoryRpc.kt</url>
+          <line>47</line>
+          <option name="timeStamp" value="6" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="kotlin-line">
+          <url>file://$PROJECT_DIR$/kotlin/lib/src/commonMain/kotlin/com/caesarealabs/rpc4k/runtime/api/components/MemoryRpc.kt</url>
+          <line>90</line>
+          <option name="timeStamp" value="7" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="kotlin-line">
+          <url>file://$PROJECT_DIR$/kotlin/lib/src/jvmMain/kotlin/com/caesarealabs/rpc4k/runtime/jvm/api/OkHttpRpcClient.kt</url>
+          <line>22</line>
+          <option name="timeStamp" value="13" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="kotlin-line">
+          <url>jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/io.ktor/ktor-client-core/3.0.0-beta-2/fbcf32892d6ca40a6fe84d922d465b974fc88d09/ktor-client-core-3.0.0-beta-2-sources.jar!/commonMain/io/ktor/client/plugins/websocket/builders.kt</url>
+          <line>98</line>
+          <properties>
+            <option name="lambda-ordinal" value="-1" />
+          </properties>
+          <option name="timeStamp" value="18" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
+  </component>
+</project>

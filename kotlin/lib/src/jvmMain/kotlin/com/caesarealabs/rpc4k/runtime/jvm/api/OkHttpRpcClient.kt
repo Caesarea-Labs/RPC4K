@@ -2,31 +2,21 @@ package com.caesarealabs.rpc4k.runtime.jvm.api
 
 import com.caesarealabs.rpc4k.runtime.api.*
 import com.caesarealabs.rpc4k.runtime.api.components.JsonFormat
-import com.caesarealabs.rpc4k.runtime.implementation.Rpc4kLogger
 import com.caesarealabs.rpc4k.runtime.user.Rpc4kIndex
-import kotlinx.coroutines.channels.awaitClose
-import kotlinx.coroutines.channels.trySendBlocking
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.callbackFlow
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlinx.serialization.KSerializer
 import okhttp3.*
 import okhttp3.HttpUrl.Companion.toHttpUrl
 import okhttp3.RequestBody.Companion.toRequestBody
+import okio.ByteString.Companion.toByteString
 import okio.IOException
-import java.util.concurrent.ConcurrentHashMap
 import kotlin.coroutines.resume
 
-//public class OkHttpRpcClientFactory(private val client: OkHttpClient = OkHttpClient()) : RpcClientFactory {
-//    override fun build(url: String, websocketUrl: String): RpcClient = OkHttpRpcClient(url, websocketUrl, client)
-//}
 
 public class OkHttpRpcClient(
     private val url: String, private val websocketUrl: String,
     private val client: OkHttpClient = OkHttpClient()
-) :
-    RpcClient {
+) : RpcClient {
 
     override suspend fun send(rpc: Rpc, format: SerializationFormat, serializers: List<KSerializer<*>>): ByteArray {
         val data = rpc.toByteArray(format, serializers)
@@ -59,7 +49,7 @@ private suspend fun OkHttpClient.request(request: Request): Response = suspendCa
 
 private class OkHttpWebsocketEventClient(url: String, client: OkHttpClient) : AbstractEventClient() {
     val webSocket by lazy {
-        client.newWebSocket(Request(url.toHttpUrl()), object : WebSocketListener() {
+        client.newWebSocket(Request.Builder().url(url).build(), object : WebSocketListener() {
             override fun onMessage(webSocket: WebSocket, text: String) {
                 handleMessage(S2CEventMessage.fromString(text))
             }
@@ -67,8 +57,7 @@ private class OkHttpWebsocketEventClient(url: String, client: OkHttpClient) : Ab
     }
 
     override suspend fun send(message: ByteArray) {
-        //TODO: kind of inefficient bytes -> string conversion
-        webSocket.send(message.decodeToString())
+        webSocket.send(message.toByteString())
     }
 }
 

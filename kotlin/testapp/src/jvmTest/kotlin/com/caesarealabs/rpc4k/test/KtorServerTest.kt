@@ -6,6 +6,7 @@ import com.caesarealabs.rpc4k.runtime.user.Api
 import com.caesarealabs.rpc4k.testapp.BasicApi
 import com.caesarealabs.rpc4k.testapp.Dog
 import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.test.runTest
 import kotlinx.serialization.Serializable
 import org.junit.jupiter.api.extension.RegisterExtension
 import strikt.api.expectThat
@@ -22,7 +23,7 @@ class KtorServerTest {
 
 
     @Test
-    fun `Basic RPCs work`(): Unit = runBlocking {
+    fun `Basic RPCs work`(): Unit = runTest {
         val client = extension.client
         val dog = Dog("asdf", "shiba", 2)
         client.putDog(dog)
