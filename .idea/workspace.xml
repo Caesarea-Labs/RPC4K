@@ -4,9 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="3d9afbb3-2081-47fc-b20e-4f85518ab567" name="Changes" comment="Ktor rpc client">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-    </list>
+    <list default="true" id="3d9afbb3-2081-47fc-b20e-4f85518ab567" name="Changes" comment="Ktor rpc client" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -252,6 +250,7 @@
       <workItem from="1721894099546" duration="5326000" />
       <workItem from="1721917375465" duration="184000" />
       <workItem from="1721925398947" duration="593000" />
+      <workItem from="1722078950622" duration="25000" />
     </task>
     <task id="LOCAL-00001" summary="Ktor rpc client">
       <option name="closed" value="true" />
