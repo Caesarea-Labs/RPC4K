@@ -1,7 +1,11 @@
 package com.caesarealabs.rpc4k.runtime.jvm.api
 
 import com.caesarealabs.rpc4k.runtime.api.*
+import com.caesarealabs.rpc4k.runtime.api.components.JsonFormat
+import com.caesarealabs.rpc4k.runtime.api.components.MemoryEventManager
 import com.caesarealabs.rpc4k.runtime.implementation.Rpc4kLogger
+import com.caesarealabs.rpc4k.runtime.user.Rpc4kIndex
+import com.caesarealabs.rpc4k.runtime.user.startRpc
 import io.ktor.server.application.*
 import io.ktor.server.engine.*
 import io.ktor.server.netty.*
@@ -14,6 +18,18 @@ import java.util.*
 import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.RejectedExecutionException
 import kotlin.collections.set
+
+public fun <S, I> Rpc4kIndex<S, *, I>.startKtor(
+    format: SerializationFormat = JsonFormat(),
+    eventManager: EventManager = MemoryEventManager(),
+    wait: Boolean = true,
+    engine: ApplicationEngineFactory<*, *> = Netty,
+    port: Int = PortPool.get(),
+    ktorConfig: Application.() -> Unit = {},
+    service: (I) -> S
+): Rpc4kSCServerSuite<S, I> = KtorManagedRpcServer(engine = engine ,port = port, config = ktorConfig)
+    .startRpc(this, format, eventManager, wait, service)
+
 
 
 // NiceToHave: use a custom implementation that setups multiple routes

@@ -55,6 +55,7 @@ kotlin {
                 api(libs.ktor.server.websockets.jvm)
                 api(libs.ktor.netty)
                 api(libs.ktor.logging)
+                implementation("ch.qos.logback:logback-classic:1.5.6")
                 //TODo: should be part of okhttp client module
                 api(libs.okhttp.core)
 

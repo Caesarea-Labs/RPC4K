@@ -80,8 +80,8 @@ private class KtorWebsocketEventClient(
     }
 }
 
-public fun <C> Rpc4kIndex<*, C, *>.ktorClient(url: String, format: SerializationFormat = JsonFormat()): C {
-    val websocketUrl = "$url/events"
-    return createNetworkClient(KtorRpcClient(url, websocketUrl), format)
+public fun <C> Rpc4kIndex<*, C, *>.ktorClient(url: String, websocketUrl: String, format: SerializationFormat = JsonFormat()): C {
+//    val websocketUrl = "$url/events"
+    return createNetworkClient(KtorRpcClient(url, "$websocketUrl/events"), format)
 }
 
