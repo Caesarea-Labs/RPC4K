@@ -4,10 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="3d9afbb3-2081-47fc-b20e-4f85518ab567" name="Changes" comment="Ktor rpc client">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/kotlin/plugin/build.gradle.kts" beforeDir="false" afterPath="$PROJECT_DIR$/kotlin/plugin/build.gradle.kts" afterDir="false" />
-    </list>
+    <list default="true" id="3d9afbb3-2081-47fc-b20e-4f85518ab567" name="Changes" comment="Ktor rpc client" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -256,7 +253,7 @@
       <workItem from="1722078950622" duration="25000" />
       <workItem from="1722079045997" duration="5000" />
       <workItem from="1722200561870" duration="615000" />
-      <workItem from="1722234277659" duration="688000" />
+      <workItem from="1722234277659" duration="874000" />
     </task>
     <task id="LOCAL-00001" summary="Ktor rpc client">
       <option name="closed" value="true" />
