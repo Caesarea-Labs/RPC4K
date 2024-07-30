@@ -70,6 +70,7 @@ kotlin {
                 api(libs.serialization.json)
                 api (libs.uuid)
                 api(libs.kotlinx.datetime)
+                api(libs.logging)
 
                 // TODO: should be part of ktor client module
                 api(libs.ktor.client.core)

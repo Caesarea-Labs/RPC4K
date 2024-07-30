@@ -1,8 +1,12 @@
 package com.caesarealabs.rpc4k.runtime.jvm.user.testing
 
+import com.caesarealabs.logging.Logging
+import com.caesarealabs.logging.LoggingFactory
+import com.caesarealabs.logging.PrintLogging
+import com.caesarealabs.logging.PrintLoggingFactory
 import com.caesarealabs.rpc4k.runtime.api.*
-import com.caesarealabs.rpc4k.runtime.api.components.JsonFormat
-import com.caesarealabs.rpc4k.runtime.api.components.MemoryEventManager
+import com.caesarealabs.rpc4k.runtime.user.components.JsonFormat
+import com.caesarealabs.rpc4k.runtime.user.components.MemoryEventManager
 import com.caesarealabs.rpc4k.runtime.implementation.createHandlerConfig
 import com.caesarealabs.rpc4k.runtime.jvm.api.KtorManagedRpcServer
 import com.caesarealabs.rpc4k.runtime.jvm.api.OkHttpRpcClient
@@ -11,7 +15,6 @@ import org.junit.jupiter.api.extension.AfterAllCallback
 import org.junit.jupiter.api.extension.BeforeAllCallback
 import org.junit.jupiter.api.extension.Extension
 import org.junit.jupiter.api.extension.ExtensionContext
-//TODO: make tests pass
 
 /**
  * Call in a companion object of a JUnit test class like so:
@@ -52,22 +55,16 @@ public fun <S, C, I> Rpc4kIndex<S, C, I>.junit(
     format: SerializationFormat = JsonFormat(),
     server: (port: Int) -> DedicatedServer = { KtorManagedRpcServer(port = it) },
     client: (port: Int, url: String, websocketUrl: String) -> RpcClient = { _, url, ws -> OkHttpRpcClient(url, ws) },
-//    client: ( port: Int) -> RpcClient = {
-//        val url = "http://localhost:${it}"
-//        val websocketUrl = "$url/events"
-//        OkHttpRpcClient(url, websocketUrl)
-//    },
     eventManager: EventManager = MemoryEventManager(),
+    logging: LoggingFactory = PrintLoggingFactory,
     service: (I) -> S,
 ): ClientServerExtension<S, C, I> {
     val url = "http://localhost:${port}"
     val websocketUrl = "ws://localhost:${port}/events"
     val serverInstance = server(port)
     val clientSetup = client(port, url, websocketUrl)
-//    val clientSetup = client.build(url, websocketUrl)
-    val config = createHandlerConfig(format, eventManager, serverInstance, service)
+    val config = createHandlerConfig(format, eventManager, serverInstance, logging,service)
     val serverConfig = ServerConfig(router, config)
-//    val suite = Rpc4kSCServerSuite(, createNetworkClient(clientSetup, format), /*createMemoryClient(config.handler),*/ config.invoker)
     return ClientServerExtension(
         serverInstance,
         serverConfig,
@@ -77,17 +74,6 @@ public fun <S, C, I> Rpc4kIndex<S, C, I>.junit(
         config.invoker
     )
 }
-
-//public interface Rpc4kSuite<Server, Client, Invoker> {
-//    public val server: Server
-//    public val networkClient: Client
-//
-//    //    public val memoryClient: Client,
-//    public val invoker: Invoker
-//}
-//
-//public data class Rpc4kSuiteImpl<S, C, I>(override val server: S, override val networkClient: C, override val invoker: I) :
-//    Rpc4kSuite<S, C, I>
 
 
 public class ClientServerExtension<S, C, I> internal constructor(
@@ -100,12 +86,8 @@ public class ClientServerExtension<S, C, I> internal constructor(
     public val client: C,
     public val server: S,
     public val invoker: I,
-//    suite: Rpc4kSuite<S, C, I>
 ) : Extension, BeforeAllCallback,
     AfterAllCallback {
-//    public val server: S = suite.server
-//    public val client: C = suite.networkClient
-//    public val invoker: I = suite.invoker
 
     override fun beforeAll(context: ExtensionContext) {
         host.start(serverConfig, wait = false)

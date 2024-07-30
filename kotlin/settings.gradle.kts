@@ -18,3 +18,13 @@ include(":lib")
 include(":processor")
 // JVM Targeted, runs as part of the Gradle script to pull in RPC libraries and such
 includeBuild("plugin")
+
+val linkLogging = true
+val loggingDir = file("../../Loggy/logging")
+if (linkLogging) {
+    includeBuild(loggingDir) {
+        dependencySubstitution {
+            substitute(module("com.caesarealabs:logging")).using(project(":"))
+        }
+    }
+}

@@ -1,10 +1,12 @@
 package com.caesarealabs.rpc4k.runtime.jvm.api
 
+import com.caesarealabs.logging.LoggingFactory
+import com.caesarealabs.logging.PrintLogging
+import com.caesarealabs.logging.PrintLoggingFactory
 import com.caesarealabs.rpc4k.runtime.api.*
-import com.caesarealabs.rpc4k.runtime.api.components.JsonFormat
-import com.caesarealabs.rpc4k.runtime.api.components.MemoryEventManager
-import com.caesarealabs.rpc4k.runtime.implementation.Rpc4kLogger
 import com.caesarealabs.rpc4k.runtime.user.Rpc4kIndex
+import com.caesarealabs.rpc4k.runtime.user.components.JsonFormat
+import com.caesarealabs.rpc4k.runtime.user.components.MemoryEventManager
 import com.caesarealabs.rpc4k.runtime.user.startRpc
 import io.ktor.server.application.*
 import io.ktor.server.engine.*
@@ -19,6 +21,9 @@ import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.RejectedExecutionException
 import kotlin.collections.set
 
+/**
+ * Configure and start an RPC server with one call from the [Rpc4kIndex]
+ */
 public fun <S, I> Rpc4kIndex<S, *, I>.startKtor(
     format: SerializationFormat = JsonFormat(),
     eventManager: EventManager = MemoryEventManager(),
@@ -26,10 +31,10 @@ public fun <S, I> Rpc4kIndex<S, *, I>.startKtor(
     engine: ApplicationEngineFactory<*, *> = Netty,
     port: Int = PortPool.get(),
     ktorConfig: Application.() -> Unit = {},
+    logging: LoggingFactory = PrintLoggingFactory,
     service: (I) -> S
-): Rpc4kSCServerSuite<S, I> = KtorManagedRpcServer(engine = engine ,port = port, config = ktorConfig)
-    .startRpc(this, format, eventManager, wait, service)
-
+): Rpc4kSCServerSuite<S, I> = KtorManagedRpcServer(engine = engine, port = port, config = ktorConfig)
+    .startRpc(this, format, eventManager, logging, wait, service)
 
 
 // NiceToHave: use a custom implementation that setups multiple routes
@@ -71,7 +76,7 @@ public class KtorManagedRpcServer(
                             config.acceptEventSubscription(frame.readBytes(), connection)
                         }
                     } finally {
-                        Rpc4kLogger.info("Removing connection ${connection.id}")
+                        PrintLogging.logInfo { "Removing connection ${connection.id}" }
                         config.eventManager.dropClient(connection)
                         connections.remove(connection)
                     }

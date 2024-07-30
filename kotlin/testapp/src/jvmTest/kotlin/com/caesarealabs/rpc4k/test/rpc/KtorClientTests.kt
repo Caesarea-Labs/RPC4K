@@ -1,7 +1,7 @@
 package com.caesarealabs.rpc4k.test.rpc
 
 import com.caesarealabs.rpc4k.generated.rpc4k
-import com.caesarealabs.rpc4k.runtime.api.components.KtorRpcClient
+import com.caesarealabs.rpc4k.runtime.user.components.KtorRpcClient
 import com.caesarealabs.rpc4k.runtime.jvm.user.testing.junit
 import com.caesarealabs.rpc4k.testapp.AllEncompassingService
 import com.caesarealabs.rpc4k.testapp.SimpleProtocol

@@ -1,7 +1,7 @@
 package com.caesarealabs.rpc4k.test
 
 import com.caesarealabs.rpc4k.runtime.api.Rpc
-import com.caesarealabs.rpc4k.runtime.api.components.JsonFormat
+import com.caesarealabs.rpc4k.runtime.user.components.JsonFormat
 import kotlinx.serialization.builtins.serializer
 import strikt.api.expectThat
 import strikt.assertions.isEqualTo

@@ -1,7 +1,7 @@
 package com.caesarealabs.rpc4k.runtime.jvm.api
 
 import com.caesarealabs.rpc4k.runtime.api.*
-import com.caesarealabs.rpc4k.runtime.api.components.JsonFormat
+import com.caesarealabs.rpc4k.runtime.user.components.JsonFormat
 import com.caesarealabs.rpc4k.runtime.user.Rpc4kIndex
 import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlinx.serialization.KSerializer

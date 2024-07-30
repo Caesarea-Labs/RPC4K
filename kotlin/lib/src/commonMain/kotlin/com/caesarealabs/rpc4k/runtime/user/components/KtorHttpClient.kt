@@ -1,4 +1,4 @@
-package com.caesarealabs.rpc4k.runtime.api.components
+package com.caesarealabs.rpc4k.runtime.user.components
 
 import com.caesarealabs.rpc4k.runtime.api.*
 import com.caesarealabs.rpc4k.runtime.user.Rpc4kIndex

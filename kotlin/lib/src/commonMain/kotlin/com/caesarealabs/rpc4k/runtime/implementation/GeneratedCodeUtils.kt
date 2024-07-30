@@ -66,14 +66,17 @@ public object GeneratedCodeUtils {
     }
 
     /**
-     * Uses the [server] to respond with the specified data
+     * Called by the generated Router, to respond to the client after receiving a request.
+     * [argDeserializers], [resultSerializer], and [respondMethod] are unique for each procedure
+     * and so need special codegen to generate them.
      */
     public suspend fun <T> respond(
         config: HandlerConfig<*>,
         request: ByteArray,
         argDeserializers: List<KSerializer<*>>,
         resultSerializer: KSerializer<T>,
-        respondMethod: suspend (args: List<*>) -> T
+//        context: RPCContext,
+        respondMethod: suspend /*RPCContext.*/(args: List<*>) -> T
     ): ByteArray {
         val parsed = try {
             Rpc.fromByteArray(request, config.format, argDeserializers)
@@ -84,6 +87,10 @@ public object GeneratedCodeUtils {
         println("Running ${parsed.method}()")
 
         return config.format.encode(resultSerializer, respondMethod(parsed.arguments))
+
+//        return with(context) {
+//            config.format.encode(resultSerializer, respondMethod(parsed.arguments))
+//        }
     }
 
     public suspend fun <Server, R> invokeEvent(
@@ -121,7 +128,7 @@ public object GeneratedCodeUtils {
  * Will send the [bytes] to the [connection], dropping it if it cannot be reached
  */
 internal suspend fun <T> HandlerConfig<T>.sendOrDrop(connection: EventConnection, bytes: ByteArray) {
-    val clientExists =  messageLauncher.send(connection, bytes)
+    val clientExists = messageLauncher.send(connection, bytes)
     if (!clientExists) {
         println("Dropping connection ${connection.id} as it cannot be reached")
         eventManager.dropClient(connection)

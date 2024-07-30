@@ -3,8 +3,9 @@ package com.caesarealabs.rpc4k.runtime.api
 import com.caesarealabs.rpc4k.runtime.implementation.fastConcat
 
 public sealed interface C2SEventMessage {
+    public val event: String
     public data class Subscribe(
-        public val event: String,
+        public override val event: String,
         /**
          * Unique identifier for the exact client function that requested this subscription. The client needs this to know where to route events.
          */
@@ -35,7 +36,7 @@ public sealed interface C2SEventMessage {
         }
     }
 
-    public data class Unsubscribe(val event: String, val listenerId: String) : C2SEventMessage
+    public data class Unsubscribe(override val event: String, val listenerId: String) : C2SEventMessage
 
 
     public companion object {

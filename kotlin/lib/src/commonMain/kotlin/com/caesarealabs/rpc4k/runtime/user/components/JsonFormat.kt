@@ -1,4 +1,4 @@
-package com.caesarealabs.rpc4k.runtime.api.components
+package com.caesarealabs.rpc4k.runtime.user.components
 
 import com.caesarealabs.rpc4k.runtime.api.SerializationFormat
 import com.caesarealabs.rpc4k.runtime.implementation.serializers.Rpc4kSerializersModule

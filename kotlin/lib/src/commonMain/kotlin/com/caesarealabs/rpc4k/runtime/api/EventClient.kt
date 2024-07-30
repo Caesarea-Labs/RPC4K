@@ -1,6 +1,6 @@
 package com.caesarealabs.rpc4k.runtime.api
 
-import com.caesarealabs.rpc4k.runtime.implementation.Rpc4kLogger
+import com.caesarealabs.logging.PrintLogging
 import com.caesarealabs.rpc4k.runtime.platform.ConcurrentMutableMap
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.cancel
@@ -10,6 +10,10 @@ import kotlinx.coroutines.flow.buffer
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.launch
 
+/**
+ * Defines how to send messages to the server, and listen to responses.
+ * Extending [AbstractEventClient] is usually good enough
+ */
 public interface EventClient {
     /**
      * Sends arbitrary information to the event accepting server. This is used to set up subscription and unsubscription.
@@ -39,7 +43,7 @@ public abstract class AbstractEventClient: EventClient {
                 if (listener != null) {
                     listener(message.payload)
                 } else {
-                    Rpc4kLogger.warn("Could not find listener for id '${message.listenerId}', the subscription may still open on the server")
+                    PrintLogging.logWarn { "Could not find listener for id '${message.listenerId}', the subscription may still open on the server" }
                 }
             }
 

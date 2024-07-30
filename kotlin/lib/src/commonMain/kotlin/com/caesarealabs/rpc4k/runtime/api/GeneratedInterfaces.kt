@@ -1,11 +1,12 @@
 package com.caesarealabs.rpc4k.runtime.api
 
+import com.caesarealabs.rpc4k.runtime.user.RPCContext
+
 /**
- * All generated server classes implement this interface, to make usage easier.
- * Some api methods use this interface, but you can also use it yourself
+ * Implemented by all generated Routers
  */
 public interface RpcRouter<T> {
-    public suspend fun routeRequest(request: ByteArray, method: String, setup: HandlerConfig<T>): ByteArray?
+    public suspend fun routeRequest(request: ByteArray, method: String, setup: HandlerConfig<T>/*, context: RPCContext*/): ByteArray?
 //    public suspend fun handleEvent(dispatcherData: List<*>,
 //                                   subscriptionData: ByteArray,
 //                                   event: String,

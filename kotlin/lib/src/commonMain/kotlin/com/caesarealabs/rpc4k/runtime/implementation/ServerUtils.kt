@@ -1,5 +1,6 @@
 package com.caesarealabs.rpc4k.runtime.implementation
 
+import com.caesarealabs.logging.LoggingFactory
 import com.caesarealabs.rpc4k.runtime.api.*
 import com.caesarealabs.rpc4k.runtime.user.Rpc4kIndex
 
@@ -13,11 +14,12 @@ internal fun <S, I> Rpc4kIndex<S, *, I>.createHandlerConfig(
     format: SerializationFormat,
     eventManager: EventManager,
     engine: RpcMessageLauncher,
+    logging: LoggingFactory,
     service: (I) -> S
 ): HandlerConfigImpl<S, I> {
     @Suppress("RemoveExplicitTypeArguments")
     // The type args are necessary.
-    return HandlerConfigImpl<S, I>({ service(it) }, { createInvoker(it) }, format, eventManager, engine)
+    return HandlerConfigImpl<S, I>({ service(it) }, { createInvoker(it) }, format, eventManager, engine, logging)
 }
 
 

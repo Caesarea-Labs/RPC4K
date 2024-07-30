@@ -1,9 +1,9 @@
-@file:Suppress("UNCHECKED_CAST")
 
 package com.caesarealabs.rpc4k.runtime.api
 
-import com.caesarealabs.rpc4k.runtime.api.components.MemoryEventManager
-
+import com.caesarealabs.logging.LoggingFactory
+import com.caesarealabs.logging.PrintLoggingFactory
+import com.caesarealabs.rpc4k.runtime.user.components.MemoryEventManager
 
 
 /**
@@ -18,12 +18,14 @@ public interface HandlerConfig<out T> {
     public val format: SerializationFormat
     public val eventManager: EventManager
     public val messageLauncher: RpcMessageLauncher
+    public val logging: LoggingFactory
 
     public object InMemory : HandlerConfig<Nothing> {
         override val handler: Nothing get() = error("No actual handler is used as everything is done in-memory")
         override val format: SerializationFormat get() = error("No serialization is used as everything is done in-memory")
         override val eventManager: EventManager = MemoryEventManager()
         override val messageLauncher: RpcMessageLauncher get() = error("No Server Engine is used as everything is done in-memory")
+        override val logging: LoggingFactory = PrintLoggingFactory
     }
 }
 
@@ -38,12 +40,12 @@ internal class HandlerConfigImpl<out T, I>(
     invoker: (HandlerConfigImpl<T, I>) -> I,
     override val format: SerializationFormat,
     override val eventManager: EventManager,
-    override val messageLauncher: RpcMessageLauncher
+    override val messageLauncher: RpcMessageLauncher,
+    override val logging: LoggingFactory
 ) : HandlerConfig<T> {
     val invoker: I = invoker(this)
     override val handler: T = handler(this.invoker)
 }
-
 
 
 public data class Rpc4kSCServerSuite<S, Inv>(
