@@ -6,7 +6,7 @@ import com.caesarealabs.rpc4k.runtime.user.RPCContext
  * Implemented by all generated Routers
  */
 public interface RpcRouter<T> {
-    public suspend fun routeRequest(request: ByteArray, method: String, setup: HandlerConfig<T>/*, context: RPCContext*/): ByteArray?
+    public suspend fun routeRequest(request: ByteArray, method: String, config: HandlerConfig<T>, context: RPCContext): ByteArray?
 //    public suspend fun handleEvent(dispatcherData: List<*>,
 //                                   subscriptionData: ByteArray,
 //                                   event: String,

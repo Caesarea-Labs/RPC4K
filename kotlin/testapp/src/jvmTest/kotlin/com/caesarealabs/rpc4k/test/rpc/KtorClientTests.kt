@@ -1,8 +1,8 @@
 package com.caesarealabs.rpc4k.test.rpc
 
 import com.caesarealabs.rpc4k.generated.rpc4k
-import com.caesarealabs.rpc4k.runtime.user.components.KtorRpcClient
 import com.caesarealabs.rpc4k.runtime.jvm.user.testing.junit
+import com.caesarealabs.rpc4k.runtime.user.components.KtorRpcClient
 import com.caesarealabs.rpc4k.testapp.AllEncompassingService
 import com.caesarealabs.rpc4k.testapp.SimpleProtocol
 import kotlinx.coroutines.runBlocking
@@ -13,8 +13,8 @@ class KtorClientTests {
     companion object {
         @JvmField
         @RegisterExtension
-        val allEncompassingExtension = AllEncompassingService.rpc4k.junit(client = {
-            _, url, ws -> KtorRpcClient(url, ws)
+        val allEncompassingExtension = AllEncompassingService.rpc4k.junit(client = { _, url, ws ->
+            KtorRpcClient(url, ws)
         }) { AllEncompassingService(it) }
 
         @JvmField
@@ -22,7 +22,10 @@ class KtorClientTests {
         val simpleExtension = SimpleProtocol.rpc4k.junit { SimpleProtocol() }
     }
 
-
+    @Test
+    fun testLogging() = runBlocking {
+        allEncompassingExtension.client.testContext()
+    }
 
 
     @Test

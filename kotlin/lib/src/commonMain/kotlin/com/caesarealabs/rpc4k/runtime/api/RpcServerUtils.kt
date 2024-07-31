@@ -27,7 +27,7 @@ public object RpcServerUtils {
         return config.logging.wrapCall(method) {
             val logging = this@wrapCall
             try {
-                (config.router as RpcRouter<Any?>).routeRequest(input, method, config/*, SimpleRpcContext(serverData, logging)*/)
+                (config.router as RpcRouter<Any?>).routeRequest(input, method, config, SimpleRpcContext(serverData, logging))
                     ?.let { RpcResult.Success(it) }
                     ?: RpcResult.Error("Non existent procedure $method", RpcError.InvalidRequest)
             } catch (e: InvalidRpcRequestException) {

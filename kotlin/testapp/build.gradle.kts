@@ -35,6 +35,9 @@ kotlin {
 
 //    iosArm64()
     sourceSets {
+        commonMain.dependencies {
+            implementation(libs.logging)
+        }
         val jvmMain by getting {
             dependencies {
                 implementation(kotlin("stdlib"))

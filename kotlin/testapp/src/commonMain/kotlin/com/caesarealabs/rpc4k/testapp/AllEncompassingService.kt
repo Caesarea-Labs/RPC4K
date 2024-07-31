@@ -72,6 +72,11 @@ typealias AliasTest = CreateLobbyResponse
         return CreateLobbyResponse(createdBy.num + otherThing.length)
     }
 
+    fun RPCContext.testContext() {
+        logInfo { "We have logging" }
+    }
+
+
     fun uuidTypeAliasTest(uuid: UUIDTypeAlias) {
 
     }

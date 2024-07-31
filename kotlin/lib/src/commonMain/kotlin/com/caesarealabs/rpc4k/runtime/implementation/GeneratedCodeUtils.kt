@@ -4,6 +4,7 @@ import com.benasher44.uuid.uuid4
 import com.caesarealabs.rpc4k.runtime.api.*
 import com.caesarealabs.rpc4k.runtime.implementation.serializers.TupleSerializer
 import com.caesarealabs.rpc4k.runtime.user.EventSubscription
+import com.caesarealabs.rpc4k.runtime.user.RPCContext
 import kotlinx.coroutines.flow.map
 import kotlinx.serialization.*
 
@@ -75,8 +76,8 @@ public object GeneratedCodeUtils {
         request: ByteArray,
         argDeserializers: List<KSerializer<*>>,
         resultSerializer: KSerializer<T>,
-//        context: RPCContext,
-        respondMethod: suspend /*RPCContext.*/(args: List<*>) -> T
+        context: RPCContext,
+        respondMethod: suspend RPCContext.(args: List<*>) -> T
     ): ByteArray {
         val parsed = try {
             Rpc.fromByteArray(request, config.format, argDeserializers)
@@ -86,11 +87,9 @@ public object GeneratedCodeUtils {
 
         println("Running ${parsed.method}()")
 
-        return config.format.encode(resultSerializer, respondMethod(parsed.arguments))
-
-//        return with(context) {
-//            config.format.encode(resultSerializer, respondMethod(parsed.arguments))
-//        }
+        return with(context) {
+            config.format.encode(resultSerializer, respondMethod(parsed.arguments))
+        }
     }
 
     public suspend fun <Server, R> invokeEvent(

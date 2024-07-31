@@ -6,6 +6,7 @@ import com.caesarealabs.rpc4k.processor.utils.poet.*
 import com.caesarealabs.rpc4k.runtime.api.HandlerConfig
 import com.caesarealabs.rpc4k.runtime.api.RpcRouter
 import com.caesarealabs.rpc4k.runtime.implementation.GeneratedCodeUtils
+import com.caesarealabs.rpc4k.runtime.user.RPCContext
 import com.caesarealabs.rpc4k.runtime.user.Rpc4kIndex
 import com.squareup.kotlinpoet.*
 import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy
@@ -54,6 +55,7 @@ internal class ApiDefinitionToServerCode(private val api: RpcApi) {
     companion object {
         private const val Config: String = "config"
         private const val UserHandlerPropertyName = "handler"
+        private const val Context = "context"
 
         private const val RequestParamName = "request"
         private const val MethodParamName = "method"
@@ -152,6 +154,7 @@ internal class ApiDefinitionToServerCode(private val api: RpcApi) {
         addParameter(RequestParamName, ByteArray::class)
         addParameter(MethodParamName, String::class)
         addParameter(Config, handlerConfig)
+        addParameter(Context, RPCContext::class)
 
         returns(BYTE_ARRAY.copy(nullable = true))
 
@@ -179,7 +182,8 @@ internal class ApiDefinitionToServerCode(private val api: RpcApi) {
             Config,
             RequestParamName,
             ApiDefinitionUtils.listOfSerializers(rpc),
-            rpc.returnType.toSerializerString()
+            rpc.returnType.toSerializerString(),
+            Context
         )
 
         addControlFlow(respondUtilsMethod.withArgumentList(arguments)) {
@@ -188,7 +192,9 @@ internal class ApiDefinitionToServerCode(private val api: RpcApi) {
     }
 
     private fun FunSpec.Builder.functionHandleCall(rpc: RpcFunction) {
-        addStatement("$Config.$UserHandlerPropertyName.${rpc.name}".withMethodArguments(functionArguments(rpc)))
+        addControlFlow("with($Config.$UserHandlerPropertyName)") {
+            addStatement(rpc.name.withMethodArguments(functionArguments(rpc)))
+        }
     }
 
     private fun functionArguments(rpc: RpcFunction) = rpc.parameters.mapIndexed { i, arg ->
