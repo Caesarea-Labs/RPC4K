@@ -54,12 +54,6 @@ public class KtorManagedRpcServer(
 
     override fun start(config: ServerConfig, wait: Boolean) {
         server = embeddedServer(engine, port = port) {
-            install(CallLogging) {
-                level = Level.TRACE
-                this.filter {
-                    true
-                }
-            }
 
             install(WebSockets)
             config()

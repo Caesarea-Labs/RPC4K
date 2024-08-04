@@ -2,7 +2,7 @@ import org.jetbrains.kotlin.gradle.targets.js.dsl.ExperimentalWasmDsl
 
 buildscript {
     // Sets up the plugin with local paths
-    System.setProperty("rpc4k.dev", "true")
+//    System.setProperty("rpc4k.dev", "true")
 }
 plugins {
     alias(libs.plugins.kotlinMultiplatform)

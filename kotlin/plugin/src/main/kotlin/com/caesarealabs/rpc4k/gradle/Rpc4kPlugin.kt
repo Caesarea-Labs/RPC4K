@@ -23,9 +23,13 @@ class Rpc4KPlugin : Plugin<Project> {
     override fun apply(project: Project): Unit = with(project) {
         plugins.apply("com.google.devtools.ksp")
 
+//        println("Project name: ${project.rootProject.name}")
+
+        val dev = rootProject.name == "RPC4K"
+
         // System.setProperty("rpc4k.dev", "true") is invoked in the dev project to know when to use local paths
         // This is a system property instead of an extension configuration because we need this information EARLY.
-        val dev = System.getProperty("rpc4k.dev") == "true"
+//        val dev = System.getProperty("rpc4k.dev") == "true"
 
         val lib = if (dev) project(":lib") else "com.caesarealabs:rpc4k-runtime:${getRpc4kVersion()}"
         val processor = if (dev) project(":processor") else "com.caesarealabs:rpc4k-processor:${getRpc4kVersion()}"
