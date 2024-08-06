@@ -20,7 +20,7 @@ public suspend fun ServerConfig.acceptEventSubscription(bytes: ByteArray, connec
         return serverError(e, connection, PrintLogging)
     }
     // Logging available
-    return logging.wrapCall(message.event) {
+    return config.logging.wrapCall(message.event) {
         val logging = this@wrapCall
         try {
             // Mark what kind of event is this to make it easy to search by the specific event type
@@ -32,8 +32,8 @@ public suspend fun ServerConfig.acceptEventSubscription(bytes: ByteArray, connec
             }
 
             when (message) {
-                is C2SEventMessage.Subscribe -> eventManager.subscribe(message, connection)
-                is C2SEventMessage.Unsubscribe -> eventManager.unsubscribe(message.event, message.listenerId)
+                is C2SEventMessage.Subscribe -> config.eventManager.subscribe(message, connection)
+                is C2SEventMessage.Unsubscribe -> config.eventManager.unsubscribe(message.event, message.listenerId)
             }
         } catch (e: InvalidRpcRequestException) {
             invalidMessage(e, connection, logging)
@@ -47,10 +47,10 @@ public suspend fun ServerConfig.acceptEventSubscription(bytes: ByteArray, connec
 private suspend fun ServerConfig.invalidMessage(e: InvalidRpcRequestException, connection: EventConnection, logging: Logging) {
     logging.logWarn(e) { "Invalid client event message" }
     // RpcServerException messages are trustworthy
-    sendOrDrop(connection, S2CEventMessage.SubscriptionError("Invalid client event message: ${e.message}").toByteArray())
+    config.sendOrDrop(connection, S2CEventMessage.SubscriptionError("Invalid client event message: ${e.message}").toByteArray())
 }
 
 private suspend fun ServerConfig.serverError(e: Throwable, connection: EventConnection, logging: Logging) {
     logging.logError(e) { "Failed to handle request" }
-    sendOrDrop(connection, S2CEventMessage.SubscriptionError("Server failed to process subscription").toByteArray())
+    config.sendOrDrop(connection, S2CEventMessage.SubscriptionError("Server failed to process subscription").toByteArray())
 }

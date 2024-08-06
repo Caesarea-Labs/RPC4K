@@ -23,8 +23,6 @@ test("Test GenericThing serialization from string", () => {
     expect(res).toEqual(obj)
 })
 
-//TODO: Support easy construction of nested objects
-
 test("Test AnotherModelHolder serialization from string", () => {
     const string = `{"t":{"x":1,"w":["Asdf"],"a":"3"}}`
     const obj = ({t: ({x: 1, w: ["Asdf"], a: "3"})})

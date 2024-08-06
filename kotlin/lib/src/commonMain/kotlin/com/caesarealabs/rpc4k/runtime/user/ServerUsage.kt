@@ -7,6 +7,25 @@ import com.caesarealabs.rpc4k.runtime.implementation.createHandlerConfig
 import com.caesarealabs.rpc4k.runtime.user.components.JsonFormat
 import com.caesarealabs.rpc4k.runtime.user.components.MemoryEventManager
 
+///**
+// * Utility for configuring an RPC server, usually used by serverless implementations.
+// */
+//public fun <S, I> Rpc4kIndex<S, *, I>.createInvoker(
+//    messageLauncher: RpcMessageLauncher,
+//    eventManager: EventManager,
+//    format: SerializationFormat = JsonFormat(),
+//    logging: LoggingFactory = PrintLoggingFactory,
+//    service: (I) -> S
+//): ServerConfig<S, I> {
+//    val config = TypedHandlerConfig({ service(it) }, { createInvoker(it) }, format, eventManager, messageLauncher, logging)
+//
+//
+////    return Rpc4kSCServerSuite(
+////        serverConfig, config.handler, config.invoker
+////    )
+//}
+
+
 /**
  * Utility for configuring an RPC server, usually used by serverless implementations.
  */
@@ -16,12 +35,13 @@ public fun <S, I> Rpc4kIndex<S, *, I>.setupServer(
     eventManager: EventManager = MemoryEventManager(),
     logging: LoggingFactory = PrintLoggingFactory,
     service: (I) -> S
-): Rpc4kSCServerSuite<S, I> {
-    val config = createHandlerConfig(format, eventManager, messageLauncher, logging, service)
-    val serverConfig = ServerConfig(router, config)
-    return Rpc4kSCServerSuite(
-        serverConfig, config.handler, config.invoker
-    )
+): TypedServerConfig<S, I> {
+    val config = createHandlerConfig( eventManager, messageLauncher, logging,format, service)
+    val serverConfig = TypedServerConfig(router, config)
+    return serverConfig
+//    return Rpc4kSCServerSuite(
+//        serverConfig, config.handler, config.invoker
+//    )
 }
 
 /**
@@ -33,8 +53,8 @@ public fun <I, S> DedicatedServer.startRpc(
     eventManager: EventManager = MemoryEventManager(),
     logging: LoggingFactory = PrintLoggingFactory,
     wait: Boolean = true, service: (I) -> S
-): Rpc4kSCServerSuite<S, I> {
+): TypedServerConfig<S, I> {
     val suite = rpc.setupServer(this, format = format, eventManager, logging, service)
-    start(suite.config, wait)
+    start(suite, wait)
     return suite
 }

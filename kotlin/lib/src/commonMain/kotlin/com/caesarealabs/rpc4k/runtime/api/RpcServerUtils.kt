@@ -24,10 +24,10 @@ public object RpcServerUtils {
             return serverError(e, PrintLogging)
         }
         // Logging available
-        return config.logging.wrapCall(method) {
+        return config.config.logging.wrapCall(method) {
             val logging = this@wrapCall
             try {
-                (config.router as RpcRouter<Any?>).routeRequest(input, method, config, SimpleRpcContext(serverData, logging))
+                (config.router as RpcRouter<Any?>).routeRequest(input, method, config.config, SimpleRpcContext(serverData, logging))
                     ?.let { RpcResult.Success(it) }
                     ?: RpcResult.Error("Non existent procedure $method", RpcError.InvalidRequest)
             } catch (e: InvalidRpcRequestException) {
@@ -43,6 +43,7 @@ public object RpcServerUtils {
         // RpcServerException messages are trustworthy
         return RpcResult.Error(exception.message, RpcError.InvalidRequest)
     }
+
     private fun serverError(exception: Throwable, logging: Logging): RpcResult {
         logging.logError(exception) { "Failed to handle request" }
         // Don't send arbitrary throwable messages because it could leak data

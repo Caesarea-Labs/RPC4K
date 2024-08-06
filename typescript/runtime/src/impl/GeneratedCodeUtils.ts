@@ -40,14 +40,14 @@ export namespace GeneratedCodeUtils {
         const listenerId = client.events.generateUuid()
         const payload = format.encode(new TupleSerializer(argSerializers), args)
         return client.events.createObservable(
-            //TODO: this probably breaks in binary formats
-            // This byte -> string conversion is prob inefficient
+            //TO DO: this probably breaks in binary formats
+            //SLOW: This byte -> string conversion is prob inefficient
 
             // The RPC spec specifies that if no target is relevant for this function, we pass an empty string.
             `sub:${event}:${listenerId}:${String(target ?? "") }:${textDecoder.decode(payload)}`,
             `unsub:${event}:${listenerId}`,
             listenerId
-            //TODO: this string -> bytes conversion is also inefficient
+            //SLOW: this string -> bytes conversion is also inefficient
         ).map((value) => format.decode(eventSerializer, textEncoder.encode(value)))
     }
 

@@ -59,7 +59,7 @@ public sealed interface S2CEventMessage {
                 EventType -> {
                     if (split.size < 3) error("Malformed RPC event: $string")
                     val listenerId = split[1]
-                    //TODO: optimize splitting and joining
+                    // SLOW: optimize splitting and joining
                     val payload = split.drop(2).joinToString(":")
                     return Emitted(listenerId, payload.encodeToByteArray())
                 }

@@ -5,26 +5,70 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="3d9afbb3-2081-47fc-b20e-4f85518ab567" name="Changes" comment="Ktor rpc client">
-      <change afterPath="$PROJECT_DIR$/kotlin/lib/src/commonMain/kotlin/com/caesarealabs/rpc4k/runtime/user/RPCContext.kt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../Loggy/.run/Memory + Network.run.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../Loggy/.run/Memory+In-Process.run.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../Loggy/.run/Mongo+In-Process.run.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../Loggy/composeApp/src/jvmMain/kotlin/com/caesarealabs/loggy/desktop/temp.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Loggy/.run/Loggy_ Android.run.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Loggy/.run/Loggy_ Desktop.run.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../Loggy/.run/Desktop.run.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Loggy/.run/Loggy_ Ktor Memory Server.run.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../Loggy/.run/Memory DB.run.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Loggy/.run/Loggy_ Ktor Mongo Server.run.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../Loggy/.run/Mongo DB.run.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Loggy/.run/Test Client + Server (Mongo).run.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../Loggy/.run/Mongo + Network.run.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Loggy/.run/TestApp_ Browser.run.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Loggy/.run/TestApp_ Desktop.run.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Loggy/composeApp/src/androidMain/kotlin/com/caesarealabs/loggy/client/android/MainActivity.kt" beforeDir="false" afterPath="$PROJECT_DIR$/../Loggy/composeApp/src/androidMain/kotlin/com/caesarealabs/loggy/client/android/MainActivity.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Loggy/composeApp/src/commonMain/kotlin/com/caesarealabs/loggy/client/LoggyClient.kt" beforeDir="false" afterPath="$PROJECT_DIR$/../Loggy/composeApp/src/commonMain/kotlin/com/caesarealabs/loggy/client/LoggyClient.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Loggy/composeApp/src/commonMain/kotlin/com/caesarealabs/loggy/client/ui/LogPage.kt" beforeDir="false" afterPath="$PROJECT_DIR$/../Loggy/composeApp/src/commonMain/kotlin/com/caesarealabs/loggy/client/ui/LogPage.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Loggy/composeApp/src/commonMain/kotlin/com/caesarealabs/loggy/client/ui/util/Pagination.kt" beforeDir="false" afterPath="$PROJECT_DIR$/../Loggy/composeApp/src/commonMain/kotlin/com/caesarealabs/loggy/client/ui/util/Pagination.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Loggy/composeApp/src/commonTest/kotlin/com/caesarealabs/loggy/client/test/TestApp.kt" beforeDir="false" afterPath="$PROJECT_DIR$/../Loggy/composeApp/src/commonTest/kotlin/com/caesarealabs/loggy/client/test/TestApp.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Loggy/composeApp/src/commonTest/kotlin/com/caesarealabs/loggy/client/test/TestInvocations.kt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Loggy/composeApp/src/jvmMain/kotlin/com/caesarealabs/loggy/desktop/main.kt" beforeDir="false" afterPath="$PROJECT_DIR$/../Loggy/composeApp/src/jvmMain/kotlin/com/caesarealabs/loggy/desktop/main.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Loggy/composeApp/src/jvmTest/kotlin/com/caesarealabs/loggy/client/test/RunTestApp.kt" beforeDir="false" afterPath="$PROJECT_DIR$/../Loggy/composeApp/src/jvmTest/kotlin/com/caesarealabs/loggy/client/test/RunClientWithServer.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Loggy/lib/src/commonMain/kotlin/com/caesarealabs/loggy/lib/Loggy.kt" beforeDir="false" afterPath="$PROJECT_DIR$/../Loggy/lib/src/commonMain/kotlin/com/caesarealabs/loggy/lib/Loggy.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Loggy/lib/src/commonTest/kotlin/com/caesarealabs/loggy/lib/test/LoggyTest.kt" beforeDir="false" afterPath="$PROJECT_DIR$/../Loggy/lib/src/commonTest/kotlin/com/caesarealabs/loggy/lib/test/LoggyTest.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Loggy/lib/src/jvmMain/kotlin/com/caesarealabs/loggy/lib/jvm/MongoDbLogSink.kt" beforeDir="false" afterPath="$PROJECT_DIR$/../Loggy/lib/src/jvmMain/kotlin/com/caesarealabs/loggy/lib/jvm/MongoDbLogSink.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Loggy/logging/src/commonMain/kotlin/com/caesarealabs/logging/Logging.kt" beforeDir="false" afterPath="$PROJECT_DIR$/../Loggy/logging/src/commonMain/kotlin/com/caesarealabs/logging/Logging.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Loggy/service/src/commonMain/kotlin/com/caesarealabs/loggy/service/LogService.kt" beforeDir="false" afterPath="$PROJECT_DIR$/../Loggy/service/src/commonMain/kotlin/com/caesarealabs/loggy/service/LogService.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Loggy/service/src/jvmTest/kotlin/com/caesarealabs/service/testserver/LoggyTestServer.kt" beforeDir="false" afterPath="$PROJECT_DIR$/../Loggy/service/src/jvmTest/kotlin/com/caesarealabs/service/testserver/LoggyTestServer.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Loggy/settings.gradle.kts" beforeDir="false" afterPath="$PROJECT_DIR$/../Loggy/settings.gradle.kts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Loggy/testApp/build.gradle.kts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Loggy/testApp/src/commonMain/composeResources/drawable/compose-multiplatform.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Loggy/testApp/src/commonMain/kotlin/com/caesarealabs/loggy/testapp/InvocationPreview.kt" beforeDir="false" afterPath="$PROJECT_DIR$/../Loggy/composeApp/src/commonMain/kotlin/com/caesarealabs/loggy/client/ui/InvocationPreview.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Loggy/testApp/src/commonMain/kotlin/com/caesarealabs/loggy/testapp/TestApp.kt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Loggy/testApp/src/commonMain/kotlin/com/caesarealabs/loggy/testapp/TestInvocations.kt" beforeDir="false" afterPath="$PROJECT_DIR$/../Loggy/composeApp/src/commonMain/kotlin/com/caesarealabs/loggy/client/test/TestInvocations.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Loggy/testApp/src/iosMain/kotlin/MainViewController.kt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Loggy/testApp/src/jvmMain/kotlin/com/caesarealabs/loggy/testapp/desktop/main.kt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Loggy/testApp/src/wasmJsMain/kotlin/com/caesarealabs/loggy/testapp/wasm/main.kt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Loggy/testApp/src/wasmJsMain/resources/index.html" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/gradle.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/gradle.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/kotlin/lib/src/commonMain/kotlin/com/caesarealabs/rpc4k/runtime/api/GeneratedInterfaces.kt" beforeDir="false" afterPath="$PROJECT_DIR$/kotlin/lib/src/commonMain/kotlin/com/caesarealabs/rpc4k/runtime/api/GeneratedInterfaces.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/kotlin/lib/src/commonMain/kotlin/com/caesarealabs/rpc4k/runtime/api/RpcServer.kt" beforeDir="false" afterPath="$PROJECT_DIR$/kotlin/lib/src/commonMain/kotlin/com/caesarealabs/rpc4k/runtime/api/RpcServer.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/TODO.md" beforeDir="false" afterPath="$PROJECT_DIR$/TODO.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/rpc_format.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/kotlin/lib/build.gradle.kts" beforeDir="false" afterPath="$PROJECT_DIR$/kotlin/lib/build.gradle.kts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/kotlin/lib/src/commonMain/kotlin/com/caesarealabs/rpc4k/runtime/api/EngineUtils.kt" beforeDir="false" afterPath="$PROJECT_DIR$/kotlin/lib/src/commonMain/kotlin/com/caesarealabs/rpc4k/runtime/api/EngineUtils.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/kotlin/lib/src/commonMain/kotlin/com/caesarealabs/rpc4k/runtime/api/EventManager.kt" beforeDir="false" afterPath="$PROJECT_DIR$/kotlin/lib/src/commonMain/kotlin/com/caesarealabs/rpc4k/runtime/api/EventManager.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/kotlin/lib/src/commonMain/kotlin/com/caesarealabs/rpc4k/runtime/api/RpcClientFactory.kt" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/kotlin/lib/src/commonMain/kotlin/com/caesarealabs/rpc4k/runtime/api/RpcServerSetup.kt" beforeDir="false" afterPath="$PROJECT_DIR$/kotlin/lib/src/commonMain/kotlin/com/caesarealabs/rpc4k/runtime/api/RpcServerSetup.kt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/kotlin/lib/src/commonMain/kotlin/com/caesarealabs/rpc4k/runtime/api/RpcServerUtils.kt" beforeDir="false" afterPath="$PROJECT_DIR$/kotlin/lib/src/commonMain/kotlin/com/caesarealabs/rpc4k/runtime/api/RpcServerUtils.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/kotlin/lib/src/commonMain/kotlin/com/caesarealabs/rpc4k/runtime/api/components/JsonFormat.kt" beforeDir="false" afterPath="$PROJECT_DIR$/kotlin/lib/src/commonMain/kotlin/com/caesarealabs/rpc4k/runtime/user/components/JsonFormat.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/kotlin/lib/src/commonMain/kotlin/com/caesarealabs/rpc4k/runtime/api/components/KtorHttpClient.kt" beforeDir="false" afterPath="$PROJECT_DIR$/kotlin/lib/src/commonMain/kotlin/com/caesarealabs/rpc4k/runtime/user/components/KtorHttpClient.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/kotlin/lib/src/commonMain/kotlin/com/caesarealabs/rpc4k/runtime/api/components/MemoryEventManager.kt" beforeDir="false" afterPath="$PROJECT_DIR$/kotlin/lib/src/commonMain/kotlin/com/caesarealabs/rpc4k/runtime/user/components/MemoryEventManager.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/kotlin/lib/src/commonMain/kotlin/com/caesarealabs/rpc4k/runtime/api/components/MemoryRpc.kt" beforeDir="false" afterPath="$PROJECT_DIR$/kotlin/lib/src/commonMain/kotlin/com/caesarealabs/rpc4k/runtime/user/components/MemoryRpc.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/kotlin/lib/src/commonMain/kotlin/com/caesarealabs/rpc4k/runtime/user/ClientUsage.kt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/kotlin/lib/src/commonMain/kotlin/com/caesarealabs/rpc4k/runtime/api/S2CEventMessage.kt" beforeDir="false" afterPath="$PROJECT_DIR$/kotlin/lib/src/commonMain/kotlin/com/caesarealabs/rpc4k/runtime/api/S2CEventMessage.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/kotlin/lib/src/commonMain/kotlin/com/caesarealabs/rpc4k/runtime/implementation/GeneratedCodeUtils.kt" beforeDir="false" afterPath="$PROJECT_DIR$/kotlin/lib/src/commonMain/kotlin/com/caesarealabs/rpc4k/runtime/implementation/GeneratedCodeUtils.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/kotlin/lib/src/commonMain/kotlin/com/caesarealabs/rpc4k/runtime/implementation/Rpc4K.kt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/kotlin/lib/src/commonMain/kotlin/com/caesarealabs/rpc4k/runtime/implementation/ServerUtils.kt" beforeDir="false" afterPath="$PROJECT_DIR$/kotlin/lib/src/commonMain/kotlin/com/caesarealabs/rpc4k/runtime/implementation/ServerUtils.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/kotlin/lib/src/commonMain/kotlin/com/caesarealabs/rpc4k/runtime/user/Rpc4kIndex.kt" beforeDir="false" afterPath="$PROJECT_DIR$/kotlin/lib/src/commonMain/kotlin/com/caesarealabs/rpc4k/runtime/user/Rpc4kIndex.kt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/kotlin/lib/src/commonMain/kotlin/com/caesarealabs/rpc4k/runtime/user/ServerUsage.kt" beforeDir="false" afterPath="$PROJECT_DIR$/kotlin/lib/src/commonMain/kotlin/com/caesarealabs/rpc4k/runtime/user/ServerUsage.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/kotlin/lib/src/commonMain/kotlin/com/caesarealabs/rpc4k/runtime/user/components/KtorHttpClient.kt" beforeDir="false" afterPath="$PROJECT_DIR$/kotlin/lib/src/commonMain/kotlin/com/caesarealabs/rpc4k/runtime/user/components/KtorHttpClient.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/kotlin/lib/src/commonMain/kotlin/com/caesarealabs/rpc4k/runtime/user/components/MemoryRpc.kt" beforeDir="false" afterPath="$PROJECT_DIR$/kotlin/lib/src/commonMain/kotlin/com/caesarealabs/rpc4k/runtime/user/components/MemoryRpc.kt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/kotlin/lib/src/jvmMain/kotlin/com/caesarealabs/rpc4k/runtime/jvm/api/KtorManagedRpcServer.kt" beforeDir="false" afterPath="$PROJECT_DIR$/kotlin/lib/src/jvmMain/kotlin/com/caesarealabs/rpc4k/runtime/jvm/api/KtorManagedRpcServer.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/kotlin/lib/src/jvmMain/kotlin/com/caesarealabs/rpc4k/runtime/jvm/api/OkHttpRpcClient.kt" beforeDir="false" afterPath="$PROJECT_DIR$/kotlin/lib/src/jvmMain/kotlin/com/caesarealabs/rpc4k/runtime/jvm/api/OkHttpRpcClient.kt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/kotlin/lib/src/jvmMain/kotlin/com/caesarealabs/rpc4k/runtime/jvm/user/testing/RpcExtension.kt" beforeDir="false" afterPath="$PROJECT_DIR$/kotlin/lib/src/jvmMain/kotlin/com/caesarealabs/rpc4k/runtime/jvm/user/testing/RpcExtension.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/kotlin/lib/src/jvmTest/kotlin/com/caesarealabs/rpc4k/test/EncodingTest.kt" beforeDir="false" afterPath="$PROJECT_DIR$/kotlin/lib/src/jvmTest/kotlin/com/caesarealabs/rpc4k/test/EncodingTest.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/kotlin/testapp/src/jvmTest/kotlin/com/caesarealabs/rpc4k/test/TestMemoryCommunication.kt" beforeDir="false" afterPath="$PROJECT_DIR$/kotlin/testapp/src/jvmTest/kotlin/com/caesarealabs/rpc4k/test/TestMemoryCommunication.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/kotlin/testapp/src/jvmTest/kotlin/com/caesarealabs/rpc4k/test/rpc/KtorClientTests.kt" beforeDir="false" afterPath="$PROJECT_DIR$/kotlin/testapp/src/jvmTest/kotlin/com/caesarealabs/rpc4k/test/rpc/KtorClientTests.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/kotlin/testapp/src/jvmTest/kotlin/com/caesarealabs/rpc4k/test/rpc/MemoryClientTests.kt" beforeDir="false" afterPath="$PROJECT_DIR$/kotlin/testapp/src/jvmTest/kotlin/com/caesarealabs/rpc4k/test/rpc/MemoryClientTests.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/kotlin/processor/src/jvmMain/kotlin/com/caesarealabs/rpc4k/processor/ApiClassValidator.kt" beforeDir="false" afterPath="$PROJECT_DIR$/kotlin/processor/src/jvmMain/kotlin/com/caesarealabs/rpc4k/processor/ApiClassValidator.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/kotlin/processor/src/jvmMain/kotlin/com/caesarealabs/rpc4k/processor/ApiDefinitionToServerCode.kt" beforeDir="false" afterPath="$PROJECT_DIR$/kotlin/processor/src/jvmMain/kotlin/com/caesarealabs/rpc4k/processor/ApiDefinitionToServerCode.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/kotlin/testapp/src/jvmTest/kotlin/com/caesarealabs/rpc4k/testserver/TestServers.kt" beforeDir="false" afterPath="$PROJECT_DIR$/kotlin/testapp/src/jvmTest/kotlin/com/caesarealabs/rpc4k/testserver/TestServers.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/typescript/runtime/src/RpcClient.ts" beforeDir="false" afterPath="$PROJECT_DIR$/typescript/runtime/src/RpcClient.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/typescript/runtime/src/components/WebsocketEventClient.ts" beforeDir="false" afterPath="$PROJECT_DIR$/typescript/runtime/src/components/WebsocketEventClient.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/typescript/runtime/src/impl/GeneratedCodeUtils.ts" beforeDir="false" afterPath="$PROJECT_DIR$/typescript/runtime/src/impl/GeneratedCodeUtils.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/typescript/runtime/test/CodegenedClientTest.test.ts" beforeDir="false" afterPath="$PROJECT_DIR$/typescript/runtime/test/CodegenedClientTest.test.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/typescript/runtime/test/serialization/StringToJsonTest.test.ts" beforeDir="false" afterPath="$PROJECT_DIR$/typescript/runtime/test/serialization/StringToJsonTest.test.ts" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -84,7 +128,7 @@
     &quot;Gradle.KtorClientTests.executor&quot;: &quot;Run&quot;,
     &quot;Gradle.KtorClientTests.testEvents.executor&quot;: &quot;Run&quot;,
     &quot;Gradle.KtorClientTests.testExoticTypes.executor&quot;: &quot;Run&quot;,
-    &quot;Gradle.KtorClientTests.testGeneratedEvents.executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.KtorClientTests.testGeneratedEvents.executor&quot;: &quot;Debug&quot;,
     &quot;Gradle.KtorServerTest.Basic RPCs work.executor&quot;: &quot;Run&quot;,
     &quot;Gradle.MemoryClientTests.executor&quot;: &quot;Run&quot;,
     &quot;Gradle.MemoryClientTests.testEvents.executor&quot;: &quot;Run&quot;,
@@ -120,7 +164,7 @@
       <recent name="com.caesarealabs.rpc4k.test.rpc" />
     </key>
   </component>
-  <component name="RunManager" selected="Gradle.Kotlin Tests">
+  <component name="RunManager" selected="Gradle.KtorClientTests.testGeneratedEvents">
     <configuration name="KtorClientTests" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
       <ExternalSystemSettings>
         <option name="executionName" />
@@ -245,17 +289,17 @@
       <list>
         <item itemvalue="Gradle.KtorClientTests.testGeneratedEvents" />
         <item itemvalue="Gradle.KtorClientTests.testGeneratedEvents" />
-        <item itemvalue="Gradle.KtorClientTests" />
         <item itemvalue="Gradle.KtorClientTests.testGeneratedEvents" />
         <item itemvalue="Gradle.KtorClientTests" />
+        <item itemvalue="Gradle.KtorClientTests.testGeneratedEvents" />
       </list>
     </recent_temporary>
   </component>
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
-        <option value="bundled-jdk-9823dce3aa75-b114ca120d71-intellij.indexing.shared.core-IU-242.20224.91" />
-        <option value="bundled-js-predefined-d6986cc7102b-410509235cf1-JavaScript-IU-242.20224.91" />
+        <option value="bundled-jdk-9823dce3aa75-b114ca120d71-intellij.indexing.shared.core-IU-242.20224.159" />
+        <option value="bundled-js-predefined-d6986cc7102b-410509235cf1-JavaScript-IU-242.20224.159" />
       </set>
     </attachedChunks>
   </component>
@@ -279,6 +323,8 @@
       <workItem from="1722200561870" duration="615000" />
       <workItem from="1722234277659" duration="874000" />
       <workItem from="1722277158439" duration="3715000" />
+      <workItem from="1722861724138" duration="765000" />
+      <workItem from="1722954713313" duration="640000" />
     </task>
     <task id="LOCAL-00001" summary="Ktor rpc client">
       <option name="closed" value="true" />
@@ -320,6 +366,11 @@
             <option name="lambda-ordinal" value="-1" />
           </properties>
           <option name="timeStamp" value="18" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="kotlin-line">
+          <url>file://$PROJECT_DIR$/kotlin/lib/src/jvmMain/kotlin/com/caesarealabs/rpc4k/runtime/jvm/api/KtorManagedRpcServer.kt</url>
+          <line>87</line>
+          <option name="timeStamp" value="21" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>

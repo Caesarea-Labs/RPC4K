@@ -55,7 +55,7 @@ private class KtorWebsocketEventClient(
 ) : AbstractEventClient() {
     private var websocket: WebSocketSession? = null
 
-    // TODO: better scoping behavior, the websocket should be properly scoped by calling methods, and be turned off when the client is no longer used
+    // LOWPRIO: better scoping behavior, the websocket should be properly scoped by calling methods, and be turned off when the client is no longer used
     @OptIn(DelicateCoroutinesApi::class)
     private val wsScope = CoroutineScope(GlobalScope.coroutineContext)
 

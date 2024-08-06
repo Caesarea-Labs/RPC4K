@@ -175,7 +175,6 @@ internal class ApiClassValidator(private val env: SymbolProcessorEnvironment, pr
         }
     }
 
-    //TODO: test these validations
     private fun checkAnnotationsAreValid(function: KSFunctionDeclaration): Boolean {
         if (function.isAnnotationPresent(RpcEvent::class)) {
             val annotatedWithTargetCount = function.parameters.count {

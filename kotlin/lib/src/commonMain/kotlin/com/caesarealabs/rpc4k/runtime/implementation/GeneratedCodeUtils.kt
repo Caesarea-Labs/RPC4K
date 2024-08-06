@@ -11,7 +11,7 @@ import kotlinx.serialization.*
 /**
  * These functions are used by generated code and code that interacts with them
  */
-//TODO: consider making the C2S functions be in a instance method, this would allow storing the format and client and reduce codegen.
+//TO DO: consider making the C2S functions be in a instance method, this would allow storing the format and client and reduce codegen.
 public object GeneratedCodeUtils {
 
 

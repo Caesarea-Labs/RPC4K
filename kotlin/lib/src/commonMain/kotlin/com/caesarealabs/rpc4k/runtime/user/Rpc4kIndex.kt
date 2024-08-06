@@ -7,8 +7,8 @@ import com.caesarealabs.rpc4k.runtime.api.SerializationFormat
 
 public interface Rpc4kIndex<Server, Client, Invoker> {
     public val createNetworkClient: (rpcClient: RpcClient, format: SerializationFormat) -> Client
-    //TODO:
-//    public val createMemoryClient: (server: Server) -> Client
+    // LOWPRIO: Improve server testing with "in-memory-server" client generation
+ //    public val createMemoryClient: (server: Server) -> Client
     public val createInvoker: (HandlerConfig<Server>) -> Invoker
     public val router: RpcRouter<Server>
 }

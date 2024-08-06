@@ -20,48 +20,7 @@ class Foo(val invoker: FooInvoker) {
 We often want to just construct Foo and test it. For this reason we need to have some good instance of FooInvoker that will do what we expect. 
 One option is to provide a HandlerConfig that uses some simple MemoryEventManager and json to send information back to the server,
 Another option is to provide some totally in-memory implementation of the invoker to simplify debugging. We probably still need to use a MemoryEventManager.
-The relation between this feature and the in-memory client is TBD. 
-
-
-
-### Allow passing a list of participants on event invocation
-
-Take the following scenario: 
-
-- App has an editable table that the user can view
-- Table is filled with data from the server, updated whenever someone edits the table
-
-When a user edits the table, the app will update the table in memory for performance reasons. It will then send that update to the server, to update other users. 
-The problem is - the server won't differentiate between who _participated_ in that editing event and therefore already knows it occurred, and between those that didn't participate and therefore need to be updated. The server will then send the edit update back to the editing client, which is redundant. 
-
-**Solution**
-
-1. Update the server's invoke method to this, updating the body to pass `participants` to `invokeEvent`:
-
-```kotlin
-suspend fun invokeSomeEvent(param1: Int, param2: String, participants: List<String> = listOf()) 
-```
-
-2. Do not send events to participants in the body of `invokeEvent`
-
-3. In createObservable, expose the `listenerId` so that it can be passed to the server
-
-4. Do the same for the Kotlin client by returning an extension of the `Flow` interface 
-
-5. Test for both client and server
-
-6. Update AutoTable server impl to support participants 
-
-7. Update CRUD calls to pass a listenerId as a participant
-
-8. Pass the listenerId of the table when doing edit operations:
-
-   ``` 
-   const listener = listen(() => {...})
-   onClick(() => {
-   	server.edit(editParams, listener.id)
-   })
-   ```
+The relation between this feature and the in-memory client is TBD.
 
    
 

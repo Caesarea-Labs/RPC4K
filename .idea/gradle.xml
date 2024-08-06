@@ -7,6 +7,11 @@
         <compositeConfiguration>
           <compositeBuild compositeDefinitionSource="SCRIPT">
             <builds>
+              <build path="$PROJECT_DIR$/../Loggy/logging" name="Logging">
+                <projects>
+                  <project path="$PROJECT_DIR$/../Loggy/logging" />
+                </projects>
+              </build>
               <build path="$PROJECT_DIR$/kotlin/plugin" name="rpc4k-plugin">
                 <projects>
                   <project path="$PROJECT_DIR$/kotlin/plugin" />
@@ -18,6 +23,7 @@
         <option name="externalProjectPath" value="$PROJECT_DIR$/kotlin" />
         <option name="modules">
           <set>
+            <option value="$PROJECT_DIR$/../Loggy/logging" />
             <option value="$PROJECT_DIR$/kotlin" />
             <option value="$PROJECT_DIR$/kotlin/lib" />
             <option value="$PROJECT_DIR$/kotlin/plugin" />

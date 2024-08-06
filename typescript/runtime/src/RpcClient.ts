@@ -9,7 +9,7 @@ export interface RpcClient {
 }
 
 export interface EventClient {
-    //TODO: maybe this should be a ByteArray or something
+    //TO DO: maybe this should be a ByteArray or something
     send(message: string): Promise<void>
     createObservable(subscribeMessage: string, unsubscribeMessage: string, listenerId: string): Observable<string>
 

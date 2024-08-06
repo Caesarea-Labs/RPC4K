@@ -73,7 +73,8 @@ internal class ApiDefinitionToServerCode(private val api: RpcApi) {
     private val routerClassName = ClassName(ApiDefinitionUtils.Package, routerName)
     private val clientClassName = ClassName(ApiDefinitionUtils.Package, api.name.simple + ApiDefinitionUtils.NetworkClientSuffix)
     private val serverClassName = api.name.kotlinPoet
-    private val handlerConfig = HandlerConfig::class.asClassName().parameterizedBy(serverClassName)
+    // Since HandlerConfig is a type alias we need to specify its name explicitly
+    private val handlerConfig = ClassName(HandlerConfig::class.asClassName().packageName, "HandlerConfig").parameterizedBy(serverClassName)
 
     fun convert(): FileSpec {
         return fileSpec(ApiDefinitionUtils.Package, routerName) {
@@ -113,7 +114,6 @@ internal class ApiDefinitionToServerCode(private val api: RpcApi) {
     private fun rpc4kGeneratedSuiteExtension(): PropertySpec {
         val suiteType = Rpc4kIndex::class.asTypeName().parameterizedBy(serverClassName, clientClassName, invokerClassName)
         return extensionProperty(serverClassName.companion(), "rpc4k", suiteType) {
-            //                            |   override val createMemoryClient get() = TODO()
             addCode(
                 """
                             |return object: %T {

@@ -7,8 +7,7 @@ import kotlin.jvm.JvmInline
 public value class EventConnection (public val id: String)
 
 public interface EventManager {
-    //TODO: consider validating subscriptions. Maybe benchmark how much time it takes. It's a good idea for correctness
-    // but not that important.
+    // TO DO: Handle erroneous event subscriptions
     public suspend fun subscribe(subscription: C2SEventMessage.Subscribe, connection: EventConnection)
 
     /**

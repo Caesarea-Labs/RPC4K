@@ -1,16 +1,14 @@
 package com.caesarealabs.rpc4k.runtime.jvm.user.testing
 
-import com.caesarealabs.logging.Logging
 import com.caesarealabs.logging.LoggingFactory
-import com.caesarealabs.logging.PrintLogging
 import com.caesarealabs.logging.PrintLoggingFactory
 import com.caesarealabs.rpc4k.runtime.api.*
-import com.caesarealabs.rpc4k.runtime.user.components.JsonFormat
-import com.caesarealabs.rpc4k.runtime.user.components.MemoryEventManager
 import com.caesarealabs.rpc4k.runtime.implementation.createHandlerConfig
 import com.caesarealabs.rpc4k.runtime.jvm.api.KtorManagedRpcServer
 import com.caesarealabs.rpc4k.runtime.jvm.api.OkHttpRpcClient
 import com.caesarealabs.rpc4k.runtime.user.Rpc4kIndex
+import com.caesarealabs.rpc4k.runtime.user.components.JsonFormat
+import com.caesarealabs.rpc4k.runtime.user.components.MemoryEventManager
 import org.junit.jupiter.api.extension.AfterAllCallback
 import org.junit.jupiter.api.extension.BeforeAllCallback
 import org.junit.jupiter.api.extension.Extension
@@ -63,8 +61,8 @@ public fun <S, C, I> Rpc4kIndex<S, C, I>.junit(
     val websocketUrl = "ws://localhost:${port}/events"
     val serverInstance = server(port)
     val clientSetup = client(port, url, websocketUrl)
-    val config = createHandlerConfig(format, eventManager, serverInstance, logging,service)
-    val serverConfig = ServerConfig(router, config)
+    val config = createHandlerConfig(eventManager, serverInstance, logging, format, service)
+    val serverConfig = TypedServerConfig(router, config)
     return ClientServerExtension(
         serverInstance,
         serverConfig,

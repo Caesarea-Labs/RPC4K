@@ -90,8 +90,6 @@ test("Test event with participants", async () => {
 })
 
 
-//TODO:  - The server is passing around the target parameter when it shouldn't
-
 test("Test targeted event", async () => {
     const fetch = new FetchRpcClient("http://localhost:8080", new NodejsWebsocket("http://localhost:8080/events"))
     const format = JsonFormat

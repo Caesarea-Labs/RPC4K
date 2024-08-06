@@ -46,20 +46,20 @@ kotlin {
     sourceSets {
         val jvmMain by getting {
             dependencies {
-                //TODO: should be part of testing module
+                //NiceToHave: should be part of testing module
                 api(libs.junit)
                 // Atomicfu doesn't properly add this dependency to dependants with just the plugin for some reason
                 implementation("org.jetbrains.kotlinx:atomicfu:0.25.0")
-                //TODO: should be part of ktor server module
+                //NiceToHave: should be part of ktor server module
                 api(libs.ktor.server.core.jvm)
                 api(libs.ktor.server.websockets.jvm)
                 api(libs.ktor.netty)
                 api(libs.ktor.logging)
                 implementation("ch.qos.logback:logback-classic:1.5.6")
-                //TODo: should be part of okhttp client module
+                //NiceToHave: should be part of okhttp client module
                 api(libs.okhttp.core)
 
-                // TODO: should be part of ktor client module
+                // NiceToHave: should be part of ktor client module
                 // Use okhttp client on JVM
                 api(libs.ktor.client.okhttp)
             }
@@ -72,7 +72,7 @@ kotlin {
                 api(libs.kotlinx.datetime)
                 api(libs.logging)
 
-                // TODO: should be part of ktor client module
+                // NiceToHave: should be part of ktor client module
                 api(libs.ktor.client.core)
                 implementation(libs.ktor.client.websockets)
             }
@@ -101,7 +101,7 @@ kotlin {
                 // Used to fill in for java concurrency primitives
                 implementation(libs.stately.concurrent.collections)
 
-                // TODO: should be part of ktor client module
+                // NICETOHAVE: should be part of ktor client module
                 // Use js client on wasmJs
                 api(libs.ktor.client.js)
             }

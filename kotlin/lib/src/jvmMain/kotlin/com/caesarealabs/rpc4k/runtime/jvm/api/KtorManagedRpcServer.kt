@@ -11,14 +11,11 @@ import com.caesarealabs.rpc4k.runtime.user.startRpc
 import io.ktor.server.application.*
 import io.ktor.server.engine.*
 import io.ktor.server.netty.*
-import io.ktor.server.plugins.calllogging.*
 import io.ktor.server.routing.*
 import io.ktor.server.websocket.*
 import io.ktor.websocket.*
-import org.slf4j.event.Level
 import java.util.*
 import java.util.concurrent.ConcurrentHashMap
-import java.util.concurrent.RejectedExecutionException
 import kotlin.collections.set
 
 /**
@@ -33,7 +30,7 @@ public fun <S, I> Rpc4kIndex<S, *, I>.startKtor(
     ktorConfig: Application.() -> Unit = {},
     logging: LoggingFactory = PrintLoggingFactory,
     service: (I) -> S
-): Rpc4kSCServerSuite<S, I> = KtorManagedRpcServer(engine = engine, port = port, config = ktorConfig)
+): TypedServerConfig<S, I> = KtorManagedRpcServer(engine = engine, port = port, config = ktorConfig)
     .startRpc(this, format, eventManager, logging, wait, service)
 
 
@@ -71,7 +68,7 @@ public class KtorManagedRpcServer(
                         }
                     } finally {
                         PrintLogging.logInfo { "Removing connection ${connection.id}" }
-                        config.eventManager.dropClient(connection)
+                        config.config.eventManager.dropClient(connection)
                         connections.remove(connection)
                     }
                 }
@@ -81,11 +78,7 @@ public class KtorManagedRpcServer(
     }
 
     override fun stop() {
-        try {
-            server?.stop()
-        } catch (e: RejectedExecutionException) {
-            // Try to avoid this random error when stopping
-        }
+        server?.stop()
     }
 
     override suspend fun send(connection: EventConnection, bytes: ByteArray): Boolean {

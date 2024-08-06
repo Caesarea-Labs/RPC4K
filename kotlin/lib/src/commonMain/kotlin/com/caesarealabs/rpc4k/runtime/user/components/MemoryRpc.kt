@@ -1,9 +1,12 @@
 package com.caesarealabs.rpc4k.runtime.user.components
 
 import com.benasher44.uuid.uuid4
+import com.caesarealabs.logging.LoggingFactory
+import com.caesarealabs.logging.PrintLoggingFactory
 import com.caesarealabs.rpc4k.runtime.api.*
 import com.caesarealabs.rpc4k.runtime.implementation.RpcResult
 import com.caesarealabs.rpc4k.runtime.user.Rpc4kIndex
+import com.caesarealabs.rpc4k.runtime.user.startRpc
 import kotlinx.coroutines.delay
 import kotlinx.serialization.KSerializer
 import kotlin.time.Duration
@@ -125,3 +128,18 @@ public fun <C> Rpc4kIndex<*, C, *>.memoryClient(
 ): C {
     return createNetworkClient(MemoryRpcClient(port), format)
 }
+
+/**
+ * Configure and start an RPC server with one call from the [Rpc4kIndex]
+ */
+public fun <S, I> Rpc4kIndex<S, *, I>.startMemory(
+    format: SerializationFormat = JsonFormat(),
+    eventManager: EventManager = MemoryEventManager(),
+    wait: Boolean = true,
+    port: Int = PortPool.get(),
+    logging: LoggingFactory = PrintLoggingFactory,
+    emulatedLatency: Duration? = null,
+    service: (I) -> S
+): TypedServerConfig<S, I> = MemoryDedicatedServer(port, emulatedLatency)
+    .startRpc(this, format, eventManager, logging, wait, service)
+

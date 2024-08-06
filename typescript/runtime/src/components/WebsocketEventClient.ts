@@ -15,7 +15,7 @@ export class WebsocketEventClient implements EventClient {
                 throw new Error(JSON.stringify(error))
             },
             onMessage: (message: string) => {
-                //TODO: optimize to not rejoin the message
+                //SLOW: optimize to not rejoin the message
                 const [type, listenerId, ...payload] = message.split(":")
                 switch (type) {
                     case "event": {
