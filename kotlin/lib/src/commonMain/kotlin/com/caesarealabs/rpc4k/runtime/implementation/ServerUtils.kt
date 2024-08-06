@@ -1,7 +1,6 @@
 package com.caesarealabs.rpc4k.runtime.implementation
 
 import com.caesarealabs.logging.LoggingFactory
-import com.caesarealabs.logging.PrintLogging
 import com.caesarealabs.logging.PrintLoggingFactory
 import com.caesarealabs.rpc4k.runtime.api.*
 import com.caesarealabs.rpc4k.runtime.user.Rpc4kIndex

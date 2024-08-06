@@ -1,6 +1,7 @@
 package com.caesarealabs.rpc4k.runtime.implementation
 
 import com.benasher44.uuid.uuid4
+import com.caesarealabs.logging.Logging
 import com.caesarealabs.rpc4k.runtime.api.*
 import com.caesarealabs.rpc4k.runtime.implementation.serializers.TupleSerializer
 import com.caesarealabs.rpc4k.runtime.user.EventSubscription
@@ -85,8 +86,6 @@ public object GeneratedCodeUtils {
             throw InvalidRpcRequestException("Malformed request arguments: ${e.message}", e)
         }
 
-        println("Running ${parsed.method}()")
-
         return with(context) {
             config.format.encode(resultSerializer, respondMethod(parsed.arguments))
         }
@@ -110,26 +109,31 @@ public object GeneratedCodeUtils {
         handle: suspend (subArgs: List<*>) -> R
     ) {
         val match = config.eventManager.match(eventName, target)
-        for (subscriber in match) {
-            // Don't send events to participants
-            if (subscriber.info.listenerId in participants) continue
+        config.logging.wrapCall(eventName) {
+            for (subscriber in match) {
+                // Don't send events to participants
+                if (subscriber.info.listenerId in participants) continue
 
-            val parsed = config.format.decode(TupleSerializer(subArgDeserializers), subscriber.info.data)
-            val handled = handle(parsed)
-            val bytes = config.format.encode(resultSerializer, handled)
-            val fullMessage = S2CEventMessage.Emitted(subscriber.info.listenerId, bytes).toByteArray()
-            config.sendOrDrop(subscriber.connection, fullMessage)
+                val parsed = config.format.decode(TupleSerializer(subArgDeserializers), subscriber.info.data)
+
+                logInfo { "Processing subscription ${subscriber.info.listenerId}" }
+                val handled = handle(parsed)
+                val bytes = config.format.encode(resultSerializer, handled)
+                val fullMessage = S2CEventMessage.Emitted(subscriber.info.listenerId, bytes).toByteArray()
+                config.sendOrDrop(subscriber.connection, fullMessage, this@wrapCall)
+            }
         }
+
     }
 }
 
 /**
  * Will send the [bytes] to the [connection], dropping it if it cannot be reached
  */
-internal suspend fun <T> HandlerConfig<T>.sendOrDrop(connection: EventConnection, bytes: ByteArray) {
+internal suspend fun <T> HandlerConfig<T>.sendOrDrop(connection: EventConnection, bytes: ByteArray, logging: Logging) {
     val clientExists = messageLauncher.send(connection, bytes)
     if (!clientExists) {
-        println("Dropping connection ${connection.id} as it cannot be reached")
+        logging.logInfo { "Dropping connection ${connection.id} as it cannot be reached" }
         eventManager.dropClient(connection)
     }
 }

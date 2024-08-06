@@ -3,6 +3,7 @@ package com.caesarealabs.rpc4k.runtime.api
 import com.caesarealabs.logging.Logging
 import com.caesarealabs.logging.PrintLogging
 import com.caesarealabs.rpc4k.runtime.implementation.sendOrDrop
+import kotlin.math.log
 
 /**
  * Should be called by server implementations whenever a new message is received.
@@ -47,10 +48,10 @@ public suspend fun ServerConfig.acceptEventSubscription(bytes: ByteArray, connec
 private suspend fun ServerConfig.invalidMessage(e: InvalidRpcRequestException, connection: EventConnection, logging: Logging) {
     logging.logWarn(e) { "Invalid client event message" }
     // RpcServerException messages are trustworthy
-    config.sendOrDrop(connection, S2CEventMessage.SubscriptionError("Invalid client event message: ${e.message}").toByteArray())
+    config.sendOrDrop(connection, S2CEventMessage.SubscriptionError("Invalid client event message: ${e.message}").toByteArray(), logging)
 }
 
 private suspend fun ServerConfig.serverError(e: Throwable, connection: EventConnection, logging: Logging) {
     logging.logError(e) { "Failed to handle request" }
-    config.sendOrDrop(connection, S2CEventMessage.SubscriptionError("Server failed to process subscription").toByteArray())
+    config.sendOrDrop(connection, S2CEventMessage.SubscriptionError("Server failed to process subscription").toByteArray(), logging)
 }

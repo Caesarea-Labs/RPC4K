@@ -1,7 +1,6 @@
 package com.caesarealabs.rpc4k.runtime.api
 
 import com.caesarealabs.logging.Logging
-import com.caesarealabs.logging.PrintLogging
 import com.caesarealabs.rpc4k.runtime.implementation.RpcResult
 import com.caesarealabs.rpc4k.runtime.user.RPCContext
 
@@ -19,9 +18,13 @@ public object RpcServerUtils {
         val method = try {
             Rpc.peekMethodName(input)
         } catch (e: InvalidRpcRequestException) {
-            return invalidRequest(e, PrintLogging)
+            return config.config.logging.wrapCall("Unclassified Failures") {
+                invalidRequest(e, this@wrapCall)
+            }
         } catch (e: Throwable) {
-            return serverError(e, PrintLogging)
+            return config.config.logging.wrapCall("Unclassified Failures") {
+                serverError(e, this@wrapCall)
+            }
         }
         // Logging available
         return config.config.logging.wrapCall(method) {

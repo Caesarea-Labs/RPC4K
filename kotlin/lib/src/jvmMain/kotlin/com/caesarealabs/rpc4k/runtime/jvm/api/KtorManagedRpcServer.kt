@@ -1,7 +1,6 @@
 package com.caesarealabs.rpc4k.runtime.jvm.api
 
 import com.caesarealabs.logging.LoggingFactory
-import com.caesarealabs.logging.PrintLogging
 import com.caesarealabs.logging.PrintLoggingFactory
 import com.caesarealabs.rpc4k.runtime.api.*
 import com.caesarealabs.rpc4k.runtime.user.Rpc4kIndex
@@ -67,7 +66,9 @@ public class KtorManagedRpcServer(
                             config.acceptEventSubscription(frame.readBytes(), connection)
                         }
                     } finally {
-                        PrintLogging.logInfo { "Removing connection ${connection.id}" }
+                        config.config.logging.wrapCall("Ending Connections") {
+                            logInfo { "Removing connection ${connection.id}" }
+                        }
                         config.config.eventManager.dropClient(connection)
                         connections.remove(connection)
                     }

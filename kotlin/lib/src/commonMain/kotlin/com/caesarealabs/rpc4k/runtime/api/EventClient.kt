@@ -62,8 +62,8 @@ public abstract class AbstractEventClient: EventClient {
                         if(e is CancellationException) {
                             cancel(e)
                         } else {
-                            println("Failed to update event listener: $e")
                             if (e != null) throw e
+                            else PrintLogging.logWarn { "Failed to update event listener" }
                         }
                     }
             }
