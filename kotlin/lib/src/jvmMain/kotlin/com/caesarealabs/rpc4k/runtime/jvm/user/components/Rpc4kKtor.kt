@@ -1,4 +1,4 @@
-package com.caesarealabs.rpc4k.runtime.jvm.api
+package com.caesarealabs.rpc4k.runtime.jvm.user.components
 
 import com.caesarealabs.rpc4k.runtime.api.*
 import com.caesarealabs.rpc4k.runtime.implementation.RpcResult

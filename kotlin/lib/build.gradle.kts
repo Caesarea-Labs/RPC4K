@@ -48,6 +48,7 @@ kotlin {
             dependencies {
                 //NiceToHave: should be part of testing module
                 api(libs.junit)
+                implementation(libs.mongodb.testcontainer)
                 // Atomicfu doesn't properly add this dependency to dependants with just the plugin for some reason
                 implementation("org.jetbrains.kotlinx:atomicfu:0.25.0")
                 //NiceToHave: should be part of ktor server module
@@ -62,6 +63,15 @@ kotlin {
                 // NiceToHave: should be part of ktor client module
                 // Use okhttp client on JVM
                 api(libs.ktor.client.okhttp)
+
+                // NiceToHave: should be part of aws server module
+                api(libs.aws.lambda.handler.core)
+                api(libs.aws.lambda.handler.events)
+                api(libs.aws.gateway)
+
+                // NiceToHave: should be part of mongodb event manager module
+                api(libs.mongodb.kotlin)
+                api(libs.mongodb.serialization)
             }
         }
         val commonMain by getting {

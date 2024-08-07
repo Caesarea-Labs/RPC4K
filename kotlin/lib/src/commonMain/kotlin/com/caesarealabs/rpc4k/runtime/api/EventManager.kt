@@ -20,7 +20,7 @@ public interface EventManager {
      * @param target If a non-null value is provided then only subscriptions matching that target will be returned
      * if null is passed, all subscriptions of the event will be returned.
      */
-    public suspend fun match(event: String, target: String?): List<EventSubscription>
+    public suspend fun match(event: String, target: String?): List<ManagedEventSubscription>
 
     /**
      * Removes all subscriptions of the given connection
@@ -28,4 +28,4 @@ public interface EventManager {
     public suspend fun dropClient(connection: EventConnection)
 }
 
-public data class EventSubscription(val connection: EventConnection, val info: C2SEventMessage.Subscribe)
+public data class ManagedEventSubscription(val connection: EventConnection, val info: C2SEventMessage.Subscribe)

@@ -1,4 +1,4 @@
-package com.caesarealabs.rpc4k.runtime.jvm.api
+package com.caesarealabs.rpc4k.runtime.jvm.user.components
 
 import com.caesarealabs.logging.LoggingFactory
 import com.caesarealabs.logging.PrintLoggingFactory
