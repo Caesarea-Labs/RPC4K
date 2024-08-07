@@ -2,6 +2,7 @@ package com.caesarealabs.rpc4k.runtime.user.components
 
 import com.caesarealabs.rpc4k.runtime.api.SerializationFormat
 import com.caesarealabs.rpc4k.runtime.implementation.serializers.Rpc4kSerializersModule
+import io.ktor.http.*
 import kotlinx.serialization.DeserializationStrategy
 import kotlinx.serialization.SerializationStrategy
 import kotlinx.serialization.json.Json
@@ -22,6 +23,7 @@ public class JsonFormat(config: JsonBuilder.() -> Unit = {}) : SerializationForm
         serializersModule = Rpc4kSerializersModule + serializersModule
     }
 
+    override val contentType: ContentType = ContentType.Application.Json
 
     override fun <T> encode(serializer: SerializationStrategy<T>, value: T): ByteArray {
         return json.encodeToString(serializer, value).encodeToByteArray()

@@ -42,7 +42,7 @@ public object RpcServerUtils {
     }
 
     private fun invalidRequest(exception: InvalidRpcRequestException, logging: Logging): RpcResult {
-        logging.logWarn(exception) { "Invalid request" }
+        logging.logWarn(exception) { "Invalid request. Is the content-type header correct?" }
         // RpcServerException messages are trustworthy
         return RpcResult.Error(exception.message, RpcError.InvalidRequest)
     }

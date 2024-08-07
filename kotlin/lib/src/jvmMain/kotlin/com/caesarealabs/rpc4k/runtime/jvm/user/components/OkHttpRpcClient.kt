@@ -61,7 +61,6 @@ private class OkHttpWebsocketEventClient(url: String, client: OkHttpClient) : Ab
     }
 }
 
-public fun <C> Rpc4kIndex<*, C, *>.okHttpClient(url: String, format: SerializationFormat = JsonFormat()): C {
-    val websocketUrl = "$url/events"
-    return createNetworkClient(OkHttpRpcClient(url, websocketUrl), format)
+public fun <C> Rpc4kIndex<*, C, *>.okHttpClient(httpUrl: String, websocketUrl: String, format: SerializationFormat = JsonFormat()): C {
+    return createNetworkClient(OkHttpRpcClient(httpUrl, websocketUrl), format)
 }

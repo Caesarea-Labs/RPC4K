@@ -7,12 +7,14 @@ import io.ktor.client.call.*
 import io.ktor.client.plugins.websocket.*
 import io.ktor.client.request.*
 import io.ktor.http.*
+import io.ktor.util.*
 import io.ktor.websocket.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.io.EOFException
+import kotlinx.io.IOException
 import kotlinx.serialization.KSerializer
 
 
@@ -30,6 +32,8 @@ public class KtorRpcClient(
         val response = client.request(urlString = url) {
             method = HttpMethod.Post
             setBody(data)
+            // Set correct content type for the serialization format so server will interpret it correctly
+            header(HttpHeaders.ContentType, format.contentType)
         }
 
         suspend fun exception(message: String): Nothing = throw RpcResponseException(
@@ -37,7 +41,8 @@ public class KtorRpcClient(
         )
         when (response.status.value) {
             200 -> return response.body()
-            400 -> exception("Request was not valid. The client may not be up to date")
+            400 -> exception("Request was not valid. The client may not be up to date - ${response.body<String>()}")
+            403 -> exception("Could not authenticate with the server: ${response.body<String>()}. Headers: ${response.headers.toMap()}")
             404 -> exception("Could not find the server at url '$url'.")
             500 -> exception("The server crashed handling the request")
             else -> exception("The server returned an unexpected status code: ${response.status}.")
@@ -62,7 +67,11 @@ private class KtorWebsocketEventClient(
     override suspend fun send(message: ByteArray) {
         // Not thread-safe
         if (websocket == null) {
-            websocket = client.webSocketSession(urlString = url)
+            try {
+                websocket = client.webSocketSession(urlString = url)
+            } catch (e: IOException) {
+                throw IllegalStateException("Could not connect to websocket at URL $url", e)
+            }
             wsScope.launch {
                 while (true) {
                     try {
@@ -82,6 +91,6 @@ private class KtorWebsocketEventClient(
 
 public fun <C> Rpc4kIndex<*, C, *>.ktorClient(url: String, websocketUrl: String, format: SerializationFormat = JsonFormat()): C {
 //    val websocketUrl = "$url/events"
-    return createNetworkClient(KtorRpcClient(url, "$websocketUrl/events"), format)
+    return createNetworkClient(KtorRpcClient(url, websocketUrl), format)
 }
 
