@@ -7,7 +7,8 @@ import com.caesarealabs.rpc4k.runtime.implementation.serializers.TupleSerializer
 import com.caesarealabs.rpc4k.runtime.user.EventSubscription
 import com.caesarealabs.rpc4k.runtime.user.RPCContext
 import kotlinx.coroutines.flow.map
-import kotlinx.serialization.*
+import kotlinx.serialization.KSerializer
+import kotlinx.serialization.SerializationException
 
 /**
  * These functions are used by generated code and code that interacts with them
@@ -86,9 +87,12 @@ public object GeneratedCodeUtils {
             throw InvalidRpcRequestException("Malformed request arguments: ${e.message}", e)
         }
 
-        return with(context) {
-            config.format.encode(resultSerializer, respondMethod(parsed.arguments))
-        }
+        context.logData("Parameters") { parsed.arguments }
+        val result = with(context) { respondMethod(parsed.arguments) }
+        context.logData("Response") { result }
+        val response = config.format.encode(resultSerializer, result)
+
+        return response
     }
 
     public suspend fun <Server, R> invokeEvent(
@@ -115,9 +119,12 @@ public object GeneratedCodeUtils {
                 if (subscriber.info.listenerId in participants) continue
 
                 val parsed = config.format.decode(TupleSerializer(subArgDeserializers), subscriber.info.data)
+                logData("Listener ID") { subscriber.info.listenerId }
+                logData("Subscription Data") { subscriber.info.data }
 
                 logInfo { "Processing subscription ${subscriber.info.listenerId}" }
                 val handled = handle(parsed)
+                logData("Event") { handled }
                 val bytes = config.format.encode(resultSerializer, handled)
                 val fullMessage = S2CEventMessage.Emitted(subscriber.info.listenerId, bytes).toByteArray()
                 config.sendOrDrop(subscriber.connection, fullMessage, this@wrapCall)

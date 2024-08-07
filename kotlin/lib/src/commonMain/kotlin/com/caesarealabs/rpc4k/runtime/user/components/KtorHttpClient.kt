@@ -9,10 +9,7 @@ import io.ktor.client.request.*
 import io.ktor.http.*
 import io.ktor.util.*
 import io.ktor.websocket.*
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.DelicateCoroutinesApi
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
 import kotlinx.io.EOFException
 import kotlinx.io.IOException
 import kotlinx.serialization.KSerializer
@@ -58,9 +55,9 @@ private class KtorWebsocketEventClient(
     private val url: String,
     private val client: HttpClient
 ) : AbstractEventClient() {
-    private var websocket: WebSocketSession? = null
+    private var websocket: DefaultClientWebSocketSession? = null
 
-    // LOWPRIO: better scoping behavior, the websocket should be properly scoped by calling methods, and be turned off when the client is no longer used
+    // LOWPRIO: better scoping behavior, the websocket should be properly scoped by calling methods, and be turned off when the client is no longer used, and then send an unsub.
     @OptIn(DelicateCoroutinesApi::class)
     private val wsScope = CoroutineScope(GlobalScope.coroutineContext)
 
@@ -85,7 +82,8 @@ private class KtorWebsocketEventClient(
                 }
             }
         }
-        websocket!!.send(message)
+        // Aws doesn't like binary frames
+        websocket!!.send(Frame.Text(fin = true, message))
     }
 }
 
