@@ -1,5 +1,6 @@
 package com.caesarealabs.rpc4k.runtime.jvm.user.components
 
+import com.caesarealabs.logging.Logging
 import com.caesarealabs.rpc4k.runtime.api.*
 import com.caesarealabs.rpc4k.runtime.implementation.RpcResult
 import io.ktor.http.*
@@ -16,9 +17,9 @@ public sealed interface KtorRequestResult {
 
 
 public object Rpc4kKtor {
-    public suspend fun routeCalls(call: ApplicationCall, config: ServerConfig) {
+    public suspend fun routeCalls(call: ApplicationCall, config: ServerConfig, initialLogs: Logging.() -> Unit) {
         val bytes = call.receiveChannel().readRemaining().readByteArray()
-        when(val result = RpcServerUtils.routeCall(bytes,config)) {
+        when(val result = RpcServerUtils.routeCall(bytes,config, initialLogs = initialLogs)) {
             is RpcResult.Error ->  {
                 val code = when (result.errorType) {
                     RpcError.InvalidRequest -> HttpStatusCode.BadRequest

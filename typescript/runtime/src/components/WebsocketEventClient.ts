@@ -1,6 +1,7 @@
 import {EventClient} from "../RpcClient"
 import {GenericWebsocket, WebsocketState} from "./GenericWebsocket"
-import {Observable} from "../Observable";
+import {Observable} from "../Observable"
+import {wait} from "../impl/Utils"
 
 export class WebsocketEventClient implements EventClient {
     private messageListeners: Record<string, (message: string) => void> = {}
@@ -51,9 +52,11 @@ export class WebsocketEventClient implements EventClient {
     }
 
     async send(message: string): Promise<void> {
+        // console.log(`Waiting for open for message ${message}`)
         await this.waitForOpen().catch(e => {
             console.log(e)
         })
+        // console.log(`Sending message ${message}`)
         this.socket.sendMessage(message)
     }
 
@@ -69,6 +72,7 @@ export class WebsocketEventClient implements EventClient {
                 observed = true
             },
             () => {
+                // console.log(`Closing observable with listenerId of ${listenerId} and observed of ${observed}`)
                 if (observed) {
                     // Clean up callback listener
                     delete this.messageListeners[listenerId]
@@ -81,19 +85,26 @@ export class WebsocketEventClient implements EventClient {
     }
 
     private async waitForOpen(): Promise<void> {
-        if (this.socket.readyState === WebsocketState.CONNECTING) {
+        // while (true) {
+        if (this.socket.getReadyState() === WebsocketState.CONNECTING) {
+            // console.log("Connecting")
+            // await wait(1000)
             return new Promise(resolve => {
                 this.openListeners.push(() => {
+                    // console.log(`New state: ${this.socket.readyState}`)
                     resolve()
                 })
             })
-        } else if (this.socket.readyState === WebsocketState.OPEN) {
-            // Do nothing
+        } else if (this.socket.getReadyState() === WebsocketState.OPEN) {
+            return  // Open - we can stop waiting
         } else {
+            console.log("Error...")
             throw new Error("Attempt to send message when websocket is closed/closing.")
         }
-
     }
+
+
+    // }
 }
 
 

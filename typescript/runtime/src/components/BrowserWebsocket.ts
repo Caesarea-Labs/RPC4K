@@ -5,11 +5,12 @@ import {GenericWebsocket, WebsocketListeners, WebsocketReadyState} from "./Gener
 export class BrowserWebsocket implements GenericWebsocket {
     private socket: WebSocket
 
-    readyState: WebsocketReadyState
+    getReadyState(): WebsocketReadyState {
+        return this.socket.readyState as WebsocketReadyState
+    }
 
-    constructor(url: string) {
+    constructor(public url: string) {
         this.socket = new WebSocket(url)
-        this.readyState = this.socket.readyState as WebsocketReadyState
     }
 
     generateUuid(): string {
@@ -24,6 +25,9 @@ export class BrowserWebsocket implements GenericWebsocket {
     }
     sendMessage(message: string): void {
         this.socket.send(message)
+    }
+    close(): void {
+        this.socket.close()
     }
 }
 

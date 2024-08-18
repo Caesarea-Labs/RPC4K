@@ -8,11 +8,15 @@ import com.amazonaws.services.lambda.runtime.events.APIGatewayV2HTTPEvent
 import com.amazonaws.services.lambda.runtime.events.APIGatewayV2HTTPResponse
 import com.amazonaws.services.lambda.runtime.events.APIGatewayV2WebSocketEvent
 import com.amazonaws.services.lambda.runtime.events.APIGatewayV2WebSocketResponse
+import com.caesarealabs.logging.Logging
 import com.caesarealabs.rpc4k.runtime.api.*
 import com.caesarealabs.rpc4k.runtime.implementation.RpcResult
 
 public object Rpc4kAwsLambda {
-    public suspend fun routeCalls(call: APIGatewayV2HTTPEvent, config: ServerConfig): APIGatewayV2HTTPResponse {
+    /**
+     * @param initialLogs Logs to log when logger is initialized
+     */
+    public suspend fun routeCalls(call: APIGatewayV2HTTPEvent, config: ServerConfig, initialLogs: Logging.() -> Unit = {}): APIGatewayV2HTTPResponse {
         if (call.headers == null) return invalidHttpRequest("Missing API Gateway Headers")
         if (call.body == null) return invalidHttpRequest("Missing API Gateway body")
         // Lambda behaves unexpectedly when content-type is not specified (as json when usning json, etc)
@@ -24,7 +28,7 @@ public object Rpc4kAwsLambda {
         }
 
         val bytes = toByteArray(call)
-        return when (val result = RpcServerUtils.routeCall(bytes, config)) {
+        return when (val result = RpcServerUtils.routeCall(bytes, config, initialLogs =  initialLogs)) {
             is RpcResult.Error -> createErrorResponse(result.message, result.errorType)
             is RpcResult.Success -> createResponse(result.bytes)
         }
@@ -41,7 +45,8 @@ public object Rpc4kAwsLambda {
      * The caller will receive events matching his request ID specified in the body of the subscription request.
      * The server, usually called with AWS Lambda, will then use the AWS API to send that specific listener the data, when an event occurs.
      */
-    public suspend fun acceptWebsocketSubscription(event: APIGatewayV2WebSocketEvent, config: ServerConfig): APIGatewayV2WebSocketResponse {
+    public suspend fun acceptWebsocketSubscription(event: APIGatewayV2WebSocketEvent, config: ServerConfig, initialLogs: Logging.() -> Unit = {}):
+        APIGatewayV2WebSocketResponse {
         if (event.requestContext == null) return invalidWebsocketRequest("Missing API Gateway requestContext")
         if (event.requestContext.connectionId == null) return invalidWebsocketRequest("Missing requestContext connectionId")
 
@@ -59,7 +64,7 @@ public object Rpc4kAwsLambda {
 
             else -> {
                 if (event.body == null) return invalidWebsocketRequest("Missing API Gateway body")
-                config.acceptEventSubscription(event.body.toByteArray(), connection)
+                config.acceptEventSubscription(event.body.toByteArray(), connection, initialLogs)
             }
         }
 

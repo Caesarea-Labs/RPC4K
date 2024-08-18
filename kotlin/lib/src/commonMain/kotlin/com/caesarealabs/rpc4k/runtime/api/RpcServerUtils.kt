@@ -4,6 +4,10 @@ import com.caesarealabs.logging.Logging
 import com.caesarealabs.rpc4k.runtime.implementation.RpcResult
 import com.caesarealabs.rpc4k.runtime.user.RPCContext
 
+public interface ServerData {
+
+}
+
 public object RpcServerUtils {
     /**
      * Should be called by server implementations whenever a new request is received, and pass the request's bytes as [input].
@@ -12,22 +16,26 @@ public object RpcServerUtils {
      *
      * @param serverData Information specific to the server implementation calling this. RPC services may then
      * reference this data through [RPCContext.serverData] (usually needing an `is` check specific to the server implementation)
+     * @param initialLogs Logs to perform on the call, independent of the endpoint.
      */
-    public suspend fun routeCall(input: ByteArray, config: ServerConfig, serverData: Any? = null): RpcResult {
+    public suspend fun routeCall(input: ByteArray, config: ServerConfig, serverData: ServerData? = null, initialLogs: Logging.() -> Unit = {}): RpcResult {
         // Logging not available yet - make do with normal prints
         val method = try {
             Rpc.peekMethodName(input)
         } catch (e: InvalidRpcRequestException) {
-            return config.config.logging.wrapCall("Unclassified Failures") {
+            return config.config.logging.wrapCall("Other Request Failures") {
+                initialLogs()
                 invalidRequest(e, this@wrapCall)
             }
         } catch (e: Throwable) {
-            return config.config.logging.wrapCall("Unclassified Failures") {
+            return config.config.logging.wrapCall("Other Internal Req Failures") {
+                initialLogs()
                 serverError(e, this@wrapCall)
             }
         }
         // Logging available
         return config.config.logging.wrapCall(method) {
+            initialLogs()
             val logging = this@wrapCall
             try {
                 (config.router as RpcRouter<Any?>).routeRequest(input, method, config.config, SimpleRpcContext(serverData, logging))
@@ -54,7 +62,7 @@ public object RpcServerUtils {
     }
 }
 
-public class SimpleRpcContext(override val serverData: Any?, private val logging: Logging) : RPCContext, Logging by logging
+public class SimpleRpcContext(override val serverData: ServerData?, private val logging: Logging) : RPCContext, Logging by logging
 
 
 

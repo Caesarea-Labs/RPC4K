@@ -1,5 +1,6 @@
 package com.caesarealabs.rpc4k.runtime.jvm.user.components
 
+import com.caesarealabs.logging.Logging
 import com.caesarealabs.logging.LoggingFactory
 import com.caesarealabs.logging.PrintLoggingFactory
 import com.caesarealabs.rpc4k.runtime.api.*
@@ -41,7 +42,10 @@ public fun <S, I> Rpc4kIndex<S, *, I>.startKtor(
 public class KtorManagedRpcServer(
     private val engine: ApplicationEngineFactory<*, *> = Netty,
     public val port: Int = PortPool.get(),
-    private val config: Application.() -> Unit = {}
+    private val logOnRequest: Logging.() -> Unit = {},
+    private val logOnSubscribe: Logging.() -> Unit = {},
+    private val config: Application.() -> Unit = {},
+
 ) : DedicatedServer {
 
     private val connections = ConcurrentHashMap<EventConnection, DefaultWebSocketSession>()
@@ -55,7 +59,7 @@ public class KtorManagedRpcServer(
             config()
             routing {
                 post("/") {
-                    Rpc4kKtor.routeCalls(call, config)
+                    Rpc4kKtor.routeCalls(call, config, logOnRequest)
                 }
 
                 webSocket("/events") {
@@ -63,7 +67,7 @@ public class KtorManagedRpcServer(
                     connections[connection] = this
                     try {
                         for (frame in incoming) {
-                            config.acceptEventSubscription(frame.readBytes(), connection)
+                            config.acceptEventSubscription(frame.readBytes(), connection, logOnSubscribe)
                         }
                     } finally {
                         config.config.logging.wrapCall("Ending Connections") {

@@ -3,8 +3,10 @@ import {WebSocket} from "ws"
 export interface GenericWebsocket {
     listen(listeners: WebsocketListeners): void
     sendMessage(message: string): void
-    readyState: WebsocketReadyState
+    getReadyState(): WebsocketReadyState
     generateUuid(): string
+    close(): void
+    url: string
 }
 
 export type WebsocketReadyState = 0 | 1 | 2 | 3

@@ -10,18 +10,25 @@ import kotlin.math.log
  * @param bytes The entire message sent by the client
  * @param connection An instance created by the server implementation that identifies the specific client that has sent the message,
  * in order to send responses back to that client.
+ * @param initialLogs Allows logging once the logger is initialized
  */
-public suspend fun ServerConfig.acceptEventSubscription(bytes: ByteArray, connection: EventConnection) {
+public suspend fun ServerConfig.acceptEventSubscription(bytes: ByteArray, connection: EventConnection, initialLogs: Logging.() -> Unit = {}) {
     val message = try {
         C2SEventMessage.fromByteArray(bytes)
     } catch (e: InvalidRpcRequestException) {
-        // Proper logging not available yet - make do with print logging
-        return invalidMessage(e, connection, PrintLogging)
+        return config.logging.wrapCall("Other Sub Failures") {
+            initialLogs()
+            invalidMessage(e, connection, PrintLogging)
+        }
     } catch (e: Throwable) {
-        return serverError(e, connection, PrintLogging)
+        return config.logging.wrapCall("Other Internal Sub Failures") {
+            initialLogs()
+            serverError(e, connection, PrintLogging)
+        }
     }
     // Logging available
     return config.logging.wrapCall(message.event) {
+        initialLogs()
         val logging = this@wrapCall
         try {
             // Mark what kind of event is this to make it easy to search by the specific event type

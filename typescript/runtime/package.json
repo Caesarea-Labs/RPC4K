@@ -13,6 +13,7 @@
   "license": "MIT",
   "keywords": [],
   "scripts": {
+    "update": "npm run build && yalc push",
     "pretest": "echo \"Running pretest script\"",
     "build": "tsup --dts",
     "build:main": "tsc -p tsconfig.json",

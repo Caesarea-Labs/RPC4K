@@ -1,14 +1,20 @@
 import {WebSocket} from "ws"
-import {GenericWebsocket, WebsocketListeners} from "./GenericWebsocket"
+import {GenericWebsocket, WebsocketListeners, WebsocketReadyState} from "./GenericWebsocket"
 import {v4} from "uuid"
 
 export class NodejsWebsocket implements GenericWebsocket {
     private socket: WebSocket
-    readyState
 
-    constructor(url: string) {
+    getReadyState(): WebsocketReadyState {
+        return this.socket.readyState
+    }
+
+    constructor(public url: string) {
         this.socket = new WebSocket(url)
-        this.readyState = this.socket.readyState
+    }
+
+    close(): void {
+        this.socket.close()
     }
 
     generateUuid(): string {

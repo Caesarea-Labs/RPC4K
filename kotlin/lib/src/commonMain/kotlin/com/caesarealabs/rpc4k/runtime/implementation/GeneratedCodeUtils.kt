@@ -120,7 +120,7 @@ public object GeneratedCodeUtils {
 
                 val parsed = config.format.decode(TupleSerializer(subArgDeserializers), subscriber.info.data)
                 logData("Listener ID") { subscriber.info.listenerId }
-                logData("Subscription Data") { subscriber.info.data }
+                logData("Subscription Data") { parsed }
 
                 logInfo { "Processing subscription ${subscriber.info.listenerId}" }
                 val handled = handle(parsed)

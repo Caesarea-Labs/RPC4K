@@ -18,6 +18,9 @@ export class Observable<T> {
                 callback(transform(newValue))
             })
         }
-        return new Observable<R>(newObserve, this.close, this.listenerId)
+        const newClose = () => {
+            this.close()
+        };
+        return new Observable<R>(newObserve, newClose, this.listenerId)
     }
 }
