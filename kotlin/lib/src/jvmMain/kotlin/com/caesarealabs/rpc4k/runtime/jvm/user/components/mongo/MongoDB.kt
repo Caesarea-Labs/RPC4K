@@ -77,7 +77,8 @@ public interface MongoDb : AutoCloseable {
     }
 }
 
-private object InstantAsBsonDateTime : KSerializer<Instant> {
+//TODO: make private
+public object InstantAsBsonDateTime : KSerializer<Instant> {
     override val descriptor: SerialDescriptor = PrimitiveSerialDescriptor("InstantAsBsonDateTime", PrimitiveKind.LONG)
     override fun serialize(encoder: Encoder, value: Instant) {
         when (encoder) {
@@ -96,10 +97,11 @@ private object InstantAsBsonDateTime : KSerializer<Instant> {
 
 private val startOfDay = LocalTime(0, 0)
 
+//TODO: make private
 /**
  * Encodes a [LocalDate] as a [BsonDateTime] with epoch millis equal to the start of the day
  */
-private object LocalDateAsBsonDateTime : KSerializer<LocalDate> {
+public object LocalDateAsBsonDateTime : KSerializer<LocalDate> {
     override val descriptor: SerialDescriptor = PrimitiveSerialDescriptor("InstantAsBsonDateTime", PrimitiveKind.LONG)
     override fun serialize(encoder: Encoder, value: LocalDate) {
         when (encoder) {

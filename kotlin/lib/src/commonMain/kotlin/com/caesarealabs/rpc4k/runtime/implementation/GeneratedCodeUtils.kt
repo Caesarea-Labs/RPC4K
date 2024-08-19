@@ -100,6 +100,7 @@ public object GeneratedCodeUtils {
         eventName: String,
         subArgDeserializers: List<KSerializer<*>>,
         resultSerializer: KSerializer<R>,
+        context: RPCContext,
         /**
          * The actors that actually produced this event, and will not want to get updated that this event occurred, because they
          * already updated the outcome of said event in memory.
@@ -113,23 +114,29 @@ public object GeneratedCodeUtils {
         handle: suspend (subArgs: List<*>) -> R
     ) {
         val match = config.eventManager.match(eventName, target)
-        config.logging.wrapCall(eventName) {
-            for (subscriber in match) {
-                // Don't send events to participants
-                if (subscriber.info.listenerId in participants) continue
+//        config.logging.wrapCall(eventName) {
+        context.logInfo { "Invoking event $eventName" }
+        for ((i, subscriber) in match.withIndex()) {
+            // Don't send events to participants
+            if (subscriber.info.listenerId in participants) continue
 
-                val parsed = config.format.decode(TupleSerializer(subArgDeserializers), subscriber.info.data)
-                logData("Listener ID") { subscriber.info.listenerId }
-                logData("Subscription Data") { parsed }
+            val parsed = config.format.decode(TupleSerializer(subArgDeserializers), subscriber.info.data)
 
-                logInfo { "Processing subscription ${subscriber.info.listenerId}" }
-                val handled = handle(parsed)
-                logData("Event") { handled }
-                val bytes = config.format.encode(resultSerializer, handled)
-                val fullMessage = S2CEventMessage.Emitted(subscriber.info.listenerId, bytes).toByteArray()
-                config.sendOrDrop(subscriber.connection, fullMessage, this@wrapCall)
+//            logData("Listener ID $i") { subscriber.info.listenerId }
+//            logData("Subscription Data $i") { parsed }
+
+//            logInfo { "Processing subscription ${subscriber.info.listenerId}" }
+            val handled = handle(parsed)
+//            logData("Event $i") { handled }
+            context.logVerbose {
+                "Dispatching event $eventName to listener num $i, with ID ${subscriber.info.listenerId}" +
+                    ", subscription data $parsed, and resulting event $handled"
             }
+            val bytes = config.format.encode(resultSerializer, handled)
+            val fullMessage = S2CEventMessage.Emitted(subscriber.info.listenerId, bytes).toByteArray()
+            config.sendOrDrop(subscriber.connection, fullMessage, context)
         }
+//        }
 
     }
 }

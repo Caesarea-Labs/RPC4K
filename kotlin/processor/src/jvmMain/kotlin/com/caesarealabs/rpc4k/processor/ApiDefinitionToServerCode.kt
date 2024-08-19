@@ -9,6 +9,7 @@ import com.caesarealabs.rpc4k.runtime.implementation.GeneratedCodeUtils
 import com.caesarealabs.rpc4k.runtime.user.RPCContext
 import com.caesarealabs.rpc4k.runtime.user.Rpc4kIndex
 import com.squareup.kotlinpoet.*
+import com.squareup.kotlinpoet.MemberName.Companion.member
 import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy
 
 /**
@@ -60,11 +61,13 @@ internal class ApiDefinitionToServerCode(private val api: RpcApi) {
         private const val RequestParamName = "request"
         private const val MethodParamName = "method"
 
-        private val respondUtilsMethod = GeneratedCodeUtils::class.methodName("respond")
-        private val invokeEventUtilsMethod = GeneratedCodeUtils::class.methodName("invokeEvent")
+        private val respondUtilsMethod = GeneratedCodeUtils::class.member("respond")
+        private val invokeEventUtilsMethod = GeneratedCodeUtils::class.member("invokeEvent")
         private const val InvokerSuffix = "EventInvoker"
         private const val ParticipantsParamName = "participants"
+        private const val ContextParamName = "rpcContext"
         private val ParticipantsParamType = Set::class.parameterizedBy(String::class)
+        private val ContextParamType = RPCContext::class
     }
 
     private val invokerName = "${api.name.simple}$InvokerSuffix"
@@ -73,6 +76,7 @@ internal class ApiDefinitionToServerCode(private val api: RpcApi) {
     private val routerClassName = ClassName(ApiDefinitionUtils.Package, routerName)
     private val clientClassName = ClassName(ApiDefinitionUtils.Package, api.name.simple + ApiDefinitionUtils.NetworkClientSuffix)
     private val serverClassName = api.name.kotlinPoet
+
     // Since HandlerConfig is a type alias we need to specify its name explicitly
     private val handlerConfig = ClassName(HandlerConfig::class.asClassName().packageName, "HandlerConfig").parameterizedBy(serverClassName)
 
@@ -243,10 +247,16 @@ internal class ApiDefinitionToServerCode(private val api: RpcApi) {
         for (parameter in dispatchParameters) {
             addParameter(parameter.name, parameter.type.typeName)
         }
+        // Add support for passing RPC context
+        addParameter(
+            ParameterSpec.builder(ContextParamName, ContextParamType)
+                // Default is RpcContext.Default
+                .defaultValue("%M", RPCContext.Companion::class.member("Default"))
+                .build()
+        )
         // Add support for not sending events to "participants"
         addParameter(ParameterSpec.builder(ParticipantsParamName, ParticipantsParamType).defaultValue("setOf()").build())
         addKdoc("@param $ParticipantsParamName Listeners that will not be invoked as they have caused the event.")
-        //NiceToHave: watched object id
 
         val targetParameter = event.targetParameter?.name
 
@@ -259,6 +269,7 @@ internal class ApiDefinitionToServerCode(private val api: RpcApi) {
             "\"${event.name}\"",
             paramSerializers,
             event.returnType.toSerializerString(),
+            ContextParamName,
             ParticipantsParamName,
             target
         )

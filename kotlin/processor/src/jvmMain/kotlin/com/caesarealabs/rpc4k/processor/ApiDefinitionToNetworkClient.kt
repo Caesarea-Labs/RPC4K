@@ -7,6 +7,7 @@ import com.caesarealabs.rpc4k.runtime.api.RpcClient
 import com.caesarealabs.rpc4k.runtime.api.SerializationFormat
 import com.caesarealabs.rpc4k.runtime.implementation.GeneratedCodeUtils
 import com.squareup.kotlinpoet.*
+import com.squareup.kotlinpoet.MemberName.Companion.member
 import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy
 
 /**
@@ -56,9 +57,9 @@ import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy
 internal object ApiDefinitionToNetworkClient {
     private const val ClientPropertyName = "client"
     private const val FormatPropertyName = "format"
-    private val sendMethod = GeneratedCodeUtils::class.methodName("send")
-    private val requestMethod = GeneratedCodeUtils::class.methodName("request")
-    private val coldEventFlow = GeneratedCodeUtils::class.methodName("coldEventFlow")
+    private val sendMethod = GeneratedCodeUtils::class.member("send")
+    private val requestMethod = GeneratedCodeUtils::class.member("request")
+    private val coldEventFlow = GeneratedCodeUtils::class.member("coldEventFlow")
 
     fun convert(apiDefinition: RpcApi): FileSpec {
         val className = "${apiDefinition.name.simple}${ApiDefinitionUtils.NetworkClientSuffix}"

@@ -1,7 +1,9 @@
 package com.caesarealabs.rpc4k.processor.utils.poet
 
+import com.caesarealabs.rpc4k.runtime.user.RPCContext
 import com.squareup.kotlinpoet.*
 import kotlin.reflect.KClass
+import kotlin.reflect.KProperty
 
 internal inline fun fileSpec(packageName: String, className: String, builder: FileSpec.Builder.() -> Unit): FileSpec {
     return FileSpec.builder(packageName, className).apply(builder).build()
@@ -45,6 +47,10 @@ internal inline fun FunSpec.Builder.addControlFlow(format: FormattedString, cont
     addControlFlow(format.string, *format.formatArguments.toTypedArray()) { controlFlow() }
 }
 
-internal fun KClass<*>.methodName(method: String) = MemberName(this.asClassName(), method)
 
 internal fun ClassName.companion() = ClassName(packageName, simpleName, "Companion")
+
+//internal fun KProperty<*>.asMemberName(): MemberName {
+//    return MemberName(this.)
+//    val y = RPCContext.Companion::Default
+//}
