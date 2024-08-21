@@ -1,16 +1,13 @@
 @file:Suppress("OPT_IN_USAGE")
 
+
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
-//    alias(libs.plugins.androidLibrary)
+    alias(libs.plugins.androidLibrary)
     alias(libs.plugins.serialization)
     id("org.jetbrains.kotlinx.atomicfu") version "0.25.0"
     kotlin("plugin.power-assert") version "2.0.20-Beta2"
 }
-
-
-
-
 
 
 val projGroup: String by project
@@ -28,23 +25,23 @@ kotlin {
 //    }
     explicitApi()
 //    targetHierarchy.default()
-    jvm()
+    jvm("nonAndroidJvm")
     wasmJs {
         browser()
     }
 //    iosArm64()
-    jvmToolchain(17)
-//    androidTarget {
-//        publishLibraryVariants("release")
-//        compilations.all {
-//            kotlinOptions {
-//                jvmTarget = "1.8"
-//            }
-//        }
-//    }
+    jvmToolchain(21)
+    androidTarget {
+        publishLibraryVariants("release")
+        compilations.all {
+            kotlinOptions {
+                jvmTarget = "21"
+            }
+        }
+    }
 
     sourceSets {
-        val jvmMain by getting {
+        val nonAndroidJvmMain by getting {
             dependencies {
                 //NiceToHave: should be part of testing module
                 api(libs.junit)
@@ -56,7 +53,7 @@ kotlin {
                 api(libs.ktor.server.websockets.jvm)
                 api(libs.ktor.netty)
                 api(libs.ktor.logging)
-                implementation("ch.qos.logback:logback-classic:1.5.6")
+                implementation(libs.logback.jvm)
                 //NiceToHave: should be part of okhttp client module
                 api(libs.okhttp.core)
 
@@ -74,11 +71,17 @@ kotlin {
                 api(libs.mongodb.serialization)
             }
         }
+        androidMain.dependencies {
+            // NiceToHave: should be part of ktor client module
+            api(libs.ktor.client.okhttp)
+            implementation(libs.logback.android)
+        }
+
         val commonMain by getting {
             dependencies {
                 api(libs.coroutines.core)
                 api(libs.serialization.json)
-                api (libs.uuid)
+                api(libs.uuid)
                 api(libs.kotlinx.datetime)
                 api(libs.logging)
 
@@ -92,10 +95,10 @@ kotlin {
                 implementation(libs.kotlin.test)
             }
         }
-        val jvmTest by getting {
+        val nonAndroidJvmTest by getting {
             dependencies {
                 implementation(Testing.Strikt.core)
-                implementation(libs.logback)
+//                implementation(libs.logback)
             }
         }
 
@@ -127,11 +130,11 @@ tasks.withType<Test> {
     useJUnitPlatform()
 }
 
-//
-//android {
-//    namespace = projGroup
-//    compileSdk = libs.versions.android.compileSdk.get().toInt()
-//    defaultConfig {
-//        minSdk = libs.versions.android.minSdk.get().toInt()
-//    }
-//}
+
+android {
+    namespace = projGroup
+    compileSdk = libs.versions.android.compileSdk.get().toInt()
+    defaultConfig {
+        minSdk = libs.versions.android.minSdk.get().toInt()
+    }
+}

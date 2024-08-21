@@ -27,7 +27,7 @@ kotlin {
 //        freeCompilerArgs.add("-Xcontext-receivers")
 //    }
     jvm()
-    jvmToolchain(17)
+    jvmToolchain(21)
 
 
     sourceSets {
@@ -47,7 +47,7 @@ kotlin {
                 implementation(libs.kotlin.test)
                 implementation(libs.compile.testing.ksp)
                 implementation(Testing.Strikt.core)
-                implementation(libs.logback)
+                implementation(libs.logback.jvm)
             }
         }
     }

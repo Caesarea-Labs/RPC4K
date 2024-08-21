@@ -260,9 +260,16 @@ warn -> info, info -> debug, etc.
 ### Publish with CD
 Publish with github actions. 
 
+# 3. Blocked 
 
-# 3a. The compiler plugin
-# 3. Blocked - Requires compiler plugin
+## 3a. Blocked by context parameters
+
+### Make invoke* methods accept RpcContext as a context parameter instead of a normal parameter
+
+This would make it easier to pass the `RpcContext` that is given in RPC methods. 
+
+
+# 3b. The compiler plugin
 ### Remove "packageName" from the RpcType
 RPC4a prohibits identical names for models for simplicity. This means there's no need to specify a "package name" for types, and the simple name is enough.
 Currently the only reason we specify a packageName is that Kotlinx.serialization demands the fully qualified name of the subclasses of polymorphic types

@@ -1,5 +1,6 @@
 package com.caesarealabs.rpc4k.runtime.platform
 
+import com.caesarealabs.rpc4k.runtime.user.components.KtorRpcClient
 import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.ConcurrentLinkedQueue
 

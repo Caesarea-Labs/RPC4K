@@ -49,7 +49,6 @@ kotlin {
                 implementation(libs.strikt)
                 implementation(libs.okhttp.core)
                 implementation(libs.ktor.netty)
-                implementation(libs.logback)
                 implementation ("org.junit.jupiter:junit-jupiter-api:5.8.1")
 //                implementation ("org.junit.jupiter:junit-jupiter-params:5.8.1")
                 implementation ("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.9.0-RC")
