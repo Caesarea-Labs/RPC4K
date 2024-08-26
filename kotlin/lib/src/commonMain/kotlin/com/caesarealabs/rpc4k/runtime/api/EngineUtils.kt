@@ -3,7 +3,6 @@ package com.caesarealabs.rpc4k.runtime.api
 import com.caesarealabs.logging.Logging
 import com.caesarealabs.logging.PrintLogging
 import com.caesarealabs.rpc4k.runtime.implementation.sendOrDrop
-import kotlin.math.log
 
 /**
  * Should be called by server implementations whenever a new message is received.
@@ -23,7 +22,7 @@ public suspend fun ServerConfig.acceptEventSubscription(bytes: ByteArray, connec
     } catch (e: Throwable) {
         return config.logging.wrapCall("Other Internal Sub Failures") {
             initialLogs()
-            serverError(e, connection, PrintLogging)
+            serverError(e, connection, PrintLogging) { "Failed to call C2SEventMessage.fromByteArray()" }
         }
     }
     // Logging available
@@ -46,7 +45,7 @@ public suspend fun ServerConfig.acceptEventSubscription(bytes: ByteArray, connec
         } catch (e: InvalidRpcRequestException) {
             invalidMessage(e, connection, logging)
         } catch (e: Throwable) {
-            serverError(e, connection, logging)
+            serverError(e, connection, logging) { "Failed to subscribe/unsubscribe to event ${message.event}" }
         }
     }
 
@@ -58,7 +57,7 @@ private suspend fun ServerConfig.invalidMessage(e: InvalidRpcRequestException, c
     config.sendOrDrop(connection, S2CEventMessage.SubscriptionError("Invalid client event message: ${e.message}").toByteArray(), logging)
 }
 
-private suspend fun ServerConfig.serverError(e: Throwable, connection: EventConnection, logging: Logging) {
-    logging.logError(e) { "Failed to handle request" }
+private suspend fun ServerConfig.serverError(e: Throwable, connection: EventConnection, logging: Logging, logMessage: () -> String) {
+    logging.logError(e, logMessage)
     config.sendOrDrop(connection, S2CEventMessage.SubscriptionError("Server failed to process subscription").toByteArray(), logging)
 }

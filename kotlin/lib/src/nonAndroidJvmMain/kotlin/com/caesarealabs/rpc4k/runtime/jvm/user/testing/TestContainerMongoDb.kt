@@ -36,17 +36,19 @@ public data object TestContainerMongoDb : MongoDb {
     private var container: MongoDBContainer? = null
     private var closed = false
     private val client = lazy {
-        val client = if (sharedTestContainerFile.exists()) {
-            val sharedConnectionString = sharedTestContainerFile.readText()
-            val (existingDatabase, error) = databaseAt(sharedConnectionString)
-            if (existingDatabase == null) fallbackToNewDocker(sharedConnectionString, error)
-            else {
-                PrintLogging.logInfo { "Shared test container with $sharedConnectionString" }
-                existingDatabase
-            }
-        } else {
-            manualCreateClientMongoDbClient(dockerContainer())
-        }
+        // I've disabled this for now because it causes too many issues
+//        val client = if (sharedTestContainerFile.exists()) {
+//            val sharedConnectionString = sharedTestContainerFile.readText()
+//            val (existingDatabase, error) = databaseAt(sharedConnectionString)
+//            if (existingDatabase == null) fallbackToNewDocker(sharedConnectionString, error)
+//            else {
+//                PrintLogging.logInfo { "Shared test container with $sharedConnectionString" }
+//                existingDatabase
+//            }
+//        } else {
+//            manualCreateClientMongoDbClient(dockerContainer())
+//        }
+        val client = manualCreateClientMongoDbClient(dockerContainer())
         // Make sure to close connection/container when jvm exits
         Runtime.getRuntime().addShutdownHook(Thread {
             close()

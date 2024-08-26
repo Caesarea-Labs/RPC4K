@@ -1,5 +1,7 @@
 @file:Suppress("OPT_IN_USAGE")
 
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+
 
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
@@ -19,12 +21,7 @@ base.archivesName = "rpc4k-runtime"
 
 
 kotlin {
-
-//    compilerOptions {
-//        freeCompilerArgs.add("-Xcontext-receivers")
-//    }
     explicitApi()
-//    targetHierarchy.default()
     jvm("nonAndroidJvm")
     wasmJs {
         browser()
@@ -33,10 +30,8 @@ kotlin {
     jvmToolchain(21)
     androidTarget {
         publishLibraryVariants("release")
-        compilations.all {
-            kotlinOptions {
-                jvmTarget = "21"
-            }
+        compilerOptions {
+            jvmTarget.set(JvmTarget.JVM_21)
         }
     }
 
@@ -98,7 +93,6 @@ kotlin {
         val nonAndroidJvmTest by getting {
             dependencies {
                 implementation(Testing.Strikt.core)
-//                implementation(libs.logback)
             }
         }
 

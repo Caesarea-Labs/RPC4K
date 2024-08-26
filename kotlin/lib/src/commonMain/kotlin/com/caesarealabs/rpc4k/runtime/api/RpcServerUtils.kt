@@ -18,7 +18,12 @@ public object RpcServerUtils {
      * reference this data through [RPCContext.serverData] (usually needing an `is` check specific to the server implementation)
      * @param initialLogs Logs to perform on the call, independent of the endpoint.
      */
-    public suspend fun routeCall(input: ByteArray, config: ServerConfig, serverData: ServerData? = null, initialLogs: Logging.() -> Unit = {}): RpcResult {
+    public suspend fun routeCall(
+        input: ByteArray,
+        config: ServerConfig,
+        serverData: ServerData? = null,
+        initialLogs: Logging.() -> Unit = {}
+    ): RpcResult {
         // Logging not available yet - make do with normal prints
         val method = try {
             Rpc.peekMethodName(input)
@@ -30,7 +35,7 @@ public object RpcServerUtils {
         } catch (e: Throwable) {
             return config.config.logging.wrapCall("Other Internal Req Failures") {
                 initialLogs()
-                serverError(e, this@wrapCall)
+                serverError(e, this@wrapCall) { "Failed to call Rpc.peekMethodName()" }
             }
         }
         // Logging available
@@ -44,7 +49,7 @@ public object RpcServerUtils {
             } catch (e: InvalidRpcRequestException) {
                 invalidRequest(e, logging)
             } catch (e: Throwable) {
-                serverError(e, logging)
+                serverError(e, logging) { "Failed to call routeRequest() on method $method" }
             }
         }
     }
@@ -55,8 +60,8 @@ public object RpcServerUtils {
         return RpcResult.Error(exception.message, RpcError.InvalidRequest)
     }
 
-    private fun serverError(exception: Throwable, logging: Logging): RpcResult {
-        logging.logError(exception) { "Failed to handle request" }
+    private fun serverError(exception: Throwable, logging: Logging, logMessage: () -> String): RpcResult {
+        logging.logError(exception, logMessage)
         // Don't send arbitrary throwable messages because it could leak data
         return RpcResult.Error("Server failed to process request", RpcError.InternalError)
     }
