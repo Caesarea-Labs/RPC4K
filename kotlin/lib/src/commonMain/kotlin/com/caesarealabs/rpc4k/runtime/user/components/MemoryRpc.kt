@@ -7,6 +7,9 @@ import com.caesarealabs.rpc4k.runtime.api.*
 import com.caesarealabs.rpc4k.runtime.implementation.RpcResult
 import com.caesarealabs.rpc4k.runtime.user.Rpc4kIndex
 import com.caesarealabs.rpc4k.runtime.user.startRpc
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
 import kotlinx.coroutines.delay
 import kotlinx.serialization.KSerializer
 import kotlin.time.Duration
@@ -27,6 +30,7 @@ public class MemoryDedicatedServer(
 ) : DedicatedServer {
     private val connections = mutableMapOf<EventConnection, MemoryEventClient>()
     private var config: ServerConfig? = null
+    private val scope = CoroutineScope(Dispatchers.Default)
 
     private suspend fun emulateLatency() {
         if (emulatedLatency != null) delay(emulatedLatency)
@@ -36,12 +40,13 @@ public class MemoryDedicatedServer(
         config ?: error("Attempt to respond with server that has not been started with start()")
 
     /**
-     * Emulates the handling of a request by a server
+     * Emulates the handling of a request by a server.
+     * Will run the processing in its own coroutine.
      */
-    internal suspend fun respond(rpcRequest: ByteArray): RpcResult {
+    internal suspend fun respond(rpcRequest: ByteArray): RpcResult = scope.async {
         emulateLatency()
-        return RpcServerUtils.routeCall(rpcRequest, getConfig())
-    }
+        RpcServerUtils.routeCall(rpcRequest, getConfig())
+    }.await()
 
     /**
      * Emulates the handling of a subscription / unsubscription by a server
