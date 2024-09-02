@@ -19,7 +19,7 @@ include(":processor")
 // JVM Targeted, runs as part of the Gradle script to pull in RPC libraries and such
 includeBuild("plugin")
 
-val linkLogging = true
+val linkLogging = false
 val loggingDir = file("../../Loggy/logging")
 if (linkLogging) {
     includeBuild(loggingDir) {
