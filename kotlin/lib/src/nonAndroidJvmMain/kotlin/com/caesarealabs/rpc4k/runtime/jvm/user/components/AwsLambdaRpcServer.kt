@@ -44,6 +44,8 @@ public object Rpc4kAwsLambda {
      * If called, will redirect the websocket call to the RPC mechanism and call the appropriate function, subscribing to the event.
      * The caller will receive events matching his request ID specified in the body of the subscription request.
      * The server, usually called with AWS Lambda, will then use the AWS API to send that specific listener the data, when an event occurs.
+     *
+     * @param initialLogs Will log this block as soon as logging is available, associated with the event.
      */
     public suspend fun acceptWebsocketSubscription(event: APIGatewayV2WebSocketEvent, config: ServerConfig, initialLogs: Logging.() -> Unit = {}):
         APIGatewayV2WebSocketResponse {
