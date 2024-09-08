@@ -105,7 +105,7 @@
       <recent name="com.caesarealabs.rpc4k.test.rpc" />
     </key>
   </component>
-  <component name="RunManager" selected="Gradle.KtorClientTests.testGeneratedEvents">
+  <component name="RunManager" selected="npm.pub">
     <configuration name="KtorClientTests" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
       <ExternalSystemSettings>
         <option name="executionName" />
@@ -120,30 +120,6 @@
             <option value=":testapp:cleanJvmTest" />
             <option value=":testapp:jvmTest" />
             <option value="--tests &quot;com.caesarealabs.rpc4k.test.rpc.KtorClientTests&quot;" />
-          </list>
-        </option>
-        <option name="vmOptions" />
-      </ExternalSystemSettings>
-      <ExternalSystemDebugServerProcess>false</ExternalSystemDebugServerProcess>
-      <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
-      <DebugAllEnabled>false</DebugAllEnabled>
-      <RunAsTest>true</RunAsTest>
-      <method v="2" />
-    </configuration>
-    <configuration name="KtorClientTests.testEvents" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
-      <ExternalSystemSettings>
-        <option name="executionName" />
-        <option name="externalProjectPath" value="$PROJECT_DIR$/kotlin/testapp" />
-        <option name="externalSystemIdString" value="GRADLE" />
-        <option name="scriptParameters" value="" />
-        <option name="taskDescriptions">
-          <list />
-        </option>
-        <option name="taskNames">
-          <list>
-            <option value=":testapp:cleanJvmTest" />
-            <option value=":testapp:jvmTest" />
-            <option value="--tests &quot;com.caesarealabs.rpc4k.test.rpc.KtorClientTests.testEvents&quot;" />
           </list>
         </option>
         <option name="vmOptions" />
@@ -226,13 +202,23 @@
       <RunAsTest>true</RunAsTest>
       <method v="2" />
     </configuration>
+    <configuration name="pub" type="js.build_tools.npm" temporary="true" nameIsGenerated="true">
+      <package-json value="$PROJECT_DIR$/typescript/runtime/package.json" />
+      <command value="run" />
+      <scripts>
+        <script value="pub" />
+      </scripts>
+      <node-interpreter value="project" />
+      <envs />
+      <method v="2" />
+    </configuration>
     <recent_temporary>
       <list>
+        <item itemvalue="npm.pub" />
         <item itemvalue="Gradle.KtorClientTests.testGeneratedEvents" />
         <item itemvalue="Gradle.KtorClientTests.testGeneratedEvents" />
         <item itemvalue="Gradle.KtorClientTests.testGeneratedEvents" />
         <item itemvalue="Gradle.KtorClientTests" />
-        <item itemvalue="Gradle.KtorClientTests.testGeneratedEvents" />
       </list>
     </recent_temporary>
   </component>
